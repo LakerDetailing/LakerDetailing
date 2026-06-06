@@ -57,7 +57,14 @@
 <meta name="keywords" content="pranje auta Čačak, auto detailing Čačak, poliranje laka Čačak, keramička zaštita automobila Čačak, perionice Čačak, ručno pranje automobila, korekcija laka Čačak, detailing Čačak, auto kozmetika Čačak, pranje vozila Čačak, dubinsko čišćenje auta Čačak, nano zaštita automobila Čačak, auto pranje Čačak, poliranje automobila Čačak, car detailing Čačak, detailing studio Čačak, sjajenje auta Čačak, auto detailing cacak, pranje auta cacak, keramicka zastita Čačak, polishing Čačak">
 <link rel="alternate" hreflang="sr" href="https://lakerdetailing.rs/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="dns-prefetch" href="https://i.ibb.co">
+<link rel="dns-prefetch" href="https://connect.facebook.net">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80&auto=format&fit=crop" media="(max-width:799px)" fetchpriority="high">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=85&auto=format&fit=crop" media="(min-width:800px)" fetchpriority="high">
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
 <!-- ══ SCHEMA.ORG ══ -->
 <script type="application/ld+json">
@@ -1914,7 +1921,13 @@ function lakerFallbackImage(label, sublabel) {
 <section id="hero" style="padding:0">
   <div class="hbg-img">
     <div class="hbg-ov"></div>
-    <img width="1800" height="1200" loading="eager" decoding="async" fetchpriority="high" src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=85&auto=format&fit=crop" alt="Laker Detailing" onerror="this.onerror=null;this.src=lakerFallbackImage('Laker Detailing','Premium detailing');">
+    <img width="1800" height="1200" loading="eager" decoding="async" fetchpriority="high"
+      srcset="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80&auto=format&fit=crop 800w,
+              https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=85&auto=format&fit=crop 1400w,
+              https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=85&auto=format&fit=crop 1800w"
+      sizes="100vw"
+      src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=85&auto=format&fit=crop"
+      alt="Laker Detailing" onerror="this.onerror=null;this.src=lakerFallbackImage('Laker Detailing','Premium detailing');">
   </div>
   <div class="hc">
     <div class="he-eyebrow">
