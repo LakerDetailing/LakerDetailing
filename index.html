@@ -61,8 +61,12 @@
 <link rel="preconnect" href="https://images.unsplash.com">
 <link rel="dns-prefetch" href="https://i.ibb.co">
 <link rel="dns-prefetch" href="https://connect.facebook.net">
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80&auto=format&fit=crop" media="(max-width:799px)" fetchpriority="high">
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=85&auto=format&fit=crop" media="(min-width:800px)" fetchpriority="high">
+<link rel="preload" as="image" fetchpriority="high"
+  imagesrcset="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80&auto=format&fit=crop 800w,
+               https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=85&auto=format&fit=crop 1400w,
+               https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1800&q=85&auto=format&fit=crop 1800w"
+  imagesizes="100vw"
+  href="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1400&q=85&auto=format&fit=crop">
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
@@ -2785,6 +2789,702 @@ function lakerFallbackImage(label, sublabel) {
   </div>
 </footer>
 
+
+<!-- ══ LOYALTY MODAL ══ -->
+<div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px)">
+  <div onclick="event.stopPropagation()" style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
+    <button type="button" onclick="closeLoyalty()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">×</button>
+
+    <div class="loy-hero" style="padding:36px 44px 0">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:6px;text-transform:uppercase">LAKER</div>
+      <div id="loy-program-title" style="font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">LOYALTY PROGRAM</div>
+      <div style="font-size:12px;color:#8E8E8E;line-height:1.7;margin-bottom:18px;font-weight:300">24 pranja godišnje · prioritetan termin · uvek na prvom mestu.</div>
+      <div class="loy-chip-row" id="loy-chip-row-loyalty">
+        <span class="loy-chip"><b>24×</b> pranja/god</span>
+        <span class="loy-chip"><b>Prioritet</b> termin</span>
+        <span class="loy-chip"><b>Mali/Sred.</b> od €35/mes</span>
+        <span class="loy-chip"><b>Veliki/SUV</b> od €40/mes</span>
+      </div>
+    </div>
+
+    <div id="loy-program-areas">
+    <!-- AUTH AREA -->
+    <div id="loy-auth-area">
+      <div style="display:flex;gap:2px;padding:0 44px">
+        <button type="button" id="tab-login" onclick="loyTab('login')" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
+        <button type="button" id="tab-reg"   onclick="loyTab('reg')"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#666;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
+      </div>
+      <div style="padding:12px 44px 0">
+        <label style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#777;cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px">
+            <input id="loyRememberMe" type="checkbox" checked style="width:14px;height:14px;accent-color:#C9A84C;margin:0">
+            Ostani prijavljen 30 dana
+          </span>
+          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1.5px">Na ovom uređaju</span>
+        </label>
+      </div>
+      <div style="padding:24px 44px 40px">
+
+        <!-- LOGIN -->
+        <div id="loy-form-login">
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email</label>
+            <input id="llog-email" type="email" placeholder="vas@email.com"
+              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka</label>
+            <div class="pw-wrap">
+              <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter"
+                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
+                onkeydown="if(event.key==='Enter')loyLogin()">
+              <button type="button" class="pw-toggle" data-pw-toggle="llog-pass" aria-label="Prikaži lozinku">👁</button>
+            </div>
+            <div class="pw-meter m0" id="llog-pass-meter">
+              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
+              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
+            </div>
+          </div>
+          <div id="llog-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
+          <button type="button" id="llog-btn" onclick="loyLogin()"
+            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
+            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Prijavi se →</button>
+          <div style="text-align:center;margin-top:10px">
+            <button type="button" onclick="loyForgotPassword()" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#555'">Zaboravili ste lozinku?</button>
+          </div>
+          <div id="forgot-area" style="display:none;margin-top:14px;padding:14px;background:#141414;border-left:2px solid #C9A84C">
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">Reset lozinke</div>
+            <input id="forgot-email" type="email" placeholder="vas@email.com"
+              style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.07);padding:11px 13px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px"
+              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+              <button type="button" onclick="sendPasswordReset()"
+              style="width:100%;background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.3);padding:11px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s"
+              onmouseover="this.style.background='#C9A84C';this.style.color='#fff'" onmouseout="this.style.background='rgba(201,168,76,.15)';this.style.color='#C9A84C'">Pošalji reset link →</button>
+            <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
+          </div>
+          <div style="text-align:center;margin-top:12px">
+            <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog? </span>
+            <button type="button" onclick="loyTab('reg')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
+          </div>
+        </div>
+
+        <!-- REGISTRACIJA -->
+        <div id="loy-form-reg" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+            <div>
+              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Ime *</label>
+              <input id="lreg-name" type="text" placeholder="Marko"
+                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+            </div>
+            <div>
+              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Prezime *</label>
+              <input id="lreg-surname" type="text" placeholder="Marković"
+                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+            </div>
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
+            <input id="lreg-email" type="email" placeholder="vas@email.com"
+              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+          </div>
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Telefon * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
+            <input id="lreg-phone" type="tel" placeholder="060 726 0302"
+              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+            <span id="lreg-phone-hint" style="display:block;font-size:11px;margin-top:4px;min-height:14px"></span>
+          </div>
+          <!-- Veličina vozila -->
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Veličina vozila *</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <button type="button" id="lreg-sz-ms" onclick="selectLoySize('ms')"
+                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
+                Mali / Srednji<br><span style="font-size:9.5px;color:#666;font-weight:300">A klasa · C klasa</span>
+              </button>
+              <button type="button" id="lreg-sz-vs" onclick="selectLoySize('vs')"
+                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
+                Veliki / SUV<br><span style="font-size:9.5px;color:#555;font-weight:300">E klasa · SUV · Van</span>
+              </button>
+            </div>
+            <input type="hidden" id="lreg-size" value="ms">
+          </div>
+          <!-- Plan -->
+          <div style="margin-bottom:14px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Plan *</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <button type="button" id="lreg-pl-god" onclick="selectLoyPlan('god')"
+                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
+                Godišnje<br><span id="lreg-pl-god-price" style="font-size:9.5px;color:#C9A84C;font-weight:700">od €299 · uštedi 29%</span>
+              </button>
+              <button type="button" id="lreg-pl-mes" onclick="selectLoyPlan('mes')"
+                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
+                Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#666;font-weight:700">od €35/mes</span>
+              </button>
+            </div>
+            <input type="hidden" id="lreg-plan" value="god">
+          </div>
+          <div style="margin-bottom:16px">
+            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka * (min. 10 karaktera)</label>
+            <div class="pw-wrap">
+              <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter"
+                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+              <button type="button" class="pw-toggle" data-pw-toggle="lreg-pass" aria-label="Prikaži lozinku">👁</button>
+            </div>
+            <span id="lreg-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
+            <div class="pw-meter m0" id="lreg-pass-meter">
+              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
+              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
+            </div>
+          </div>
+          <div id="lreg-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
+          <button type="button" id="lreg-btn" onclick="loyRegister()"
+            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
+            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Napravi nalog →</button>
+          <div style="text-align:center;margin-top:14px">
+            <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog? </span>
+            <button type="button" onclick="loyTab('login')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    </div>
+
+    <!-- DASHBOARD -->
+<!-- RESET LOZINKE — NOVA LOZINKA FORMA -->
+<div id="loy-form-new-pass" class="loy-body" style="display:none">
+  <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:16px">Postavite novu lozinku</div>
+  <div style="margin-bottom:14px">
+    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Nova lozinka (min. 10 karaktera)</label>
+    <div class="pw-wrap">
+      <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter"
+        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
+    </div>
+    <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
+    <div class="pw-meter m0" id="new-pass-1-meter">
+      <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
+      <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
+    </div>
+  </div>
+  <div style="margin-bottom:14px">
+    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Potvrdi lozinku</label>
+    <div class="pw-wrap">
+      <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none"
+        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
+        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
+        onkeydown="if(event.key==='Enter')submitNewPassword()">
+      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
+    </div>
+  </div>
+  <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
+  <button type="button" onclick="submitNewPassword()"
+    style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
+    onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Sačuvaj novu lozinku →</button>
+</div>
+    <div id="loy-dash" class="loy-dash" style="display:none"></div>
+  </div>
+</div>
+<!-- ══ PREMIUM PRANJE MODAL ══ -->
+<div id="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-modal-title">
+  <div id="pp-modal-bg"></div>
+  <div id="pp-modal-box">
+
+    <div class="pp-header">
+      <button type="button" class="pp-close" onclick="closePremiumModal()" aria-label="Zatvori">✕</button>
+      <div class="pp-eyebrow">Premium Pranje</div>
+      <h2 class="pp-title" id="pp-modal-title">8 faza<br><em>savršenog pranja</em></h2>
+      <p class="pp-subtitle">Trofazno ručno pranje po Koch-Chemie protokolu sa konzervacijom lakirano-farbane površine. Idealno za redovno održavanje i očuvanje spoljašnjeg izgleda vozila.</p>
+    </div>
+
+    <div class="pp-body">
+      <p class="pp-desc">Koristimo najsavremenije proizvode i alate kako bismo bili sigurni da je tretman bezbedan i efikasan. Premium pranje pomaže u očuvanju vrednosti automobila i optimalnog izgleda karoserije tokom vremena.</p>
+
+      <div class="pp-phases-title">Faze tretmana</div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">1</div>
+        <div class="pp-phase-content">
+          <h4>Čišćenje felni i ratkapni</h4>
+          <p>Specijalizovana sredstva za uklanjanje tvrdokornih naslaga nečistoće i kočione prašine — Felgenblitz säurefrei ili Alkali Wheel Cleaner.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">2</div>
+        <div class="pp-phase-content">
+          <h4>Beskontaktno pretpranje</h4>
+          <p>Obrada karoserije primarnim sredstvom Vorreiniger B — jako penušavo sredstvo koje efikasno uklanja putnu prljavštinu i bezbedno je za lak, hrom, aluminijum i gumene elemente.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">3</div>
+        <div class="pp-phase-content">
+          <h4>Ručno pranje šamponom Gentle Snow Foam</h4>
+          <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">4</div>
+        <div class="pp-phase-content">
+          <h4>Konzervacija LFP sredstvom ProtectorWax</h4>
+          <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">5</div>
+        <div class="pp-phase-content">
+          <h4>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h4>
+          <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan mat finiš bez masnog izgleda.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">6</div>
+        <div class="pp-phase-content">
+          <h4>Usisavanje enterijera</h4>
+          <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">7</div>
+        <div class="pp-phase-content">
+          <h4>Vlažno čišćenje enterijera</h4>
+          <p>Čišćenje svih površina u enterijeru uz primenu Allround Surface Cleaner — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
+        </div>
+      </div>
+
+      <div class="pp-phase">
+        <div class="pp-phase-num">8</div>
+        <div class="pp-phase-content">
+          <h4>Čišćenje stakala — Glass Cleaner</h4>
+          <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja.</p>
+        </div>
+      </div>
+
+      <div class="pp-results">
+        <div class="pp-results-label">Rezultat nakon tretmana</div>
+        <div class="pp-results-list">
+          <span class="pp-result-tag">◆ 100% čista karoserija</span>
+          <span class="pp-result-tag">◆ Besprekoran izgled</span>
+          <span class="pp-result-tag">◆ Dubok sjaj</span>
+          <span class="pp-result-tag">◆ Zaštita od prljavštine</span>
+          <span class="pp-result-tag">◆ Savršena stakla</span>
+          <span class="pp-result-tag">◆ Čist enterijer</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pp-cta">
+      <a href="https://wa.me/381607260302" target="_blank" class="pp-btn-link" onclick="closePremiumModal()">Kontaktirajte nas →</a>
+    </div>
+
+  </div>
+</div>
+<!-- ══ END PREMIUM PRANJE MODAL ══ -->
+
+
+
+<script>
+function openPremiumModal(){
+  document.getElementById('pp-modal').classList.add('open');
+  document.body.style.overflowY='hidden';
+}
+function closePremiumModal(){
+  document.getElementById('pp-modal').classList.remove('open');
+  document.body.style.overflowY='';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') closePremiumModal();
+});
+</script>
+
+<script>
+(function initScrollReveal() {
+  const selectors = [
+    '#phi .sl', '#phi .sh', '#phi .sd', '#phi .pv',
+    '#cs .sl', '#cs .sh', '.cs-card',
+    '#srv .sl', '#srv .sh', '.si',
+    '#proc .sl', '#proc .sh', '.proc-step',
+    '#pkg .sl', '#pkg .sh', '.pk',
+    '#care .sl', '#care .sh', '.care-card', '.care-wash',
+    '.faq-item'
+  ];
+
+  const seen = new Set();
+  const targets = [];
+  selectors.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      if (seen.has(el)) return;
+      seen.add(el);
+      targets.push(el);
+    });
+  });
+
+  targets.forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--reveal-delay', `${Math.min(i % 8, 7) * 70}ms`);
+  });
+
+  if (!targets.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    targets.forEach(el => el.classList.add('in'));
+    return;
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+
+  targets.forEach(el => io.observe(el));
+})();
+</script>
+
+<script>
+(function registerPWA() {
+  if (!('serviceWorker' in navigator)) return;
+  const params = new URLSearchParams(location.search);
+  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  let swRegistration = null;
+  let updateReady = false;
+  let updatePoll = null;
+  const hadController = !!navigator.serviceWorker.controller;
+  if (params.get('reset') === '1') {
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
+    }).then(function () {
+      if ('caches' in window) {
+        return caches.keys().then(function (keys) {
+          return Promise.all(keys.map(function (key) { return caches.delete(key); }));
+        });
+      }
+    }).catch(function () {}).finally(function () {
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    });
+    return;
+  }
+  function getUpdateBanner() {
+    return document.getElementById('pwaUpdateBanner');
+  }
+  function getPushBanner() {
+    return document.getElementById('pwaPushBanner');
+  }
+  function showUpdateBanner() {
+    if (isStandalone) {
+      // Standalone PWA: ne prikazuj baner, odmah reload kad SW preuzme kontrolu
+      // controllerchange listener će uraditi reload
+      return;
+    }
+    const banner = getUpdateBanner();
+    if (!banner) return;
+    banner.hidden = false;
+    banner.style.display = 'flex';
+  }
+  function hideUpdateBanner() {
+    const banner = getUpdateBanner();
+    if (!banner) return;
+    banner.hidden = true;
+    banner.style.display = 'none';
+  }
+  function showPushBanner() {
+    const banner = getPushBanner();
+    if (!banner) return;
+    banner.hidden = false;
+    banner.style.display = 'flex';
+  }
+  function hidePushBanner() {
+    const banner = getPushBanner();
+    if (!banner) return;
+    banner.hidden = true;
+    banner.style.display = 'none';
+  }
+  function checkForUpdate() {
+    if (!swRegistration || typeof swRegistration.update !== 'function') return;
+    swRegistration.update().catch(function () {});
+  }
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+  }
+  async function getPushPublicKey() {
+    const res = await fetch('/api/push-public-key?ts=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) return '';
+    const data = await res.json().catch(function () { return {}; });
+    return data && data.publicKey ? String(data.publicKey).trim() : '';
+  }
+  async function subscribeForPush() {
+    if (!('Notification' in window) || !('PushManager' in window)) {
+      throw new Error('Tvoj pregledač ne podržava push obaveštenja.');
+    }
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      throw new Error('Dozvola za obaveštenja nije odobrena.');
+    }
+    const publicKey = await getPushPublicKey();
+    if (!publicKey) {
+      throw new Error('Push public key nije podešen na serveru.');
+    }
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+    }
+    const save = await fetch('/api/push-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subscription: sub.toJSON(),
+        userAgent: navigator.userAgent,
+        source: 'pwa'
+      })
+    });
+    if (!save.ok) {
+      const txt = await save.text().catch(function () { return ''; });
+      throw new Error(txt || 'Neuspešno čuvanje subscription-a.');
+    }
+    try { localStorage.setItem('laker-push-enabled', '1'); } catch (e) {}
+    hidePushBanner();
+    return true;
+  }
+  function bindRegistration(reg) {
+    swRegistration = reg;
+    if (reg.waiting && navigator.serviceWorker.controller) {
+      updateReady = true;
+      showUpdateBanner();
+    }
+    reg.addEventListener('updatefound', function () {
+      const installing = reg.installing;
+      if (!installing) return;
+      installing.addEventListener('statechange', function () {
+        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+          updateReady = true;
+          showUpdateBanner();
+        }
+      });
+    });
+    checkForUpdate();
+    if (!updatePoll) {
+      updatePoll = setInterval(checkForUpdate, 30 * 60 * 1000);
+    }
+  }
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js').then(function (reg) {
+      bindRegistration(reg);
+      checkForUpdate();
+    }).catch(function () {});
+  });
+  window.addEventListener('focus', checkForUpdate);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') checkForUpdate();
+  });
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    // hadController: sprečava reload na prvoj instalaciji SW (kad još nema starog controllera)
+    if (!hadController) return;
+    hideUpdateBanner();
+    location.reload();
+  });
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'pwaUpdateBtn') {
+      if (swRegistration && swRegistration.waiting) {
+        swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        return;
+      }
+      hideUpdateBanner();
+      location.reload();
+    }
+    if (e.target && e.target.id === 'pwaUpdateDismissBtn') {
+      hideUpdateBanner();
+    }
+    if (e.target && e.target.id === 'pwaPushEnableBtn') {
+      subscribeForPush().catch(function (err) {
+        console.warn('Push subscription failed:', err);
+        alert(err && err.message ? err.message : 'Obaveštenja nisu uključena.');
+      });
+    }
+    if (e.target && e.target.id === 'pwaPushDismissBtn') {
+      hidePushBanner();
+      try { localStorage.setItem('laker-push-dismissed', '1'); } catch (e) {}
+    }
+  });
+  if (('Notification' in window) && ('PushManager' in window)) {
+    try {
+      const dismissed = localStorage.getItem('laker-push-dismissed');
+      const enabled = localStorage.getItem('laker-push-enabled');
+      if (Notification.permission === 'default' && !dismissed && !enabled) {
+        // U standalone modu pitaj odmah (posle 1.5s), u browseru sacekaj 2.2s
+        setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
+      }
+    } catch (e) {
+      if (Notification.permission === 'default') setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
+    }
+  }
+})();
+</script>
+
+<div class="pwa-offline" id="pwaOfflineBanner" role="status" aria-live="polite">
+  <span class="dot"></span>
+  <b>Offline</b>
+  <span>Koristiš sačuvanu verziju sajta</span>
+</div>
+
+<div class="pwa-update" id="pwaUpdateBanner" role="status" aria-live="polite" hidden>
+  <span class="dot"></span>
+  <div class="pwa-update-text">
+    <b>Nova verzija spremna</b>
+    <span>Osveži da preuzmeš poslednje izmene</span>
+  </div>
+  <div class="pwa-update-actions">
+    <button class="pwa-update-btn primary" type="button" id="pwaUpdateBtn">Osveži</button>
+    <button class="pwa-update-btn secondary" type="button" id="pwaUpdateDismissBtn">Kasnije</button>
+  </div>
+</div>
+
+<div class="pwa-push" id="pwaPushBanner" role="status" aria-live="polite" hidden>
+  <span class="dot"></span>
+  <div class="pwa-push-text">
+    <b>Uključi obaveštenja</b>
+    <span>Za novosti, akcije i bitne update-ove</span>
+  </div>
+  <div class="pwa-push-actions">
+    <button class="pwa-push-btn primary" type="button" id="pwaPushEnableBtn">Dozvoli</button>
+    <button class="pwa-push-btn secondary" type="button" id="pwaPushDismissBtn">Kasnije</button>
+  </div>
+</div>
+
+<div class="pwa-modal" id="pwaIosModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwaIosTitle">
+  <div class="pwa-modal-box">
+    <button class="pwa-modal-close" type="button" aria-label="Zatvori" onclick="closePwaIosModal()">×</button>
+    <div class="pwa-modal-kicker">iPhone instalacija</div>
+    <div class="pwa-modal-title" id="pwaIosTitle">Dodaj <em>aplikaciju</em> na početni ekran</div>
+    <div class="pwa-modal-text">Na iPhone-u PWA se ne instalira kao na Androidu. Otvara se iz Safari-ja i dodaje na Home Screen preko Share menija.</div>
+    <div class="pwa-steps">
+      <div class="pwa-step"><b>1</b><span>Otvori sajt u <strong>Safari</strong> pregledaču.</span></div>
+      <div class="pwa-step"><b>2</b><span>Dodirni <strong>Share</strong> ikonu pri dnu ekrana.</span></div>
+      <div class="pwa-step"><b>3</b><span>Izaberi <strong>Add to Home Screen</strong> i potvrdi.</span></div>
+    </div>
+    <div class="pwa-modal-actions">
+      <button class="pwa-modal-btn primary" type="button" onclick="closePwaIosModal();window.scrollTo({top:0,behavior:'smooth'})">Razumem</button>
+      <button class="pwa-modal-btn secondary" type="button" onclick="closePwaIosModal()">Kasnije</button>
+    </div>
+  </div>
+</div>
+
+<button id="pwaInstallBtn" class="pwa-stick" type="button" hidden>
+  <span class="pwa-ico">⬇</span>
+  <span>Instaliraj aplikaciju</span>
+</button>
+<nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
+  <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
+  <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
+  <a href="#book" aria-label="Rezerviši termin" onclick="closeMobileMenu()">Rezerviši</a>
+</nav>
+<script>
+(function initPwaInstall() {
+  const btn = document.getElementById('pwaInstallBtn');
+  const offlineBanner = document.getElementById('pwaOfflineBanner');
+  const iosModal = document.getElementById('pwaIosModal');
+  if (!btn) return;
+  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  if (isStandalone) document.body.classList.add('pwa-standalone');
+  if (isStandalone && /iphone/i.test(navigator.userAgent)) document.body.classList.add('ios-standalone-mode');
+
+  let deferredPrompt = null;
+  const iosSeenKey = 'laker-pwa-ios-help';
+
+  function showBtn(label) {
+    btn.hidden = false;
+    btn.querySelector('span:last-child').textContent = label;
+  }
+
+  function updateOfflineState() {
+    if (!offlineBanner) return;
+    if (isStandalone) {
+      offlineBanner.hidden = true;
+      offlineBanner.style.display = 'none';
+      return;
+    }
+    offlineBanner.style.display = navigator.onLine ? 'none' : 'flex';
+  }
+
+  window.closePwaIosModal = function closePwaIosModal() {
+    if (!iosModal) return;
+    iosModal.classList.remove('open');
+    iosModal.setAttribute('aria-hidden', 'true');
+    try { localStorage.setItem(iosSeenKey, '1'); } catch (e) {}
+  };
+
+  function openIosModal() {
+    if (!iosModal) return;
+    iosModal.classList.add('open');
+    iosModal.setAttribute('aria-hidden', 'false');
+  }
+
+  if (isIOS) {
+    showBtn('iPhone: Add to Home');
+    btn.addEventListener('click', function () {
+      openIosModal();
+    });
+    try {
+      if (!localStorage.getItem(iosSeenKey) && !isStandalone) {
+        btn.setAttribute('aria-label', 'Dodaj aplikaciju na početni ekran');
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    showBtn('Instaliraj aplikaciju');
+  });
+
+  window.addEventListener('online', updateOfflineState);
+  window.addEventListener('offline', updateOfflineState);
+  updateOfflineState();
+  if (isStandalone) return;
+
+  btn.addEventListener('click', async function () {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice.catch(function () {});
+      deferredPrompt = null;
+      btn.hidden = true;
+      return;
+    }
+    if (isIOS) openIosModal();
+  });
+})();
+</script>
+
+<a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
+  <span class="wa-ico">💬</span>
+  <span>WhatsApp</span>
+</a>
+
+
 <script>
 // ── CUSTOM CURSOR ──
 const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
@@ -4262,702 +4962,6 @@ function clearSession(){
 })();
 
 </script>
-
-
-
-<!-- ══ LOYALTY MODAL ══ -->
-<div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px)">
-  <div onclick="event.stopPropagation()" style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
-    <button type="button" onclick="closeLoyalty()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">×</button>
-
-    <div class="loy-hero" style="padding:36px 44px 0">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:6px;text-transform:uppercase">LAKER</div>
-      <div id="loy-program-title" style="font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">LOYALTY PROGRAM</div>
-      <div style="font-size:12px;color:#8E8E8E;line-height:1.7;margin-bottom:18px;font-weight:300">24 pranja godišnje · prioritetan termin · uvek na prvom mestu.</div>
-      <div class="loy-chip-row" id="loy-chip-row-loyalty">
-        <span class="loy-chip"><b>24×</b> pranja/god</span>
-        <span class="loy-chip"><b>Prioritet</b> termin</span>
-        <span class="loy-chip"><b>Mali/Sred.</b> od €35/mes</span>
-        <span class="loy-chip"><b>Veliki/SUV</b> od €40/mes</span>
-      </div>
-    </div>
-
-    <div id="loy-program-areas">
-    <!-- AUTH AREA -->
-    <div id="loy-auth-area">
-      <div style="display:flex;gap:2px;padding:0 44px">
-        <button type="button" id="tab-login" onclick="loyTab('login')" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
-        <button type="button" id="tab-reg"   onclick="loyTab('reg')"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#666;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
-      </div>
-      <div style="padding:12px 44px 0">
-        <label style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#777;cursor:pointer">
-          <span style="display:flex;align-items:center;gap:8px">
-            <input id="loyRememberMe" type="checkbox" checked style="width:14px;height:14px;accent-color:#C9A84C;margin:0">
-            Ostani prijavljen 30 dana
-          </span>
-          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1.5px">Na ovom uređaju</span>
-        </label>
-      </div>
-      <div style="padding:24px 44px 40px">
-
-        <!-- LOGIN -->
-        <div id="loy-form-login">
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email</label>
-            <input id="llog-email" type="email" placeholder="vas@email.com"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-          </div>
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka</label>
-            <div class="pw-wrap">
-              <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
-                onkeydown="if(event.key==='Enter')loyLogin()">
-              <button type="button" class="pw-toggle" data-pw-toggle="llog-pass" aria-label="Prikaži lozinku">👁</button>
-            </div>
-            <div class="pw-meter m0" id="llog-pass-meter">
-              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-            </div>
-          </div>
-          <div id="llog-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="llog-btn" onclick="loyLogin()"
-            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Prijavi se →</button>
-          <div style="text-align:center;margin-top:10px">
-            <button type="button" onclick="loyForgotPassword()" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#555'">Zaboravili ste lozinku?</button>
-          </div>
-          <div id="forgot-area" style="display:none;margin-top:14px;padding:14px;background:#141414;border-left:2px solid #C9A84C">
-            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">Reset lozinke</div>
-            <input id="forgot-email" type="email" placeholder="vas@email.com"
-              style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.07);padding:11px 13px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-              <button type="button" onclick="sendPasswordReset()"
-              style="width:100%;background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.3);padding:11px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s"
-              onmouseover="this.style.background='#C9A84C';this.style.color='#fff'" onmouseout="this.style.background='rgba(201,168,76,.15)';this.style.color='#C9A84C'">Pošalji reset link →</button>
-            <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
-          </div>
-          <div style="text-align:center;margin-top:12px">
-            <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog? </span>
-            <button type="button" onclick="loyTab('reg')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
-          </div>
-        </div>
-
-        <!-- REGISTRACIJA -->
-        <div id="loy-form-reg" style="display:none">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-            <div>
-              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Ime *</label>
-              <input id="lreg-name" type="text" placeholder="Marko"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-            </div>
-            <div>
-              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Prezime *</label>
-              <input id="lreg-surname" type="text" placeholder="Marković"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-            </div>
-          </div>
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
-            <input id="lreg-email" type="email" placeholder="vas@email.com"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-          </div>
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Telefon * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
-            <input id="lreg-phone" type="tel" placeholder="060 726 0302"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-            <span id="lreg-phone-hint" style="display:block;font-size:11px;margin-top:4px;min-height:14px"></span>
-          </div>
-          <!-- Veličina vozila -->
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Veličina vozila *</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-              <button type="button" id="lreg-sz-ms" onclick="selectLoySize('ms')"
-                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mali / Srednji<br><span style="font-size:9.5px;color:#666;font-weight:300">A klasa · C klasa</span>
-              </button>
-              <button type="button" id="lreg-sz-vs" onclick="selectLoySize('vs')"
-                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Veliki / SUV<br><span style="font-size:9.5px;color:#555;font-weight:300">E klasa · SUV · Van</span>
-              </button>
-            </div>
-            <input type="hidden" id="lreg-size" value="ms">
-          </div>
-          <!-- Plan -->
-          <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Plan *</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-              <button type="button" id="lreg-pl-god" onclick="selectLoyPlan('god')"
-                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Godišnje<br><span id="lreg-pl-god-price" style="font-size:9.5px;color:#C9A84C;font-weight:700">od €299 · uštedi 29%</span>
-              </button>
-              <button type="button" id="lreg-pl-mes" onclick="selectLoyPlan('mes')"
-                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#666;font-weight:700">od €35/mes</span>
-              </button>
-            </div>
-            <input type="hidden" id="lreg-plan" value="god">
-          </div>
-          <div style="margin-bottom:16px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka * (min. 10 karaktera)</label>
-            <div class="pw-wrap">
-              <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-              <button type="button" class="pw-toggle" data-pw-toggle="lreg-pass" aria-label="Prikaži lozinku">👁</button>
-            </div>
-            <span id="lreg-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
-            <div class="pw-meter m0" id="lreg-pass-meter">
-              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-            </div>
-          </div>
-          <div id="lreg-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="lreg-btn" onclick="loyRegister()"
-            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Napravi nalog →</button>
-          <div style="text-align:center;margin-top:14px">
-            <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog? </span>
-            <button type="button" onclick="loyTab('login')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    </div>
-
-    <!-- DASHBOARD -->
-<!-- RESET LOZINKE — NOVA LOZINKA FORMA -->
-<div id="loy-form-new-pass" class="loy-body" style="display:none">
-  <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:16px">Postavite novu lozinku</div>
-  <div style="margin-bottom:14px">
-    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Nova lozinka (min. 10 karaktera)</label>
-    <div class="pw-wrap">
-      <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter"
-        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
-    </div>
-    <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
-    <div class="pw-meter m0" id="new-pass-1-meter">
-      <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-      <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-    </div>
-  </div>
-  <div style="margin-bottom:14px">
-    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Potvrdi lozinku</label>
-    <div class="pw-wrap">
-      <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none"
-        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
-        onkeydown="if(event.key==='Enter')submitNewPassword()">
-      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
-    </div>
-  </div>
-  <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-  <button type="button" onclick="submitNewPassword()"
-    style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-    onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Sačuvaj novu lozinku →</button>
-</div>
-    <div id="loy-dash" class="loy-dash" style="display:none"></div>
-  </div>
-</div>
-<!-- ══ PREMIUM PRANJE MODAL ══ -->
-<div id="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-modal-title">
-  <div id="pp-modal-bg"></div>
-  <div id="pp-modal-box">
-
-    <div class="pp-header">
-      <button type="button" class="pp-close" onclick="closePremiumModal()" aria-label="Zatvori">✕</button>
-      <div class="pp-eyebrow">Premium Pranje</div>
-      <h2 class="pp-title" id="pp-modal-title">8 faza<br><em>savršenog pranja</em></h2>
-      <p class="pp-subtitle">Trofazno ručno pranje po Koch-Chemie protokolu sa konzervacijom lakirano-farbane površine. Idealno za redovno održavanje i očuvanje spoljašnjeg izgleda vozila.</p>
-    </div>
-
-    <div class="pp-body">
-      <p class="pp-desc">Koristimo najsavremenije proizvode i alate kako bismo bili sigurni da je tretman bezbedan i efikasan. Premium pranje pomaže u očuvanju vrednosti automobila i optimalnog izgleda karoserije tokom vremena.</p>
-
-      <div class="pp-phases-title">Faze tretmana</div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">1</div>
-        <div class="pp-phase-content">
-          <h4>Čišćenje felni i ratkapni</h4>
-          <p>Specijalizovana sredstva za uklanjanje tvrdokornih naslaga nečistoće i kočione prašine — Felgenblitz säurefrei ili Alkali Wheel Cleaner.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">2</div>
-        <div class="pp-phase-content">
-          <h4>Beskontaktno pretpranje</h4>
-          <p>Obrada karoserije primarnim sredstvom Vorreiniger B — jako penušavo sredstvo koje efikasno uklanja putnu prljavštinu i bezbedno je za lak, hrom, aluminijum i gumene elemente.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">3</div>
-        <div class="pp-phase-content">
-          <h4>Ručno pranje šamponom Gentle Snow Foam</h4>
-          <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">4</div>
-        <div class="pp-phase-content">
-          <h4>Konzervacija LFP sredstvom ProtectorWax</h4>
-          <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">5</div>
-        <div class="pp-phase-content">
-          <h4>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h4>
-          <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan mat finiš bez masnog izgleda.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">6</div>
-        <div class="pp-phase-content">
-          <h4>Usisavanje enterijera</h4>
-          <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">7</div>
-        <div class="pp-phase-content">
-          <h4>Vlažno čišćenje enterijera</h4>
-          <p>Čišćenje svih površina u enterijeru uz primenu Allround Surface Cleaner — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">8</div>
-        <div class="pp-phase-content">
-          <h4>Čišćenje stakala — Glass Cleaner</h4>
-          <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja.</p>
-        </div>
-      </div>
-
-      <div class="pp-results">
-        <div class="pp-results-label">Rezultat nakon tretmana</div>
-        <div class="pp-results-list">
-          <span class="pp-result-tag">◆ 100% čista karoserija</span>
-          <span class="pp-result-tag">◆ Besprekoran izgled</span>
-          <span class="pp-result-tag">◆ Dubok sjaj</span>
-          <span class="pp-result-tag">◆ Zaštita od prljavštine</span>
-          <span class="pp-result-tag">◆ Savršena stakla</span>
-          <span class="pp-result-tag">◆ Čist enterijer</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="pp-cta">
-      <a href="https://wa.me/381607260302" target="_blank" class="pp-btn-link" onclick="closePremiumModal()">Kontaktirajte nas →</a>
-    </div>
-
-  </div>
-</div>
-<!-- ══ END PREMIUM PRANJE MODAL ══ -->
-
-
-
-<script>
-function openPremiumModal(){
-  document.getElementById('pp-modal').classList.add('open');
-  document.body.style.overflowY='hidden';
-}
-function closePremiumModal(){
-  document.getElementById('pp-modal').classList.remove('open');
-  document.body.style.overflowY='';
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') closePremiumModal();
-});
-</script>
-
-<script>
-(function initScrollReveal() {
-  const selectors = [
-    '#phi .sl', '#phi .sh', '#phi .sd', '#phi .pv',
-    '#cs .sl', '#cs .sh', '.cs-card',
-    '#srv .sl', '#srv .sh', '.si',
-    '#proc .sl', '#proc .sh', '.proc-step',
-    '#pkg .sl', '#pkg .sh', '.pk',
-    '#care .sl', '#care .sh', '.care-card', '.care-wash',
-    '.faq-item'
-  ];
-
-  const seen = new Set();
-  const targets = [];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      if (seen.has(el)) return;
-      seen.add(el);
-      targets.push(el);
-    });
-  });
-
-  targets.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.style.setProperty('--reveal-delay', `${Math.min(i % 8, 7) * 70}ms`);
-  });
-
-  if (!targets.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    targets.forEach(el => el.classList.add('in'));
-    return;
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
-
-  targets.forEach(el => io.observe(el));
-})();
-</script>
-
-<script>
-(function registerPWA() {
-  if (!('serviceWorker' in navigator)) return;
-  const params = new URLSearchParams(location.search);
-  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  let swRegistration = null;
-  let updateReady = false;
-  let updatePoll = null;
-  const hadController = !!navigator.serviceWorker.controller;
-  if (params.get('reset') === '1') {
-    navigator.serviceWorker.getRegistrations().then(function (regs) {
-      return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
-    }).then(function () {
-      if ('caches' in window) {
-        return caches.keys().then(function (keys) {
-          return Promise.all(keys.map(function (key) { return caches.delete(key); }));
-        });
-      }
-    }).catch(function () {}).finally(function () {
-      try { history.replaceState(null, '', location.pathname); } catch (e) {}
-    });
-    return;
-  }
-  function getUpdateBanner() {
-    return document.getElementById('pwaUpdateBanner');
-  }
-  function getPushBanner() {
-    return document.getElementById('pwaPushBanner');
-  }
-  function showUpdateBanner() {
-    if (isStandalone) {
-      // Standalone PWA: ne prikazuj baner, odmah reload kad SW preuzme kontrolu
-      // controllerchange listener će uraditi reload
-      return;
-    }
-    const banner = getUpdateBanner();
-    if (!banner) return;
-    banner.hidden = false;
-    banner.style.display = 'flex';
-  }
-  function hideUpdateBanner() {
-    const banner = getUpdateBanner();
-    if (!banner) return;
-    banner.hidden = true;
-    banner.style.display = 'none';
-  }
-  function showPushBanner() {
-    const banner = getPushBanner();
-    if (!banner) return;
-    banner.hidden = false;
-    banner.style.display = 'flex';
-  }
-  function hidePushBanner() {
-    const banner = getPushBanner();
-    if (!banner) return;
-    banner.hidden = true;
-    banner.style.display = 'none';
-  }
-  function checkForUpdate() {
-    if (!swRegistration || typeof swRegistration.update !== 'function') return;
-    swRegistration.update().catch(function () {});
-  }
-  function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const rawData = atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
-    return outputArray;
-  }
-  async function getPushPublicKey() {
-    const res = await fetch('/api/push-public-key?ts=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) return '';
-    const data = await res.json().catch(function () { return {}; });
-    return data && data.publicKey ? String(data.publicKey).trim() : '';
-  }
-  async function subscribeForPush() {
-    if (!('Notification' in window) || !('PushManager' in window)) {
-      throw new Error('Tvoj pregledač ne podržava push obaveštenja.');
-    }
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      throw new Error('Dozvola za obaveštenja nije odobrena.');
-    }
-    const publicKey = await getPushPublicKey();
-    if (!publicKey) {
-      throw new Error('Push public key nije podešen na serveru.');
-    }
-    const reg = await navigator.serviceWorker.ready;
-    let sub = await reg.pushManager.getSubscription();
-    if (!sub) {
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey)
-      });
-    }
-    const save = await fetch('/api/push-subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subscription: sub.toJSON(),
-        userAgent: navigator.userAgent,
-        source: 'pwa'
-      })
-    });
-    if (!save.ok) {
-      const txt = await save.text().catch(function () { return ''; });
-      throw new Error(txt || 'Neuspešno čuvanje subscription-a.');
-    }
-    try { localStorage.setItem('laker-push-enabled', '1'); } catch (e) {}
-    hidePushBanner();
-    return true;
-  }
-  function bindRegistration(reg) {
-    swRegistration = reg;
-    if (reg.waiting && navigator.serviceWorker.controller) {
-      updateReady = true;
-      showUpdateBanner();
-    }
-    reg.addEventListener('updatefound', function () {
-      const installing = reg.installing;
-      if (!installing) return;
-      installing.addEventListener('statechange', function () {
-        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-          updateReady = true;
-          showUpdateBanner();
-        }
-      });
-    });
-    checkForUpdate();
-    if (!updatePoll) {
-      updatePoll = setInterval(checkForUpdate, 30 * 60 * 1000);
-    }
-  }
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/service-worker.js').then(function (reg) {
-      bindRegistration(reg);
-      checkForUpdate();
-    }).catch(function () {});
-  });
-  window.addEventListener('focus', checkForUpdate);
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') checkForUpdate();
-  });
-  navigator.serviceWorker.addEventListener('controllerchange', function () {
-    // hadController: sprečava reload na prvoj instalaciji SW (kad još nema starog controllera)
-    if (!hadController) return;
-    hideUpdateBanner();
-    location.reload();
-  });
-  document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'pwaUpdateBtn') {
-      if (swRegistration && swRegistration.waiting) {
-        swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        return;
-      }
-      hideUpdateBanner();
-      location.reload();
-    }
-    if (e.target && e.target.id === 'pwaUpdateDismissBtn') {
-      hideUpdateBanner();
-    }
-    if (e.target && e.target.id === 'pwaPushEnableBtn') {
-      subscribeForPush().catch(function (err) {
-        console.warn('Push subscription failed:', err);
-        alert(err && err.message ? err.message : 'Obaveštenja nisu uključena.');
-      });
-    }
-    if (e.target && e.target.id === 'pwaPushDismissBtn') {
-      hidePushBanner();
-      try { localStorage.setItem('laker-push-dismissed', '1'); } catch (e) {}
-    }
-  });
-  if (('Notification' in window) && ('PushManager' in window)) {
-    try {
-      const dismissed = localStorage.getItem('laker-push-dismissed');
-      const enabled = localStorage.getItem('laker-push-enabled');
-      if (Notification.permission === 'default' && !dismissed && !enabled) {
-        // U standalone modu pitaj odmah (posle 1.5s), u browseru sacekaj 2.2s
-        setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-      }
-    } catch (e) {
-      if (Notification.permission === 'default') setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-    }
-  }
-})();
-</script>
-
-<div class="pwa-offline" id="pwaOfflineBanner" role="status" aria-live="polite">
-  <span class="dot"></span>
-  <b>Offline</b>
-  <span>Koristiš sačuvanu verziju sajta</span>
-</div>
-
-<div class="pwa-update" id="pwaUpdateBanner" role="status" aria-live="polite" hidden>
-  <span class="dot"></span>
-  <div class="pwa-update-text">
-    <b>Nova verzija spremna</b>
-    <span>Osveži da preuzmeš poslednje izmene</span>
-  </div>
-  <div class="pwa-update-actions">
-    <button class="pwa-update-btn primary" type="button" id="pwaUpdateBtn">Osveži</button>
-    <button class="pwa-update-btn secondary" type="button" id="pwaUpdateDismissBtn">Kasnije</button>
-  </div>
-</div>
-
-<div class="pwa-push" id="pwaPushBanner" role="status" aria-live="polite" hidden>
-  <span class="dot"></span>
-  <div class="pwa-push-text">
-    <b>Uključi obaveštenja</b>
-    <span>Za novosti, akcije i bitne update-ove</span>
-  </div>
-  <div class="pwa-push-actions">
-    <button class="pwa-push-btn primary" type="button" id="pwaPushEnableBtn">Dozvoli</button>
-    <button class="pwa-push-btn secondary" type="button" id="pwaPushDismissBtn">Kasnije</button>
-  </div>
-</div>
-
-<div class="pwa-modal" id="pwaIosModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwaIosTitle">
-  <div class="pwa-modal-box">
-    <button class="pwa-modal-close" type="button" aria-label="Zatvori" onclick="closePwaIosModal()">×</button>
-    <div class="pwa-modal-kicker">iPhone instalacija</div>
-    <div class="pwa-modal-title" id="pwaIosTitle">Dodaj <em>aplikaciju</em> na početni ekran</div>
-    <div class="pwa-modal-text">Na iPhone-u PWA se ne instalira kao na Androidu. Otvara se iz Safari-ja i dodaje na Home Screen preko Share menija.</div>
-    <div class="pwa-steps">
-      <div class="pwa-step"><b>1</b><span>Otvori sajt u <strong>Safari</strong> pregledaču.</span></div>
-      <div class="pwa-step"><b>2</b><span>Dodirni <strong>Share</strong> ikonu pri dnu ekrana.</span></div>
-      <div class="pwa-step"><b>3</b><span>Izaberi <strong>Add to Home Screen</strong> i potvrdi.</span></div>
-    </div>
-    <div class="pwa-modal-actions">
-      <button class="pwa-modal-btn primary" type="button" onclick="closePwaIosModal();window.scrollTo({top:0,behavior:'smooth'})">Razumem</button>
-      <button class="pwa-modal-btn secondary" type="button" onclick="closePwaIosModal()">Kasnije</button>
-    </div>
-  </div>
-</div>
-
-<button id="pwaInstallBtn" class="pwa-stick" type="button" hidden>
-  <span class="pwa-ico">⬇</span>
-  <span>Instaliraj aplikaciju</span>
-</button>
-<nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
-  <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
-  <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
-  <a href="#book" aria-label="Rezerviši termin" onclick="closeMobileMenu()">Rezerviši</a>
-</nav>
-<script>
-(function initPwaInstall() {
-  const btn = document.getElementById('pwaInstallBtn');
-  const offlineBanner = document.getElementById('pwaOfflineBanner');
-  const iosModal = document.getElementById('pwaIosModal');
-  if (!btn) return;
-  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  if (isStandalone) document.body.classList.add('pwa-standalone');
-  if (isStandalone && /iphone/i.test(navigator.userAgent)) document.body.classList.add('ios-standalone-mode');
-
-  let deferredPrompt = null;
-  const iosSeenKey = 'laker-pwa-ios-help';
-
-  function showBtn(label) {
-    btn.hidden = false;
-    btn.querySelector('span:last-child').textContent = label;
-  }
-
-  function updateOfflineState() {
-    if (!offlineBanner) return;
-    if (isStandalone) {
-      offlineBanner.hidden = true;
-      offlineBanner.style.display = 'none';
-      return;
-    }
-    offlineBanner.style.display = navigator.onLine ? 'none' : 'flex';
-  }
-
-  window.closePwaIosModal = function closePwaIosModal() {
-    if (!iosModal) return;
-    iosModal.classList.remove('open');
-    iosModal.setAttribute('aria-hidden', 'true');
-    try { localStorage.setItem(iosSeenKey, '1'); } catch (e) {}
-  };
-
-  function openIosModal() {
-    if (!iosModal) return;
-    iosModal.classList.add('open');
-    iosModal.setAttribute('aria-hidden', 'false');
-  }
-
-  if (isIOS) {
-    showBtn('iPhone: Add to Home');
-    btn.addEventListener('click', function () {
-      openIosModal();
-    });
-    try {
-      if (!localStorage.getItem(iosSeenKey) && !isStandalone) {
-        btn.setAttribute('aria-label', 'Dodaj aplikaciju na početni ekran');
-      }
-    } catch (e) {}
-  }
-
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    showBtn('Instaliraj aplikaciju');
-  });
-
-  window.addEventListener('online', updateOfflineState);
-  window.addEventListener('offline', updateOfflineState);
-  updateOfflineState();
-  if (isStandalone) return;
-
-  btn.addEventListener('click', async function () {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice.catch(function () {});
-      deferredPrompt = null;
-      btn.hidden = true;
-      return;
-    }
-    if (isIOS) openIosModal();
-  });
-})();
-</script>
-
-<a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
-  <span class="wa-ico">💬</span>
-  <span>WhatsApp</span>
-</a>
 
 </body>
 </html>
