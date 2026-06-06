@@ -9,20 +9,17 @@
     {
       "source": "/:file*.md",
       "destination": "/",
-      "statusCode": 301,
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/.devcontainer/:path*",
       "destination": "/",
-      "statusCode": 301,
-      "permanent": false
+      "permanent": true
     },
     {
       "source": "/supabase/:path*",
       "destination": "/",
-      "statusCode": 301,
-      "permanent": false
+      "permanent": true
     }
   ],
   "headers": [
