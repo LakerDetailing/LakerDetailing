@@ -5,6 +5,26 @@
       "destination": "/assets/icons/favicon.ico"
     }
   ],
+  "redirects": [
+    {
+      "source": "/:file*.md",
+      "destination": "/",
+      "statusCode": 301,
+      "permanent": false
+    },
+    {
+      "source": "/.devcontainer/:path*",
+      "destination": "/",
+      "statusCode": 301,
+      "permanent": false
+    },
+    {
+      "source": "/supabase/:path*",
+      "destination": "/",
+      "statusCode": 301,
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/service-worker.js",

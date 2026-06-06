@@ -9,13 +9,16 @@ const ALLOWED_ORIGINS = new Set([
 
 function getClientIp(req) {
   const headers = req?.headers || {};
+  // x-real-ip je postavlja Vercel i ne može biti lažiran od strane klijenta
+  const realIp = (headers['x-real-ip'] || headers['X-Real-Ip'] || '').trim();
+  if (realIp) return realIp.slice(0, 64);
+  // Fallback: uzimamo POSLEDNJU adresu iz X-Forwarded-For (dodaje je Vercel edge)
   const forwarded = headers['x-forwarded-for'] || headers['X-Forwarded-For'] || '';
-  const realIp = headers['x-real-ip'] || headers['X-Real-Ip'] || '';
+  const ips = String(forwarded).split(',').map(s => s.trim()).filter(Boolean);
+  const lastTrusted = ips[ips.length - 1] || '';
+  if (lastTrusted) return lastTrusted.slice(0, 64);
   const clientIp = headers['client-ip'] || headers['Client-Ip'] || '';
-  return String(forwarded || realIp || clientIp || 'unknown')
-    .split(',')[0]
-    .trim()
-    .slice(0, 64) || 'unknown';
+  return String(clientIp || 'unknown').trim().slice(0, 64) || 'unknown';
 }
 
 function setSecurityHeaders(res) {
