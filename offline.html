@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#C0392B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Laker - Offline</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:Inter,Arial,Helvetica,sans-serif;background:
+    radial-gradient(900px 500px at 20% 0%, rgba(192,57,43,.16), transparent 60%),
+    radial-gradient(900px 600px at 80% 10%, rgba(231,76,60,.09), transparent 62%),
+    linear-gradient(180deg,#090909 0%, #060606 100%);
+    color:#F2F0EC}
+  body{display:flex;align-items:center;justify-content:center;padding:calc(18px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom));min-height:100svh}
+  .box{max-width:540px;width:100%;background:rgba(20,20,20,.9);border:1px solid rgba(255,255,255,.06);box-shadow:0 30px 80px rgba(0,0,0,.35);padding:34px;border-radius:18px}
+  .kicker{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#C0392B;font-weight:800;margin-bottom:14px}
+  h1{font-family:Georgia,'Times New Roman',serif;font-size:42px;font-weight:300;line-height:1.02;margin:0 0 12px}
+  h1 em{color:#C0392B;font-style:italic}
+  p{margin:0 0 14px;font-size:14px;line-height:1.8;color:#A9A6A2}
+  .steps{display:grid;gap:10px;margin:18px 0}
+  .step{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:12px}
+  .step b{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#F2C200}
+  .step span{font-size:13px;line-height:1.6;color:#D7D3CF}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  a,button{font:inherit}
+  .btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:12px;border:none;cursor:pointer;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:transform .2s ease, box-shadow .2s ease, background .2s ease}
+  .btn.primary{background:#C0392B;color:#fff;box-shadow:0 16px 34px rgba(192,57,43,.22)}
+  .btn.primary:hover{transform:translateY(-2px)}
+  .btn.secondary{background:rgba(255,255,255,.05);color:#F2F0EC;border:1px solid rgba(255,255,255,.08)}
+  .btn.secondary:hover{transform:translateY(-2px);background:rgba(255,255,255,.08)}
+  .btn.reset{background:rgba(242,194,0,.1);color:#F2C200;border:1px solid rgba(242,194,0,.25)}
+  .btn.reset:hover{transform:translateY(-2px);background:rgba(242,194,0,.16)}
+  .foot{margin-top:18px;font-size:11px;color:#7E7A76;line-height:1.6}
+  .brand{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:#C0392B;font-weight:800}
+  @media (max-width:540px){
+    h1{font-size:34px}
+    .box{padding:26px 20px}
+    .actions{flex-direction:column}
+    .btn{width:100%}
+  }
+</style>
+</head>
+<body>
+  <main class="box">
+    <div class="kicker">Offline prikaz</div>
+    <h1>Cuva se <em>vasa</em> verzija sajta</h1>
+    <p>Internet je trenutno slab ili nedostupan, ali i dalje mozes da otvoris sacuvani Laker ekran i vratis se cim se veza obnovi.</p>
+    <div class="steps">
+      <div class="step"><b>1</b><span>Ako si vec bio na sajtu, sacuvani delovi ce se otvoriti odmah.</span></div>
+      <div class="step"><b>2</b><span>Kada internet dodje, samo osvezi stranicu.</span></div>
+      <div class="step"><b>3</b><span>Na telefonu i dalje mozes da koristis aplikaciju ako je instalirana kao PWA.</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" type="button" onclick="location.reload()">Pokusaj ponovo</button>
+      <a class="btn secondary" href="/index.html">Nazad na sajt</a>
+      <button class="btn reset" type="button" onclick="resetPwa()">Reset sajt</button>
+    </div>
+    <div class="foot">
+      <div class="brand">Laker Detailing Studio</div>
+      <div>Cacak - premium detailing & loyalty program</div>
+    </div>
+  </main>
+  <script>
+    async function resetPwa() {
+      try {
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(reg => reg.unregister()));
+        }
+      } catch (e) {}
+      try {
+        if ('caches' in window) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map(key => caches.delete(key)));
+        }
+      } catch (e) {}
+      try { localStorage.clear(); } catch (e) {}
+      try { sessionStorage.clear(); } catch (e) {}
+      location.href = '/index.html?reset=1';
+    }
+
+    if (navigator.onLine) {
+      setTimeout(resetPwa, 500);
+    }
+  </script>
+</body>
+</html>

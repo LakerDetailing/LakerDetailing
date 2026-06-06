@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /laker-admin-9x3k.html
+Disallow: /api/
+Disallow: /rest/
+Disallow: /god
+Disallow: /mes
+
+Sitemap: https://lakerdetailing.rs/sitemap.xml

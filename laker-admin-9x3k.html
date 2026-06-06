@@ -1,0 +1,2794 @@
+﻿<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>Laker — Admin Panel</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="/assets/icons/site.webmanifest">
+<meta name="theme-color" content="#C0392B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Laker Admin">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --red:#C0392B;--red2:#E74C3C;
+  --bg:#080808;--d1:#0E0E0E;--d2:#141414;--d3:#1C1C1C;
+  --white:#F2F0EC;--gray:#666;--lgray:#AAAAAA;
+  --serif:'Cormorant Garamond',serif;--sans:'Inter',sans-serif;
+}
+body{background:var(--bg);color:var(--white);font-family:var(--sans);min-height:100vh;overflow-x:hidden;overflow-y:auto;max-width:100%;width:100%;overscroll-behavior-x:none;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+html{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
+
+/* LOGIN */
+#login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--d2);padding:56px 52px;max-width:440px;width:100%;border-top:2px solid var(--red)}
+.login-logo{font-family:var(--serif);font-size:28px;font-weight:600;letter-spacing:6px;text-transform:uppercase;margin-bottom:4px}
+.login-sub{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:36px}
+.login-box h2{font-family:var(--serif);font-size:36px;font-weight:300;letter-spacing:-.5px;margin-bottom:6px}
+.login-box h2 em{font-style:italic;color:var(--red)}
+.login-box p{font-size:12px;color:var(--gray);margin-bottom:28px;font-weight:300;line-height:1.7}
+.login-box input{width:100%;background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:14px 18px;color:var(--white);font-size:14px;font-family:var(--sans);outline:none;transition:border-color .3s;margin-bottom:12px}
+.login-box input:focus{border-color:rgba(192,57,43,.5)}
+.login-box input::placeholder{color:var(--gray)}
+.login-btn{width:100%;background:var(--red);color:#fff;padding:15px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:background .3s;font-family:var(--sans)}
+.login-btn:hover{background:var(--red2)}
+.login-demo{width:100%;margin-top:10px;background:transparent;color:var(--white);padding:13px 15px;border:1px solid rgba(255,255,255,.12);font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:var(--sans)}
+.login-demo:hover{border-color:rgba(192,57,43,.5);color:#fff;background:rgba(192,57,43,.08)}
+.login-err{font-size:12px;color:#E74C3C;margin-top:12px;display:none;font-weight:300}
+
+/* PASSWORD UX */
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:56px!important}
+.pw-toggle{position:absolute;top:50%;right:10px;transform:translateY(-50%);width:34px;height:34px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:var(--lgray);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;transition:all .25s}
+.pw-toggle:hover{border-color:var(--red);color:#fff;background:rgba(192,57,43,.12)}
+.pw-toggle.on{border-color:rgba(192,57,43,.45);background:rgba(192,57,43,.18);color:var(--red)}
+
+/* APP */
+#app{display:none}
+.topbar{background:var(--d2);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:100}
+.demo-banner{display:none;align-items:center;justify-content:space-between;gap:16px;padding:12px 18px;margin:0 0 18px;background:linear-gradient(135deg,rgba(192,57,43,.14),rgba(255,255,255,.03));border:1px solid rgba(192,57,43,.22);color:var(--white);font-size:11px;letter-spacing:.3px}
+.demo-banner strong{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#F2C200}
+.demo-banner span{color:var(--gray)}
+.tb-logo{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:5px;text-transform:uppercase}
+.tb-logo span{display:block;font-family:var(--sans);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-top:2px}
+.tb-right{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.tb-badge{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.3);color:var(--red);padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.tb-badge-loy{background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.3);color:#2ECC71;padding:4px 14px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;display:none}
+.logout-btn{background:none;border:1px solid rgba(255,255,255,.1);color:var(--gray);padding:8px 18px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .3s}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+
+/* TABS NAV */
+.admin-tabs{display:flex;gap:2px;padding:24px 40px 0;background:var(--d2);border-bottom:1px solid rgba(255,255,255,.04)}
+.admin-tab{padding:12px 28px;background:none;border:none;border-bottom:2px solid transparent;color:var(--gray);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .3s;margin-bottom:-1px}
+.admin-tab:hover{color:var(--white)}
+.admin-tab.on{border-bottom-color:var(--red);color:var(--white)}
+
+.admin-toolbar{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;padding:16px 40px 0;background:var(--d2)}
+.admin-search-wrap{display:flex;align-items:center;gap:10px;flex:1;min-width:280px}
+.admin-search{flex:1;min-width:220px;background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:13px 16px;color:var(--white);font-size:13px;font-family:var(--sans);outline:none}
+.admin-search:focus{border-color:rgba(192,57,43,.5)}
+.admin-search::placeholder{color:var(--gray)}
+.admin-tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool-btn{padding:11px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:var(--white);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.tool-btn:hover{border-color:rgba(192,57,43,.45);color:var(--red)}
+.tool-btn.primary{background:rgba(192,57,43,.14);border-color:rgba(192,57,43,.35);color:var(--red)}
+.tool-btn.primary:hover{background:rgba(192,57,43,.24)}
+.tool-btn.accent{background:rgba(39,174,96,.12);border-color:rgba(39,174,96,.28);color:#2ECC71}
+.tool-btn.accent:hover{background:rgba(39,174,96,.18);color:#fff}
+.tool-hint{font-size:10px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap}
+.admin-help{
+  margin:16px 40px 0;
+  background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(255,255,255,.03));
+  border:1px solid rgba(192,57,43,.16);
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.admin-help strong{
+  font-size:9px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--red);
+}
+.admin-help span{
+  font-size:12px;
+  color:var(--lgray);
+  line-height:1.6;
+  font-weight:300;
+}
+.admin-help em{
+  font-style:normal;
+  color:#fff;
+}
+
+.main{padding:40px}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:40px}
+.stat-box{background:var(--d2);padding:28px 30px}
+.stat-n{font-family:var(--serif);font-size:48px;font-weight:300;color:var(--red);line-height:1}
+.stat-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-top:6px}
+
+.section-title{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-title::before{content:'';width:20px;height:1px;background:var(--red)}
+
+/* REVIEW CARDS */
+.reviews-grid{display:flex;flex-direction:column;gap:2px;margin-bottom:48px}
+.review-card{background:var(--d2);padding:28px 32px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;transition:background .2s}
+.review-card:hover{background:var(--d3)}
+.review-card.pending{border-left:2px solid var(--red)}
+.review-card.approved{border-left:2px solid #27AE60}
+.rv-header{display:flex;align-items:center;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.rv-name{font-size:14px;font-weight:600}
+.rv-car,.rv-city{font-size:11px;color:var(--gray);font-weight:300}
+.rv-stars{color:var(--red);font-size:13px;letter-spacing:2px}
+.rv-text{font-family:var(--serif);font-size:16px;font-weight:300;color:var(--lgray);font-style:italic;line-height:1.7;margin-bottom:8px}
+.rv-date{font-size:10px;color:var(--gray);font-weight:300}
+.rv-status{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px}
+.rv-status.p{background:rgba(192,57,43,.15);color:var(--red)}
+.rv-status.a{background:rgba(39,174,96,.12);color:#2ECC71}
+.rv-actions{display:flex;gap:8px;flex-shrink:0;align-items:flex-start;margin-top:4px}
+.act-btn{padding:10px 20px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);border:none;transition:all .3s}
+.act-approve{background:rgba(39,174,96,.15);color:#2ECC71;border:1px solid rgba(39,174,96,.3)}
+.act-approve:hover{background:#27AE60;color:#fff}
+.act-reject{background:rgba(192,57,43,.1);color:var(--red);border:1px solid rgba(192,57,43,.25)}
+.act-reject:hover{background:var(--red);color:#fff}
+.act-hide{background:rgba(255,255,255,.04);color:var(--gray);border:1px solid rgba(255,255,255,.08)}
+.act-hide:hover{background:rgba(192,57,43,.15);color:var(--red)}
+
+/* LOYALTY PANEL */
+.loy-req-card{background:var(--d2);border-left:3px solid var(--red);padding:22px 28px;margin-bottom:3px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;transition:background .2s}
+.loy-req-card:hover{background:var(--d3)}
+.loy-req-card.done{border-left-color:#27AE60;opacity:.55}
+.lrc-name{font-size:14px;font-weight:600;margin-bottom:5px}
+.lrc-meta{font-size:12px;color:var(--gray);line-height:1.85;font-weight:300}
+.lrc-meta span{color:var(--lgray);font-weight:400}
+.lrc-actions{display:flex;gap:8px;flex-shrink:0}
+
+.loy-cust-card{background:var(--d2);padding:22px 28px;margin-bottom:3px;display:flex;align-items:flex-start;gap:20px;transition:background .2s}
+.loy-cust-card:hover{background:var(--d3)}
+.lcc-name{font-size:15px;font-weight:600;margin-bottom:4px;font-family:var(--serif)}
+.lcc-meta{font-size:12px;color:var(--gray);line-height:1.85;font-weight:300}
+.lcc-meta span{color:var(--lgray);font-weight:400}
+.lcc-bar{display:flex;gap:4px;margin:10px 0 5px}
+.lcc-bar-s{flex:1;height:6px;background:var(--d3);transition:background .4s}
+.lcc-bar-s.on{background:var(--red)}
+.lcc-count{font-size:11px;color:var(--gray);font-weight:300}
+.lcc-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-width:160px}
+.lcc-btn{padding:10px 18px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);border:none;transition:all .3s;text-align:center}
+.lcc-btn-add{background:var(--red);color:#fff}
+.lcc-btn-add:hover{background:var(--red2)}
+.lcc-btn-sub{background:rgba(255,255,255,.04);color:var(--gray);border:1px solid rgba(255,255,255,.08)}
+.lcc-btn-sub:hover{background:rgba(192,57,43,.12);color:var(--red)}
+.lcc-btn-free{background:rgba(39,174,96,.12);color:#2ECC71;border:1px solid rgba(39,174,96,.3)}
+.lcc-btn-free:hover{background:#27AE60;color:#fff}
+.free-badge{display:inline-block;background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.35);color:#2ECC71;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;margin-left:8px}
+
+/* CONTACTS */
+.ct-card{background:var(--d2);border:1px solid rgba(255,255,255,.05);padding:20px 24px;margin-bottom:3px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;transition:background .2s}
+.ct-card:hover{background:var(--d3)}
+.ct-info{flex:1;min-width:200px}
+.ct-name{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:4px}
+.ct-meta{font-size:12px;color:#888;line-height:1.85}
+.ct-meta span{color:var(--white);font-weight:500}
+.ct-actions{display:flex;flex-direction:column;gap:8px;min-width:160px}
+.ct-btn{padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;font-family:var(--sans);transition:background .2s}
+.ct-btn-loy{background:var(--red);color:#fff}
+.ct-btn-loy:hover{background:var(--red2)}
+.ct-btn-del{background:rgba(255,255,255,.04);color:var(--gray)}
+.ct-btn-del:hover{background:rgba(255,255,255,.08);color:var(--white)}
+.ct-tag{display:inline-block;background:rgba(39,174,96,.12);color:#27AE60;font-size:9px;font-weight:600;letter-spacing:1px;padding:3px 8px;text-transform:uppercase;margin-left:8px}
+
+/* MISC */
+.loy-search{background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:12px 16px;color:var(--white);font-size:13px;font-family:var(--sans);outline:none;width:300px;transition:border-color .3s}
+.loy-search:focus{border-color:rgba(192,57,43,.5)}
+.loy-search::placeholder{color:var(--gray)}
+
+/* FILTER PILLS */
+.filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.fpill{padding:7px 16px;background:var(--d3);border:1px solid rgba(255,255,255,.08);color:var(--gray);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:all .25s}
+.fpill:hover{color:var(--white);border-color:rgba(255,255,255,.18)}
+.fpill.on{background:rgba(192,57,43,.15);border-color:rgba(192,57,43,.5);color:var(--white)}
+.fpill.on-green{background:rgba(39,174,96,.12);border-color:rgba(39,174,96,.4);color:#2ECC71}
+
+/* RESET LOYALTY BUTTON */
+.lcc-btn-reset{background:rgba(230,126,34,.1);color:#E67E22;border:1px solid rgba(230,126,34,.35)}
+.lcc-btn-reset:hover{background:#E67E22;color:#fff}
+.empty{padding:60px;text-align:center;background:var(--d2);color:var(--gray);font-size:13px;font-weight:300}
+.empty em{font-family:var(--serif);font-size:22px;font-weight:300;color:var(--lgray);display:block;margin-bottom:8px}
+.loading{text-align:center;padding:40px;color:var(--gray);font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.dot{display:inline-block;animation:blink 1.4s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+
+/* CUSTOMER EXPANDED HISTORY */
+.lcc-history{display:none;margin-top:14px;border-top:1px solid rgba(255,255,255,.05);padding-top:12px}
+.lcc-history.open{display:block}
+.lcc-hist-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px;color:var(--lgray)}
+.lcc-hist-item:last-child{border-bottom:none}
+.lcc-hist-item span{color:var(--gray);font-size:10px}
+.lcc-hist-empty{font-size:11px;color:var(--gray);font-style:italic;padding:8px 0}
+
+/* NOTE MODAL */
+#noteModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:20px}
+#noteModal.open{display:flex}
+#noteModal-box{background:var(--d2);max-width:440px;width:100%;padding:36px;border-top:2px solid var(--red);position:relative}
+#noteModal-box h3{font-family:var(--serif);font-size:26px;font-weight:300;margin-bottom:4px}
+#noteModal-box h3 em{font-style:italic;color:var(--red)}
+#noteModal-box p{font-size:11px;color:var(--gray);margin-bottom:16px;font-weight:300}
+#noteModal-txt{width:100%;background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:var(--white);font-size:13px;font-family:var(--sans);outline:none;resize:vertical;min-height:90px}
+#noteModal-txt:focus{border-color:rgba(192,57,43,.5)}
+.nm-btns{display:flex;gap:8px;margin-top:12px}
+.nm-save{flex:1;background:var(--red);color:#fff;border:none;padding:12px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:var(--sans);transition:background .2s}
+.nm-save:hover{background:var(--red2)}
+.nm-cancel{background:rgba(255,255,255,.05);color:var(--gray);border:1px solid rgba(255,255,255,.08);padding:12px 20px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:var(--sans)}
+
+/* LOYALTY PRIJAVE */
+.care-plan-tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;margin-left:8px}
+.care-plan-mes{background:rgba(192,57,43,.15);color:var(--red)}
+.care-plan-god{background:rgba(39,174,96,.12);color:#2ECC71;border:1px solid rgba(39,174,96,.3)}
+.care-new-badge{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-left:6px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+.care-quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 26px}
+.care-quick-card{background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)),var(--d2);border:1px solid rgba(255,255,255,.06);padding:14px 16px;border-radius:8px;box-shadow:0 18px 40px rgba(0,0,0,.14)}
+.care-quick-card strong{display:block;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.care-quick-card div{font-size:13px;line-height:1.55;color:var(--white);font-weight:300}
+.care-quick-card span{color:var(--gray);font-size:11px;display:block;margin-top:5px;line-height:1.5}
+
+.care-list-wrap{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);padding:18px 18px 16px;border-radius:10px;margin-bottom:18px}
+.care-list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.care-list-head .section-title{margin-bottom:0}
+
+/* PUSH MODAL */
+#pushModal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.86);align-items:center;justify-content:center;padding:20px}
+#pushModal.open{display:flex}
+#pushModal-box{background:var(--d2);max-width:540px;width:100%;padding:34px;border-top:2px solid #27AE60;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.32)}
+#pushModal-box h3{font-family:var(--serif);font-size:28px;font-weight:300;margin-bottom:6px}
+#pushModal-box h3 em{font-style:italic;color:#27AE60}
+#pushModal-box p{font-size:11px;color:var(--gray);margin-bottom:16px;font-weight:300;line-height:1.6}
+.push-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.push-field{display:flex;flex-direction:column;gap:7px}
+.push-field.full{grid-column:1/-1}
+.push-field label{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray)}
+.push-field input,.push-field textarea{width:100%;background:var(--d3);border:1px solid rgba(255,255,255,.08);padding:13px 14px;color:var(--white);font-size:13px;font-family:var(--sans);outline:none;resize:vertical}
+.push-field input:focus,.push-field textarea:focus{border-color:rgba(39,174,96,.45)}
+.push-field textarea{min-height:110px;line-height:1.6}
+.push-modal-note{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);line-height:1.7;margin-top:10px}
+.push-modal-note strong{color:#27AE60}
+.push-preview{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.05);padding:14px 16px;border-radius:8px;margin-top:12px}
+.push-preview b{display:block;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#27AE60;margin-bottom:8px}
+.push-preview span{display:block;color:var(--white);font-size:12px;line-height:1.65}
+
+/* VISUAL POLISH */
+body{
+  background:
+    radial-gradient(1200px 720px at 14% 0%, rgba(192,57,43,.12), transparent 56%),
+    radial-gradient(900px 560px at 84% 10%, rgba(231,76,60,.08), transparent 60%),
+    linear-gradient(180deg,#090909 0%, #070707 45%, #050505 100%);
+}
+.login-box,.topbar,.admin-tabs,.admin-toolbar,.admin-help,.stat-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+  border:1px solid rgba(255,255,255,.05);
+}
+.login-box,.stat-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card,.admin-help,.admin-search,.tool-btn,.admin-tab,.login-btn,.login-demo,.logout-btn,.demo-banner{
+  border-radius:8px;
+}
+.login-box,.stat-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+  box-shadow:0 24px 70px rgba(0,0,0,.22);
+}
+.topbar,.admin-tabs,.admin-toolbar{
+  background:rgba(20,20,20,.82);
+  backdrop-filter:blur(12px);
+}
+.topbar{
+  box-shadow:0 12px 40px rgba(0,0,0,.18);
+}
+.admin-tabs{
+  border-bottom-color:rgba(255,255,255,.06);
+}
+.admin-help{
+  background:linear-gradient(135deg,rgba(192,57,43,.09),rgba(255,255,255,.03));
+  box-shadow:0 18px 46px rgba(0,0,0,.12);
+}
+.stat-box{
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)),var(--d2);
+  transition:transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+.stat-box:hover{
+  transform:translateY(-4px);
+  box-shadow:0 30px 72px rgba(0,0,0,.28);
+  border-color:rgba(192,57,43,.18);
+}
+.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+  background:linear-gradient(180deg,rgba(255,255,255,.01),rgba(255,255,255,.015)),var(--d2);
+  transition:transform .28s ease, box-shadow .28s ease, background .28s ease, border-color .28s ease;
+}
+.review-card:hover,.loy-req-card:hover,.loy-cust-card:hover,.ct-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 28px 72px rgba(0,0,0,.3);
+}
+.admin-tab,.tool-btn,.login-btn,.login-demo,.logout-btn,.act-btn,.lcc-btn,.ct-btn{
+  transition:transform .22s ease, box-shadow .22s ease, background .22s ease, border-color .22s ease, color .22s ease;
+}
+.admin-tab:hover,.tool-btn:hover,.login-btn:hover,.login-demo:hover,.logout-btn:hover,.act-btn:hover,.lcc-btn:hover,.ct-btn:hover{
+  transform:translateY(-1px);
+}
+.demo-banner{
+  box-shadow:0 20px 50px rgba(0,0,0,.18);
+}
+.admin-search:focus,.login-box input:focus{
+  box-shadow:0 0 0 2px rgba(192,57,43,.08);
+}
+.tb-badge,.tb-badge-loy,.care-new-badge{
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+@media(max-width:900px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .main{padding:16px}
+  .topbar{padding:14px 16px}
+  .admin-tabs{
+    padding:12px 0 0;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    flex-wrap:nowrap;
+  }
+  .admin-tabs::-webkit-scrollbar{display:none}
+  .admin-tab{flex-shrink:0;padding:10px 14px;font-size:9px;white-space:nowrap}
+  .tab-toolbar{padding:12px 16px 0}
+  .tab-help-strip{margin:10px 16px 0;font-size:10px}
+  .review-card,.loy-req-card{grid-template-columns:1fr}
+  .loy-cust-card{flex-direction:column}
+  .lcc-actions{flex-direction:row;flex-wrap:wrap;width:100%}
+  .lcc-btn{flex:1;min-width:120px;padding:12px 10px;font-size:9px}
+  .loy-search{width:100%}
+  .care-quick-grid{grid-template-columns:1fr}
+  .push-grid{grid-template-columns:1fr}
+  #pushModal-box{padding:20px}
+  #noteModal-box{padding:24px}
+  .lcc-history{overflow-x:auto}
+  .tb-logo{font-size:16px}
+  .tb-right > span{display:none}
+  .logout-btn{padding:7px 14px;font-size:9px}
+  .ct-stats{grid-template-columns:1fr 1fr}
+  .ct-card{flex-direction:column}
+  .ct-actions{flex-direction:row;flex-wrap:wrap;width:100%}
+  .ct-btn{flex:1;min-width:100px}
+  .login-box{padding:36px 28px}
+}
+
+/* ═══════════════════════════════════════════
+   TAB THEME SYSTEM
+═══════════════════════════════════════════ */
+:root {
+  --tab-reviews:     #C0392B;
+  --tab-loyalty:     #F2C200;
+  --tab-care:        #16A085;
+  --tab-contacts:    #8E44AD;
+}
+
+/* Tab accent glow */
+.admin-tab[data-tab="reviews"].on  { border-bottom-color:var(--tab-reviews); color:#fff; }
+.admin-tab[data-tab="loyalty"].on  { border-bottom-color:var(--tab-loyalty); color:#fff; }
+.admin-tab[data-tab="care"].on     { border-bottom-color:var(--tab-care);    color:#fff; }
+.admin-tab[data-tab="contacts"].on { border-bottom-color:var(--tab-contacts);color:#fff; }
+
+.admin-tab {
+  position: relative;
+  gap: 6px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Tab counter badge */
+.tab-cnt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  background: var(--red);
+  color: #fff;
+  animation: tab-pulse 2s infinite;
+}
+.tab-cnt[style*="display:none"] { display:none!important; }
+@keyframes tab-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.7;transform:scale(1.1)} }
+
+/* ═══ TAB-SPECIFIC TOOLBARS ═══ */
+.tab-toolbar { display:none; align-items:center; gap:10px; justify-content:space-between; flex-wrap:wrap; padding:16px 40px 0; }
+.tab-toolbar.on { display:flex; }
+
+/* ═══ STAT BOX ACCENT ═══ */
+.stat-box { position:relative; overflow:hidden; }
+.stat-box::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background: var(--stat-accent, var(--red));
+  opacity:.7;
+}
+.stat-n { transition: color .4s; }
+
+/* ═══ COUNTER ANIMATION ═══ */
+.stat-n.counting { color: var(--stat-accent, var(--red)); }
+
+/* ═══ GLOBAL SEARCH ═══ */
+.global-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 240px;
+}
+.global-search-bar input {
+  flex: 1;
+  background: var(--d3);
+  border: 1px solid rgba(255,255,255,.07);
+  padding: 11px 16px;
+  color: var(--white);
+  font-size: 13px;
+  font-family: var(--sans);
+  outline: none;
+  border-radius: 8px;
+  transition: border-color .3s, box-shadow .3s;
+}
+.global-search-bar input:focus {
+  border-color: rgba(192,57,43,.5);
+  box-shadow: 0 0 0 2px rgba(192,57,43,.08);
+}
+.global-search-bar input::placeholder { color: var(--gray); }
+.search-hint { font-size:10px; color:var(--gray); letter-spacing:1.5px; text-transform:uppercase; white-space:nowrap; }
+
+/* ═══ KEYBOARD SHORTCUT HINTS ═══ */
+.kbd-hint {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:16px; height:16px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:3px;
+  font-size:8px;
+  font-weight:700;
+  color:var(--gray);
+  margin-right:4px;
+  font-family:var(--sans);
+  flex-shrink:0;
+}
+
+/* ═══ CONTACTS TAB - STATS ═══ */
+.ct-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-bottom:32px; }
+.ct-stat-box {
+  background: linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)),var(--d2);
+  padding: 22px 26px;
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 8px;
+  box-shadow: 0 24px 70px rgba(0,0,0,.22);
+  position:relative; overflow:hidden;
+}
+.ct-stat-box::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:var(--tab-contacts); opacity:.6; }
+.ct-stat-n { font-family:var(--serif); font-size:40px; font-weight:300; color:var(--tab-contacts); line-height:1; }
+.ct-stat-l { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--gray); margin-top:5px; }
+
+/* ═══ FLASH SUCCESS ═══ */
+@keyframes flash-green {
+  0%   { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+  30%  { box-shadow: 0 0 0 8px rgba(39,174,96,.35); }
+  100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+}
+.flash-ok { animation: flash-green .7s ease-out; }
+
+/* ═══ EMPTY STATE UPGRADE ═══ */
+.empty-big {
+  padding: 70px 40px;
+  text-align: center;
+  background: var(--d2);
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 8px;
+}
+.empty-big .em-icon { font-size:48px; margin-bottom:12px; display:block; }
+.empty-big .em-title { font-family:var(--serif); font-size:24px; font-weight:300; color:var(--lgray); display:block; margin-bottom:6px; }
+.empty-big .em-sub { font-size:12px; color:var(--gray); font-weight:300; line-height:1.7; }
+
+/* ═══ TAB HELP STRIP ═══ */
+.tab-help-strip {
+  margin: 14px 40px 0;
+  padding: 10px 18px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 11px;
+  color: var(--gray);
+  flex-wrap: wrap;
+}
+.tab-help-strip .thc { color:var(--white); font-weight:500; }
+.tab-help-strip .sep { color:rgba(255,255,255,.15); }
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .tab-toolbar { padding: 12px 20px 0; }
+  .ct-stats { grid-template-columns:1fr 1fr; }
+  .tab-help-strip { margin: 10px 20px 0; }
+}
+
+/* ═══ CONFETTI PARTICLE ═══ */
+.confetti-particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  animation: confetti-fall 1.2s ease-out forwards;
+}
+@keyframes confetti-fall {
+  0%   { opacity:1; transform:translateY(0) rotate(0deg) scale(1); }
+  100% { opacity:0; transform:translateY(120px) rotate(720deg) scale(.5); }
+}
+
+/* ═══════════════════════════════════════════
+   UI MODERNIZACIJA v2
+═══════════════════════════════════════════ */
+
+/* Topbar — moderniji */
+.topbar { padding:16px 40px; border-bottom:1px solid rgba(255,255,255,.05); }
+.tb-logo { font-size:17px; letter-spacing:6px; }
+.tb-logo span { font-size:7.5px; letter-spacing:3.5px; }
+#adminClock {
+  font-size:11px; color:rgba(255,255,255,.22); letter-spacing:3px;
+  font-variant-numeric:tabular-nums; font-weight:300; font-family:var(--sans);
+  transition:color .3s;
+}
+#adminClock:hover { color:rgba(255,255,255,.5); }
+
+/* Tab nav — aktivni tab dobija colored bg */
+.admin-tabs { padding:18px 40px 0; gap:4px; }
+.admin-tab { padding:10px 22px; font-size:9.5px; border-radius:8px 8px 0 0; }
+.admin-tab.on { background:rgba(255,255,255,.04); }
+.admin-tab[data-tab="dashboard"].on { background:rgba(192,57,43,.07); }
+.admin-tab[data-tab="reviews"].on   { background:rgba(192,57,43,.07); }
+.admin-tab[data-tab="loyalty"].on   { background:rgba(242,194,0,.06); }
+.admin-tab[data-tab="care"].on      { background:rgba(22,160,133,.06); }
+.admin-tab[data-tab="contacts"].on  { background:rgba(142,68,173,.06); }
+
+/* Stat kartice — impaktnije */
+.stat-box { padding:26px 28px; }
+.stat-n { font-size:54px; letter-spacing:-2px; transition:color .4s, transform .3s; }
+.stat-box:hover .stat-n { transform:scale(1.04); }
+.stat-l { font-size:8.5px; letter-spacing:2.5px; margin-top:8px; }
+
+/* Tab intro header — zamena za help strip */
+.tab-intro {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; flex-wrap:wrap;
+  padding:20px 0 0; margin-bottom:28px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  padding-bottom:18px;
+}
+.tab-intro-left { display:flex; align-items:center; gap:14px; }
+.tab-intro-icon { font-size:22px; line-height:1; }
+.tab-intro-title { font-family:var(--serif); font-size:22px; font-weight:300; letter-spacing:-.3px; }
+.tab-intro-title em { font-style:italic; }
+.tab-intro-desc { font-size:11px; color:var(--gray); font-weight:300; margin-top:2px; line-height:1.5; }
+.tab-intro-right { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+/* Dashboard KPI kartice — veće, bogatije */
+.kpi-row { display:grid; grid-template-columns:repeat(2,1fr); gap:3px; margin-bottom:3px; }
+.kpi-row-4 { grid-template-columns:repeat(4,1fr); }
+.kpi-box {
+  background:linear-gradient(135deg,rgba(255,255,255,.025),rgba(255,255,255,.01)), var(--d2);
+  border:1px solid rgba(255,255,255,.06); border-radius:10px;
+  padding:28px 30px; position:relative; overflow:hidden;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.kpi-box:hover { transform:translateY(-3px); box-shadow:0 24px 60px rgba(0,0,0,.32); border-color:rgba(255,255,255,.1); }
+.kpi-box::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:var(--kpi-color,var(--red)); border-radius:2px 2px 0 0; }
+.kpi-box::after {
+  content:''; position:absolute; top:0; right:0; width:80px; height:80px;
+  background:radial-gradient(circle, var(--kpi-color, var(--red)) 0%, transparent 70%);
+  opacity:.06; border-radius:50%; transform:translate(20px,-20px);
+}
+.kpi-n { font-family:var(--serif); font-size:52px; font-weight:300; line-height:1; margin-bottom:8px; color:var(--kpi-color,var(--red)); letter-spacing:-2px; }
+.kpi-l { font-size:8.5px; letter-spacing:2.5px; text-transform:uppercase; color:var(--gray); font-weight:600; }
+.kpi-sub { font-size:10px; color:rgba(255,255,255,.3); margin-top:4px; font-weight:300; }
+
+/* Dashboard quick actions — card style */
+.dash-actions { display:grid; grid-template-columns:repeat(2,1fr); gap:3px; margin-bottom:32px; }
+.dash-action-card {
+  background:linear-gradient(135deg,rgba(255,255,255,.02),rgba(255,255,255,.01)), var(--d2);
+  border:1px solid rgba(255,255,255,.06); border-radius:10px;
+  padding:20px 22px; cursor:pointer; display:flex; align-items:center; gap:14px;
+  transition:all .25s ease; text-align:left;
+  font-family:var(--sans);
+}
+.dash-action-card:hover { transform:translateY(-2px); box-shadow:0 18px 48px rgba(0,0,0,.28); border-color:rgba(255,255,255,.12); background:rgba(255,255,255,.035); }
+.dac-icon { font-size:24px; line-height:1; flex-shrink:0; }
+.dac-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--white); margin-bottom:3px; }
+.dac-sub { font-size:11px; color:var(--gray); font-weight:300; }
+.dac-badge { display:none; background:var(--red); color:#fff; font-size:9px; font-weight:800; padding:2px 8px; border-radius:99px; margin-top:5px; }
+.dac-badge.vis { display:inline-block; }
+
+/* Dashboard recenti upiti — lepši */
+.dash-contact-item {
+  display:flex; align-items:flex-start; gap:14px;
+  padding:14px 18px; background:var(--d2);
+  border:1px solid rgba(255,255,255,.05); border-radius:8px;
+  margin-bottom:3px; cursor:pointer;
+  transition:all .25s ease;
+}
+.dash-contact-item:hover { background:var(--d3); transform:translateX(4px); }
+.dci-dot { width:8px; height:8px; border-radius:50%; background:var(--red); flex-shrink:0; margin-top:5px; }
+.dci-name { font-size:13px; font-weight:600; margin-bottom:3px; }
+.dci-meta { font-size:11px; color:var(--gray); line-height:1.5; }
+.dci-time { font-size:10px; color:rgba(255,255,255,.2); margin-left:auto; flex-shrink:0; font-variant-numeric:tabular-nums; }
+
+/* Section headers — moderniji */
+.section-title { font-size:8.5px; letter-spacing:4px; margin-bottom:16px; }
+.section-title::before { width:16px; }
+
+/* Pending reviews — istaknuti */
+#pendingList .review-card.pending {
+  border-left:3px solid var(--red);
+  background:linear-gradient(135deg,rgba(192,57,43,.05),rgba(255,255,255,.01)),var(--d2);
+}
+
+/* Approved reviews — subtilni */
+#approvedList .review-card.approved { opacity:.85; }
+#approvedList .review-card.approved:hover { opacity:1; }
+
+/* Toolbar — čišći */
+.tab-toolbar { padding:14px 40px 0; gap:12px; }
+.global-search-bar input { border-radius:10px; padding:10px 16px; font-size:12.5px; }
+.tool-btn { padding:9px 14px; border-radius:8px; font-size:8.5px; }
+
+/* Loyalty cust card — modernija */
+.loy-cust-card { border-radius:10px; border-left-width:3px; margin-bottom:4px; }
+.lcc-name { font-size:16px; }
+
+/* Contact cards */
+.ct-card { border-radius:10px; margin-bottom:4px; }
+.ct-name { font-size:18px; }
+
+/* Loyaty req cards */
+.loy-req-card { border-radius:10px; margin-bottom:4px; }
+
+/* Review cards */
+.review-card { border-radius:10px; margin-bottom:4px; }
+
+/* Refresh indicator na toolbar */
+.refreshing { opacity:.5; pointer-events:none; }
+.tool-btn.spin .tb-icon { display:inline-block; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Poslednji refresh timestamp */
+.last-updated {
+  font-size:9.5px; color:rgba(255,255,255,.18); letter-spacing:1px;
+  display:flex; align-items:center; gap:6px;
+}
+.last-updated::before { content:''; width:5px; height:5px; border-radius:50%; background:#2ECC71; opacity:.7; flex-shrink:0; }
+
+/* Mobile */
+@media(max-width:900px){
+  .topbar { padding:12px 16px; }
+  .admin-tabs { padding:12px 0 0; }
+  .tab-toolbar { padding:12px 16px 0; }
+  .kpi-row { grid-template-columns:1fr 1fr; }
+  .kpi-row-4 { grid-template-columns:1fr 1fr; }
+  .dash-actions { grid-template-columns:1fr 1fr; }
+  .tab-intro { padding-top:16px; }
+}
+@media(max-width:500px){
+  .kpi-n { font-size:40px; }
+  .stat-n { font-size:42px; }
+  .dash-actions { grid-template-columns:1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <div class="login-logo">Laker</div>
+    <div class="login-sub">Admin Panel</div>
+    <h2>Prijavi <em>se</em></h2>
+    <p>Pristup samo za vlasnika studija. Recenzije, loyalty korisnici i kontakt upiti.</p>
+    <div class="pw-wrap">
+      <input type="password" id="pwInput" placeholder="Lozinka..." autocomplete="current-password" spellcheck="false" autocapitalize="none" onkeydown="if(event.key==='Enter')doLogin()">
+      <button type="button" class="pw-toggle" data-pw-toggle="pwInput" aria-label="Prikaži lozinku">👁</button>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Uđi u panel &nbsp;→</button>
+    <p class="login-err" id="loginErr">❌ Pogrešna lozinka.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="tb-logo">Laker <span>Admin panel</span></div>
+    <div class="tb-right">
+      <span id="adminClock"></span>
+      <span class="tb-badge" id="pendingBadge" style="display:none">0 na čekanju</span>
+      <button class="logout-btn" onclick="doLogout()">Odjavi se</button>
+    </div>
+  </div>
+  <div class="demo-banner" id="demoBanner">
+    <strong>Demo prikaz</strong>
+    <span>Probni admin sa uzorcima podataka. Otvara se bez lozinke.</span>
+  </div>
+
+  <!-- TABS -->
+  <div class="admin-tabs">
+    <button class="admin-tab on" data-tab="dashboard" onclick="switchTab('dashboard',this)"><span class="kbd-hint">1</span>📊 Dashboard</button>
+    <button class="admin-tab" data-tab="reviews" onclick="switchTab('reviews',this)"><span class="kbd-hint">2</span>⭐ Recenzije <span class="tab-cnt" id="reviewsBadge" style="display:none">0</span></button>
+    <button class="admin-tab" data-tab="loyalty" onclick="switchTab('loyalty',this)"><span class="kbd-hint">3</span>💎 Loyalty <span class="tab-cnt" id="loyPendingBadge" style="background:var(--tab-loyalty);color:#000;display:none">0</span></button>
+    <button class="admin-tab" data-tab="care" onclick="switchTab('care',this)"><span class="kbd-hint">4</span>📋 Loyalty Prijave <span class="tab-cnt" id="careTabBadge" style="background:var(--tab-care);display:none">0</span></button>
+    <button class="admin-tab" data-tab="contacts" onclick="switchTab('contacts',this)"><span class="kbd-hint">5</span>📬 Upiti <span class="tab-cnt" id="contactsBadge" style="background:var(--tab-contacts);display:none">0</span></button>
+  </div>
+
+  <!-- 📊 DASHBOARD toolbar -->
+  <div class="tab-toolbar on" id="toolbar-dashboard">
+    <div class="global-search-bar">
+      <input type="text" placeholder="Dashboard — pregled poslovanja" disabled style="color:var(--gray)">
+      <div class="search-hint">Pregled u realnom vremenu</div>
+    </div>
+    <div class="admin-tools">
+      <button class="tool-btn primary" onclick="loadDashboard()">↻ Osveži</button>
+    </div>
+  </div>
+
+  <!-- ⭐ RECENZIJE toolbar -->
+  <div class="tab-toolbar" id="toolbar-reviews">
+    <div class="global-search-bar">
+      <input id="adminQuickSearch" type="text" placeholder="🔍  Pretraži — ime, tekst, auto..." oninput="setAdminSearch(this.value)">
+      <div class="search-hint" id="adminSearchInfo">Rezultati uživo</div>
+    </div>
+    <div class="admin-tools">
+      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+      <button class="tool-btn accent" onclick="openPushModal()" style="border-radius:8px">📣 Push</button>
+    </div>
+  </div>
+
+  <!-- 💎 LOYALTY toolbar -->
+  <div class="tab-toolbar" id="toolbar-loyalty">
+    <div class="global-search-bar">
+      <input type="text" placeholder="🔍  Pretraži — ime, email, telefon..." oninput="setAdminSearch(this.value); loyApplyFilters()">
+      <div class="search-hint">Rezultati uživo</div>
+    </div>
+    <div class="admin-tools">
+      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+    </div>
+  </div>
+
+  <!-- 📋 LOYALTY PRIJAVE toolbar -->
+  <div class="tab-toolbar" id="toolbar-care">
+    <div class="global-search-bar">
+      <input type="text" placeholder="🔍  Pretraži — ime, email, vozilo..." oninput="setAdminSearch(this.value); careFilter(this.value)">
+      <div class="search-hint">Rezultati uživo</div>
+    </div>
+    <div class="admin-tools">
+      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+    </div>
+  </div>
+
+  <!-- 📬 UPITI toolbar -->
+  <div class="tab-toolbar" id="toolbar-contacts">
+    <div class="global-search-bar">
+      <input type="text" placeholder="🔍  Pretraži — ime, email, vozilo, usluga..." oninput="setAdminSearch(this.value); contactsFilter(this.value)">
+      <div class="search-hint">Zahtevi za termin</div>
+    </div>
+    <div class="admin-tools">
+      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+      <button class="tool-btn primary" onclick="loadContacts()" style="border-radius:8px">↻ Osveži</button>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- ═══ TAB: DASHBOARD ═══ -->
+    <div id="tab-dashboard" class="tab-panel on">
+
+      <!-- Header -->
+      <div class="tab-intro">
+        <div class="tab-intro-left">
+          <div>
+            <div style="font-size:8.5px;letter-spacing:3.5px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:4px">LAKER DETAILING STUDIO</div>
+            <div style="font-family:var(--serif);font-size:26px;font-weight:300;letter-spacing:-.3px" id="dash-date">—</div>
+          </div>
+        </div>
+        <div class="last-updated" id="dash-updated" style="display:none">Ažurirano upravo</div>
+      </div>
+
+      <!-- KPI RED 1: Prijave + Prihod -->
+      <div class="kpi-row" style="margin-bottom:3px">
+        <div class="kpi-box" style="--kpi-color:#C0392B">
+          <div class="kpi-n" id="dash-bookings-today">—</div>
+          <div class="kpi-l">Loyalty prijava na čekanju</div>
+          <div class="kpi-sub" id="dash-bookings-total-sub">Čeka aktivaciju</div>
+        </div>
+        <div class="kpi-box" style="--kpi-color:#2ECC71">
+          <div class="kpi-n" id="dash-revenue">—</div>
+          <div class="kpi-l">Prihod/mesec · Loyalty</div>
+          <div class="kpi-sub" id="dash-revenue-note">Mesečni + godišnji/12</div>
+        </div>
+      </div>
+
+      <!-- KPI RED 2: Loyalty plan breakdown -->
+      <div class="kpi-row kpi-row-4" style="margin-bottom:32px">
+        <div class="kpi-box" style="--kpi-color:#F2C200">
+          <div class="kpi-n" id="dash-loy-total" style="font-size:42px">—</div>
+          <div class="kpi-l">Loyalty članova</div>
+        </div>
+        <div class="kpi-box" style="--kpi-color:#F2C200">
+          <div class="kpi-n" id="dash-plan-ms-mes" style="font-size:38px">—</div>
+          <div class="kpi-l">Mali/Sred · Mes</div>
+          <div class="kpi-sub">€35/mes</div>
+        </div>
+        <div class="kpi-box" style="--kpi-color:#F2C200">
+          <div class="kpi-n" id="dash-plan-ms-god" style="font-size:38px">—</div>
+          <div class="kpi-l">Mali/Sred · God</div>
+          <div class="kpi-sub">€299/god</div>
+        </div>
+        <div class="kpi-box" style="--kpi-color:#F2C200">
+          <div class="kpi-n" id="dash-plan-vs-god" style="font-size:38px">—</div>
+          <div class="kpi-l">Veliki/SUV · God</div>
+          <div class="kpi-sub">€349/god</div>
+        </div>
+      </div>
+
+      <!-- BRZE AKCIJE — card style -->
+      <div class="section-title">Brze akcije</div>
+      <div class="dash-actions" style="margin-bottom:32px">
+        <button class="dash-action-card" onclick="switchTab('care',document.querySelector('[data-tab=care]'))">
+          <span class="dac-icon">📋</span>
+          <div>
+            <div class="dac-label">Loyalty Prijave</div>
+            <div class="dac-sub">Aktiviraj nove membership prijave</div>
+            <div class="dac-badge" id="dac-care-badge">0 čeka</div>
+          </div>
+        </button>
+        <button class="dash-action-card" onclick="switchTab('reviews',document.querySelector('[data-tab=reviews]'))">
+          <span class="dac-icon">⭐</span>
+          <div>
+            <div class="dac-label">Recenzije</div>
+            <div class="dac-sub">Odobri ili odbaci recenzije klijenata</div>
+            <div class="dac-badge" id="dac-review-badge">0 na čekanju</div>
+          </div>
+        </button>
+        <button class="dash-action-card" onclick="switchTab('loyalty',document.querySelector('[data-tab=loyalty]'))">
+          <span class="dac-icon">💎</span>
+          <div>
+            <div class="dac-label">Loyalty baza</div>
+            <div class="dac-sub">Pregled i upravljanje svim članovima</div>
+          </div>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ═══ TAB: RECENZIJE ═══ -->
+    <div id="tab-reviews" class="tab-panel">
+      <div class="tab-intro">
+        <div class="tab-intro-left">
+          <span class="tab-intro-icon">⭐</span>
+          <div>
+            <div class="tab-intro-title">Recenzije <em>klijenata</em></div>
+            <div class="tab-intro-desc">Odobri recenzije pre nego što se pojave na sajtu. Na čekanju su odmah vidljive ovde.</div>
+          </div>
+        </div>
+        <div class="tab-intro-right">
+          <button class="tool-btn primary" onclick="loadReviews()" style="border-radius:8px">↻ Osveži</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="stPending">—</div><div class="stat-l">Na čekanju</div></div>
+        <div class="stat-box"><div class="stat-n" id="stApproved">—</div><div class="stat-l">Odobreno</div></div>
+        <div class="stat-box"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Ukupno</div></div>
+        <div class="stat-box"><div class="stat-n" id="stAvg">—</div><div class="stat-l">Prosečna ocena</div></div>
+      </div>
+      <div class="section-title">Čekaju odobrenje</div>
+      <div class="reviews-grid" id="pendingList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+      <div class="section-title">Odobrene recenzije</div>
+      <div class="reviews-grid" id="approvedList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+    </div>
+
+    <!-- ═══ TAB: LOYALTY ═══ -->
+    <div id="tab-loyalty" class="tab-panel">
+      <div class="tab-intro">
+        <div class="tab-intro-left">
+          <span class="tab-intro-icon">💎</span>
+          <div>
+            <div class="tab-intro-title">Loyalty <em>članovi</em></div>
+            <div class="tab-intro-desc">Baza svih aktivnih članova. Dodaj pranje, promeni plan, pošalji WhatsApp.</div>
+          </div>
+        </div>
+        <div class="tab-intro-right">
+          <button class="tool-btn primary" onclick="loadLoyalty()" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn accent" onclick="openPushModal()" style="border-radius:8px">📣 Push svima</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="lyStat1">—</div><div class="stat-l">Članova ukupno</div></div>
+        <div class="stat-box"><div class="stat-n" id="lyStat2">—</div><div class="stat-l">Godišnji plan</div></div>
+        <div class="stat-box"><div class="stat-n" id="lyStat3">—</div><div class="stat-l">Mesečni plan</div></div>
+        <div class="stat-box"><div class="stat-n" id="lyStat4">—</div><div class="stat-l">Bez plana</div></div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+        <div class="section-title" style="margin-bottom:0">Baza korisnika</div>
+        <input type="text" class="loy-search" id="loySearchInp" placeholder="Pretraži po imenu / emailu / telefonu..." oninput="loyApplyFilters()">
+      </div>
+      <div class="filter-pills">
+        <button class="fpill on" id="fp-all"        onclick="loySetFilter('all')">● Svi</button>
+        <button class="fpill"    id="fp-god"        onclick="loySetFilter('god')">📅 Godišnji plan</button>
+        <button class="fpill"    id="fp-mes"        onclick="loySetFilter('mes')">🗓 Mesečni plan</button>
+        <button class="fpill"    id="fp-registered" onclick="loySetFilter('registered')">✓ Registrovani</button>
+      </div>
+      <div id="loyFilterInfo" style="font-size:11px;color:var(--gray);margin-bottom:12px;display:none"></div>
+      <div id="loyCustList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+    </div>
+
+    <!-- ═══ TAB: RITUAL PRIJAVE ═══ -->
+    <div id="tab-care" class="tab-panel">
+      <div class="tab-intro">
+        <div class="tab-intro-left">
+          <span class="tab-intro-icon">📋</span>
+          <div>
+            <div class="tab-intro-title">Loyalty <em>prijave</em></div>
+            <div class="tab-intro-desc">Nove prijave sa sajta čekaju aktivaciju. Klikni <strong style="color:var(--tab-care)">Aktiviraj</strong> da klijent postane Loyalty član.</div>
+          </div>
+        </div>
+        <div class="tab-intro-right">
+          <button class="tool-btn primary" onclick="loadCare()" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn" onclick="copyAdminWhatsApp()" style="border-radius:8px">💬 WA šablon</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-n" id="careStat1">—</div><div class="stat-l">Jedinstveni klijenti</div></div>
+        <div class="stat-box"><div class="stat-n" id="careStat2">—</div><div class="stat-l">Čeka aktivaciju</div></div>
+        <div class="stat-box"><div class="stat-n" id="careStat3">—</div><div class="stat-l">Aktivirano</div></div>
+        <div class="stat-box"><div class="stat-n" id="careStat4">—</div><div class="stat-l">Godišnji plan</div></div>
+      </div>
+
+      <div class="care-quick-grid">
+        <div class="care-quick-card">
+          <strong>Korak 1</strong>
+          <div>Pogledaj prijavu i proveri plan.</div>
+          <span>Brzo vidiš da li je mesečni ili godišnji paket.</span>
+        </div>
+        <div class="care-quick-card">
+          <strong>Korak 2</strong>
+          <div>Javi se klijentu i dogovori detalje.</div>
+          <span>Termin, veličina vozila i završna cena.</span>
+        </div>
+        <div class="care-quick-card">
+          <strong>Korak 3</strong>
+          <div>Klikni <span style="color:#2ECC71">Aktiviraj</span>.</div>
+          <span>Klijent postaje Loyalty član — plan i termin su potvrđeni.</span>
+        </div>
+      </div>
+
+      <div class="care-list-wrap">
+        <div class="care-list-head">
+          <div class="section-title" style="margin-bottom:0">Prijave koje čekaju aktivaciju ⏳</div>
+          <input type="text" class="loy-search" id="careSearchInp" placeholder="Pretraži Loyalty prijave..." oninput="careFilter(this.value)">
+        </div>
+        <div id="carePendingList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+      </div>
+
+      <div class="care-list-wrap">
+        <div class="care-list-head">
+          <div class="section-title" style="margin-bottom:0">Aktivirani članovi ✓</div>
+          <div style="font-size:10px;color:var(--gray);letter-spacing:2px;text-transform:uppercase">Aktivni Loyalty Članovi</div>
+        </div>
+        <div id="careDoneList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+      </div>
+    </div>
+
+
+    <!-- ═══ TAB: UPITI (BOOKING) ═══ -->
+    <div id="tab-contacts" class="tab-panel">
+      <div class="tab-intro">
+        <div class="tab-intro-left">
+          <span class="tab-intro-icon">📬</span>
+          <div>
+            <div class="tab-intro-title">Zahtevi za <em>termin</em></div>
+            <div class="tab-intro-desc">Booking zahtevi sa sajta. Odgovori klijentu i zakaži termin.</div>
+          </div>
+        </div>
+        <div class="tab-intro-right">
+          <button class="tool-btn primary" onclick="loadContacts()" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn" onclick="copyAdminWhatsApp()" style="border-radius:8px">💬 WA šablon</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat1">—</div><div class="stat-l">Ukupno upita</div></div>
+        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat2">—</div><div class="stat-l">Nije odgovoreno</div></div>
+        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat3">—</div><div class="stat-l">Sa datumom</div></div>
+        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat4">—</div><div class="stat-l">Ovaj mesec</div></div>
+      </div>
+      <div class="care-list-wrap">
+        <div class="care-list-head">
+          <div class="section-title" style="margin-bottom:0">Zahtevi za termin 📬</div>
+          <input type="text" class="loy-search" id="contactsSearchInp" placeholder="Pretraži upite..." oninput="contactsFilter(this.value)">
+        </div>
+        <div id="contactsList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div id="noteModal">
+  <div id="noteModal-box">
+    <h3>Admin <em>napomena</em></h3>
+    <p id="noteModal-label">Napomena za korisnika</p>
+    <textarea id="noteModal-txt" placeholder="Unesite napomenu..."></textarea>
+    <div class="nm-btns">
+      <button class="nm-save" onclick="saveNote()">Sačuvaj napomenu →</button>
+      <button class="nm-cancel" onclick="closeNoteModal()">Otkaži</button>
+    </div>
+  </div>
+</div>
+
+<!-- DODAJ USLUGU MODAL -->
+<div id="svcModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#141414;max-width:420px;width:100%;padding:36px;border-top:2px solid #C0392B;position:relative">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;margin-bottom:4px">Dodaj <em style="font-style:italic;color:#C0392B">uslugu</em></h3>
+    <p id="svcModal-label" style="font-size:12px;color:#666;margin-bottom:20px;font-weight:300">Unesi datum i napomenu za odrađenu uslugu</p>
+    <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Datum usluge *</div>
+    <input id="svcModal-date" type="date" style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.1);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:14px;box-sizing:border-box">
+    <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Napomena (opciono)</div>
+    <input id="svcModal-note" type="text" placeholder="npr. Eksterijer + interijer" style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.1);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:16px;box-sizing:border-box">
+    <div id="svcModal-msg" style="display:none;font-size:12px;color:#E74C3C;margin-bottom:12px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="nm-save" onclick="saveAddServiceModal()">Sačuvaj →</button>
+      <button class="nm-cancel" onclick="closeAddServiceModal()">Otkaži</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN MODAL -->
+<div id="planModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#141414;max-width:440px;width:100%;padding:36px;border-top:2px solid #C0392B;position:relative">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px">Loyalty <em style="font-style:italic;color:#C0392B">plan</em></h3>
+    <p id="planModal-label" style="font-size:12px;color:#666;margin-bottom:20px;font-weight:300;line-height:1.6">Postavi ili promeni Loyalty plan za korisnika</p>
+    <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#555;margin-bottom:8px">Odaberi plan</div>
+    <select id="planModal-sel" style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.1);padding:13px 16px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:20px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 14px center">
+      <option value="">— Bez plana —</option>
+      <option value="care_mes">Mali / Srednji — Mesečno · €35/mes</option>
+      <option value="care_mes_vs">Veliki / SUV — Mesečno · €40/mes</option>
+      <option value="care_god">Mali / Srednji — Godišnje · €299/god (ušteda 29%)</option>
+      <option value="care_god_vs">Veliki / SUV — Godišnje · €349/god (ušteda 27%)</option>
+    </select>
+    <div style="display:flex;gap:8px">
+      <button class="nm-save" onclick="savePlanModal()">Sačuvaj plan →</button>
+      <button class="nm-cancel" onclick="closePlanModal()">Otkaži</button>
+    </div>
+  </div>
+</div>
+
+<!-- PUSH MODAL -->
+<div id="pushModal">
+  <div id="pushModal-box">
+    <h3>Push <em>obaveštenje</em></h3>
+    <p>Pošalji broadcast svima koji su dodali sajt na Home Screen i dozvolili notifikacije.</p>
+
+    <!-- KAKO RADI — info strip -->
+    <div style="background:rgba(39,174,96,.06);border:1px solid rgba(39,174,96,.15);padding:14px 16px;border-radius:8px;margin-bottom:16px;font-size:11px;color:#888;line-height:1.7">
+      <strong style="color:#27AE60;font-size:9px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:6px">📲 Kako funkcioniše?</strong>
+      Notifikacija stiže na telefon klijentu kao sistemsko obaveštenje — isti kao od SMS-a. Korisnik mora biti doao aplikaciju na Home Screen (<em>Dodaj na početni ekran</em>) i odobrio dozvolu za notifikacije. Klik otvara sajt na željenom linku.
+    </div>
+
+    <div class="push-grid">
+      <div class="push-field">
+        <label for="pushTitle">Naslov <span style="font-weight:400;opacity:.6;font-size:8px">— Bold tekst u notifikaciji</span></label>
+        <input id="pushTitle" type="text" maxlength="80" placeholder="npr. Nova akcija u Laker studiju">
+        <div style="font-size:9px;color:#555;margin-top:4px;line-height:1.5">Kratko i jasno. Ovo je prvi red koji korisnik vidi (bold).</div>
+      </div>
+      <div class="push-field">
+        <label for="pushUrl">Link <span style="font-weight:400;opacity:.6;font-size:8px">— Kuda vodi klik</span></label>
+        <input id="pushUrl" type="text" maxlength="200" placeholder="/?source=pwa">
+        <div style="font-size:9px;color:#555;margin-top:4px;line-height:1.5">Strana koja se otvara kad korisnik klikne notifikaciju. Ostavi <code style="color:#888">/?source=pwa</code> za početnu stranicu.</div>
+      </div>
+      <div class="push-field full">
+        <label for="pushBody">Poruka <span style="font-weight:400;opacity:.6;font-size:8px">— Telo notifikacije</span></label>
+        <textarea id="pushBody" placeholder="npr. Zakažite premium pranje pre kraja meseca — slobodnih termina je malo."></textarea>
+        <div style="font-size:9px;color:#555;margin-top:4px;line-height:1.5">Ovo je tekst ispod naslova. Piši konkretno i kratko — 1–2 rečenice.</div>
+      </div>
+      <div class="push-field full">
+        <label for="pushTag">Tag <span style="font-weight:400;opacity:.6;font-size:8px">— ID za zamenu stare notifikacije</span></label>
+        <input id="pushTag" type="text" maxlength="80" placeholder="laker-global">
+        <div style="font-size:9px;color:#555;margin-top:4px;line-height:1.5">
+          <strong style="color:#aaa">Opciono, ali korisno:</strong> ako pošalješ isti tag dva puta, nova notifikacija <em>zamenjuje</em> staru (ne dobijaju dve). Ostavi <code style="color:#888">laker-global</code> za opšte poruke. Za akcije koristi nešto kao <code style="color:#888">akcija-juni</code>.
+        </div>
+      </div>
+    </div>
+    <div class="push-preview">
+      <b>Preview — kako izgleda na telefonu</b>
+      <span id="pushPreviewText" style="color:#aaa;font-style:italic">Počni da kucaš naslove i poruku da vidiš preview...</span>
+    </div>
+    <div class="push-modal-note" id="pushModalNote" style="margin-top:12px">
+      <strong style="color:#27AE60">Poruka se snima u bazu</strong> i šalje svim aktivnim pretplatnicima. Ako neki uslov nedostaje, dobićeš tačan razlog u odgovoru.
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+      <button class="nm-save" style="flex:1;min-width:180px;background:#27AE60" onclick="sendPushFromModal()">Pošalji obaveštenje →</button>
+      <button class="nm-cancel" onclick="closePushModal()">Otkaži</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG — bez lozinki, bez ključeva u kodu
+// ═══════════════════════════════════════════
+const API_CANDIDATES = [
+  new URL('/api/admin', location.origin).toString(),
+  'https://www.lakerdetailing.rs/api/admin'
+  // NOTE: https://lakerdetailing.rs/api/admin (bez www) je uklonjen —
+  // cross-origin request sa www domena uzrokuje CORS grešku i lažno "Failed to fetch"
+];
+let _pw = '';
+let _adminFailCount = 0;
+const ADMIN_STORAGE_KEY = 'lk-admin-pw';
+const ADMIN_STORAGE_EXP = 'lk-admin-exp';
+const ADMIN_SESSION_DAYS = 30;
+
+function saveAdminSession(pw) {
+  try {
+    const exp = Date.now() + ADMIN_SESSION_DAYS * 24 * 60 * 60 * 1000;
+    localStorage.setItem(ADMIN_STORAGE_KEY, pw);
+    localStorage.setItem(ADMIN_STORAGE_EXP, String(exp));
+  } catch (e) {}
+}
+
+function loadAdminSession() {
+  try {
+    const exp = Number(localStorage.getItem(ADMIN_STORAGE_EXP) || 0);
+    if (Date.now() > exp) { clearAdminSession(); return ''; }
+    return localStorage.getItem(ADMIN_STORAGE_KEY) || '';
+  } catch (e) { return ''; }
+}
+
+function clearAdminSession() {
+  try {
+    localStorage.removeItem(ADMIN_STORAGE_KEY);
+    localStorage.removeItem(ADMIN_STORAGE_EXP);
+  } catch (e) {}
+}
+const DEMO_MODE = /(?:^|[#?&])demo(?:=1)?(?:$|[&#])/i.test(location.hash + location.search);
+
+const DEMO_DATA = {
+  reviews: {
+    pending: [
+      { id:'rv1', rating:5, text:'Auto izgleda kao nov, usluga vrhunska.', name:'Milan', car:'BMW X5', city:'Čačak', created_at:'2026-05-24T11:10:00Z', approved:false },
+      { id:'rv2', rating:5, text:'Sve je bilo brzo i uredno, preporuka.', name:'Jelena', car:'Audi A4', city:'Gornji Milanovac', created_at:'2026-05-25T15:30:00Z', approved:false }
+    ],
+    approved: [
+      { id:'rv3', rating:5, text:'Najbolje pranje u gradu.', name:'Nikola', car:'Mercedes E', city:'Čačak', created_at:'2026-05-20T09:00:00Z', approved:true },
+      { id:'rv4', rating:4, text:'Odličan odnos prema vozilu.', name:'Ana', car:'VW Golf 7', city:'Čačak', created_at:'2026-05-18T13:45:00Z', approved:true },
+      { id:'rv5', rating:5, text:'Stvarno premium utisak od početka do kraja.', name:'Stefan', car:'Range Rover', city:'Kraljevo', created_at:'2026-05-14T10:25:00Z', approved:true }
+    ]
+  },
+  loyalty: {
+    requests: [
+      { id:'rq1', customer_id:'c1', customer_name:'Marko Petrović', customer_phone:'060 123 4567', customer_email:'marko@mail.com', note:'Premium pranje', status:'pending', created_at:'2026-05-25T10:20:00Z' },
+      { id:'rq2', customer_id:'c2', customer_name:'Ivana Jović', customer_phone:'060 222 333', customer_email:'ivana@mail.com', note:'Premium pranje', status:'approved', created_at:'2026-05-23T15:40:00Z' }
+    ],
+    customers: [
+      { id:'c1', name:'Marko Petrović', surname:'Petrović', email:'marko@mail.com', phone:'060 123 4567', wash_count:6, plan_type:'mes', car_size:'ms', care_plan:'care_mes', care_plan_since:'2026-05-01T12:00:00Z', auth_user_id:'auth_1', created_at:'2026-04-18T08:30:00Z', admin_note:'Korektan klijent' },
+      { id:'c2', name:'Ivana Jović', surname:'Jović', email:'ivana@mail.com', phone:'060 222 333', wash_count:18, plan_type:'god', car_size:'vs', care_plan:'care_god_vs', care_plan_since:'2026-03-14T09:45:00Z', auth_user_id:'auth_2', created_at:'2026-03-14T09:45:00Z', admin_note:'' },
+      { id:'c3', name:'Nenad Ilić', surname:'Ilić', email:'nenad@mail.com', phone:'060 555 777', wash_count:3, plan_type:'god', car_size:'ms', care_plan:'care_god', care_plan_since:'2026-04-10T12:00:00Z', auth_user_id:null, created_at:'2026-02-20T14:10:00Z', admin_note:'' }
+    ]
+  },
+  contacts: [
+    { id:'ct1', ime:'Jovana Marković', telefon:'060 444 555', email:'jovana@mail.com', auto:'Audi A6', velicina:'Srednji — C klasa', usluga:'Laker Loyalty — Mesečni', napomena:'Loyalty prijava', submission_type:'loyalty_registration', loyalty_added:false, created_at:'2026-05-26T08:15:00Z' },
+    { id:'ct2', ime:'Uroš Stojanović', telefon:'060 888 999', email:'uros@mail.com', auto:'BMW X3', velicina:'Veliki — E klasa i više', usluga:'Laker Loyalty — Godišnji', napomena:'Loyalty prijava', submission_type:'loyalty_registration', loyalty_added:true, created_at:'2026-05-24T12:30:00Z' },
+    { id:'ct3', ime:'Nikola Đorđević', telefon:'060 111 222', email:'nikola@mail.com', auto:'VW Golf 8', velicina:'Mali — A klasa', usluga:'Boost paket', datum:'2026-06-15', napomena:'Molim što pre termin', submission_type:'booking', loyalty_added:false, created_at:'2026-06-05T09:40:00Z' },
+    { id:'ct4', ime:'Milica Pavlović', telefon:'060 333 444', email:'milica@mail.com', auto:'Toyota RAV4', velicina:'Ekstra — SUV/Van', usluga:'Laker paket', datum:'2026-06-20', napomena:'', submission_type:'booking', loyalty_added:false, created_at:'2026-06-04T14:20:00Z' }
+  ]
+};
+
+function demoClone(v) {
+  return JSON.parse(JSON.stringify(v));
+}
+
+const DEMO_STATE = DEMO_MODE ? demoClone(DEMO_DATA) : null;
+
+function demoCustomerById(id) {
+  return DEMO_STATE?.loyalty?.customers?.find(c => c.id === id) || null;
+}
+
+function demoContactById(id) {
+  return DEMO_STATE?.contacts?.find(c => c.id === id) || null;
+}
+
+function demoRequestById(id) {
+  return DEMO_STATE?.loyalty?.requests?.find(r => r.id === id) || null;
+}
+
+function demoAddHistory(cust, note) {
+  if (!cust.wash_history) cust.wash_history = [];
+  cust.wash_history.unshift({
+    note: note || 'Premium pranje',
+    created_at: new Date().toISOString()
+  });
+}
+
+function demoSetCustomerFromContact(contact, plan, note) {
+  const existing = DEMO_STATE.loyalty.customers.find(c =>
+    (contact.email && c.email === contact.email) ||
+    (contact.telefon && c.phone === contact.telefon)
+  );
+  const base = existing || {
+    id: 'demo_' + contact.id,
+    name: contact.ime || '',
+    surname: '',
+    email: contact.email || '',
+    phone: contact.telefon || '',
+    wash_count: 0,
+    care_plan: null,
+    care_plan_since: null,
+    auth_user_id: null,
+    created_at: new Date().toISOString(),
+    admin_note: '',
+    wash_history: []
+  };
+
+  base.name = contact.ime || base.name || '';
+  base.email = contact.email || base.email || '';
+  base.phone = contact.telefon || base.phone || '';
+  base.napomena = note || contact.napomena || base.napomena || '';
+  if (plan) {
+    base.care_plan = plan;
+    base.care_plan_since = base.care_plan_since || new Date().toISOString();
+  }
+  if (!existing) DEMO_STATE.loyalty.customers.unshift(base);
+  return base;
+}
+
+
+function demoApiResult(action, params = {}) {
+  switch (action) {
+    case 'get_reviews': {
+      const pending = demoClone(DEMO_STATE.reviews.pending);
+      const approved = demoClone(DEMO_STATE.reviews.approved);
+      return { pending, approved, all: [...pending, ...approved] };
+    }
+    case 'approve_review': {
+      const idx = DEMO_STATE.reviews.pending.findIndex(r => r.id === params.id);
+      if (idx >= 0) {
+        const item = DEMO_STATE.reviews.pending.splice(idx, 1)[0];
+        item.approved = true;
+        DEMO_STATE.reviews.approved.unshift(item);
+      }
+      return { ok: true };
+    }
+    case 'delete_review':
+      DEMO_STATE.reviews.pending = DEMO_STATE.reviews.pending.filter(r => r.id !== params.id);
+      DEMO_STATE.reviews.approved = DEMO_STATE.reviews.approved.filter(r => r.id !== params.id);
+      return { ok: true };
+    case 'get_loyalty':
+      return demoClone(DEMO_STATE.loyalty);
+    case 'get_period_wash_counts': {
+      const yr = {}, mo = {};
+      DEMO_STATE.loyalty.customers.forEach(c => {
+        yr[c.id] = Math.min(c.wash_count || 0, 24);
+        mo[c.id] = Math.min(c.wash_count || 0, 2);
+      });
+      return { yearCounts: yr, monthCounts: mo };
+    }
+    case 'approve_wash_req': {
+      const req = demoRequestById(params.reqId);
+      const cust = demoCustomerById(params.custId);
+      if (req) req.status = 'approved';
+      if (cust) {
+        cust.wash_count = Number(cust.wash_count || 0) + 1;
+        demoAddHistory(cust, req?.note || 'Premium pranje');
+      }
+      return { ok: true };
+    }
+    case 'reject_wash_req':
+      DEMO_STATE.loyalty.requests = DEMO_STATE.loyalty.requests.filter(r => r.id !== params.reqId);
+      return { ok: true };
+    case 'add_wash': {
+      const cust = demoCustomerById(params.custId);
+      if (cust) {
+        cust.wash_count = Number(cust.wash_count || 0) + 1;
+        demoAddHistory(cust, params.note || 'Admin — ručno dodato');
+      }
+      return { ok: true };
+    }
+    case 'remove_wash': {
+      const cust = demoCustomerById(params.custId);
+      if (cust) cust.wash_count = Math.max(0, Number(cust.wash_count || 0) - 1);
+      return { ok: true };
+    }
+    case 'delete_customer':
+      DEMO_STATE.loyalty.customers = DEMO_STATE.loyalty.customers.filter(c => c.id !== params.custId);
+      DEMO_STATE.loyalty.requests = DEMO_STATE.loyalty.requests.filter(r => r.customer_id !== params.custId);
+      return { ok: true };
+    case 'get_wash_history': {
+      const cust = demoCustomerById(params.custId);
+      return demoClone(cust?.wash_history || []);
+    }
+    case 'save_note': {
+      const cust = demoCustomerById(params.custId);
+      if (cust) cust.admin_note = params.note || '';
+      return { ok: true };
+    }
+    case 'update_care_plan': {
+      const cust = demoCustomerById(params.custId);
+      if (cust) {
+        cust.care_plan = params.plan || null;
+        cust.care_plan_since = params.plan ? (cust.care_plan_since || new Date().toISOString()) : null;
+      }
+      return { ok: true };
+    }
+    case 'get_contacts':
+      return demoClone(DEMO_STATE.contacts);
+    case 'add_contact_to_loyalty': {
+      const ct = demoContactById(params.ctId);
+      if (!ct) return { ok: false };
+      ct.loyalty_added = true;
+      const cust = demoSetCustomerFromContact(ct, params.plan || null, params.note || ct.napomena || '');
+      if (cust && params.note) cust.napomena = params.note;
+      return { ok: true };
+    }
+    case 'delete_contact':
+      DEMO_STATE.contacts = DEMO_STATE.contacts.filter(c => c.id !== params.id);
+      return { ok: true };
+    default:
+      return { ok: true };
+  }
+}
+
+// ── API poziv ka server-side funkciji ────────────────────
+async function api(action, params = {}) {
+  if (DEMO_MODE) return demoApiResult(action, params);
+  // Cuvamo PRVI smisleni HTTP error (npr. "Pogresna lozinka") umesto poslednjeg
+  // — poslednji bi mogao biti CORS/network greska koja maskira pravi problem.
+  let firstHttpError = null;
+  let lastError = null;
+  for (const apiUrl of API_CANDIDATES) {
+    try {
+      const payload = { password: _pw, action, params };
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        cache: 'no-store',
+        credentials: 'omit',
+        mode: 'cors'
+      });
+      const text = await res.text().catch(() => '');
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+      if (!res.ok) {
+        const detail = data.error || data.message || `Greška na serveru (${res.status})`;
+        const err = new Error(detail);
+        if (!firstHttpError) firstHttpError = err;
+        lastError = err;
+        continue; // probaj sledeci URL
+      }
+      // Podrska za oba formata servera: { data: {...} } i direktno { pending: [...] }
+      return (data.data !== undefined) ? data.data : data;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  // Prikazi HTTP error ako postoji (smisleniji od "Failed to fetch")
+  const best = firstHttpError || lastError;
+  throw new Error(best?.message || 'Ne mogu da se povezem sa admin serverom.');
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function fmtDate(str, withTime = true) {
+  const opts = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  if (withTime) { opts.hour = '2-digit'; opts.minute = '2-digit'; }
+  return new Date(str).toLocaleDateString('sr-RS', opts);
+}
+
+let _adminCurrentTab = 'reviews';
+let _adminSearchQuery = '';
+
+function applyAdminSearch() {
+  const q = String(_adminSearchQuery || '').trim().toLowerCase();
+  const panel = document.getElementById('tab-' + _adminCurrentTab);
+  const info = document.getElementById('adminSearchInfo');
+  if (!panel) return;
+
+  const items = panel.querySelectorAll('[data-admin-search]');
+  let visible = 0;
+  items.forEach(item => {
+    const hay = String(item.dataset.adminSearch || '').toLowerCase();
+    const ok = !q || hay.includes(q);
+    item.style.display = ok ? '' : 'none';
+    if (ok) visible++;
+  });
+
+  if (info) {
+    info.textContent = q
+      ? `Prikazujem ${visible} rezultata za "${q}".`
+      : 'Pretražuj imena, email, telefon i napomene.';
+  }
+}
+
+function setAdminSearch(v) {
+  _adminSearchQuery = String(v || '');
+  const inp = document.getElementById('adminQuickSearch');
+  if (inp && inp.value !== _adminSearchQuery) inp.value = _adminSearchQuery;
+  applyAdminSearch();
+}
+
+function refreshActiveTab() {
+  const loaders = {
+    reviews:  loadReviews,
+    loyalty:  loadLoyalty,
+    care:     loadCare,
+    contacts: loadContacts,
+  };
+  const fn = loaders[_adminCurrentTab];
+  if (typeof fn === 'function') fn();
+}
+
+// ── LOYALTY PLAN HELPERS ──────────────────────────────────
+const PLAN_LABELS = {
+  care_mes:    { label: 'Mali/Sred · Mesečno €35',   color: '#C0392B', bg: 'rgba(192,57,43,.15)' },
+  care_mes_vs: { label: 'Veliki/SUV · Mesečno €40',  color: '#C0392B', bg: 'rgba(192,57,43,.15)' },
+  care_god:    { label: 'Mali/Sred · Godišnje €299',  color: '#2ECC71', bg: 'rgba(39,174,96,.12)'  },
+  care_god_vs: { label: 'Veliki/SUV · Godišnje €349', color: '#2ECC71', bg: 'rgba(39,174,96,.12)'  }
+};
+
+function getLoyPlanKey(c) {
+  if (c.plan_type && c.car_size) {
+    return 'care_' + c.plan_type + (c.car_size === 'vs' ? '_vs' : '');
+  }
+  return c.care_plan || null;
+}
+
+function planBadge(c) {
+  const key = typeof c === 'string' ? c : getLoyPlanKey(c);
+  if (!key || !PLAN_LABELS[key]) return '';
+  const p = PLAN_LABELS[key];
+  return `<span style="display:inline-block;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;margin-left:6px;background:${p.bg};color:${p.color};border:1px solid ${p.color}44">★ ${p.label}</span>`;
+}
+
+function detectPlan(usluga, velicina) {
+  const u = (usluga || '').toLowerCase();
+  const v = (velicina || '').toLowerCase();
+  const isGod = u.includes('god') || u.includes('annual');
+  const isVS  = !!(v.match(/veliki|suv|vs|extra/) || u.includes('349') || u.includes('vs'));
+  if (isGod && isVS) return 'care_god_vs';
+  if (isGod) return 'care_god';
+  if (isVS)  return 'care_mes_vs';
+  return 'care_mes';
+}
+
+function stripMaintenanceMeta(note) {
+  return String(note || '')
+    .replace(/\s*\[maintenance_streak:[0-5]\]\s*/g, '\n')
+    .replace(/\s*DOB:\d{4}-\d{2}-\d{2}/gi, '')
+    .trim();
+}
+
+function getTotalAllowed(c) {
+  const pt = c.plan_type || (String(c.care_plan||'').includes('god') ? 'god' : 'mes');
+  return pt === 'god' ? 24 : 2;
+}
+
+function getUsageThisPeriod(c, washCountsByCustomer) {
+  return washCountsByCustomer[c.id] || 0;
+}
+
+function getMaintenanceStreak(c) { return 0; }
+
+function setPasswordVisible(input, button, visible){
+  clearTimeout(input._pwMaskTimer);
+  input.dataset.pwVisible = visible ? '1' : '0';
+  input.type = visible ? 'text' : 'password';
+  if (button) {
+    button.textContent = visible ? '🙈' : '👁';
+    button.classList.toggle('on', visible);
+    button.setAttribute('aria-label', visible ? 'Sakrij lozinku' : 'Prikaži lozinku');
+    button.title = visible ? 'Sakrij lozinku' : 'Prikaži lozinku';
+  }
+}
+
+function initPasswordControls(){
+  document.querySelectorAll('.pw-toggle[data-pw-toggle]').forEach(button => {
+    const input = document.getElementById(button.dataset.pwToggle);
+    if (!input) return;
+    if (!input.dataset.pwVisible) input.dataset.pwVisible = input.type === 'text' ? '1' : '0';
+    button.textContent = '👁';
+    button.title = 'Prikaži lozinku';
+    button.setAttribute('aria-label', 'Prikaži lozinku');
+
+    syncPasswordToggleButton(button, input);
+  });
+}
+
+initPasswordControls();
+
+function syncPasswordToggleButton(button, input){
+  if (!button || !input) return;
+  const visible = input.dataset.pwVisible === '1';
+  button.type = 'button';
+    button.textContent = visible ? '\u{1F648}' : '\u{1F441}';
+    button.title = visible ? 'Sakrij lozinku' : 'Prikazi lozinku';
+    button.setAttribute('aria-label', visible ? 'Sakrij lozinku' : 'Prikazi lozinku');
+  button.classList.toggle('on', visible);
+}
+
+function findPasswordToggleForInput(input){
+  if (!input || !input.id) return null;
+  return document.querySelector(`.pw-toggle[data-pw-toggle="${input.id}"]`);
+}
+
+document.addEventListener('click', (event) => {
+  const button = event.target.closest('.pw-toggle[data-pw-toggle]');
+  if (!button) return;
+  const input = document.getElementById(button.dataset.pwToggle);
+  if (!input) return;
+  const visible = input.dataset.pwVisible === '1';
+  setPasswordVisible(input, button, !visible);
+  input.focus({ preventScroll: true });
+  syncPasswordToggleButton(button, input);
+  event.preventDefault();
+});
+
+document.addEventListener('input', (event) => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement)) return;
+});
+
+document.addEventListener('blur', (event) => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement)) return;
+  const button = findPasswordToggleForInput(input);
+  if (!button) return;
+  clearTimeout(input._pwMaskTimer);
+  if (input.dataset.pwVisible !== '1') input.type = 'password';
+  syncPasswordToggleButton(button, input);
+}, true);
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPasswordControls, { once: true });
+} else {
+  initPasswordControls();
+}
+
+// ═══════════════════════════════════════════
+// LOGIN — lozinka ide na server, ne proverava se u JS-u
+// ═══════════════════════════════════════════
+function setDemoVisible(on) {
+  const banner = document.getElementById('demoBanner');
+  if (banner) banner.style.display = on ? 'flex' : 'none';
+}
+
+function enterDemoMode() {
+  _pw = 'demo';
+  try {
+    sessionStorage.removeItem(ADMIN_STORAGE_KEY);
+  } catch (e) {}
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  setDemoVisible(true);
+  loadAll();
+}
+
+function openDemoMode() {
+  try {
+    if (!location.hash.includes('demo')) location.hash = 'demo';
+  } catch (e) {}
+  location.reload();
+}
+
+async function doLogin() {
+  if (DEMO_MODE) {
+    enterDemoMode();
+    return;
+  }
+  const pw  = document.getElementById('pwInput').value;
+  const loginErr = document.getElementById('loginErr');
+  const btn = document.querySelector('.login-btn');
+  if (!pw) return;
+  btn.textContent = 'Proveravam...';
+  btn.disabled = true;
+  loginErr.style.display = 'none';
+  try {
+    _pw = pw;
+    await api('get_reviews');
+    saveAdminSession(pw);
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display   = 'block';
+    loadAll();
+  } catch (err) {
+    _pw = '';
+    clearAdminSession();
+    const message = String(err?.message || 'Ne mogu da pristupim admin serveru.');
+    _adminFailCount++;
+    if (_adminFailCount >= 5) {
+      loginErr.textContent = 'Previše neuspešnih pokušaja. Sačekajte 5 minuta.';
+      loginErr.style.display = 'block';
+      btn.textContent = 'Zaključano ⏳';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Uđi u panel →';
+        _adminFailCount = 0;
+        loginErr.style.display = 'none';
+      }, 5 * 60 * 1000);
+      return;
+    }
+    loginErr.textContent = message;
+    loginErr.style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
+  btn.textContent = 'Uđi u panel →';
+  btn.disabled = false;
+}
+
+function doLogout() {
+  _pw = '';
+  clearAdminSession();
+  if (DEMO_MODE) {
+    setDemoVisible(true);
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+    return;
+  }
+  location.reload();
+}
+
+async function tryRestoreAdminSession() {
+  if (DEMO_MODE) {
+    enterDemoMode();
+    return;
+  }
+  const savedPw = loadAdminSession();
+  if (!savedPw) return;
+  _pw = savedPw;
+  try {
+    await api('get_reviews');
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } catch (e) {
+    _pw = '';
+    // Brišemo sesiju SAMO ako je server vratio 401 (pogrešna lozinka).
+    // Ako je greška mreža, timeout ili server problem — zadržavamo sesiju
+    // i prikazujemo login sa porukom, umesto da forsiramo ponovni unos lozinke.
+    const msg = String(e?.message || '');
+    const isAuthError = msg.toLowerCase().includes('lozinka') || msg.toLowerCase().includes('401') || msg.toLowerCase().includes('neispravna') || msg.toLowerCase().includes('unauthorized');
+    if (isAuthError) {
+      clearAdminSession();
+    } else {
+      // Sesija ostaje, ali prikazujemo login da korisnik može ručno da proba
+      // (lozinka je već popunjena u _pw, ali UI pokazuje login formu)
+      const errEl = document.getElementById('loginErr');
+      if (errEl) { errEl.textContent = '⚠️ Server nije dostupan. Kliknite "Uđi" da pokušate ponovo.'; errEl.style.display = 'block'; }
+      // Pre-popuni input da korisnik samo klikne Enter
+      const inp = document.getElementById('pwInput');
+      if (inp) inp.value = savedPw;
+    }
+  }
+}
+
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+tryRestoreAdminSession();
+
+// ═══════════════════════════════════════════
+// ADMIN CLOCK
+// ═══════════════════════════════════════════
+(function startClock(){
+  const el = document.getElementById('adminClock');
+  if (!el) return;
+  function tick(){
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    el.textContent = h + ':' + m + ':' + s;
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+function switchTab(name, btn) {
+  _adminCurrentTab = name;
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('on'));
+  const tabEl = document.getElementById('tab-' + name);
+  if (tabEl) tabEl.classList.add('on');
+  if (btn) btn.classList.add('on');
+
+  // Show/hide tab-specific toolbars and help strips
+  ['dashboard','reviews','loyalty','care','contacts'].forEach(t => {
+    const tb = document.getElementById('toolbar-' + t);
+    const st = document.getElementById('strip-' + t);
+    if (tb) tb.classList.toggle('on', t === name);
+    if (st) st.style.display = (t === name) ? 'flex' : 'none';
+    const inp = tb && tb.querySelector('input:not([disabled])');
+    if (inp && t !== name) inp.value = '';
+  });
+
+  // Reset global search
+  _adminSearchQuery = '';
+  const mainSearch = document.getElementById('adminQuickSearch');
+  if (mainSearch) mainSearch.value = '';
+
+  applyAdminSearch();
+  setTabAccentColor(name);
+
+  // Auto-load on tab switch
+  if (name === 'dashboard' && typeof loadDashboard === 'function') loadDashboard();
+  if (name === 'contacts'  && typeof loadContacts  === 'function') loadContacts();
+}
+
+function setTabAccentColor(name) {
+  const colors = {
+    dashboard:'#C0392B',
+    reviews:  '#C0392B',
+    loyalty:  '#F2C200',
+    care:     '#16A085',
+    contacts: '#8E44AD'
+  };
+  const col = colors[name] || '#C0392B';
+  document.querySelectorAll('.stat-box .stat-n').forEach(el => {
+    el.style.color = col;
+  });
+  document.querySelectorAll('.stat-box').forEach(el => {
+    el.style.setProperty('--stat-accent', col);
+  });
+}
+
+function loadAll() {
+  loadReviews();
+  loadLoyalty();
+  loadCare();
+  loadContacts();
+  loadDashboard();
+}
+
+async function copyToClipboard(text, doneLabel = 'Kopirano!') {
+  try {
+    await navigator.clipboard.writeText(String(text || ''));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+
+async function copyAdminWhatsApp() {
+  const text = 'Zdravo, pišem sa sajta Laker Detailing. Treba mi info / termin.';
+  const ok = await copyToClipboard('https://wa.me/381607260302?text=' + encodeURIComponent(text));
+  alert(ok ? 'WhatsApp šablon je kopiran.' : 'Ne mogu da kopiram.');
+}
+
+// ═══════════════════════════════════════════
+// PUSH BROADCAST
+function pushDefaults() {
+  return {
+    title: 'Laker Detailing',
+    body: 'Imate novu obavest iz Laker aplikacije.',
+    url: '/?source=pwa',
+    tag: 'laker-global'
+  };
+}
+
+function syncPushPreview() {
+  const title = document.getElementById('pushTitle')?.value.trim() || pushDefaults().title;
+  const body = document.getElementById('pushBody')?.value.trim() || pushDefaults().body;
+  const url = document.getElementById('pushUrl')?.value.trim() || pushDefaults().url;
+  const preview = document.getElementById('pushPreviewText');
+  if (!preview) return;
+  preview.innerHTML = `<strong style="display:block;color:#27AE60;font-size:12px;margin-bottom:6px">${esc(title)}</strong><span>${esc(body)}</span><span style="display:block;margin-top:8px;color:#666;font-size:10px;letter-spacing:1px;text-transform:uppercase">${esc(url)}</span>`;
+}
+
+function openPushModal() {
+  if (DEMO_MODE) {
+    alert('Push broadcast nije dostupan u demo modu.');
+    return;
+  }
+  const def = pushDefaults();
+  document.getElementById('pushTitle').value = def.title;
+  document.getElementById('pushBody').value = def.body;
+  document.getElementById('pushUrl').value = def.url;
+  document.getElementById('pushTag').value = def.tag;
+  document.getElementById('pushModalNote').textContent = 'Poruka se snima u bazu i šalje svim aktivnim pretplatnicima. Ako neki uslov nedostaje, dobićeš tačan razlog u odgovoru.';
+  document.getElementById('pushModal').classList.add('open');
+  syncPushPreview();
+}
+
+function closePushModal() {
+  document.getElementById('pushModal').classList.remove('open');
+}
+
+async function sendPushFromModal() {
+  const title = document.getElementById('pushTitle').value.trim();
+  const body = document.getElementById('pushBody').value.trim();
+  const url = document.getElementById('pushUrl').value.trim() || '/?source=pwa';
+  const tag = document.getElementById('pushTag').value.trim() || 'laker-global';
+  const btn = document.querySelector('#pushModal .nm-save');
+  const note = document.getElementById('pushModalNote');
+  if (!title || !body) {
+    alert('Naslov i poruka su obavezni.');
+    return;
+  }
+  btn.textContent = 'Šaljem...';
+  btn.disabled = true;
+  note.textContent = 'Slanje u toku...';
+  try {
+    const res = await fetch('/api/push-send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        adminPassword: _pw,
+        title,
+        body,
+        url,
+        tag,
+        source: DEMO_MODE ? 'demo' : 'admin'
+      }),
+      cache: 'no-store'
+    });
+    const text = await res.text().catch(() => '');
+    let data = {};
+    try { data = text ? JSON.parse(text) : {}; } catch (e) { data = { raw: text }; }
+    if (!res.ok || data.ok === false) {
+      throw new Error(data.error || data.message || ('Greška pri slanju push-a (' + res.status + ')'));
+    }
+    const sent = Number(data.sent || 0);
+    const total = Number(data.total || 0);
+    const warning = data.warning ? '\n\n' + data.warning : '';
+    alert(`Push je pripremljen.\nPoslato: ${sent}/${total}.${warning}`);
+    note.textContent = data.warning || `Gotovo. Poslato ${sent} od ${total} pretplatnika.`;
+    closePushModal();
+  } catch (err) {
+    note.textContent = err.message || 'Greška pri slanju.';
+    alert(err.message || 'Greška pri slanju.');
+  }
+  btn.textContent = 'Pošalji obaveštenje →';
+  btn.disabled = false;
+}
+
+document.getElementById('pushModal').addEventListener('click', function(e) { if (e.target === this) closePushModal(); });
+document.getElementById('pushTitle').addEventListener('input', syncPushPreview);
+document.getElementById('pushBody').addEventListener('input', syncPushPreview);
+document.getElementById('pushUrl').addEventListener('input', syncPushPreview);
+
+// RECENZIJE
+// ═══════════════════════════════════════════
+async function loadReviews() {
+  const d = await api('get_reviews').catch(() => null);
+  if (!d) return;
+  const { pending, approved, all } = d;
+  const avg = all.length ? (all.reduce((s, r) => s + r.rating, 0) / all.length).toFixed(1) : '—';
+  const avgNum = parseFloat(avg);
+  if (!isNaN(avgNum)) animateCounter('stAvg', avgNum);
+  else document.getElementById('stAvg').textContent = avg;
+  const pbEl = document.getElementById('pendingBadge');
+  if (pbEl) {
+    if (pending.length > 0) {
+      pbEl.textContent = pending.length + ' na čekanju';
+      pbEl.style.display = '';
+    } else {
+      pbEl.style.display = 'none';
+    }
+  }
+  const rbEl = document.getElementById('reviewsBadge');
+  if (rbEl) { if (pending.length > 0) { rbEl.textContent = pending.length; rbEl.style.display = 'inline-flex'; } else { rbEl.style.display = 'none'; } }
+  animateCounter('stPending', pending.length);
+  animateCounter('stApproved', approved.length);
+  animateCounter('stTotal', all.length);
+  renderReviews('pendingList',  pending,  true);
+  renderReviews('approvedList', approved, false);
+  applyAdminSearch();
+  // Ažuriraj dashboard badge
+  window._lastReviewPending = pending.length;
+  if (typeof updateDashBadges === 'function') updateDashBadges({ reviewPending: pending.length, carePending: window._lastCarePending || 0 });
+}
+
+function renderReviews(id, items, isPending) {
+  const el = document.getElementById(id);
+  if (!items.length) {
+    el.innerHTML = '<div class="empty"><em>' + (isPending ? 'Nema novih recenzija' : 'Nema odobrenih') + '</em>' + (isPending ? 'Čekamo prve utiske.' : '') + '</div>';
+    return;
+  }
+  el.innerHTML = items.map(r => `
+    <div class="review-card ${isPending ? 'pending' : 'approved'}" id="rc-${r.id}" data-admin-search="${esc([r.name, r.car, r.city, r.text, isPending ? 'pending' : 'approved'].filter(Boolean).join(' '))}">
+      <div>
+        <div class="rv-header">
+          <span class="rv-stars">${'★'.repeat(r.rating)}</span>
+          <span class="rv-name">${esc(r.name)}</span>
+          ${r.car  ? `<span class="rv-car">· ${esc(r.car)}</span>`  : ''}
+          ${r.city ? `<span class="rv-city">· ${esc(r.city)}</span>` : ''}
+          <span class="rv-status ${isPending ? 'p' : 'a'}">${isPending ? 'Na čekanju' : 'Odobreno'}</span>
+        </div>
+        <p class="rv-text">„${esc(r.text)}"</p>
+        <div class="rv-date">${fmtDate(r.created_at)}</div>
+      </div>
+      <div class="rv-actions">
+        ${isPending
+          ? `<button class="act-btn act-approve" onclick="approveRev('${r.id}')">✓ Odobri</button>
+             <button class="act-btn act-reject"  onclick="rejectRev('${r.id}')">✕ Odbaci</button>`
+          : `<button class="act-btn act-hide" onclick="rejectRev('${r.id}')">Ukloni</button>`
+        }
+      </div>
+    </div>`).join('');
+  applyAdminSearch();
+}
+
+async function approveRev(id) {
+  const card = document.getElementById('rc-' + id);
+  card.style.opacity = '.3'; card.style.pointerEvents = 'none';
+  try {
+    await api('approve_review', { id });
+    loadReviews();
+  } catch (e) {
+    card.style.opacity = ''; card.style.pointerEvents = '';
+    alert('Greška pri odobravanju: ' + (e?.message || 'nepoznata greška'));
+  }
+}
+
+async function rejectRev(id) {
+  if (!confirm('Obrisati recenziju?')) return;
+  const card = document.getElementById('rc-' + id);
+  card.style.opacity = '.3'; card.style.pointerEvents = 'none';
+  try {
+    await api('delete_review', { id });
+    loadReviews();
+  } catch (e) {
+    card.style.opacity = ''; card.style.pointerEvents = '';
+    alert('Greška pri brisanju: ' + (e?.message || 'nepoznata greška'));
+  }
+}
+
+// ═══════════════════════════════════════════
+// LOYALTY ADMIN
+// ═══════════════════════════════════════════
+let allCust = [];
+
+let _washCountsByCustomer = {};
+
+async function loadLoyalty() {
+  const d = await api('get_loyalty').catch(() => null);
+  if (!d) return;
+  const { requests: reqArr, customers: custArr } = d;
+  allCust = custArr;
+
+  const godPlan = custArr.filter(c => (c.plan_type || c.care_plan || '').includes('god')).length;
+  const mesPlan = custArr.filter(c => { const pt = c.plan_type || c.care_plan || ''; return pt.includes('mes') && !pt.includes('god'); }).length;
+  const noPlan  = custArr.filter(c => !c.plan_type && !c.care_plan).length;
+
+  animateCounter('lyStat1', custArr.length);
+  animateCounter('lyStat2', godPlan);
+  animateCounter('lyStat3', mesPlan);
+  animateCounter('lyStat4', noPlan);
+
+  try {
+    const counts = await api('get_period_wash_counts').catch(() => ({ yearCounts: {}, monthCounts: {} }));
+    _washCountsByCustomer = {};
+    custArr.forEach(c => {
+      const isGod = (c.plan_type || c.care_plan || '').includes('god');
+      _washCountsByCustomer[c.id] = isGod
+        ? (counts.yearCounts?.[c.id]  || 0)
+        : (counts.monthCounts?.[c.id] || 0);
+    });
+  } catch(e) { _washCountsByCustomer = {}; }
+
+  renderLoyCust(custArr);
+  applyAdminSearch();
+}
+
+function renderLoyCust(custs) {
+  const el = document.getElementById('loyCustList');
+  if (!custs.length) {
+    el.innerHTML = `<div class='empty-big'><span class='em-icon'>💎</span><span class='em-title'>Nema loyalty klijenata</span><span class='em-sub'>Kada se klijent registruje ili ga ručno dodaš, pojaviće se ovde.</span></div>`;
+    return;
+  }
+  el.innerHTML = custs.map(c => {
+    const isReg    = !!c.auth_user_id;
+    const regBadge = isReg
+      ? '<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;margin-left:8px;background:rgba(39,174,96,.12);color:#27AE60;border:1px solid rgba(39,174,96,.3)">✓ Registrovan</span>'
+      : '<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;margin-left:8px;background:rgba(255,255,255,.05);color:#666;border:1px solid rgba(255,255,255,.08)">Ručno dodat</span>';
+    const planTag  = planBadge(c);
+    const waPhone  = c.phone ? c.phone.replace(/\s/g, '').replace(/^\+/, '').replace(/^0/, '381') : '';
+    const adminNote = stripMaintenanceMeta(c.admin_note || '');
+    const planKey   = getLoyPlanKey(c);
+    const planInfo  = planKey ? PLAN_LABELS[planKey] : null;
+    const totalAlw  = getTotalAllowed(c);
+    const used      = getUsageThisPeriod(c, _washCountsByCustomer);
+    const pct       = totalAlw > 0 ? Math.min(100, Math.round((used / totalAlw) * 100)) : 0;
+    const periodLbl = (c.plan_type || c.care_plan || '').includes('god') ? 'ove god.' : 'ovog mes.';
+    return `<div class="loy-cust-card" id="lc-${c.id}" data-admin-search="${esc([c.name, c.email, c.phone, planKey, c.admin_note].filter(Boolean).join(' '))}">
+      <div style="flex:1;min-width:0">
+        <div class="lcc-name">${esc(c.name || '—')} ${regBadge}${planTag}</div>
+        <div class="lcc-meta">
+          <div>✉️ <span>${esc(c.email || '—')}</span> &nbsp;·&nbsp; 📱 <span>${esc(c.phone || '—')}</span></div>
+          <div>📅 Registrovan: <span>${fmtDate(c.created_at, false)}</span></div>
+          ${(()=>{
+            // Datumi pretplate
+            if (!planInfo || !c.care_plan_since) return '';
+            const isAnnual = (c.plan_type || c.care_plan || '').includes('god');
+            const sinceDate = new Date(c.care_plan_since);
+            const sinceLabel = sinceDate.toLocaleDateString('sr-RS', {day:'2-digit',month:'2-digit',year:'numeric'});
+            let expiryHtml = '';
+            if (isAnnual) {
+              const expDate = new Date(sinceDate);
+              expDate.setFullYear(expDate.getFullYear() + 1);
+              const expLabel = expDate.toLocaleDateString('sr-RS', {day:'2-digit',month:'2-digit',year:'numeric'});
+              const now = new Date();
+              const daysLeft = Math.ceil((expDate - now) / 86400000);
+              const expColor = daysLeft < 0 ? '#C0392B' : daysLeft < 30 ? '#E67E22' : '#2ECC71';
+              const expNote  = daysLeft < 0
+                ? `<span style="color:#C0392B;font-size:10px;font-weight:700;margin-left:6px">ISTEKLO</span>`
+                : daysLeft < 30
+                  ? `<span style="color:#E67E22;font-size:10px;margin-left:6px">za ${daysLeft} dana</span>`
+                  : `<span style="color:#555;font-size:10px;margin-left:6px">za ${daysLeft} dana</span>`;
+              expiryHtml = `<span style="color:${expColor}">važi do ${expLabel}</span>${expNote}`;
+            } else {
+              expiryHtml = '<span style="color:#555">mesečno obnavljanje</span>';
+            }
+            return `<div style="margin-top:3px">🗓 Pretplata od: <span style="color:#F2C200">${sinceLabel}</span> &nbsp;—&nbsp; ${expiryHtml}</div>`;
+          })()}
+          ${planInfo ? `<div style="margin-top:8px;padding:10px 14px;background:${planInfo.bg};border-left:2px solid ${planInfo.color};display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <span style="font-size:11px;color:${planInfo.color};font-weight:600">★ ${planInfo.label}</span>
+            <span style="font-family:var(--serif);font-size:22px;font-weight:300;color:#F2F0EC;line-height:1">
+              <strong style="color:${used >= totalAlw ? '#C0392B' : '#F2F0EC'}">${used}</strong><span style="font-size:13px;color:#666">/${totalAlw}</span>
+              <span style="font-size:10px;color:#777;font-weight:300;font-family:var(--sans)"> ${periodLbl}</span>
+            </span>
+          </div>
+          <div style="height:4px;background:#1C1C1C;margin-top:2px">
+            <div style="height:100%;width:${pct}%;background:${used >= totalAlw ? '#C0392B' : '#555'};transition:width .4s"></div>
+          </div>` : `<div style="margin-top:6px;font-size:11px;color:#555">Bez aktivnog plana</div>`}
+          ${adminNote ? `<div style="margin-top:6px;padding:7px 10px;background:rgba(192,57,43,.06);border-left:2px solid rgba(192,57,43,.3);font-size:11px;color:#888">📝 ${esc(adminNote)}</div>` : ''}
+        </div>
+      </div>
+      <div class="lcc-actions">
+        <button class="lcc-btn" style="background:rgba(192,57,43,.15);color:#E74C3C;border:1px solid rgba(192,57,43,.4);font-weight:700" onclick="openAddServiceModal('${c.id}','${esc(c.name)}')">+ Dodaj uslugu</button>
+        <button class="lcc-btn" onclick="toggleWashHistory('${c.id}')">📋 Istorija</button>
+        ${waPhone ? `<a href="https://wa.me/${waPhone}" target="_blank" class="lcc-btn" style="background:rgba(37,211,102,.08);color:#25D366;border:1px solid rgba(37,211,102,.25);text-decoration:none;display:block;text-align:center">💬 WhatsApp</a>` : ''}
+        <button class="lcc-btn" onclick="openNoteModal('${c.id}','${esc(c.name)}','${esc(adminNote)}')">📝 Napomena</button>
+        <button class="lcc-btn" style="background:rgba(255,194,0,.08);color:#F2C200;border:1px solid rgba(255,194,0,.25)" onclick="openPlanModal('${c.id}','${esc(c.name)}','${planKey||''}')">💎 Plan</button>
+        <button class="lcc-btn" style="background:rgba(192,57,43,.1);color:#C0392B;border:1px solid rgba(192,57,43,.3);margin-top:4px" onclick="custDeleteAccount('${c.id}','${esc(c.name)}','${c.auth_user_id || ''}')">🗑 Briši</button>
+      </div>
+      <div id="hist-${c.id}" class="lcc-hist-box"></div>
+    </div>`;
+  }).join('');
+  applyAdminSearch();
+}
+
+// ── DODAJ USLUGU MODAL ──────────────────────────────────
+let _svcCustId = '', _svcCustName = '';
+function openAddServiceModal(custId, name) {
+  _svcCustId   = custId;
+  _svcCustName = name;
+  document.getElementById('svcModal-label').textContent = name;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('svcModal-date').value  = today;
+  document.getElementById('svcModal-note').value  = '';
+  document.getElementById('svcModal-msg').style.display = 'none';
+  document.getElementById('svcModal').style.display = 'flex';
+}
+function closeAddServiceModal() {
+  document.getElementById('svcModal').style.display = 'none';
+  _svcCustId = ''; _svcCustName = '';
+}
+async function saveAddServiceModal() {
+  if (!_svcCustId) return;
+  const date = document.getElementById('svcModal-date').value;
+  const note = document.getElementById('svcModal-note').value.trim() || 'Admin — ručno dodato';
+  if (!date) { document.getElementById('svcModal-msg').textContent = 'Unesite datum.'; document.getElementById('svcModal-msg').style.display = 'block'; return; }
+  const btn = document.querySelector('#svcModal .nm-save');
+  btn.textContent = 'Čuvam...'; btn.disabled = true;
+  try {
+    await api('add_wash', { custId: _svcCustId, custName: _svcCustName, note, serviceDate: date });
+    closeAddServiceModal();
+    loadLoyalty();
+  } catch(e) {
+    document.getElementById('svcModal-msg').textContent = 'Greška: ' + e.message;
+    document.getElementById('svcModal-msg').style.display = 'block';
+  }
+  btn.textContent = 'Sačuvaj →'; btn.disabled = false;
+}
+document.getElementById('svcModal')?.addEventListener('click', function(e) { if (e.target === this) closeAddServiceModal(); });
+
+async function custDeleteAccount(id, name, authUserId) {
+  if (!confirm('⚠️ BRISANJE NALOGA\n\nOvo će trajno obrisati sve podatke za: ' + name + '\n— Loyalty profil\n— Istoriju pranja\n— Zahteve\n' + (authUserId ? '— Auth nalog (login pristup)\n' : '') + '\nNe može se poništiti. Nastaviti?')) return;
+  const card = document.getElementById('lc-' + id);
+  if (card) { card.style.opacity = '.3'; card.style.pointerEvents = 'none'; }
+  await api('delete_customer', { custId: id, authUserId });
+  loadLoyalty();
+}
+
+// ═══════════════════════════════════════════
+// LOYALTY FILTERI
+// ═══════════════════════════════════════════
+let _loyActiveFilter = 'all';
+
+function loySetFilter(f) {
+  _loyActiveFilter = f;
+  // toggle pill highlight
+  document.querySelectorAll('.fpill').forEach(b => {
+    b.classList.remove('on', 'on-green');
+  });
+  const pill = document.getElementById('fp-' + f);
+  if (pill) pill.classList.add('on');
+  loyApplyFilters();
+}
+
+function loyApplyFilters() {
+  const text = (document.getElementById('loySearchInp')?.value || '').toLowerCase();
+  const info = document.getElementById('loyFilterInfo');
+
+  let filtered = allCust.filter(c => {
+    // text search
+    if (text) {
+      const match =
+        (c.name  || '').toLowerCase().includes(text) ||
+        (c.email || '').toLowerCase().includes(text) ||
+        (c.phone || '').includes(text);
+      if (!match) return false;
+    }
+    // pill filter
+    switch (_loyActiveFilter) {
+      case 'registered': return !!c.auth_user_id;
+      case 'god':        return !!(c.care_plan && c.care_plan.includes('god'));
+      case 'mes':        return !!(c.care_plan && c.care_plan.includes('mes'));
+      default:           return true;
+    }
+  });
+
+  // info line
+  if (_loyActiveFilter !== 'all' || text) {
+    const labels = { registered: '✓ Registrovani', god: '📅 Godišnji plan', mes: '🗓 Mesečni plan' };
+    info.style.display = 'block';
+    info.textContent = `Prikazujem ${filtered.length} od ${allCust.length} korisnika${_loyActiveFilter !== 'all' ? ' · ' + labels[_loyActiveFilter] : ''}${text ? ' · pretraga: "' + text + '"' : ''}`;
+  } else {
+    info.style.display = 'none';
+  }
+
+  renderLoyCust(filtered);
+}
+
+function loyFilterCust(val) { loyApplyFilters(); }
+
+// ═══════════════════════════════════════════
+// ISTORIJA PRANJA (expandable)
+// ═══════════════════════════════════════════
+async function toggleWashHistory(custId) {
+  const box = document.getElementById('hist-' + custId);
+  if (!box) return;
+  if (box.classList.contains('open')) { box.classList.remove('open'); return; }
+  box.classList.add('open');
+  box.innerHTML = '<div class="lcc-hist-empty">Učitavanje istorije...</div>';
+  try {
+    const data = await api('get_wash_history', { custId });
+    if (!Array.isArray(data) || !data.length) {
+      box.innerHTML = '<div class="lcc-hist-empty">Nema evidencije pranja.</div>'; return;
+    }
+    box.innerHTML = '<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:8px;font-weight:700">ISTORIJA USLUGA</div>' +
+      data.map((w, i) => {
+        const dateStr = w.service_date
+          ? new Date(w.service_date + 'T00:00:00').toLocaleDateString('sr-RS', {day:'2-digit', month:'2-digit', year:'numeric'})
+          : fmtDate(w.created_at, false);
+        return `<div class="lcc-hist-item">
+          <span style="color:#666;width:20px;text-align:right;flex-shrink:0">${data.length - i}.</span>
+          <span style="flex:1;margin:0 10px">${w.note || 'Premium usluga'}</span>
+          <span>${dateStr}</span>
+        </div>`;
+      }).join('');
+  } catch {
+    box.innerHTML = '<div class="lcc-hist-empty">Greška pri učitavanju.</div>';
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAPOMENA (note modal)
+// ═══════════════════════════════════════════
+let _noteCustomerId = null;
+function openNoteModal(custId, name, existingNote) {
+  _noteCustomerId = custId;
+  document.getElementById('noteModal-label').textContent = 'Napomena za: ' + name;
+  document.getElementById('noteModal-txt').value = existingNote || '';
+  document.getElementById('noteModal').classList.add('open');
+}
+function closeNoteModal() {
+  document.getElementById('noteModal').classList.remove('open');
+  _noteCustomerId = null;
+}
+async function saveNote() {
+  if (!_noteCustomerId) return;
+  const note = document.getElementById('noteModal-txt').value.trim();
+  await api('save_note', { custId: _noteCustomerId, note });
+  closeNoteModal();
+  loadLoyalty();
+}
+document.getElementById('noteModal').addEventListener('click', function(e) { if (e.target === this) closeNoteModal(); });
+
+// ═══════════════════════════════════════════
+// LOYALTY PLAN MODAL
+// ═══════════════════════════════════════════
+let _planCustId = '';
+function openPlanModal(custId, name, currentPlan) {
+  _planCustId = custId;
+  document.getElementById('planModal-label').textContent = name;
+  document.getElementById('planModal-sel').value = currentPlan || '';
+  document.getElementById('planModal').style.display = 'flex';
+}
+function closePlanModal() {
+  document.getElementById('planModal').style.display = 'none';
+  _planCustId = '';
+}
+async function savePlanModal() {
+  if (!_planCustId) return;
+  const plan = document.getElementById('planModal-sel').value;
+  const btn  = document.querySelector('#planModal .nm-save');
+  btn.textContent = 'Čuvam...'; btn.disabled = true;
+  try {
+    await api('update_care_plan', { custId: _planCustId, plan: plan || null });
+    closePlanModal();
+    loadLoyalty();
+  } catch (e) {
+    alert('Greška pri čuvanju Loyalty plana: ' + e.message);
+  }
+  btn.textContent = 'Sačuvaj plan →'; btn.disabled = false;
+}
+document.getElementById('planModal').addEventListener('click', function(e) { if (e.target === this) closePlanModal(); });
+
+// ── birthDateFromNote (čita DOB: iz napomene) ─────────────
+function birthDateFromNote(note) {
+  const m = String(note || '').match(/DOB:(\d{4}-\d{2}-\d{2})/i);
+  return m ? m[1] : '';
+}
+
+// ── Šalje welcome email klijentu pri aktivaciji ───────────
+function sendLoyaltyWelcomeEmail(name, email, plan, velicina) {
+  if (!email) return;
+  fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'loyalty_welcome', name, email, plan, velicina })
+  }).catch(() => {});
+}
+
+// ═══════════════════════════════════════════
+// LOYALTY PRIJAVE
+// ═══════════════════════════════════════════
+let allCare = [];
+const _cgrp = {}; // cache za grupe — koristi renderCareGroups
+
+// Grupisanje kontakata po osobi (email ili telefon kao ključ)
+function groupCareByPerson(items) {
+  const groups = new Map();
+  items.forEach(c => {
+    const phone = (c.telefon || '').replace(/[\s\-\(\)]+/g, '');
+    const email = (c.email  || '').toLowerCase().trim();
+    const key   = email || phone || ('_x' + c.id);
+    if (!groups.has(key)) {
+      groups.set(key, { ime: c.ime, telefon: c.telefon, email: c.email, cars: [], newestDate: c.created_at });
+    }
+    const g = groups.get(key);
+    g.cars.push(c);
+    if (new Date(c.created_at) > new Date(g.newestDate)) {
+      g.newestDate = c.created_at;
+      g.ime     = c.ime     || g.ime;
+      g.telefon = c.telefon || g.telefon;
+      g.email   = c.email   || g.email;
+    }
+  });
+  return Array.from(groups.values());
+}
+
+async function loadCare() {
+  const data = await api('get_contacts').catch(() => null);
+  const all  = Array.isArray(data) ? data : [];
+
+  // Filter — hvata sve loyalty prijave i direktne registracije (uključuje stare "maintenance" zapise radi kompatibilnosti)
+  const careAll = all.filter(c => {
+    const u = (c.usluga || '').toLowerCase();
+    const st = (c.submission_type || '').toLowerCase();
+    return u.includes('maintenance') || u.includes('laker ritual') || u.includes('laker care')
+      || u.includes('loyalty prijava') || st === 'loyalty_registration';
+  });
+  allCare = careAll;
+
+  // Grupiši po osobi
+  const allGroups     = groupCareByPerson(careAll);
+  // Pending grupe: bar jedno vozilo nije aktivirano
+  const pendingGroups = allGroups.filter(g => g.cars.some(c => !c.loyalty_added));
+  // Done grupe: sva vozila aktivirana
+  const doneGroups    = allGroups.filter(g => g.cars.every(c =>  c.loyalty_added));
+  const yearly        = careAll.filter(c => (c.usluga||'').toLowerCase().includes('godišnj') || (c.usluga||'').toLowerCase().includes('godisnj')).length;
+
+  animateCounter('careStat1', allGroups.length);
+  animateCounter('careStat2', pendingGroups.length);
+  animateCounter('careStat3', doneGroups.length);
+  animateCounter('careStat4', yearly);
+
+  // Badge na tabu
+  const badge = document.getElementById('careTabBadge');
+  if (badge) {
+    if (pendingGroups.length > 0) { badge.textContent = pendingGroups.length; badge.style.display = 'inline-flex'; }
+    else { badge.style.display = 'none'; }
+  }
+
+  renderCareGroups('carePendingList', pendingGroups, true);
+  renderCareGroups('careDoneList',    doneGroups,    false);
+  applyAdminSearch();
+  // Ažuriraj dashboard badge
+  window._lastCarePending = pendingGroups.length;
+  if (typeof updateDashBadges === 'function') updateDashBadges({ reviewPending: window._lastReviewPending || 0, carePending: pendingGroups.length });
+}
+
+function careFilter(val) {
+  const v = (val || '').toLowerCase().trim();
+  const filtered = v
+    ? allCare.filter(c =>
+        (c.ime     || '').toLowerCase().includes(v) ||
+        (c.email   || '').toLowerCase().includes(v) ||
+        (c.telefon || '').toLowerCase().includes(v) ||
+        (c.auto    || '').toLowerCase().includes(v)
+      )
+    : allCare;
+  const allGroups     = groupCareByPerson(filtered);
+  const pendingGroups = allGroups.filter(g => g.cars.some(c => !c.loyalty_added));
+  const doneGroups    = allGroups.filter(g => g.cars.every(c =>  c.loyalty_added));
+  renderCareGroups('carePendingList', pendingGroups, true);
+  renderCareGroups('careDoneList',    doneGroups,    false);
+  applyAdminSearch();
+}
+
+function renderCareGroups(id, groups, isPending) {
+  const el = document.getElementById(id);
+  if (!groups.length) {
+    el.innerHTML = '<div class="empty"><em>' + (isPending ? 'Nema novih prijava' : 'Nema aktiviranih') + '</em>' + (isPending ? 'Čim neko popuni formu, pojaviće se ovde.' : '') + '</div>';
+    return;
+  }
+
+  el.innerHTML = groups.map((g, idx) => {
+    const gid = id + '_g' + idx;
+    _cgrp[gid] = g;
+
+    const waPhone  = g.telefon ? g.telefon.replace(/\s/g,'').replace(/^\+/,'').replace(/^0/,'381') : '';
+    const waTekst  = encodeURIComponent(
+      'Zdravo ' + (g.ime||'') + ',\n\n' +
+      'Vaša Loyalty prijava je primljena.\n\n' +
+      'Javite se da dogovorimo termin i detalje.\n\n' +
+      '060 726 0302 — Laker Detailing, Čačak'
+    );
+    const pendingCars  = g.cars.filter(c => !c.loyalty_added);
+    const allActivated = pendingCars.length === 0;
+    const multiCar     = g.cars.length > 1;
+    const firstId      = g.cars[0].id;
+
+    // Render svakog vozila kao red unutar kartice
+    const carsHtml = g.cars.map(c => {
+      const isGod  = (c.usluga||'').toLowerCase().includes('godišnj') || (c.usluga||'').toLowerCase().includes('god');
+      const isVS   = (c.velicina||'').toLowerCase().match(/veliki|suv|vs|extra/);
+      const planPrice = isGod ? (isVS ? '€349/god' : '€299/god') : (isVS ? '€40/mes' : '€35/mes');
+      const planTag = isGod
+        ? '<span class="care-plan-tag care-plan-god">Godišnji · ' + planPrice + '</span>'
+        : '<span class="care-plan-tag care-plan-mes">Mesečni · ' + planPrice + '</span>';
+      const dob      = birthDateFromNote(c.napomena);
+      const active   = c.loyalty_added;
+      return `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;margin-top:5px;background:rgba(255,255,255,.025);border-left:2px solid ${active ? 'rgba(39,174,96,.5)' : 'rgba(192,57,43,.4)'}">
+        <span style="font-size:12px">\uD83D\uDE97 <strong style="color:${active?'#888':'#eee'}">${esc(c.auto || '\u2014')}</strong>${c.velicina ? ' <span style="color:#555;font-size:11px">(' + esc(c.velicina) + ')</span>' : ''}</span>
+        ${planTag}
+        ${active ? '<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;background:rgba(39,174,96,.1);color:#27AE60;border:1px solid rgba(39,174,96,.3)">\u2713 Aktivan</span>' : ''}
+        ${dob ? '<span style="font-size:11px;color:#666">\uD83C\uDF82 ' + esc(dob) + '</span>' : ''}
+        <span style="font-size:10px;color:#444;margin-left:auto">\uD83D\uDD50 ${fmtDate(c.created_at)}</span>
+        ${!active ? `<button onclick="careActivateSingle(event,'${esc(c.id)}','${esc(g.ime||'')}','${esc(g.telefon||'')}','${esc(g.email||'')}','${esc(c.usluga||'')}','${esc(c.napomena||'')}','${esc(c.velicina||'')}')" style="padding:5px 12px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(39,174,96,.3);background:rgba(39,174,96,.12);color:#2ECC71;cursor:pointer;font-family:var(--sans)">Aktiviraj</button><div id="crok-${c.id}" style="display:none;font-size:10px;color:#27AE60;font-weight:700">\u2713 Ok</div>` : ''}
+      </div>`;
+    }).join('');
+
+    return `<div class="ct-card" id="crdc-${firstId}" style="${isPending ? 'border-left:3px solid var(--red)' : 'border-left:3px solid #27AE60;opacity:.75'}" data-admin-search="${esc([g.ime, g.email, g.telefon, g.cars.map(c=>c.auto).join(' ')].filter(Boolean).join(' '))}">
+      <div class="ct-info" style="flex:1;min-width:0">
+        <div class="ct-name">
+          ${esc(g.ime || '\u2014')}
+          ${allActivated ? '<span class="ct-tag">\u2713 Aktiviran</span>' : ''}
+          ${multiCar ? '<span style="display:inline-block;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;margin-left:6px;background:rgba(255,194,0,.1);color:#F2C200;border:1px solid rgba(255,194,0,.22)">' + g.cars.length + ' VOZILA</span>' : ''}
+        </div>
+        <div class="ct-meta">
+          <div>\uD83D\uDCF1 <span>${esc(g.telefon || '\u2014')}</span> &nbsp;\u00b7&nbsp; \u2709\uFE0F <span>${esc(g.email || '\u2014')}</span></div>
+        </div>
+        ${carsHtml}
+      </div>
+      <div class="ct-actions">
+        ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waTekst}" target="_blank" class="ct-btn" style="background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.3);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">\uD83D\uDCAC WhatsApp klijentu</a>` : ''}
+        ${pendingCars.length > 1 ? `<button class="ct-btn ct-btn-loy" onclick="careActivateAll('${gid}')">\u2713 Aktiviraj sve (${pendingCars.length})</button>` : ''}
+        <button class="ct-btn ct-btn-del" onclick="careDeleteAll('${gid}')">Obriši prijave</button>
+      </div>
+    </div>`;
+  }).join('');
+  applyAdminSearch();
+}
+
+async function careActivate(ctId, name, phone, email, usluga, note) {
+  const plan      = detectPlan(usluga);
+  const planLabel = PLAN_LABELS[plan]?.label || 'Loyalty';
+  if (!confirm(`Aktivirati ${planLabel} za ${name}?\n\nBiće dodat u Loyalty sistem sa odabranim planom.`)) return;
+  const btn = event.target; btn.textContent = 'Aktiviram...'; btn.disabled = true;
+  try {
+    await api('add_contact_to_loyalty', { ctId, name, phone, email, plan, note });
+    document.getElementById('crok-' + ctId).style.display = 'block';
+    setTimeout(() => { loadCare(); loadLoyalty(); }, 800);
+  } catch (e) {
+    alert('Greška pri aktivaciji Loyalty plana: ' + e.message);
+    btn.textContent = '✓ Dodaj u Loyalty';
+    btn.disabled = false;
+  }
+}
+
+// Aktivacija jednog vozila unutar grupne kartice
+async function careActivateSingle(event, ctId, name, phone, email, usluga, note, velicina) {
+  const plan      = detectPlan(usluga, velicina);
+  const planLabel = PLAN_LABELS[plan]?.label || 'Loyalty';
+  const velSize   = plan.includes('vs') ? 'vs' : 'ms';
+  if (!confirm(`Aktivirati ${planLabel} za ${name}?\n\nBiće dodat u Loyalty sistem i poslaće se dobrodošlica na email.`)) return;
+  const btn = event.target;
+  const origText = btn.textContent;
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    await api('add_contact_to_loyalty', { ctId, name, phone, email, plan, note });
+    // Pošalji welcome email klijentu
+    sendLoyaltyWelcomeEmail(name, email, plan, velSize);
+    const crokEl = document.getElementById('crok-' + ctId);
+    if (crokEl) crokEl.style.display = 'inline-block';
+    btn.style.display = 'none';
+    setTimeout(() => { loadCare(); loadLoyalty(); }, 900);
+  } catch (e) {
+    alert('Greška: ' + e.message);
+    btn.textContent = origText; btn.disabled = false;
+  }
+}
+
+// Aktivacija svih vozila u grupi odjednom
+async function careActivateAll(gid) {
+  const g = _cgrp[gid];
+  if (!g) return;
+  const pending = g.cars.filter(c => !c.loyalty_added);
+  if (!pending.length) return;
+  const vozila = pending.map(c => c.auto || 'vozilo').join(', ');
+  if (!confirm(`Aktivirati sve planove za ${g.ime}?\nVozila: ${vozila}\n\nPoslaće se email dobrodošlice.`)) return;
+  let lastPlan = null;
+  for (const c of pending) {
+    const plan = detectPlan(c.usluga);
+    lastPlan = plan;
+    await api('add_contact_to_loyalty', { ctId: c.id, name: g.ime, phone: g.telefon, email: g.email, plan, note: c.napomena }).catch(() => {});
+  }
+  // Pošalji jedan welcome email (za poslednji/jedini plan)
+  if (lastPlan && g.email) {
+    const velicina = lastPlan.includes('vs') ? 'vs' : 'ms';
+    sendLoyaltyWelcomeEmail(g.ime, g.email, lastPlan, velicina);
+  }
+  loadCare(); loadLoyalty();
+}
+
+// Brisanje svih prijava u grupi
+async function careDeleteAll(gid) {
+  const g = _cgrp[gid];
+  if (!g) return;
+  const count = g.cars.length;
+  if (!confirm(`Obrisati ${count === 1 ? 'ovu prijavu' : 'sve ' + count + ' prijave'} za ${g.ime}?`)) return;
+  for (const c of g.cars) {
+    await api('delete_contact', { id: c.id });
+  }
+  loadCare();
+}
+
+async function careDelete(id) {
+  if (!confirm('Obrisati ovu prijavu?')) return;
+  await api('delete_contact', { id });
+  loadCare();
+}
+
+// loadContacts — uklonjeno jer booking forma nije aktivna na sajtu
+
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// UPITI (BOOKING ZAHTEVI)
+// ═══════════════════════════════════════════
+let allContacts = [];
+
+async function loadContacts() {
+  const data = await api('get_contacts').catch(() => null);
+  const all  = Array.isArray(data) ? data : [];
+
+  // Prikazujemo samo booking zahteve — loyalty prijave su u tabu "Loyalty Prijave"
+  const bookingAll = all.filter(c => {
+    const u  = (c.usluga || '').toLowerCase();
+    const st = (c.submission_type || '').toLowerCase();
+    return !u.includes('maintenance') && !u.includes('laker ritual') && !u.includes('laker care')
+      && !u.includes('loyalty prijava') && st !== 'loyalty_registration';
+  });
+  allContacts = bookingAll;
+
+  const thisMonth = new Date().toISOString().slice(0, 7);
+  const withDate  = bookingAll.filter(c => c.datum).length;
+  const thisMonthCount = bookingAll.filter(c => (c.created_at || '').startsWith(thisMonth)).length;
+
+  animateCounter('ctStat1', bookingAll.length);
+  animateCounter('ctStat2', bookingAll.filter(c => !c.loyalty_added).length);
+  animateCounter('ctStat3', withDate);
+  animateCounter('ctStat4', thisMonthCount);
+
+  const badge = document.getElementById('contactsBadge');
+  if (badge) {
+    const pending = bookingAll.filter(c => !c.loyalty_added).length;
+    if (pending > 0) { badge.textContent = pending; badge.style.display = 'inline-flex'; }
+    else { badge.style.display = 'none'; }
+  }
+
+  renderContacts(bookingAll);
+  applyAdminSearch();
+}
+
+function contactsFilter(val) {
+  const v = (val || '').toLowerCase().trim();
+  const filtered = v
+    ? allContacts.filter(c =>
+        (c.ime     || '').toLowerCase().includes(v) ||
+        (c.email   || '').toLowerCase().includes(v) ||
+        (c.telefon || '').toLowerCase().includes(v) ||
+        (c.auto    || '').toLowerCase().includes(v) ||
+        (c.usluga  || '').toLowerCase().includes(v)
+      )
+    : allContacts;
+  renderContacts(filtered);
+  applyAdminSearch();
+}
+
+function renderContacts(items) {
+  const el = document.getElementById('contactsList');
+  if (!el) return;
+  if (!items.length) {
+    el.innerHTML = '<div class="empty"><em>Nema booking upita</em>Čim neko pošalje zahtev za termin, pojaviće se ovde.</div>';
+    return;
+  }
+  el.innerHTML = items.map(c => {
+    const waPhone = c.telefon ? c.telefon.replace(/\s/g,'').replace(/^\+/,'').replace(/^0/,'381') : '';
+    const waTekst = encodeURIComponent(
+      'Zdravo ' + (c.ime||'') + ',\n\n' +
+      'Primili smo vaš zahtev za termin — ' + (c.usluga||'') + '.\n\n' +
+      'Javite se da dogovorimo detalje.\n\n' +
+      '060 726 0302 — Laker Detailing, Čačak'
+    );
+    const napomena = stripMaintenanceMeta(c.napomena || '');
+    return `<div class="ct-card" data-admin-search="${esc([c.ime, c.email, c.telefon, c.auto, c.usluga].filter(Boolean).join(' '))}">
+      <div class="ct-info" style="flex:1;min-width:0">
+        <div class="ct-name">${esc(c.ime || '—')}</div>
+        <div class="ct-meta">
+          <div>📱 <span>${esc(c.telefon || '—')}</span> &nbsp;·&nbsp; ✉️ <span>${esc(c.email || '—')}</span></div>
+          <div>🚗 <strong>${esc(c.auto || '—')}</strong>${c.velicina ? ' <span style="color:#555;font-size:11px">(' + esc(c.velicina) + ')</span>' : ''}</div>
+          <div>📦 Usluga: <strong style="color:#C0392B">${esc(c.usluga || '—')}</strong>${c.datum ? ' &nbsp;·&nbsp; 📅 Željeni datum: <strong>' + esc(c.datum) + '</strong>' : ''}</div>
+          ${napomena ? '<div style="margin-top:4px;font-size:12px;color:#666">💬 ' + esc(napomena) + '</div>' : ''}
+          <div style="font-size:10px;color:#444;margin-top:4px">🕐 ${fmtDate(c.created_at)}</div>
+        </div>
+      </div>
+      <div class="ct-actions">
+        ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waTekst}" target="_blank" class="ct-btn" style="background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.3);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">💬 WhatsApp</a>` : ''}
+        ${c.email ? `<a href="mailto:${esc(c.email)}?subject=Zahtev za termin — Laker Detailing" class="ct-btn" style="background:rgba(255,255,255,.04);color:#aaa;border:1px solid rgba(255,255,255,.1);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">✉️ Email</a>` : ''}
+        <button class="ct-btn ct-btn-del" onclick="ctDelete('${esc(c.id)}')">Obriši</button>
+        <div id="ctok-${esc(c.id)}" style="display:none;font-size:10px;color:#27AE60;font-weight:700">✓ Obrisano</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function ctDelete(ctId) {
+  if (!confirm('Obrisati ovaj upit?')) return;
+  await api('delete_contact', { id: ctId });
+  document.getElementById('ctok-' + ctId).style.display = 'block';
+  setTimeout(() => loadContacts(), 600);
+}
+
+</script>
+
+<script>
+// ═══════════════════════════════════════════
+// KEYBOARD SHORTCUTS: 1-5 za tabove
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const tabMap = { '1': 'dashboard', '2': 'reviews', '3': 'loyalty', '4': 'care', '5': 'contacts' };
+  if (tabMap[e.key]) {
+    const tabName = tabMap[e.key];
+    const btn = document.querySelector('.admin-tab[data-tab="' + tabName + '"]');
+    if (btn) { btn.click(); btn.focus(); }
+  }
+});
+
+// ═══════════════════════════════════════════
+// COUNTER ANIMATION
+// ═══════════════════════════════════════════
+function animateCounter(elOrId, target) {
+  const el = typeof elOrId === 'string' ? document.getElementById(elOrId) : elOrId;
+  if (!el) return;
+  const duration = 600;
+  const startTime = performance.now();
+  const startVal  = parseFloat(el.textContent) || 0;
+  const isFloat   = String(target).includes('.');
+  el.classList.add('counting');
+  function step(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease     = 1 - Math.pow(1 - progress, 3);
+    const val      = startVal + (target - startVal) * ease;
+    el.textContent = isFloat ? val.toFixed(1) : Math.round(val);
+    if (progress < 1) requestAnimationFrame(step);
+    else { el.textContent = isFloat ? target.toFixed(1) : target; el.classList.remove('counting'); }
+  }
+  requestAnimationFrame(step);
+}
+
+// ═══════════════════════════════════════════
+// CONFETTI BURST (mini celebration)
+// ═══════════════════════════════════════════
+function confettiBurst(x, y) {
+  const colors = ['#C0392B','#F2C200','#16A085','#E91E63','#fff'];
+  for (let i = 0; i < 14; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-particle';
+    p.style.cssText = `
+      left: ${x + (Math.random()-0.5)*60}px;
+      top:  ${y + (Math.random()-0.5)*20}px;
+      background: ${colors[i % colors.length]};
+      animation-delay: ${Math.random()*0.2}s;
+      animation-duration: ${0.8 + Math.random()*0.6}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1400);
+  }
+}
+
+
+// ═══════════════════════════════════════════
+// INIT: set initial tab color on load
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', function() {
+  setTabAccentColor('dashboard');
+  // Sakrij sve strip-ove osim dashboard na loadu
+  ['reviews','loyalty','care','contacts'].forEach(t => {
+    const s = document.getElementById('strip-' + t);
+    if (s) s.style.display = 'none';
+    const tb = document.getElementById('toolbar-' + t);
+    if (tb) tb.classList.remove('on');
+  });
+});
+
+// ─── DASHBOARD LOAD ────────────────────────────────────
+async function loadDashboard() {
+  const today = new Date();
+  const d = document.getElementById('dash-date');
+  if (d) d.textContent = today.toLocaleDateString('sr-Latn-RS', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // Prikaži "ažurirano" timestamp
+  const updEl = document.getElementById('dash-updated');
+
+
+  try {
+    // Loyalty prijave na čekanju (za prvu KPI karticu)
+    const careData = await api('get_contacts').catch(() => null);
+    const careAll = Array.isArray(careData) ? careData : [];
+    const isLoyEntry = c => { const u=(c.usluga||'').toLowerCase(); const n=(c.napomena||'').toLowerCase(); const s=(c.submission_type||'').toLowerCase(); return u.includes('maintenance')||u.includes('laker ritual')||u.includes('laker care')||u.includes('loyalty prijava')||n.includes('maintenance prijava')||s==='loyalty_registration'; };
+    const carePending = careAll.filter(c => isLoyEntry(c) && !c.loyalty_added).length;
+    animateCounter('dash-bookings-today', carePending);
+    const subEl = document.getElementById('dash-bookings-total-sub');
+    if (subEl) subEl.textContent = carePending === 0 ? 'Sve aktivirano' : carePending + ' čeka aktivaciju';
+  } catch(e) { /* tiho */ }
+
+  try {
+    // Loyalty članovi
+    const loy = await api('get_loyalty_customers', {});
+    const loyAll = Array.isArray(loy) ? loy : (loy?.data || []);
+    animateCounter('dash-loy-total', loyAll.length);
+
+    // Plan breakdown
+    let msMes=0, msGod=0, vsMes=0, vsGod=0, revenue=0;
+    loyAll.forEach(c => {
+      const plan = String(c.care_plan||'').toLowerCase();
+      const isGod = plan.includes('god') || plan.includes('annual');
+      const isVS  = String(c.velicina||c.car_size||'').toLowerCase().match(/veliki|suv|vs|extra/);
+      if (isVS && isGod)       { vsGod++;  revenue += 349/12; }
+      else if (isVS && !isGod) { vsMes++;  revenue += 40; }
+      else if (!isVS && isGod) { msGod++;  revenue += 299/12; }
+      else                      { msMes++;  revenue += 35; }
+    });
+    animateCounter('dash-plan-ms-mes', msMes);
+    animateCounter('dash-plan-ms-god', msGod);
+    animateCounter('dash-plan-vs-mes', vsMes);
+    animateCounter('dash-plan-vs-god', vsGod);
+    const revEl = document.getElementById('dash-revenue');
+    if (revEl) revEl.textContent = '€' + Math.round(revenue);
+    const noteEl = document.getElementById('dash-revenue-note');
+    if (noteEl) noteEl.textContent = `${msMes+vsMes} mes · ${msGod+vsGod} god`;
+  } catch(e) { /* tiho */ }
+
+  // Timestamp "ažurirano"
+  if (updEl) {
+    const hh = String(today.getHours()).padStart(2,'0');
+    const mm = String(today.getMinutes()).padStart(2,'0');
+    updEl.textContent = 'Ažurirano u ' + hh + ':' + mm;
+    updEl.style.display = 'flex';
+  }
+}
+
+// Ažurira badge-ove na Dashboard quick action karticama
+function updateDashBadges({ reviewPending, carePending }) {
+  const rb = document.getElementById('dac-review-badge');
+  if (rb) { rb.textContent = reviewPending + ' na čekanju'; rb.classList.toggle('vis', reviewPending > 0); }
+  const cb = document.getElementById('dac-care-badge');
+  if (cb) { cb.textContent = carePending + ' čeka'; cb.classList.toggle('vis', carePending > 0); }
+}
+
+
+</script>
+
+<script>
+(function registerPWA() {
+  if (!('serviceWorker' in navigator)) return;
+  const params = new URLSearchParams(location.search);
+  if (params.get('reset') === '1') {
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
+    }).then(function () {
+      if ('caches' in window) {
+        return caches.keys().then(function (keys) {
+          return Promise.all(keys.map(function (key) { return caches.delete(key); }));
+        });
+      }
+    }).catch(function () {}).finally(function () {
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    });
+    return;
+  }
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/service-worker.js').catch(function () {});
+  });
+})();
+</script>
+</body>
+</html>
