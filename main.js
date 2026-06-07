@@ -1,3 +1,10 @@
+// ── HTML ESCAPE (sprečava XSS kad ubacujemo korisnički tekst u innerHTML) ──
+function escHtml(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 // ── CUSTOM CURSOR ──
 const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
 let mx=0,my=0,rx=0,ry=0;
@@ -261,9 +268,9 @@ async function loadReviews(){
     const colClass = data.length===1?'tst-dynamic-grid tst-single':data.length===2?'tst-dynamic-grid tst-double':'tst-dynamic-grid';
     grid.innerHTML='<div class="'+colClass+'">'+data.map(t=>`
       <div class="tst-card rv in">
-        <div class="tst-stars">${[...Array(t.rating)].map(()=>'<span>★</span>').join('')}</div>
-        <p class="tst-text">„${t.text}"</p>
-        <div class="tst-author">${t.name}${t.car?' &nbsp;·&nbsp; <span>'+t.car+'</span>':''}${t.city?' &nbsp;·&nbsp; <span>'+t.city+'</span>':''}</div>
+        <div class="tst-stars">${[...Array(Math.min(5,Math.max(1,t.rating||5)))].map(()=>'<span>★</span>').join('')}</div>
+        <p class="tst-text">„${escHtml(t.text)}"</p>
+        <div class="tst-author">${escHtml(t.name)}${t.car?' &nbsp;·&nbsp; <span>'+escHtml(t.car)+'</span>':''}${t.city?' &nbsp;·&nbsp; <span>'+escHtml(t.city)+'</span>':''}</div>
         <div class="tst-q">"</div>
       </div>`).join('')+'</div>';
   }catch(e){console.log('Review load error',e)}
@@ -1075,18 +1082,21 @@ window.loyLogin = async function(){
 // ── LOGOUT ───────────────────────────────
 window.loyIsLoggedIn = function(){ return !!_user; };
 window.loyLogout = function(){
-  if(_user){
-    fetch(SB + '/auth/v1/logout', {
-      method: 'POST',
-      headers: { 'apikey': ANON, 'Authorization': 'Bearer ' + _user.access_token }
-    }).catch(() => {});
-  }
+  // Lokalna sesija se uvek briše odmah — čak i ako server-side logout ne uspe
+  const tok = _user ? _user.access_token : null;
   _user = null; _profile = null;
   window._loyActiveProgram = 'loyalty';
   clearSession();
   const nb = $('loyNavBtn');
   if(nb) nb.innerHTML = 'PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span>';
   showAuthArea();
+  // Server-side invalidacija tokena (fire-and-forget — sesija je već lokalno obrisana)
+  if(tok){
+    fetch(SB + '/auth/v1/logout', {
+      method: 'POST',
+      headers: { 'apikey': ANON, 'Authorization': 'Bearer ' + tok }
+    }).catch(() => {});
+  }
 };
 
 // ── LOAD DASHBOARD ────────────────────────
@@ -1147,7 +1157,7 @@ async function loadAndShowDash(){
 }
 
 function renderDash(dash, p, washes){
-  const firstName = (p.name || '').split(' ')[0] || 'klijente';
+  const firstName = escHtml((p.name || '').split(' ')[0] || 'klijente');
 
   // Ako nema odobrenog plana — prikaži pending stanje
   if (!p.care_plan) {
@@ -1164,7 +1174,7 @@ function renderDash(dash, p, washes){
           <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px">
             Zdravo, <em style="font-style:italic;color:#C9A84C">${firstName}</em>
           </div>
-          <div style="font-size:12px;color:#555;margin-bottom:22px;font-weight:300">${p.email || ''}</div>
+          <div style="font-size:12px;color:#555;margin-bottom:22px;font-weight:300">${escHtml(p.email || '')}</div>
 
           <div style="background:#141414;border-left:2px solid #F2C200;padding:22px 24px;margin-bottom:4px">
             <div style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#F2C200;margin-bottom:10px;font-weight:700">⏳ PRIJAVA NA ČEKANJU</div>
@@ -1245,7 +1255,7 @@ function renderDash(dash, p, washes){
         return `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px">
           <span style="font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 8px;background:rgba(201,168,76,.1);color:#C9A84C;flex-shrink:0;min-width:28px;text-align:center">#${washNum}</span>
           <div style="flex:1;min-width:0">
-            <div style="color:#F2F0EC;font-weight:400;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${w.note || 'Premium pranje'}</div>
+            <div style="color:#F2F0EC;font-weight:400;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(w.note || 'Premium pranje')}</div>
             <div style="color:#555;font-size:11px;font-weight:300">${dateStr}</div>
           </div>
         </div>`;
@@ -1257,7 +1267,7 @@ function renderDash(dash, p, washes){
         <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px">
           Zdravo, <em style="font-style:italic;color:#C9A84C">${firstName}</em>
         </div>
-        <div style="font-size:12px;color:#555;margin-bottom:22px;font-weight:300">${p.email || ''}</div>
+        <div style="font-size:12px;color:#555;margin-bottom:22px;font-weight:300">${escHtml(p.email || '')}</div>
 
         <div style="background:#141414;border-left:2px solid #C9A84C;padding:18px 22px;margin-bottom:4px">
           <div style="font-size:8px;letter-spacing:3px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px;font-weight:700">★ VAŠE AKTIVNO ČLANSTVO</div>
