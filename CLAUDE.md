@@ -1,73 +1,161 @@
-# Laker Detailing Studio
+# Laker Detailing Studio — lakerdetailing.rs
 
-Auto detailing studio, Čačak. `lakerdetailing.rs` → Vercel. Backend: Supabase. Email: Brevo. PWA.
+Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backend Supabase, email Brevo, PWA sa push notifikacijama.
+
+---
 
 ## DEPLOY PRAVILO — KRITIČNO
-**SAMO `git push origin main`** → GitHub automatski povuče na Vercel. NIKAD direktno na Vercel!
+**Jedino: `git push origin main`** → GitHub automatski triggeruje Vercel deploy.  
+**NIKAD** ne deplojavati direktno na Vercel! GitHub → Vercel je jedini ispravni tok.
 
-## Fajlovi
-- `index.html` — ceo sajt (~300KB, sve u jednom)
-- `laker-admin-9x3k.html` — admin panel
-- `api/send-email.js` — Brevo emailovi
-- `api/admin.js`, `api/push-*.js` — admin API, push notifikacije
-- `service-worker.js` — PWA
-- `vercel.json` — Vercel konfiguracija (CSP headers, cache)
+---
+
+## Struktura fajlova
+
+| Fajl/Folder | Opis |
+|---|---|
+| `index.html` | Ceo sajt (~200KB) — sav HTML, CSS i JS u jednom fajlu |
+| `main.js` | Dodatni JS — Supabase recenzije + kompletni Loyalty sistem (IIFE) |
+| `laker-admin-9x3k.html` | Admin panel (URL je namerno obscure, noindex) |
+| `api/admin.js` | Admin API — sve admin akcije |
+| `api/send-email.js` | Brevo email API — booking, loyalty welcome, recenzije |
+| `api/push-*.js` | PWA push notifikacije |
+| `api/_push.js` | Supabase helper za push API |
+| `api/_security.js` | Rate limiting, audit log |
+| `api/health.js` | Health check endpoint |
+| `service-worker.js` | PWA offline + push |
+| `vercel.json` | CSP headers, cache pravila, rute |
+| `og-image.jpg` | OG slika za deljenje (1200×630) |
+| `sitemap.xml` | Sitemap za Google |
+| `robots.txt` | Blokira admin i api, linkuje sitemap |
+| `offline.html` | PWA offline fallback |
+| `assets/` | Slike: hero (900/1100/1600 .jpg+.webp), gallery (work1-3, path2, wheel), icons |
+| `supabase/*.sql` | SQL migracije (samo referenca, ne deployuju se) |
+
+### Slike — važno
+Sve slike u HTML-u koriste `<picture>` tag sa WebP + JPG fallback:
+- Hero: `hero-900/1100/1600.webp` + `.jpg`
+- Galerija: `work1-3.webp`, `path2.webp`, `gallery-wheel.webp` + `-opt.jpg` fallback
+- Logo: `laker-logo.webp` + `laker-logo-opt.jpg`
+
+Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.) su u `.gitignore` — ne idu na Vercel.
+
+---
 
 ## Brand
-- Boje: `#C0392B` (primary), `#E74C3C` (hover), `#080808` (bg)
-- Fontovi: Cormorant Garamond (naslovi), Inter (tekst)
+
+- **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
+- **Naslovi:** Cormorant Garamond | **Tekst:** Inter
+- **Sekcije:** `#hero` `#phi` `#cs` `#srv` `#pkg` `#care` `#prc` `#faq` `#rvw`
+
+---
 
 ## Paketi i cene
-| Paket | Mali | Srednji | Veliki | Ekstra |
-|-------|------|---------|--------|--------|
-| Clean | €99  | €110    | €130   | €145   |
-| Boost | €250 | €260    | €280   | €295   |
-| Laker | €499 | €510    | €530   | €545   |
-Veličine: Mali=A klasa, Srednji=C, Veliki=E+, Ekstra=SUV/Van
+
+| Paket | Mali (A) | Srednji (C) | Veliki (E+) | Ekstra (SUV/Van) |
+|-------|----------|-------------|-------------|-----------------|
+| Clean | €99  | €110 | €130 | €145 |
+| Boost | €250 | €260 | €280 | €295 |
+| Laker | €499 | €510 | €530 | €545 |
+
+---
 
 ## Loyalty sistem
+
 | Vozilo | Mesečno | Godišnje | Ušteda |
 |--------|---------|----------|--------|
 | Mali/Srednji | €35/mes | €299/god | 29% |
 | Veliki/SUV   | €40/mes | €349/god | 27% |
-- 24 pranja/god (2×mes), prioritetan termin
+
+- 24 pranja/godišnje (2× mesečno), prioritetan termin
 - Toggle default = Godišnje
 - Registracija: Ime, Prezime, Email, Telefon, Veličina, Plan
 
+---
+
 ## Admin panel (`laker-admin-9x3k.html`)
-Login: email+lozinka (Supabase auth). Tabovi (1-5):
-1. Dashboard — stat kartice
-2. Recenzije — odobravanje
-3. Loyalty — članovi, +pranje
-4. Loyalty Prijave — čekaju aktivaciju
-5. Upiti — kontakt/booking
+
+Login: email + lozinka (Supabase auth). 4 taba (prečice 1–4):
+
+1. **Dashboard** — pregled statova u realnom vremenu
+2. **Recenzije** — odobravanje/odbijanje testimonijala
+3. **Loyalty** — lista članova, dodavanje pranja, napomene, plan
+4. **Loyalty Prijave** — nove prijave koje čekaju aktivaciju (kontakti iz `contacts` tabele sa `submission_type = loyalty_registration`)
+
+> ⚠️ Tab "Upiti" je uklonjen — booking forma nije aktivna na sajtu.
+
+---
 
 ## Email tipovi (`api/send-email.js`)
-`booking` | `loyalty_welcome` | `maintenance`/`care`/`loyalty` | `testimonial` | `birthday` (deaktiviran)
+
+| Tip | Okidač |
+|---|---|
+| `booking` | Zahtev za termin |
+| `loyalty_welcome` | Aktivacija loyalty člana |
+| `maintenance` / `care` / `loyalty` | Generički Brevo template |
+| `testimonial` | Potvrda recenzije |
+| `birthday` | Deaktiviran |
 
 `loyalty_welcome` prima: `{ name, email, plan, velicina }`
 
-## Supabase tabele
-- `loyalty_customers` — name, email, phone, care_plan, wash_count, auth_user_id
-- `contacts` — booking/kontakt upiti
-- `testimonials` — recenzije
-- `loyalty_washes`, `loyalty_wash_requests`
+---
 
-## Ključne JS funkcije (index.html)
+## Supabase
+
+**Projekat:** `raxdsanycyycroucxtmy.supabase.co`  
+**Anon ključ:** javno vidljiv u `main.js` — normalno za Supabase, sigurnost osigurava RLS.
+
+### Tabele
+- `loyalty_customers` — name, email, phone, care_plan, plan_type, car_size, wash_count, auth_user_id
+- `contacts` — loyalty prijave i booking upiti (submission_type: 'loyalty_registration' | 'booking')
+- `testimonials` — recenzije (approved: bool)
+- `loyalty_washes` — istorija pranja
+- `loyalty_wash_requests` — zahtevi za pranje
+
+### RLS politike — sve konfigurisano ispravno
+- `loyalty_customers`: SELECT/INSERT/UPDATE samo za sopstveni red (`auth_user_id = auth.uid()`), anon nema pristup
+- `contacts`: INSERT za anon/authenticated (samo dozvoljeni submission_type), SELECT blokiran
+- `testimonials`: SELECT samo approved=true (public), ostalo blokirana
+- `push_*`, `security_*`: blokirani za sve public role
+
+---
+
+## Ključne JS funkcije
+
+### index.html (inline)
 ```
-togglePkInfo(btn)          // paketi — expandable stavke
-setLoyBilling('mes'|'god') // loyalty toggle
-selectLoySize('ms'|'vs')   // registracija — veličina
-selectLoyPlan('mes'|'god') // registracija — plan
-openLoyalty() / closeLoyalty() / loyTab('login'|'reg')
+togglePkInfo(btn)             // paketi — expandable stavke
+setLoyBilling('mes'|'god')    // loyalty cenovnik toggle
+selectLoySize('ms'|'vs')      // registracija — veličina vozila
+selectLoyPlan('mes'|'god')    // registracija — plan
+openLoyalty() / closeLoyalty()
+loyTab('login'|'reg')
 loyLogin() / loyRegister()
 ```
 
-## Env varijable (Vercel)
-`BREVO_API_KEY` | `SUPABASE_URL` | `SUPABASE_SERVICE_KEY`
+### main.js
+- `loadReviews()` — učitava odobrene recenzije iz Supabase
+- Loyalty IIFE blok — kompletna auth/session logika, Supabase JWT
+
+---
+
+## Env varijable (Vercel dashboard)
+
+| Promenljiva | Opis |
+|---|---|
+| `BREVO_API_KEY` | Brevo email API ključ |
+| `SUPABASE_URL` | `https://raxdsanycyycroucxtmy.supabase.co` |
+| `SUPABASE_SERVICE_KEY` | Service role key (server-side only) |
+| `ADMIN_PASSWORD` | Admin panel lozinka |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | PWA push notifikacije |
+
+---
 
 ## Napomene
-- Custom cursor isključen na touch uređajima (`hover:none` media query)
-- PWA push notifikacije rade
-- Admin URL je namerno obscure
-- `vercel.json` ima `unsafe-inline` u CSP (potrebno zbog inline event handlera)
+
+- Custom cursor isključen na touch uređajima (`@media (hover:none)`)
+- PWA push notifikacije rade — setup u `PWA_PUSH_SETUP.md` (lokalno, ne u repo)
+- `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u
+- Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
+- Google Search Console: sajt dodat, sitemap submitan
+- `assets/pwa/` folder ne postoji u repo-u — koristi se isključivo `assets/icons/`
