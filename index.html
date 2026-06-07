@@ -71,13 +71,14 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": ["LocalBusiness", "AutoBodyShop"],
+      "@type": ["LocalBusiness", "AutoBodyShop", "AutoRepair"],
       "@id": "https://www.lakerdetailing.rs/#business",
       "name": "Laker Detailing Studio",
       "alternateName": ["Laker Detailing", "Laker Čačak"],
       "description": "Profesionalni auto detailing studio u Čačku. Specijalizovani za keramičku zaštitu, poliranje laka, ručno pranje i dubinsko čišćenje vozila.",
       "url": "https://www.lakerdetailing.rs",
       "telephone": "+381607260302",
+      "email": "detailinglaker@gmail.com",
       "priceRange": "€€€",
       "image": "https://www.lakerdetailing.rs/og-image.jpg",
       "logo": "https://www.lakerdetailing.rs/assets/icons/favicon.svg",
@@ -108,9 +109,17 @@
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita — Laker paket", "description": "Kompletna keramička nano-zaštita laka"}, "price": "499", "priceCurrency": "EUR"}
         ]
       },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+381607260302",
+        "contactType": "customer service",
+        "availableLanguage": ["Serbian"],
+        "areaServed": "RS"
+      },
       "sameAs": [
         "https://www.instagram.com/laker_detailing/",
-        "https://www.tiktok.com/@laker_detailing"
+        "https://www.tiktok.com/@laker_detailing",
+        "https://wa.me/381607260302"
       ],
       "openingHoursSpecification": [
         {
@@ -1796,47 +1805,6 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   .pp-phase{grid-template-columns:36px 1fr;gap:12px}
 }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "AutoRepair",
-  "@id": "https://www.lakerdetailing.rs/#business",
-  "name": "Laker Detailing Studio",
-  "description": "Profesionalni auto detailing studio u Čačku — keramička zaštita laka, poliranje, korekcija ogrebotina, dubinsko čišćenje enterijera i eksterijera.",
-  "url": "https://www.lakerdetailing.rs",
-  "telephone": "+381607260302",
-  "email": "detailinglaker@gmail.com",
-  "image": "https://www.lakerdetailing.rs/og-image.jpg",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Čačak",
-    "postalCode": "32000",
-    "addressRegion": "Šumadija",
-    "addressCountry": "RS"
-  },
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 43.8914,
-    "longitude": 20.3497
-  },
-  "priceRange": "€€",
-  "openingHours": "Mo-Sa 09:00-18:00",
-  "sameAs": [
-    "https://www.instagram.com/lakerdetailing/",
-    "https://wa.me/381607260302"
-  ],
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "Auto Detailing Usluge Čačak",
-    "itemListElement": [
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita laka Čačak"}},
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poliranje i korekcija laka Čačak"}},
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Dubinsko čišćenje enterijera Čačak"}},
-      {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Nano-Glass zaštita stakala Čačak"}}
-    ]
-  }
-}
-</script>
 <script>
 function lakerFallbackImage(label, sublabel) {
   var safeLabel = String(label || 'Laker Detailing').replace(/[<>&"]/g, '');
@@ -3481,7 +3449,7 @@ document.addEventListener('keydown',function(e){
 </a>
 
 
-<script src="/main.js" defer></script>
+<script src="/main.js?v=20260607" defer></script>
 
 </body>
 </html>
