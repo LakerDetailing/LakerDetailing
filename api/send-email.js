@@ -138,7 +138,7 @@ function footerHtml() {
     <p style="font-size:11px;color:#555;margin:6px 0 0">
       <a href="tel:+381607260302" style="color:#C0392B;text-decoration:none">060 726 0302</a>
       &nbsp;·&nbsp;
-      <a href="https://lakerdetailing.rs" style="color:#C0392B;text-decoration:none">lakerdetailing.rs</a>
+      <a href="https://www.lakerdetailing.rs" style="color:#C0392B;text-decoration:none">lakerdetailing.rs</a>
     </p>
   </div>`;
 }
@@ -170,7 +170,7 @@ function bookingClientHtml({ ime, email, telefon, auto, velicina, usluga, datum,
       </p>
 
       <div style="text-align:center;margin-top:28px">
-        <a href="https://lakerdetailing.rs" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Posetite sajt →</a>
+        <a href="https://www.lakerdetailing.rs" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Posetite sajt →</a>
       </div>
     </div>
     ${footerHtml()}
@@ -253,7 +253,7 @@ function loyaltyWelcomeHtml({ name, email, plan, velicina }) {
       </div>
 
       <div style="text-align:center">
-        <a href="https://lakerdetailing.rs/#loyalty" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Otvori moj nalog →</a>
+        <a href="https://www.lakerdetailing.rs/#loyalty" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Otvori moj nalog →</a>
       </div>
     </div>
     ${footerHtml()}
@@ -303,7 +303,7 @@ function loyaltyRegistrationClientHtml({ name, planLabel, velLabel, priceLabel }
       </div>
 
       <div style="text-align:center">
-        <a href="https://lakerdetailing.rs" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Posetite sajt →</a>
+        <a href="https://www.lakerdetailing.rs" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Posetite sajt →</a>
       </div>
     </div>
     ${footerHtml()}
@@ -358,7 +358,7 @@ function testimonialAdminHtml({ name, car, city, text, rating }) {
         ⚡ Idite u admin panel → <strong>⭐ Recenzije</strong> i odobrite ili odbacite ovu recenziju.
       </div>
       <div style="text-align:center;margin-top:20px">
-        <a href="https://lakerdetailing.rs/laker-admin-9x3k.html" style="display:inline-block;background:#C0392B;color:#fff;padding:12px 30px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Otvori admin panel →</a>
+        <a href="https://www.lakerdetailing.rs/laker-admin-9x3k.html" style="display:inline-block;background:#C0392B;color:#fff;padding:12px 30px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Otvori admin panel →</a>
       </div>
     </div>
     ${footerHtml()}

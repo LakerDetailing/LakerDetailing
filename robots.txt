@@ -7,4 +7,4 @@ Disallow: /rest/
 Disallow: /god
 Disallow: /mes
 
-Sitemap: https://lakerdetailing.rs/sitemap.xml
+Sitemap: https://www.lakerdetailing.rs/sitemap.xml
