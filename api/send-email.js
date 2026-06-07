@@ -23,24 +23,6 @@ const SENDER_NAME   = 'Laker Detailing Studio';
 const ADMIN_EMAIL   = 'detailinglaker@gmail.com';
 const SUPABASE_URL  = getEnv('SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'VITE_SUPABASE_URL');
 const SUPABASE_KEY  = getEnv('SUPABASE_SERVICE_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE');
-const _rateLimits = {};
-const _RATE_LIMIT_MAX = 5;
-const _RATE_LIMIT_MS = 10 * 60 * 1000;
-
-function isRateLimited(ip) {
-  const current = _rateLimits[ip];
-  if (!current) return false;
-  if (Date.now() - current.first > _RATE_LIMIT_MS) {
-    delete _rateLimits[ip];
-    return false;
-  }
-  return current.count >= _RATE_LIMIT_MAX;
-}
-
-function recordRateLimit(ip) {
-  if (!_rateLimits[ip]) _rateLimits[ip] = { count: 0, first: Date.now() };
-  _rateLimits[ip].count++;
-}
 
 async function brevoSend(payload) {
   const res = await fetch(BREVO_URL, {
@@ -495,11 +477,6 @@ module.exports = async function handler(req, res) {
       user_agent: String(req.headers['user-agent'] || ''),
       subject: type
     });
-
-    if (isRateLimited(sourceIp)) {
-      return res.status(429).json({ error: 'Previše zahteva. Pokušajte kasnije.' });
-    }
-    recordRateLimit(sourceIp);
 
     if (type === 'booking') {
       const ime = cleanText(data.ime, 80);
