@@ -268,7 +268,7 @@ async function loadReviews(){
         <div class="tst-stars">${[...Array(Math.min(5,Math.max(1,t.rating||5)))].map(()=>'<span>★</span>').join('')}</div>
         <p class="tst-text">„${escHtml(t.text)}"</p>
         <div class="tst-author">${escHtml(t.name)}${t.car?' &nbsp;·&nbsp; <span>'+escHtml(t.car)+'</span>':''}${t.city?' &nbsp;·&nbsp; <span>'+escHtml(t.city)+'</span>':''}</div>
-        <div class="tst-q">"</div>
+        <div class="tst-q" aria-hidden="true">"</div>
       </div>`).join('')+'</div>';
   }catch(e){console.log('Review load error',e)}
 }
