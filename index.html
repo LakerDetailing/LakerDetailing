@@ -3464,37 +3464,42 @@ document.addEventListener('keydown',function(e){
 
 <!-- ══ COOKIE BANNER ══ -->
 <style>
-#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0E0C0C;border-top:1px solid rgba(192,57,43,.4);padding:14px 20px;font-family:Inter,sans-serif;animation:ckSlide .3s ease}
-@keyframes ckSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}
-#ck-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-#ck-banner p{color:rgba(255,255,255,.75);font-size:13px;line-height:1.6;margin:0;flex:1;min-width:220px}
-#ck-btns{display:flex;gap:10px;flex-shrink:0}
-#ck-yes{background:#C0392B;color:#fff;border:none;padding:9px 22px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+#ck-overlay{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);animation:ckFadeIn .3s ease}
+#ck-box{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:99999;width:100%;max-width:680px;background:#141414;border:1px solid rgba(255,255,255,.08);border-bottom:none;border-radius:14px 14px 0 0;padding:32px 36px 28px;font-family:Inter,sans-serif;box-shadow:0 -20px 60px rgba(0,0,0,.6);animation:ckSlideUp .35s cubic-bezier(.22,.68,0,1.2)}
+@keyframes ckFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes ckSlideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+#ck-icon{font-size:22px;margin-bottom:12px;display:block}
+#ck-box h3{color:#fff;font-size:17px;font-weight:600;margin:0 0 10px;letter-spacing:.01em}
+#ck-box p{color:rgba(255,255,255,.6);font-size:13px;line-height:1.65;margin:0 0 24px}
+#ck-btns{display:flex;gap:12px;flex-wrap:wrap}
+#ck-yes{flex:1;min-width:140px;background:#C0392B;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;letter-spacing:.02em}
 #ck-yes:hover{background:#E74C3C}
-#ck-no{background:transparent;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.18);padding:9px 18px;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
-#ck-no:hover{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.7)}
+#ck-no{flex:1;min-width:140px;background:transparent;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.2);padding:12px 20px;border-radius:6px;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
+#ck-no:hover{border-color:rgba(255,255,255,.45);color:rgba(255,255,255,.85)}
+@media(max-width:480px){#ck-box{padding:24px 20px 20px}#ck-btns{flex-direction:column}#ck-yes,#ck-no{width:100%}}
 </style>
-<div id="ck-banner" role="dialog" aria-label="Obaveštenje o kolačićima" style="display:none">
-  <div id="ck-inner">
-    <p>Koristimo kolačiće za analitiku poseta (Google Analytics) i praćenje oglasa (Facebook Pixel) kako bismo unapredili naše usluge.</p>
-    <div id="ck-btns">
-      <button id="ck-yes">Prihvati</button>
-      <button id="ck-no">Odbij</button>
-    </div>
+<div id="ck-overlay" style="display:none"></div>
+<div id="ck-box" role="dialog" aria-modal="true" aria-label="Podešavanja kolačića" style="display:none">
+  <span id="ck-icon">🍪</span>
+  <h3>Upotreba kolačića</h3>
+  <p>Koristimo analitičke kolačiće (Google Analytics) i marketinške kolačiće (Facebook Pixel) kako bismo unapredili naše usluge i prikazali relevantne oglase. Možete prihvatiti sve kolačiće ili koristiti samo neophodne.</p>
+  <div id="ck-btns">
+    <button id="ck-no">Samo neophodni</button>
+    <button id="ck-yes">Prihvati sve</button>
   </div>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('ck-banner');
-  if(!localStorage.getItem('laker_cookie_consent')){b.style.display='';}
+  var ov=document.getElementById('ck-overlay'),bx=document.getElementById('ck-box');
+  if(!localStorage.getItem('laker_cookie_consent')){ov.style.display='';bx.style.display='';}
   document.getElementById('ck-yes').addEventListener('click',function(){
     localStorage.setItem('laker_cookie_consent','yes');
-    b.style.display='none';
+    ov.style.display='none';bx.style.display='none';
     if(typeof window._lakerLoadAnalytics==='function')window._lakerLoadAnalytics();
   });
   document.getElementById('ck-no').addEventListener('click',function(){
     localStorage.setItem('laker_cookie_consent','no');
-    b.style.display='none';
+    ov.style.display='none';bx.style.display='none';
   });
 })();
 </script>
