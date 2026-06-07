@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
   setSecurityHeaders(res);
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     json(res, 405, { ok: false });
     return;
   }
