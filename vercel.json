@@ -7,6 +7,21 @@
   ],
   "redirects": [
     {
+      "source": "/god",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/mes",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/rest/:path*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/:file*.md",
       "destination": "/",
       "permanent": true

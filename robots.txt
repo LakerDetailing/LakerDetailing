@@ -4,7 +4,5 @@ Allow: /
 Disallow: /laker-admin-9x3k.html
 Disallow: /api/
 Disallow: /rest/
-Disallow: /god
-Disallow: /mes
 
 Sitemap: https://www.lakerdetailing.rs/sitemap.xml
