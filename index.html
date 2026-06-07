@@ -1884,7 +1884,7 @@ function lakerFallbackImage(label, sublabel) {
     </div>
     <picture>
       <source type="image/webp" srcset="/assets/icons/laker-logo.webp">
-      <img class="nl-logo" src="/assets/icons/laker-logo-opt.jpg" alt="Laker Auto Detailing Studio logo">
+      <img class="nl-logo" src="/assets/icons/laker-logo-opt.jpg" alt="Laker Auto Detailing Studio logo" width="160" height="46" loading="lazy" decoding="async">
     </picture>
   </div>
   <ul class="nm" id="nm">
@@ -1940,7 +1940,7 @@ function lakerFallbackImage(label, sublabel) {
     <h1 class="he-h1">Do poslednjeg<br><em>detalja.</em></h1>
     <p class="he-sub">Čačak &nbsp;·&nbsp; Srbija &nbsp;·&nbsp; Est. 2025</p>
     <div class="he-cta">
-      <a href="https://wa.me/381607260302" target="_blank" class="btn-g">Kontaktirajte nas <span>→</span></a>
+      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="btn-g">Kontaktirajte nas <span>→</span></a>
       <a href="#cs" class="btn-o">Naši radovi</a>
     </div>
   </div>
@@ -2150,7 +2150,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
         </ul>
         <div class="pk-dur">⏱ &nbsp;3 radna dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" class="pk-btn">Kontaktirajte nas →</a>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
       </div>
 
       <!-- BOOST -->
@@ -2197,7 +2197,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
         </ul>
         <div class="pk-dur">⏱ &nbsp;do 5 dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" class="pk-btn">Kontaktirajte nas →</a>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
       </div>
 
       <!-- LAKER -->
@@ -2250,7 +2250,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
         </ul>
         <div class="pk-dur">⏱ &nbsp;6 – 7 dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" class="pk-btn">Kontaktirajte nas →</a>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
       </div>
 
     </div>
@@ -2468,7 +2468,7 @@ function lakerFallbackImage(label, sublabel) {
         <div class="sl">Pitanja &amp; odgovori</div>
         <h2 class="sh">Sve što<br>želite da<br><em>znate</em></h2>
         <p class="sd">Odgovaramo na najčešća pitanja naših klijenata. Za sve ostalo — slobodno pišite.</p>
-        <a href="https://wa.me/381607260302" target="_blank" class="btn-g" style="margin-top:36px;display:inline-flex">Pišite nam <span>→</span></a>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="btn-g" style="margin-top:36px;display:inline-flex">Pišite nam <span>→</span></a>
       </div>
       <div class="faq-list rr">
 
@@ -2582,15 +2582,15 @@ function lakerFallbackImage(label, sublabel) {
           <div class="bkc-ic">📸</div>
           <div class="bkc-txt">
             <h5>Pošaljite fotografije</h5>
-            <a href="https://wa.me/381607260302" target="_blank">WhatsApp: 060 726 0302</a>
+            <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp: 060 726 0302</a>
             <p style="margin-top:3px">Brža procena uz fotografije vozila</p>
           </div>
         </div>
       </div>
       <div class="bk-soc">
-        <a href="https://www.instagram.com/laker_detailing/" target="_blank" class="bks"><span>📸</span> Instagram</a>
-        <a href="https://www.tiktok.com/@laker_detailing" target="_blank" class="bks"><span>🎵</span> TikTok</a>
-        <a href="https://wa.me/381607260302" target="_blank" class="bks"><span>💬</span> WhatsApp</a>
+        <a href="https://www.instagram.com/laker_detailing/" target="_blank" rel="noopener noreferrer" class="bks"><span>📸</span> Instagram</a>
+        <a href="https://www.tiktok.com/@laker_detailing" target="_blank" rel="noopener noreferrer" class="bks"><span>🎵</span> TikTok</a>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="bks"><span>💬</span> WhatsApp</a>
       </div>
     </div>
     <div class="bk-r rr">
@@ -2599,15 +2599,15 @@ function lakerFallbackImage(label, sublabel) {
         <p class="f-sub">Odgovaramo u roku od nekoliko sati</p>
         <form action="#" method="POST" onsubmit="handleSubmit(event)">
           <div class="fw">
-            <div class="fg"><label>Ime i prezime *</label><input type="text" name="ime" placeholder="Marko Marković" required></div>
-            <div class="fg"><label>Telefon *</label><input type="tel" name="telefon" id="telefon_field" placeholder="06X XXX XXXX" required oninput="validatePhoneField(this)" onblur="validatePhoneField(this)"><span class="field-hint" id="phone_hint"></span></div>
+            <div class="fg"><label for="ime_field">Ime i prezime *</label><input type="text" id="ime_field" name="ime" placeholder="Marko Marković" required></div>
+            <div class="fg"><label for="telefon_field">Telefon *</label><input type="tel" name="telefon" id="telefon_field" placeholder="06X XXX XXXX" required oninput="validatePhoneField(this)" onblur="validatePhoneField(this)"><span class="field-hint" id="phone_hint"></span></div>
           </div>
-          <div class="fg"><label>Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required oninput="validateEmailField(this)" onblur="validateEmailField(this)"><span class="field-hint" id="email_hint"></span></div>
+          <div class="fg"><label for="email_field">Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required oninput="validateEmailField(this)" onblur="validateEmailField(this)"><span class="field-hint" id="email_hint"></span></div>
           <div class="fw">
-            <div class="fg"><label>Marka i model *</label><input type="text" name="auto" placeholder="BMW M3, 2021" required></div>
+            <div class="fg"><label for="auto_field">Marka i model *</label><input type="text" id="auto_field" name="auto" placeholder="BMW M3, 2021" required></div>
             <div class="fg">
-              <label>Veličina vozila *</label>
-              <div class="size-selector">
+              <label id="velicina-label">Veličina vozila *</label>
+              <div class="size-selector" role="group" aria-labelledby="velicina-label">
                 <input class="sz-opt" type="radio" name="velicina" id="sz1" value="Mali — A klasa" required>
                 <label class="sz-lbl" for="sz1">Mali<span class="sz-sub">A klasa</span></label>
                 <input class="sz-opt" type="radio" name="velicina" id="sz2" value="Srednji — C klasa">
@@ -2620,8 +2620,8 @@ function lakerFallbackImage(label, sublabel) {
             </div>
           </div>
           <div class="fg">
-            <label>Usluga ili paket *</label>
-            <select name="usluga" required>
+            <label for="usluga_field">Usluga ili paket *</label>
+            <select name="usluga" id="usluga_field" required>
               <option value="">Izaberite...</option>
               <optgroup label="Paketi">
                 <option>Clean paket (od 115 €)</option>
@@ -2641,11 +2641,11 @@ function lakerFallbackImage(label, sublabel) {
               </optgroup>
             </select>
           </div>
-          <div class="fg"><label>Željeni datum</label><input type="date" name="datum" id="di"></div>
-          <div class="fg"><label>Napomena / stanje vozila</label><textarea name="napomena" placeholder="Opišite stanje vozila ili posebne zahteve."></textarea></div>
+          <div class="fg"><label for="di">Željeni datum</label><input type="date" name="datum" id="di"></div>
+          <div class="fg"><label for="napomena_field">Napomena / stanje vozila</label><textarea name="napomena" id="napomena_field" placeholder="Opišite stanje vozila ili posebne zahteve."></textarea></div>
           <div class="hp-field" aria-hidden="true"><label>Website</label><input type="text" name="website" tabindex="-1" autocomplete="off" value=""></div>
           <input type="hidden" name="_t" id="_booking_t" value="">
-          <p class="f-hint">Za bržu procenu pošaljite fotografije vozila na WhatsApp: <a href="https://wa.me/381607260302" target="_blank" style="color:var(--gold);text-decoration:none">060 726 0302</a> — odgovaramo odmah.</p>
+          <p class="f-hint">Za bržu procenu pošaljite fotografije vozila na WhatsApp: <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:none">060 726 0302</a> — odgovaramo odmah.</p>
           <button type="submit" class="f-btn">Pošaljite zahtev za termin &nbsp;→</button>
         </form>
       </div>
@@ -2658,7 +2658,7 @@ function lakerFallbackImage(label, sublabel) {
           Javićemo se što pre radi potvrde termina.<br><br>
           Za hitne upite:<br>
           <a href="tel:+381607260302">060 726 0302</a> &nbsp;|&nbsp;
-          <a href="https://wa.me/381607260302" target="_blank">WhatsApp</a>
+          <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp</a>
         </p>
       </div>
     </div>
@@ -2728,9 +2728,9 @@ function lakerFallbackImage(label, sublabel) {
     <h2 class="soc-t">Pratite naš <em>rad</em></h2>
     <p class="soc-s">Pre i posle · Case Studies · Svakodnevni radovi</p>
     <div class="soc-row">
-      <a href="https://www.instagram.com/laker_detailing/" target="_blank" class="soc-btn soc-ig"><span>📸</span> @laker_detailing na Instagramu</a>
-      <a href="https://www.tiktok.com/@laker_detailing" target="_blank" class="soc-btn soc-tt"><span>🎵</span> @laker_detailing na TikToku</a>
-      <a href="https://wa.me/381607260302" target="_blank" class="soc-btn soc-wa"><span>💬</span> Pišite nam na WhatsApp</a>
+      <a href="https://www.instagram.com/laker_detailing/" target="_blank" rel="noopener noreferrer" class="soc-btn soc-ig"><span>📸</span> @laker_detailing na Instagramu</a>
+      <a href="https://www.tiktok.com/@laker_detailing" target="_blank" rel="noopener noreferrer" class="soc-btn soc-tt"><span>🎵</span> @laker_detailing na TikToku</a>
+      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="soc-btn soc-wa"><span>💬</span> Pišite nam na WhatsApp</a>
     </div>
   </div>
 </section>
@@ -2772,9 +2772,9 @@ function lakerFallbackImage(label, sublabel) {
         <a href="tel:+381607260302">060 726 0302</a><br>
         <a href="mailto:detailinglaker@gmail.com" style="color:inherit">detailinglaker@gmail.com</a><br><br>
         Čačak, Srbija<br><br>
-        <a href="https://www.instagram.com/laker_detailing/" target="_blank">Instagram</a> &nbsp;·&nbsp;
-        <a href="https://www.tiktok.com/@laker_detailing" target="_blank">TikTok</a><br>
-        <a href="https://wa.me/381607260302" target="_blank">WhatsApp</a>
+        <a href="https://www.instagram.com/laker_detailing/" target="_blank" rel="noopener noreferrer">Instagram</a> &nbsp;·&nbsp;
+        <a href="https://www.tiktok.com/@laker_detailing" target="_blank" rel="noopener noreferrer">TikTok</a><br>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp</a>
       </p>
     </div>
   </div>
@@ -3083,7 +3083,7 @@ function lakerFallbackImage(label, sublabel) {
     </div>
 
     <div class="pp-cta">
-      <a href="https://wa.me/381607260302" target="_blank" class="pp-btn-link" onclick="closePremiumModal()">Kontaktirajte nas →</a>
+      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pp-btn-link" onclick="closePremiumModal()">Kontaktirajte nas →</a>
     </div>
 
   </div>
@@ -3393,7 +3393,7 @@ document.addEventListener('keydown',function(e){
 </button>
 <nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
   <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
-  <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
+  <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
   <a href="#book" aria-label="Rezerviši termin" onclick="closeMobileMenu()">Rezerviši</a>
 </nav>
 <script>
@@ -3474,7 +3474,7 @@ document.addEventListener('keydown',function(e){
 })();
 </script>
 
-<a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
+<a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
   <span class="wa-ico">💬</span>
   <span>WhatsApp</span>
 </a>
