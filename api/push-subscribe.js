@@ -44,6 +44,10 @@ module.exports = async function handler(req, res) {
       }
 
       const endpoint = String(subscription.endpoint);
+      if (!endpoint.startsWith('https://')) {
+        json(res, 400, { ok: false, error: 'Invalid endpoint' });
+        return;
+      }
       const payload = {
         endpoint,
         subscription,
