@@ -56,7 +56,8 @@
 <link rel="alternate" hreflang="sr" href="https://www.lakerdetailing.rs/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="dns-prefetch" href="https://connect.facebook.net">
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://connect.facebook.net" crossorigin>
 <link rel="preload" as="image" type="image/webp" fetchpriority="high"
   imagesrcset="/assets/hero-900.webp 900w, /assets/hero-1100.webp 1100w, /assets/hero-1600.webp 1600w"
   imagesizes="100vw"
@@ -200,7 +201,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 :root{
   --gold:#C9A84C;--gold2:#E8C96A;--gold3:#9A7830;
   --black:#030D22;--d1:#05112A;--d2:#081731;--d3:#0B1C3A;--d4:#0F2244;
-  --gray:#5C6E84;--mgray:#8A9AAE;--lgray:#B8C4D0;--white:#EDF1FA;
+  --gray:#6B8199;--mgray:#8A9AAE;--lgray:#B8C4D0;--white:#EDF1FA;
   --serif:'Cormorant Garamond',serif;--sans:'Inter',sans-serif;
   --shadow:rgba(3,13,34,.7);
   --transition:.4s ease;
@@ -410,7 +411,7 @@ body.light .pv{border-bottom-color:rgba(0,0,0,.06)}
 .pv:first-child{border-top:1px solid rgba(255,255,255,.06)}
 body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 .pv-n{font-family:var(--serif);font-size:52px;font-weight:300;color:rgba(201,168,76,.15);line-height:1;flex-shrink:0;width:52px;font-style:italic}
-.pv-t h4{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:9px}
+.pv-t h3{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:9px}
 .pv-t p{font-size:13.5px;color:var(--mgray);line-height:1.75;font-weight:300}
 .reveal{
   opacity:0;
@@ -830,8 +831,8 @@ body.light footer{border-top-color:rgba(0,0,0,.06)}
 .ft-logo{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--white);margin-bottom:4px}
 .ft-sub{font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
 .ft-desc{font-size:13px;color:var(--gray);line-height:1.85;max-width:260px;font-weight:300}
-.ft-slogan{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(201,168,76,.5);margin-top:20px}
-.ft-col h5{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:24px}
+.ft-slogan{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(201,168,76,.8);margin-top:20px}
+.ft-col .ft-col-title{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:24px}
 .ft-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
 .ft-col ul a{font-size:13px;color:var(--gray);text-decoration:none;transition:color .3s;font-weight:300}
 .ft-col ul a:hover{color:var(--white)}
@@ -988,7 +989,7 @@ body.pwa-standalone .pwa-push{}
 .pwa-push-text span{font-size:10px;letter-spacing:1px;font-weight:600;color:var(--lgray);text-transform:none}
 .pwa-push-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .pwa-push-btn{border:none;border-radius:999px;min-height:34px;padding:0 14px;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease}
-.pwa-push-btn.primary{background:#27AE60;color:#fff}
+.pwa-push-btn.primary{background:#1a7a3c;color:#fff}
 .pwa-push-btn.primary:hover{transform:translateY(-2px)}
 .pwa-push-btn.secondary{background:rgba(255,255,255,.05);color:var(--white);border:1px solid rgba(255,255,255,.08)}
 .pwa-push-btn.secondary:hover{transform:translateY(-2px);background:rgba(255,255,255,.08)}
@@ -1769,7 +1770,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 .pp-phase{display:grid;grid-template-columns:48px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:start}
 .pp-phase:last-child{border-bottom:none}
 .pp-phase-num{font-family:var(--serif);font-size:32px;font-weight:300;color:rgba(201,168,76,.25);line-height:1;font-style:italic}
-.pp-phase-content h4{font-size:11.5px;font-weight:700;letter-spacing:.5px;color:var(--white);margin-bottom:5px}
+.pp-phase-content h3{font-size:11.5px;font-weight:700;letter-spacing:.5px;color:var(--white);margin-bottom:5px}
 .pp-phase-content p{font-size:13px;color:#B8B6B2;line-height:1.75;font-weight:300}
 .pp-results{background:var(--d3);padding:22px 26px;margin-top:28px;border-left:2px solid var(--gold)}
 .pp-results-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}
@@ -1995,21 +1996,21 @@ function lakerFallbackImage(label, sublabel) {
           <div class="pv">
             <div class="pv-n">I</div>
             <div class="pv-t">
-              <h4>Preciznost</h4>
+              <h3>Preciznost</h3>
               <p>Svaka površina prolazi detaljnu obradu i proveru. Ne radimo površno i ne žurimo kroz proces — cilj nam je čist, uredan i dugotrajan rezultat.</p>
             </div>
           </div>
           <div class="pv">
             <div class="pv-n">II</div>
             <div class="pv-t">
-              <h4>Zaštita koja traje</h4>
+              <h3>Zaštita koja traje</h3>
               <p>Koristimo proverene proizvode i tehnike kako bi zaštita i izgled vozila trajali što duže, ne samo nekoliko dana nakon tretmana.</p>
             </div>
           </div>
           <div class="pv">
             <div class="pv-n">III</div>
             <div class="pv-t">
-              <h4>Poverenje i sigurnost</h4>
+              <h3>Poverenje i sigurnost</h3>
               <p>Sve dogovaramo unapred, bez skrivenih troškova i neprijatnih iznenađenja. Vaš automobil je kod nas tretiran pažljivo i profesionalno od trenutka preuzimanja do vraćanja ključeva.</p>
             </div>
           </div>
@@ -2344,42 +2345,42 @@ function lakerFallbackImage(label, sublabel) {
         <div class="care-step">
           <span>03</span>
           <div>
-            <h4>Ručno pranje šamponom Gentle Snow Foam</h4>
+            <h3>Ručno pranje šamponom Gentle Snow Foam</h3>
             <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
           </div>
         </div>
         <div class="care-step">
           <span>04</span>
           <div>
-            <h4>Konzervacija LFP sredstvom ProtectorWax</h4>
+            <h3>Konzervacija LFP sredstvom ProtectorWax</h3>
             <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
           </div>
         </div>
         <div class="care-step">
           <span>05</span>
           <div>
-            <h4>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h4>
+            <h3>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h3>
             <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan <strong>mat finiš</strong> bez masnog izgleda.</p>
           </div>
         </div>
         <div class="care-step">
           <span>06</span>
           <div>
-            <h4>Usisavanje enterijera</h4>
+            <h3>Usisavanje enterijera</h3>
             <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi bez izuzetka.</p>
           </div>
         </div>
         <div class="care-step">
           <span>07</span>
           <div>
-            <h4>Vlažno čišćenje enterijera</h4>
+            <h3>Vlažno čišćenje enterijera</h3>
             <p>Čišćenje svih površina u enterijeru uz primenu <strong>Allround Surface Cleaner</strong> — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
           </div>
         </div>
         <div class="care-step">
           <span>08</span>
           <div>
-            <h4>Čišćenje stakala — Glass Cleaner</h4>
+            <h3>Čišćenje stakala — Glass Cleaner</h3>
             <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja. Vidljivost i estetika na najvišem nivou.</p>
           </div>
         </div>
@@ -2745,7 +2746,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="ft-slogan">Svaki detalj je važan.</div>
     </div>
     <div class="ft-col">
-      <h5>Navigacija</h5>
+      <p class="ft-col-title">Navigacija</p>
       <ul>
         <li><a href="#phi">O nama</a></li>
         <li><a href="#cs">Galerija</a></li>
@@ -2756,7 +2757,7 @@ function lakerFallbackImage(label, sublabel) {
       </ul>
     </div>
     <div class="ft-col">
-      <h5>Usluge</h5>
+      <p class="ft-col-title">Usluge</p>
       <ul>
         <li><a href="#srv">Detailing enterijera</a></li>
         <li><a href="#srv">Detailing eksterijera</a></li>
@@ -2767,7 +2768,7 @@ function lakerFallbackImage(label, sublabel) {
       </ul>
     </div>
     <div class="ft-col">
-      <h5>Kontakt</h5>
+      <p class="ft-col-title">Kontakt</p>
       <p class="ft-p">
         <a href="tel:+381607260302">060 726 0302</a><br>
         <a href="mailto:detailinglaker@gmail.com" style="color:inherit">detailinglaker@gmail.com</a><br><br>
@@ -3008,7 +3009,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">1</div>
         <div class="pp-phase-content">
-          <h4>Čišćenje felni i ratkapni</h4>
+          <h3>Čišćenje felni i ratkapni</h3>
           <p>Specijalizovana sredstva za uklanjanje tvrdokornih naslaga nečistoće i kočione prašine — Felgenblitz säurefrei ili Alkali Wheel Cleaner.</p>
         </div>
       </div>
@@ -3016,7 +3017,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">2</div>
         <div class="pp-phase-content">
-          <h4>Beskontaktno pretpranje</h4>
+          <h3>Beskontaktno pretpranje</h3>
           <p>Obrada karoserije primarnim sredstvom Vorreiniger B — jako penušavo sredstvo koje efikasno uklanja putnu prljavštinu i bezbedno je za lak, hrom, aluminijum i gumene elemente.</p>
         </div>
       </div>
@@ -3024,7 +3025,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">3</div>
         <div class="pp-phase-content">
-          <h4>Ručno pranje šamponom Gentle Snow Foam</h4>
+          <h3>Ručno pranje šamponom Gentle Snow Foam</h3>
           <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
         </div>
       </div>
@@ -3032,7 +3033,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">4</div>
         <div class="pp-phase-content">
-          <h4>Konzervacija LFP sredstvom ProtectorWax</h4>
+          <h3>Konzervacija LFP sredstvom ProtectorWax</h3>
           <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
         </div>
       </div>
@@ -3040,7 +3041,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">5</div>
         <div class="pp-phase-content">
-          <h4>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h4>
+          <h3>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h3>
           <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan mat finiš bez masnog izgleda.</p>
         </div>
       </div>
@@ -3048,7 +3049,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">6</div>
         <div class="pp-phase-content">
-          <h4>Usisavanje enterijera</h4>
+          <h3>Usisavanje enterijera</h3>
           <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi.</p>
         </div>
       </div>
@@ -3056,7 +3057,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">7</div>
         <div class="pp-phase-content">
-          <h4>Vlažno čišćenje enterijera</h4>
+          <h3>Vlažno čišćenje enterijera</h3>
           <p>Čišćenje svih površina u enterijeru uz primenu Allround Surface Cleaner — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
         </div>
       </div>
@@ -3064,7 +3065,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="pp-phase">
         <div class="pp-phase-num">8</div>
         <div class="pp-phase-content">
-          <h4>Čišćenje stakala — Glass Cleaner</h4>
+          <h3>Čišćenje stakala — Glass Cleaner</h3>
           <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja.</p>
         </div>
       </div>
