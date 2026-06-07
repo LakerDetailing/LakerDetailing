@@ -31,3 +31,24 @@ desktop.ini
 # Logs
 *.log
 logs/
+
+# Originalne (neoptimizovane) slike — sajt koristi -opt.jpg i .webp verzije
+assets/gallery/work1.jpg
+assets/gallery/work2.jpg
+assets/gallery/work3.jpg
+assets/gallery/path2.jpg
+assets/hero-orig.jpg
+assets/icons/gallery-wheel.jpeg
+assets/icons/laker-logo.jpg
+
+# Duplikat PWA foldera — koristi se samo assets/icons/
+assets/pwa/
+
+# Lighthouse / npm lokalni alati
+lighthouse-report.json
+package.json
+package-lock.json
+
+# Lokalna dokumentacija (ne treba na Vercel)
+MOBILE_QA_CHECKLIST.md
+PWA_PUSH_SETUP.md

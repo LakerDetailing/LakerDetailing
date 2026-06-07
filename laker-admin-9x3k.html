@@ -363,7 +363,6 @@ body{
   .tb-logo{font-size:16px}
   .tb-right > span{display:none}
   .logout-btn{padding:7px 14px;font-size:9px}
-  .ct-stats{grid-template-columns:1fr 1fr}
   .ct-card{flex-direction:column}
   .ct-actions{flex-direction:row;flex-wrap:wrap;width:100%}
   .ct-btn{flex:1;min-width:100px}
@@ -377,14 +376,12 @@ body{
   --tab-reviews:     #C0392B;
   --tab-loyalty:     #F2C200;
   --tab-care:        #16A085;
-  --tab-contacts:    #8E44AD;
 }
 
 /* Tab accent glow */
 .admin-tab[data-tab="reviews"].on  { border-bottom-color:var(--tab-reviews); color:#fff; }
 .admin-tab[data-tab="loyalty"].on  { border-bottom-color:var(--tab-loyalty); color:#fff; }
 .admin-tab[data-tab="care"].on     { border-bottom-color:var(--tab-care);    color:#fff; }
-.admin-tab[data-tab="contacts"].on { border-bottom-color:var(--tab-contacts);color:#fff; }
 
 .admin-tab {
   position: relative;
@@ -476,20 +473,6 @@ body{
   flex-shrink:0;
 }
 
-/* ═══ CONTACTS TAB - STATS ═══ */
-.ct-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-bottom:32px; }
-.ct-stat-box {
-  background: linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)),var(--d2);
-  padding: 22px 26px;
-  border: 1px solid rgba(255,255,255,.05);
-  border-radius: 8px;
-  box-shadow: 0 24px 70px rgba(0,0,0,.22);
-  position:relative; overflow:hidden;
-}
-.ct-stat-box::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:var(--tab-contacts); opacity:.6; }
-.ct-stat-n { font-family:var(--serif); font-size:40px; font-weight:300; color:var(--tab-contacts); line-height:1; }
-.ct-stat-l { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--gray); margin-top:5px; }
-
 /* ═══ FLASH SUCCESS ═══ */
 @keyframes flash-green {
   0%   { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
@@ -530,8 +513,7 @@ body{
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:900px){
   .tab-toolbar { padding: 12px 20px 0; }
-  .ct-stats { grid-template-columns:1fr 1fr; }
-  .tab-help-strip { margin: 10px 20px 0; }
+.tab-help-strip { margin: 10px 20px 0; }
 }
 
 /* ═══ CONFETTI PARTICLE ═══ */
@@ -572,7 +554,6 @@ body{
 .admin-tab[data-tab="reviews"].on   { background:rgba(192,57,43,.07); }
 .admin-tab[data-tab="loyalty"].on   { background:rgba(242,194,0,.06); }
 .admin-tab[data-tab="care"].on      { background:rgba(22,160,133,.06); }
-.admin-tab[data-tab="contacts"].on  { background:rgba(142,68,173,.06); }
 
 /* Stat kartice — impaktnije */
 .stat-box { padding:26px 28px; }
@@ -747,7 +728,6 @@ body{
     <button class="admin-tab" data-tab="reviews" onclick="switchTab('reviews',this)"><span class="kbd-hint">2</span>⭐ Recenzije <span class="tab-cnt" id="reviewsBadge" style="display:none">0</span></button>
     <button class="admin-tab" data-tab="loyalty" onclick="switchTab('loyalty',this)"><span class="kbd-hint">3</span>💎 Loyalty <span class="tab-cnt" id="loyPendingBadge" style="background:var(--tab-loyalty);color:#000;display:none">0</span></button>
     <button class="admin-tab" data-tab="care" onclick="switchTab('care',this)"><span class="kbd-hint">4</span>📋 Loyalty Prijave <span class="tab-cnt" id="careTabBadge" style="background:var(--tab-care);display:none">0</span></button>
-    <button class="admin-tab" data-tab="contacts" onclick="switchTab('contacts',this)"><span class="kbd-hint">5</span>📬 Upiti <span class="tab-cnt" id="contactsBadge" style="background:var(--tab-contacts);display:none">0</span></button>
   </div>
 
   <!-- 📊 DASHBOARD toolbar -->
@@ -795,17 +775,6 @@ body{
     </div>
   </div>
 
-  <!-- 📬 UPITI toolbar -->
-  <div class="tab-toolbar" id="toolbar-contacts">
-    <div class="global-search-bar">
-      <input type="text" placeholder="🔍  Pretraži — ime, email, vozilo, usluga..." oninput="setAdminSearch(this.value); contactsFilter(this.value)">
-      <div class="search-hint">Zahtevi za termin</div>
-    </div>
-    <div class="admin-tools">
-      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
-      <button class="tool-btn primary" onclick="loadContacts()" style="border-radius:8px">↻ Osveži</button>
-    </div>
-  </div>
 
   <div class="main">
 
@@ -1010,35 +979,6 @@ body{
     </div>
 
 
-    <!-- ═══ TAB: UPITI (BOOKING) ═══ -->
-    <div id="tab-contacts" class="tab-panel">
-      <div class="tab-intro">
-        <div class="tab-intro-left">
-          <span class="tab-intro-icon">📬</span>
-          <div>
-            <div class="tab-intro-title">Zahtevi za <em>termin</em></div>
-            <div class="tab-intro-desc">Booking zahtevi sa sajta. Odgovori klijentu i zakaži termin.</div>
-          </div>
-        </div>
-        <div class="tab-intro-right">
-          <button class="tool-btn primary" onclick="loadContacts()" style="border-radius:8px">↻ Osveži</button>
-          <button class="tool-btn" onclick="copyAdminWhatsApp()" style="border-radius:8px">💬 WA šablon</button>
-        </div>
-      </div>
-      <div class="stats-row">
-        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat1">—</div><div class="stat-l">Ukupno upita</div></div>
-        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat2">—</div><div class="stat-l">Nije odgovoreno</div></div>
-        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat3">—</div><div class="stat-l">Sa datumom</div></div>
-        <div class="stat-box" style="--stat-accent:var(--tab-contacts)"><div class="stat-n ct-stat-n" id="ctStat4">—</div><div class="stat-l">Ovaj mesec</div></div>
-      </div>
-      <div class="care-list-wrap">
-        <div class="care-list-head">
-          <div class="section-title" style="margin-bottom:0">Zahtevi za termin 📬</div>
-          <input type="text" class="loy-search" id="contactsSearchInp" placeholder="Pretraži upite..." oninput="contactsFilter(this.value)">
-        </div>
-        <div id="contactsList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
-      </div>
-    </div>
 
   </div>
 </div>
@@ -1456,7 +1396,6 @@ function refreshActiveTab() {
     reviews:  loadReviews,
     loyalty:  loadLoyalty,
     care:     loadCare,
-    contacts: loadContacts,
   };
   const fn = loaders[_adminCurrentTab];
   if (typeof fn === 'function') fn();
@@ -1742,7 +1681,7 @@ function switchTab(name, btn) {
   if (btn) btn.classList.add('on');
 
   // Show/hide tab-specific toolbars and help strips
-  ['dashboard','reviews','loyalty','care','contacts'].forEach(t => {
+  ['dashboard','reviews','loyalty','care'].forEach(t => {
     const tb = document.getElementById('toolbar-' + t);
     const st = document.getElementById('strip-' + t);
     if (tb) tb.classList.toggle('on', t === name);
@@ -1761,7 +1700,6 @@ function switchTab(name, btn) {
 
   // Auto-load on tab switch
   if (name === 'dashboard' && typeof loadDashboard === 'function') loadDashboard();
-  if (name === 'contacts'  && typeof loadContacts  === 'function') loadContacts();
 }
 
 function setTabAccentColor(name) {
@@ -1770,7 +1708,6 @@ function setTabAccentColor(name) {
     reviews:  '#C0392B',
     loyalty:  '#F2C200',
     care:     '#16A085',
-    contacts: '#8E44AD'
   };
   const col = colors[name] || '#C0392B';
   document.querySelectorAll('.stat-box .stat-n').forEach(el => {
@@ -1785,7 +1722,6 @@ function loadAll() {
   loadReviews();
   loadLoyalty();
   loadCare();
-  loadContacts();
   loadDashboard();
 }
 
@@ -2524,105 +2460,6 @@ async function careDelete(id) {
   loadCare();
 }
 
-// loadContacts — uklonjeno jer booking forma nije aktivna na sajtu
-
-// ═══════════════════════════════════════════
-// ═══════════════════════════════════════════
-// UPITI (BOOKING ZAHTEVI)
-// ═══════════════════════════════════════════
-let allContacts = [];
-
-async function loadContacts() {
-  const data = await api('get_contacts').catch(() => null);
-  const all  = Array.isArray(data) ? data : [];
-
-  // Prikazujemo samo booking zahteve — loyalty prijave su u tabu "Loyalty Prijave"
-  const bookingAll = all.filter(c => {
-    const u  = (c.usluga || '').toLowerCase();
-    const st = (c.submission_type || '').toLowerCase();
-    return !u.includes('maintenance') && !u.includes('laker ritual') && !u.includes('laker care')
-      && !u.includes('loyalty prijava') && st !== 'loyalty_registration';
-  });
-  allContacts = bookingAll;
-
-  const thisMonth = new Date().toISOString().slice(0, 7);
-  const withDate  = bookingAll.filter(c => c.datum).length;
-  const thisMonthCount = bookingAll.filter(c => (c.created_at || '').startsWith(thisMonth)).length;
-
-  animateCounter('ctStat1', bookingAll.length);
-  animateCounter('ctStat2', bookingAll.filter(c => !c.loyalty_added).length);
-  animateCounter('ctStat3', withDate);
-  animateCounter('ctStat4', thisMonthCount);
-
-  const badge = document.getElementById('contactsBadge');
-  if (badge) {
-    const pending = bookingAll.filter(c => !c.loyalty_added).length;
-    if (pending > 0) { badge.textContent = pending; badge.style.display = 'inline-flex'; }
-    else { badge.style.display = 'none'; }
-  }
-
-  renderContacts(bookingAll);
-  applyAdminSearch();
-}
-
-function contactsFilter(val) {
-  const v = (val || '').toLowerCase().trim();
-  const filtered = v
-    ? allContacts.filter(c =>
-        (c.ime     || '').toLowerCase().includes(v) ||
-        (c.email   || '').toLowerCase().includes(v) ||
-        (c.telefon || '').toLowerCase().includes(v) ||
-        (c.auto    || '').toLowerCase().includes(v) ||
-        (c.usluga  || '').toLowerCase().includes(v)
-      )
-    : allContacts;
-  renderContacts(filtered);
-  applyAdminSearch();
-}
-
-function renderContacts(items) {
-  const el = document.getElementById('contactsList');
-  if (!el) return;
-  if (!items.length) {
-    el.innerHTML = '<div class="empty"><em>Nema booking upita</em>Čim neko pošalje zahtev za termin, pojaviće se ovde.</div>';
-    return;
-  }
-  el.innerHTML = items.map(c => {
-    const waPhone = c.telefon ? c.telefon.replace(/\s/g,'').replace(/^\+/,'').replace(/^0/,'381') : '';
-    const waTekst = encodeURIComponent(
-      'Zdravo ' + (c.ime||'') + ',\n\n' +
-      'Primili smo vaš zahtev za termin — ' + (c.usluga||'') + '.\n\n' +
-      'Javite se da dogovorimo detalje.\n\n' +
-      '060 726 0302 — Laker Detailing, Čačak'
-    );
-    const napomena = stripMaintenanceMeta(c.napomena || '');
-    return `<div class="ct-card" data-admin-search="${esc([c.ime, c.email, c.telefon, c.auto, c.usluga].filter(Boolean).join(' '))}">
-      <div class="ct-info" style="flex:1;min-width:0">
-        <div class="ct-name">${esc(c.ime || '—')}</div>
-        <div class="ct-meta">
-          <div>📱 <span>${esc(c.telefon || '—')}</span> &nbsp;·&nbsp; ✉️ <span>${esc(c.email || '—')}</span></div>
-          <div>🚗 <strong>${esc(c.auto || '—')}</strong>${c.velicina ? ' <span style="color:#555;font-size:11px">(' + esc(c.velicina) + ')</span>' : ''}</div>
-          <div>📦 Usluga: <strong style="color:#C0392B">${esc(c.usluga || '—')}</strong>${c.datum ? ' &nbsp;·&nbsp; 📅 Željeni datum: <strong>' + esc(c.datum) + '</strong>' : ''}</div>
-          ${napomena ? '<div style="margin-top:4px;font-size:12px;color:#666">💬 ' + esc(napomena) + '</div>' : ''}
-          <div style="font-size:10px;color:#444;margin-top:4px">🕐 ${fmtDate(c.created_at)}</div>
-        </div>
-      </div>
-      <div class="ct-actions">
-        ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waTekst}" target="_blank" class="ct-btn" style="background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.3);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">💬 WhatsApp</a>` : ''}
-        ${c.email ? `<a href="mailto:${esc(c.email)}?subject=Zahtev za termin — Laker Detailing" class="ct-btn" style="background:rgba(255,255,255,.04);color:#aaa;border:1px solid rgba(255,255,255,.1);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">✉️ Email</a>` : ''}
-        <button class="ct-btn ct-btn-del" onclick="ctDelete('${esc(c.id)}')">Obriši</button>
-        <div id="ctok-${esc(c.id)}" style="display:none;font-size:10px;color:#27AE60;font-weight:700">✓ Obrisano</div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function ctDelete(ctId) {
-  if (!confirm('Obrisati ovaj upit?')) return;
-  await api('delete_contact', { id: ctId });
-  document.getElementById('ctok-' + ctId).style.display = 'block';
-  setTimeout(() => loadContacts(), 600);
-}
 
 </script>
 
@@ -2633,7 +2470,7 @@ async function ctDelete(ctId) {
 document.addEventListener('keydown', function(e) {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   if (e.ctrlKey || e.metaKey || e.altKey) return;
-  const tabMap = { '1': 'dashboard', '2': 'reviews', '3': 'loyalty', '4': 'care', '5': 'contacts' };
+  const tabMap = { '1': 'dashboard', '2': 'reviews', '3': 'loyalty', '4': 'care' };
   if (tabMap[e.key]) {
     const tabName = tabMap[e.key];
     const btn = document.querySelector('.admin-tab[data-tab="' + tabName + '"]');
@@ -2691,7 +2528,7 @@ function confettiBurst(x, y) {
 document.addEventListener('DOMContentLoaded', function() {
   setTabAccentColor('dashboard');
   // Sakrij sve strip-ove osim dashboard na loadu
-  ['reviews','loyalty','care','contacts'].forEach(t => {
+  ['reviews','loyalty','care'].forEach(t => {
     const s = document.getElementById('strip-' + t);
     if (s) s.style.display = 'none';
     const tb = document.getElementById('toolbar-' + t);
