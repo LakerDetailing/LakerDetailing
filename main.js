@@ -5,15 +5,18 @@ function escHtml(s){
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-// ── CUSTOM CURSOR ──
+// ── CUSTOM CURSOR (samo na uređajima sa mišem, ne na touch) ──
 const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(anim)})();
-document.querySelectorAll('a,button,.si,.pk,.cs-card,.tst-card,.faq-q,.sz-lbl').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cr.style.width='54px';cr.style.height='54px'});
-  el.addEventListener('mouseleave',()=>{cr.style.width='32px';cr.style.height='32px'});
-});
+const _hasHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+if(_hasHover){
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'},{passive:true});
+  (function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(anim)})();
+  document.querySelectorAll('a,button,.si,.pk,.cs-card,.tst-card,.faq-q,.sz-lbl').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cr.style.width='54px';cr.style.height='54px'},{passive:true});
+    el.addEventListener('mouseleave',()=>{cr.style.width='32px';cr.style.height='32px'},{passive:true});
+  });
+}
 
 // ── THEME TOGGLE ──
 const themeBtn=document.getElementById('themeBtn');
@@ -28,24 +31,11 @@ themeBtn.addEventListener('click',()=>{
   try{localStorage.setItem('laker-theme',_lakerTheme);}catch(e){}
 });
 
-// ── iOS / Brave PWA — HORIZONTAL SCROLL PREVENTION ──────────────────────
-// overflow-x:hidden na html/body ne sprečava viewport-level horizontalni
-// scroll na iOS Safari WebKit standalone modu. Ovo ga blokira na nivou eventa.
-(function preventHorizontalScroll(){
-  var startX = 0, startY = 0;
-  document.addEventListener('touchstart', function(e){
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  }, {passive: true});
-  document.addEventListener('touchmove', function(e){
-    var dx = Math.abs(e.touches[0].clientX - startX);
-    var dy = Math.abs(e.touches[0].clientY - startY);
-    // Ako je kretanje jasno horizontalno (dx > dy i > 8px) — blokiraj
-    if (dx > dy && dx > 8) {
-      e.preventDefault();
-    }
-  }, {passive: false}); // passive:false je obavezno da bi preventDefault() radio
-})();
+// ── HORIZONTAL SCROLL PREVENTION — CSS rešenje ──────────────────────────
+// touch-action:pan-y na html+body i overscroll-behavior-x:none blokira
+// horizontalni scroll uključujući iOS Safari PWA standalone mod.
+// Prethodni JS {passive:false} touchmove je UKLONJEN jer blokira nativni
+// scroll browser-a i uzrokuje "zaglavljivanje" scrolla na mobilnom.
 
 // ── HAMBURGER (mobile overlay) ──
 const hbg=document.getElementById('hbg');
@@ -89,7 +79,7 @@ mobileOverlay.addEventListener('click',function(e){if(e.target===this)closeMobil
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu();});
 
 // ── NAV SCROLL ──
-window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>60));
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>60),{passive:true});
 
 // ── TABS ──
 function ot(btn,id){
@@ -106,14 +96,8 @@ function toggleFaq(btn){
   if(!isOpen)item.classList.add('open');
 }
 
-// ── REVEAL ──
+// ── REVEAL (IntersectionObserver — passivan, nema forced reflow) ──
 (function(){
-  function checkRvInView(){
-    document.querySelectorAll('.rv:not(.in),.rl:not(.in),.rr:not(.in)').forEach(function(el){
-      var r=el.getBoundingClientRect();
-      if(r.bottom>0&&r.top<window.innerHeight*0.95)el.classList.add('in');
-    });
-  }
   try{
     const obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});},{threshold:.07});
     document.querySelectorAll('.rv,.rl,.rr').forEach(function(el){obs.observe(el);});
