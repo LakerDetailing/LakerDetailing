@@ -16,24 +16,22 @@
 <meta name="google-site-verification" content="u5J1l96Q1CNZ78KsJryTi98MLmmsZVd5eSmz3tu3oP4" />
 <link rel="canonical" href="https://lakerdetailing.rs/">
 
-<!-- ══ GOOGLE ANALYTICS 4 ══ -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-DP87917XW3"></script>
+<!-- ══ ANALYTICS (odloženo — ne blokira render) ══ -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-DP87917XW3');
-</script>
-
-<!-- ══ META PIXEL ══ -->
-<script>
-  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-  document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '27521788054080884');
-  fbq('track', 'PageView');
+(function(){
+  function _loadAnalytics(){
+    var ga=document.createElement('script');ga.async=true;
+    ga.src='https://www.googletagmanager.com/gtag/js?id=G-DP87917XW3';
+    document.head.appendChild(ga);
+    window.dataLayer=window.dataLayer||[];
+    function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
+    gtag('js',new Date());gtag('config','G-DP87917XW3');
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','27521788054080884');fbq('track','PageView');
+  }
+  if(document.readyState==='complete'){_loadAnalytics();}
+  else{window.addEventListener('load',_loadAnalytics,{once:true});}
+})();
 </script>
 <noscript><img loading="lazy" height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=27521788054080884&ev=PageView&noscript=1"/></noscript>
@@ -59,7 +57,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="dns-prefetch" href="https://connect.facebook.net">
-<link rel="preload" as="image" fetchpriority="high"
+<link rel="preload" as="image" type="image/webp" fetchpriority="high"
   imagesrcset="/assets/hero-900.webp 900w, /assets/hero-1100.webp 1100w, /assets/hero-1600.webp 1600w"
   imagesizes="100vw"
   href="/assets/hero-1100.webp">

@@ -268,7 +268,8 @@ async function loadReviews(){
       </div>`).join('')+'</div>';
   }catch(e){console.log('Review load error',e)}
 }
-loadReviews();
+if(document.readyState==='complete'){loadReviews();}
+else{window.addEventListener('load',loadReviews,{once:true});}
 
 // ── REVIEW MODAL ──
 let rmRating=5;
@@ -1434,7 +1435,7 @@ function clearSession(){
 }
 
 // ── AUTO-LOGIN ON PAGE LOAD ───────────────
-(async function init(){
+async function init(){
   try{
     let s=null;let source='';
     try{
@@ -1469,6 +1470,8 @@ function clearSession(){
     updateNavBtn(p ? (p.name || p.email || email).split(/[\s@]/)[0] : email, p ? p.wash_count : undefined);
     applyAccountPricing(p);
   } catch(e){ clearSession(); resetAccountPricing(); }
-})();
+}
+if(document.readyState==='complete'){init();}
+else{window.addEventListener('load',init,{once:true});}
 
 })();
