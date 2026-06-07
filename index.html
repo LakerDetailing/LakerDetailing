@@ -16,10 +16,18 @@
 <meta name="google-site-verification" content="u5J1l96Q1CNZ78KsJryTi98MLmmsZVd5eSmz3tu3oP4" />
 <link rel="canonical" href="https://www.lakerdetailing.rs/">
 
-<!-- ══ ANALYTICS (odloženo — ne blokira render) ══ -->
+<!-- ══ SENTRY ERROR TRACKING ══ -->
+<script src="https://browser.sentry-cdn.com/8.47.0/bundle.min.js" crossorigin="anonymous"></script>
+<script>
+if(window.Sentry){Sentry.init({dsn:'https://e8a5c3264a9a4dec0cd6d951e20028d5@o4511525862309888.ingest.de.sentry.io/4511525878825040',environment:'production',tracesSampleRate:0,ignoreErrors:['ResizeObserver loop','Non-Error promise rejection']});}
+</script>
+
+<!-- ══ ANALYTICS (učitava se samo uz cookie saglasnost) ══ -->
 <script>
 (function(){
   function _loadAnalytics(){
+    if(window._analyticsLoaded)return;
+    window._analyticsLoaded=true;
     var ga=document.createElement('script');ga.async=true;
     ga.src='https://www.googletagmanager.com/gtag/js?id=G-DP87917XW3';
     document.head.appendChild(ga);
@@ -29,8 +37,11 @@
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init','27521788054080884');fbq('track','PageView');
   }
-  if(document.readyState==='complete'){_loadAnalytics();}
-  else{window.addEventListener('load',_loadAnalytics,{once:true});}
+  window._lakerLoadAnalytics=_loadAnalytics;
+  if(localStorage.getItem('laker_cookie_consent')==='yes'){
+    if(document.readyState==='complete'){_loadAnalytics();}
+    else{window.addEventListener('load',_loadAnalytics,{once:true});}
+  }
 })();
 </script>
 
@@ -2099,11 +2110,11 @@ function lakerFallbackImage(label, sublabel) {
         <ul class="pk-ul">
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Beskontaktno pretpranje</span><span>Šamponiranje poroznim sunđerom</span><span>Ispiranje i sušenje</span><span>Zaštita od vodenih mrlja</span></div>
+            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Karnauba voskiranje</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Prirodni karnauba vosak</span><span>Dubok sjaj površine</span><span>Zaštita 2–3 meseca</span><span>Lako pranje posle</span></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Voskiranje premium voskom</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-info"><span>Premium Koch Chemie vosak</span><span>Dubok sjaj površine</span><span>Zaštita 4–6 nedelja</span><span>Hidrofobni efekat</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2111,11 +2122,11 @@ function lakerFallbackImage(label, sublabel) {
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Zaštita od korozije</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
+            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Čišćenje i sjajenje felni</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje kočione prašine</span><span>Kisela ili alkalna sredstva</span><span>Sjajenje do ogledala</span><span>Zaštitni premaz</span></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Čišćenje felni</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-info"><span>Uklanjanje kočione prašine</span><span>Dubinsko čišćenje felni</span><span>Blistav rezultat</span></div>
           </li>
         </ul>
         <div class="pk-dur">⏱ &nbsp;3 radna dana</div>
@@ -2142,7 +2153,7 @@ function lakerFallbackImage(label, sublabel) {
         <ul class="pk-ul">
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Beskontaktno pretpranje</span><span>Šamponiranje poroznim sunđerom</span><span>Ispiranje i sušenje</span><span>Zaštita od vodenih mrlja</span></div>
+            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dvoslojno poliranje laka</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2150,7 +2161,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno karnauba voskiranje</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Prirodni karnauba vosak</span><span>Dubok sjaj</span><span>Zaštita 2–3 meseca</span><span>Ručna aplikacija</span></div>
+            <div class="pk-info"><span>Premium Koch Chemie vosak</span><span>Dubok sjaj</span><span>Zaštita do 3 meseca</span><span>Ručna aplikacija</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2158,7 +2169,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Zaštita od korozije</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
+            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2187,7 +2198,7 @@ function lakerFallbackImage(label, sublabel) {
         <ul class="pk-ul">
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Beskontaktno pretpranje</span><span>Šamponiranje poroznim sunđerom</span><span>Ispiranje i sušenje</span><span>Zaštita od vodenih mrlja</span></div>
+            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Troslojno poliranje laka</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2195,11 +2206,11 @@ function lakerFallbackImage(label, sublabel) {
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Keramička zaštita Koch-Chemie (1 sloj)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Hemijski se vezuje za lak</span><span>UV zaštita od sunca</span><span>Voda se odbija — lako pranje</span><span>Traje godinama</span></div>
+            <div class="pk-info"><span>Hemijski se vezuje za lak</span><span>UV zaštita od sunca</span><span>Voda se odbija — lako pranje</span><span>Zaštita do 3 godine</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Nano-Glass All — anti-kiša sva stakla</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Nano premaz na sva stakla</span><span>Voda se odbija na brzini</span><span>Čista vidljivost u kiši</span><span>Traje mesecima</span></div>
+            <div class="pk-info"><span>Nano premaz na sva stakla</span><span>Voda se odbija od ~80 km/h</span><span>Čista vidljivost u kiši</span><span>Traje do 12 meseci / 20.000 km</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -2211,7 +2222,7 @@ function lakerFallbackImage(label, sublabel) {
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Kompletno čišćenje potkrilja</span><span>Zaštita od korozije i hrđe</span><span>Felne skinute i očišćene</span><span>Sve površine pokrivene</span></div>
+            <div class="pk-info"><span>Kompletno čišćenje potkrilja</span><span>Uklanjanje soli i blata i hrđe</span><span>Felne skinute i očišćene</span><span>Sve površine pokrivene</span></div>
           </li>
           <li class="pk-li">
             <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
@@ -3450,6 +3461,43 @@ document.addEventListener('keydown',function(e){
 
 
 <script src="/main.js?v=20260607d" defer></script>
+
+<!-- ══ COOKIE BANNER ══ -->
+<style>
+#ck-banner{position:fixed;bottom:0;left:0;right:0;z-index:99999;background:#0E0C0C;border-top:1px solid rgba(192,57,43,.4);padding:14px 20px;font-family:Inter,sans-serif;animation:ckSlide .3s ease}
+@keyframes ckSlide{from{transform:translateY(100%)}to{transform:translateY(0)}}
+#ck-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+#ck-banner p{color:rgba(255,255,255,.75);font-size:13px;line-height:1.6;margin:0;flex:1;min-width:220px}
+#ck-btns{display:flex;gap:10px;flex-shrink:0}
+#ck-yes{background:#C0392B;color:#fff;border:none;padding:9px 22px;border-radius:4px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s}
+#ck-yes:hover{background:#E74C3C}
+#ck-no{background:transparent;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.18);padding:9px 18px;border-radius:4px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+#ck-no:hover{border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.7)}
+</style>
+<div id="ck-banner" role="dialog" aria-label="Obaveštenje o kolačićima" style="display:none">
+  <div id="ck-inner">
+    <p>Koristimo kolačiće za analitiku poseta (Google Analytics) i praćenje oglasa (Facebook Pixel) kako bismo unapredili naše usluge.</p>
+    <div id="ck-btns">
+      <button id="ck-yes">Prihvati</button>
+      <button id="ck-no">Odbij</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('ck-banner');
+  if(!localStorage.getItem('laker_cookie_consent')){b.style.display='';}
+  document.getElementById('ck-yes').addEventListener('click',function(){
+    localStorage.setItem('laker_cookie_consent','yes');
+    b.style.display='none';
+    if(typeof window._lakerLoadAnalytics==='function')window._lakerLoadAnalytics();
+  });
+  document.getElementById('ck-no').addEventListener('click',function(){
+    localStorage.setItem('laker_cookie_consent','no');
+    b.style.display='none';
+  });
+})();
+</script>
 
 </body>
 </html>
