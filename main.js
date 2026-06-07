@@ -119,10 +119,7 @@ function toggleFaq(btn){
     document.querySelectorAll('.rv,.rl,.rr').forEach(function(el){obs.observe(el);});
   }catch(e){
     document.querySelectorAll('.rv,.rl,.rr').forEach(function(el){el.classList.add('in');});
-    return;
   }
-  window.addEventListener('scroll',checkRvInView,{passive:true});
-  checkRvInView();
 })();
 
 // ── DATE MIN ──
