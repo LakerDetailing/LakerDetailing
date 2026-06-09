@@ -55,7 +55,7 @@ Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.)
 | Paket | Mali (A) | Srednji (C) | Veliki (E+) | Ekstra (SUV/Van) |
 |-------|----------|-------------|-------------|-----------------|
 | Clean | €99  | €110 | €130 | €145 |
-| Boost | €250 | €260 | €280 | €295 |
+| Boost | €249 | €260 | €280 | €295 |
 | Laker | €499 | €510 | €530 | €545 |
 
 ---
