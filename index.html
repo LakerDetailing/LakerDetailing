@@ -482,10 +482,10 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 /* CASE STUDIES */
 #cs{background:var(--d1);padding-bottom:0;content-visibility:auto;contain-intrinsic-size:auto 700px}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
-.cs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
-.cs-card{position:relative;overflow:hidden;cursor:none;background:var(--d3)}
-.cs-card img{width:100%;height:auto;display:block;filter:grayscale(15%) brightness(.85);transition:filter .7s,transform .7s}
-.cs-card:hover img{filter:grayscale(0%) brightness(1);transform:scale(1.03)}
+.cs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px}
+.cs-card{position:relative;overflow:hidden;cursor:none;background:#000;height:480px}
+.cs-card img{width:100%;height:100%;object-fit:contain;display:block;filter:grayscale(15%) brightness(.88);transition:filter .6s,transform .6s}
+.cs-card:hover img{filter:grayscale(0%) brightness(1);transform:scale(1.02)}
 
 /* SERVICES */
 #srv{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 800px}
@@ -1090,7 +1090,8 @@ body.pwa-standalone .pwa-push{}
   .ft{grid-template-columns:1fr 1fr;gap:40px;padding:60px 30px 40px}
   .fb{padding:22px 30px}
   .srv-sticky,.faq-sticky{position:static}
-  .cs-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cs-card{height:360px}
   #soc{padding:80px 30px}
   .proc-steps::before{display:none}
   .proc-steps{grid-template-columns:1fr}
@@ -1173,7 +1174,8 @@ body.menu-open{
   .tst-grid{grid-template-columns:1fr}
   .cs-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:36px}
   .cs-head p{text-align:left!important;max-width:100%!important}
-  .cs-grid{grid-template-columns:1fr;gap:6px}
+  .cs-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+  .cs-card{height:260px}
   .cs-info{padding:22px 20px}
   .phi-grid,.srv-layout,.prc-top,.faq-layout{gap:28px}
   .proc-header{margin-bottom:54px}
@@ -1259,7 +1261,7 @@ body.menu-open{
   .mq-i{font-size:8.5px;padding:0 22px;gap:12px}
   .sh{font-size:clamp(32px,10vw,46px)}
   .sd{font-size:12.5px}
-  .cs-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cs-card{height:240px}
   .phi-left .phi-img{height:260px}
   #mobileOverlay{gap:20px;padding:calc(68px + env(safe-area-inset-top)) 20px 32px}
   #mobileOverlay a{font-size:12.5px;letter-spacing:2px;min-height:40px}
@@ -2027,20 +2029,26 @@ function lakerFallbackImage(label, sublabel) {
   <div class="cs-grid rv">
     <div class="cs-card cs-1">
       <picture>
-        <source type="image/webp" srcset="/assets/gallery/work1-480.webp 480w, /assets/gallery/work1.webp 900w" sizes="(max-width:600px) 100vw, 33vw">
-        <img width="900" height="507" loading="lazy" decoding="async" src="/assets/gallery/work1-opt.jpg" alt="Mercedes AMG S-Class enterijer detailing" onerror="this.onerror=null;this.src=lakerFallbackImage('Detailing rad','Naš rad 1');">
+        <source type="image/webp" srcset="/assets/gallery/work1-480.webp 480w, /assets/gallery/work1.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
+        <img width="900" height="507" loading="lazy" decoding="async" src="/assets/gallery/work1-opt.jpg" alt="Mercedes AMG S-Class enterijer detailing">
       </picture>
     </div>
     <div class="cs-card cs-2">
       <picture>
-        <source type="image/webp" srcset="/assets/gallery/work2-480.webp 480w, /assets/gallery/work2.webp 900w" sizes="(max-width:600px) 100vw, 33vw">
-        <img width="900" height="1035" loading="lazy" decoding="async" src="/assets/gallery/work2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera" onerror="this.onerror=null;this.src=lakerFallbackImage('Detailing rad','Naš rad 2');">
+        <source type="image/webp" srcset="/assets/gallery/work2-480.webp 480w, /assets/gallery/work2.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
+        <img width="900" height="1035" loading="lazy" decoding="async" src="/assets/gallery/work2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera">
       </picture>
     </div>
     <div class="cs-card cs-3">
       <picture>
-        <source type="image/webp" srcset="/assets/gallery/work3-480.webp 480w, /assets/gallery/work3.webp 900w" sizes="(max-width:600px) 100vw, 33vw">
-        <img width="900" height="1161" loading="lazy" decoding="async" src="/assets/gallery/work3-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera" onerror="this.onerror=null;this.src=lakerFallbackImage('Detailing rad','Naš rad 3');">
+        <source type="image/webp" srcset="/assets/gallery/gallery-wheel-480.webp 480w, /assets/gallery/gallery-wheel.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
+        <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/gallery-wheel-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
+      </picture>
+    </div>
+    <div class="cs-card cs-4">
+      <picture>
+        <source type="image/webp" srcset="/assets/gallery/work3-480.webp 480w, /assets/gallery/work3.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
+        <img width="900" height="1161" loading="lazy" decoding="async" src="/assets/gallery/work3-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
       </picture>
     </div>
   </div>
