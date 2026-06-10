@@ -1466,3 +1466,85 @@ if(document.readyState==='complete'){init();}
 else{window.addEventListener('load',init,{once:true});}
 
 })();
+
+// ── PREMIUM MODAL ──────────────────────────────────────────────────────────
+function openPremiumModal(){
+  document.getElementById('pp-modal').classList.add('open');
+  document.body.style.overflowY='hidden';
+}
+function closePremiumModal(){
+  document.getElementById('pp-modal').classList.remove('open');
+  document.body.style.overflowY='';
+}
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape' && document.getElementById('pp-modal')?.classList.contains('open')){
+    closePremiumModal();
+  }
+});
+
+// ── COMPOUND CLICK HELPERS ─────────────────────────────────────────────────
+window.openLoyaltyMenu = function(){
+  window.openLoyalty && window.openLoyalty();
+  typeof closeMobileMenu === 'function' && closeMobileMenu();
+};
+window.closePwaIosModalScroll = function(){
+  window.closePwaIosModal && window.closePwaIosModal();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+// ── GLOBAL CLICK DELEGATION (replaces all onclick= attributes) ─────────────
+document.addEventListener('click', function(e){
+  // Stop-propagation wrapper (modal inner box)
+  var btn = e.target.closest('[data-click]');
+  var sp  = btn ? null : e.target.closest('[data-sp]');
+  if(sp){ e.stopPropagation(); return; }
+  if(!btn) return;
+
+  var cmd    = btn.getAttribute('data-click');
+  var sep    = cmd.indexOf(':');
+  var fnName = sep === -1 ? cmd : cmd.slice(0, sep);
+  var arg    = sep === -1 ? undefined : cmd.slice(sep + 1);
+  var fn     = window[fnName];
+  if(typeof fn !== 'function') return;
+
+  if(fnName === 'togglePkInfo' || fnName === 'toggleFaq'){
+    fn(btn);
+  } else if(fnName === 'ot'){
+    fn(btn, arg);
+  } else if(arg !== undefined){
+    fn(arg);
+  } else {
+    fn();
+  }
+
+  // Prevent navigation on pure anchor buttons
+  var href = btn.getAttribute('href');
+  if(btn.tagName === 'A' && (!href || href === '#' || href === 'javascript:void(0)')){
+    e.preventDefault();
+  }
+});
+
+// ── EVENT LISTENERS (replaces oninput/onblur/onkeydown/onsubmit) ──────────
+(function(){
+  function bindInput(id, fn){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input',  function(){ fn(el); });
+    el.addEventListener('blur',   function(){ fn(el); });
+  }
+  bindInput('telefon_field', validatePhoneField);
+  bindInput('email_field',   validateEmailField);
+
+  var llogePass = document.getElementById('llog-pass');
+  if(llogePass) llogePass.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') window.loyLogin && window.loyLogin();
+  });
+
+  var np2 = document.getElementById('new-pass-2');
+  if(np2) np2.addEventListener('keydown', function(e){
+    if(e.key === 'Enter') window.submitNewPassword && window.submitNewPassword();
+  });
+
+  var bookForm = document.querySelector('#fCont form');
+  if(bookForm) bookForm.addEventListener('submit', handleSubmit);
+})();

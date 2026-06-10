@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sr">
 <head>
 <meta charset="UTF-8">
@@ -16,32 +16,7 @@
 <link rel="canonical" href="https://www.lakerdetailing.rs/">
 
 <!-- ══ SENTRY ERROR TRACKING — non-blocking ══ -->
-<script>
-(function(){function loadSentry(){var s=document.createElement('script');s.src='https://browser.sentry-cdn.com/8.47.0/bundle.min.js';s.crossOrigin='anonymous';s.onload=function(){if(window.Sentry)Sentry.init({dsn:'https://e8a5c3264a9a4dec0cd6d951e20028d5@o4511525862309888.ingest.de.sentry.io/4511525878825040',environment:'production',tracesSampleRate:0,ignoreErrors:['ResizeObserver loop','Non-Error promise rejection']});};document.head.appendChild(s);}document.readyState==='complete'?loadSentry():window.addEventListener('load',loadSentry,{once:true});})();
-</script>
-
 <!-- ══ ANALYTICS (učitava se samo uz cookie saglasnost) ══ -->
-<script>
-(function(){
-  function _loadAnalytics(){
-    if(window._analyticsLoaded)return;
-    window._analyticsLoaded=true;
-    var ga=document.createElement('script');ga.async=true;
-    ga.src='https://www.googletagmanager.com/gtag/js?id=G-DP87917XW3';
-    document.head.appendChild(ga);
-    window.dataLayer=window.dataLayer||[];
-    function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
-    gtag('js',new Date());gtag('config','G-DP87917XW3');
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init','27521788054080884');fbq('track','PageView');
-  }
-  window._lakerLoadAnalytics=_loadAnalytics;
-  if(localStorage.getItem('laker_cookie_consent')==='yes'){
-    if(document.readyState==='complete'){_loadAnalytics();}
-    else{window.addEventListener('load',_loadAnalytics,{once:true});}
-  }
-})();
-</script>
 
 <!-- ══ OPEN GRAPH ══ -->
 <meta property="og:type"        content="website">
@@ -387,7 +362,7 @@ body.light .btn-o:hover{border-color:var(--gold);color:#EDF1FA}
 .pw-wrap{position:relative}
 .pw-wrap input{padding-right:56px!important}
 .pw-toggle{position:absolute;top:50%;right:10px;transform:translateY(-50%);width:34px;height:34px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:var(--lgray);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;transition:all .25s}
-.hp-field{opacity:0;position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;tab-index:-1}
+.hp-field{opacity:0;position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none}
 .pw-toggle:hover{border-color:var(--gold);color:var(--white);background:rgba(201,168,76,.12)}
 .pw-toggle.on{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.18);color:var(--gold)}
 .pw-hint{display:block;font-size:11px;line-height:1.5;margin-top:6px;color:#7D7B76}
@@ -1830,39 +1805,27 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   .pp-loyalty{grid-template-columns:1fr}
   .pp-phase{grid-template-columns:36px 1fr;gap:12px}
 }
+/* ── inline handler replacements ── */
+#loyOverlay input:focus{border-color:rgba(201,168,76,.5)!important}
+#llog-btn:hover,#lreg-btn:hover,#new-pass-btn:hover{background:#E8C96A!important}
+#loy-close-btn:hover{color:#fff!important}
+#forgot-pw-btn:hover{color:#C9A84C!important}
+#forgot-submit-btn:hover{background:#C9A84C!important;color:#fff!important}
+/* ── cookie banner ── */
+#ck-overlay{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);animation:ckFadeIn .3s ease}
+#ck-box{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:99999;width:100%;max-width:680px;background:#141414;border:1px solid rgba(255,255,255,.08);border-bottom:none;border-radius:14px 14px 0 0;padding:32px 36px 28px;font-family:Inter,sans-serif;box-shadow:0 -20px 60px rgba(0,0,0,.6);animation:ckSlideUp .35s cubic-bezier(.22,.68,0,1.2)}
+@keyframes ckFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes ckSlideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
+#ck-icon{font-size:22px;margin-bottom:12px;display:block}
+#ck-box h3{color:#fff;font-size:17px;font-weight:600;margin:0 0 10px;letter-spacing:.01em}
+#ck-box p{color:rgba(255,255,255,.6);font-size:13px;line-height:1.65;margin:0 0 24px}
+#ck-btns{display:flex;gap:12px;flex-wrap:wrap}
+#ck-yes{flex:1;min-width:140px;background:#C0392B;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;letter-spacing:.02em}
+#ck-yes:hover{background:#E74C3C}
+#ck-no{flex:1;min-width:140px;background:transparent;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.2);padding:12px 20px;border-radius:6px;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
+#ck-no:hover{border-color:rgba(255,255,255,.45);color:rgba(255,255,255,.85)}
+@media(max-width:480px){#ck-box{padding:24px 20px 20px}#ck-btns{flex-direction:column}#ck-yes,#ck-no{width:100%}}
 </style>
-<script>
-function lakerFallbackImage(label, sublabel) {
-  var safeLabel = String(label || 'Laker Detailing').replace(/[<>&"]/g, '');
-  var safeSub = String(sublabel || 'Premium detailing').replace(/[<>&"]/g, '');
-  var svg =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" preserveAspectRatio="none">' +
-    '<defs>' +
-    '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0%" stop-color="#080808"/>' +
-    '<stop offset="100%" stop-color="#1a1a1a"/>' +
-    '</linearGradient>' +
-    '<radialGradient id="r" cx="50%" cy="35%" r="80%">' +
-    '<stop offset="0%" stop-color="#C9A84C" stop-opacity=".35"/>' +
-    '<stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>' +
-    '</radialGradient>' +
-    '</defs>' +
-    '<rect width="1200" height="800" fill="url(#g)"/>' +
-    '<circle cx="930" cy="180" r="240" fill="url(#r)"/>' +
-    '<circle cx="240" cy="620" r="280" fill="#0f0f0f"/>' +
-    '<path d="M180 560h150l45-76c7-12 20-19 34-19h240c15 0 29 8 36 21l34 65h116c28 0 50 22 50 50v45H180v-86c0-1 0-1 0-1z" fill="#171717" stroke="#C9A84C" stroke-opacity=".22" stroke-width="3"/>' +
-    '<circle cx="356" cy="635" r="56" fill="#0b0b0b" stroke="#c0392b" stroke-opacity=".28" stroke-width="8"/>' +
-    '<circle cx="356" cy="635" r="22" fill="#2b2b2b"/>' +
-    '<circle cx="815" cy="635" r="56" fill="#0b0b0b" stroke="#c0392b" stroke-opacity=".28" stroke-width="8"/>' +
-    '<circle cx="815" cy="635" r="22" fill="#2b2b2b"/>' +
-    '<rect x="500" y="405" width="210" height="95" rx="20" fill="#101010" stroke="#f2f0ec" stroke-opacity=".12"/>' +
-    '<text x="600" y="360" fill="#F2F0EC" font-size="54" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="700">' + safeLabel + '</text>' +
-    '<text x="600" y="435" fill="#C9A84C" font-size="24" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" letter-spacing="4">' + safeSub + '</text>' +
-    '<text x="600" y="520" fill="#9a9a9a" font-size="18" text-anchor="middle" font-family="Arial,Helvetica,sans-serif">Fallback vizual kada spoljni host ne radi</text>' +
-    '</svg>';
-  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
-}
-</script>
 </head>
 <body>
 <script>try{if(localStorage.getItem('laker-theme')==='light')document.body.className='light';}catch(e){}</script>
@@ -1894,7 +1857,7 @@ function lakerFallbackImage(label, sublabel) {
     <li><a href="#prc">Cenovnik</a></li>
     <li><a href="#faq">FAQ</a></li>
 
-  <li><a href="#" class="nb nb-loy" id="loyNavBtn" onclick="openLoyalty();return false;">PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span></a></li></ul>
+  <li><a href="#" class="nb nb-loy" id="loyNavBtn" data-click="openLoyalty">PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span></a></li></ul>
   <div class="nav-right">
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Promeni temu" title="Tamni / svetli režim"></button>
     <button class="hbg" id="hbg" type="button" aria-label="Meni">
@@ -1905,15 +1868,15 @@ function lakerFallbackImage(label, sublabel) {
 
 <!-- ══ MOBILE MENU OVERLAY (body-level, bez stacking context problema) ══ -->
 <div id="mobileOverlay" role="dialog" aria-modal="true" aria-label="Navigacija">
-  <button id="mobileOverlay-close" type="button" aria-label="Zatvori meni" onclick="closeMobileMenu()">✕</button>
-  <a href="#phi" onclick="closeMobileMenu()">O nama</a>
-  <a href="#cs" onclick="closeMobileMenu()">Galerija</a>
-  <a href="#srv" onclick="closeMobileMenu()">Usluge</a>
-  <a href="#pkg" onclick="closeMobileMenu()">Paketi</a>
-  <a href="#care" onclick="closeMobileMenu()">Loyalty</a>
-  <a href="#prc" onclick="closeMobileMenu()">Cenovnik</a>
-  <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
-  <a href="#" class="nb" onclick="openLoyalty();closeMobileMenu();return false;">PRIJAVA</a>
+  <button id="mobileOverlay-close" type="button" aria-label="Zatvori meni" data-click="closeMobileMenu">✕</button>
+  <a href="#phi" data-click="closeMobileMenu">O nama</a>
+  <a href="#cs" data-click="closeMobileMenu">Galerija</a>
+  <a href="#srv" data-click="closeMobileMenu">Usluge</a>
+  <a href="#pkg" data-click="closeMobileMenu">Paketi</a>
+  <a href="#care" data-click="closeMobileMenu">Loyalty</a>
+  <a href="#prc" data-click="closeMobileMenu">Cenovnik</a>
+  <a href="#faq" data-click="closeMobileMenu">FAQ</a>
+  <a href="#" class="nb" data-click="openLoyaltyMenu">PRIJAVA</a>
 </div>
 
 <!-- ══ HERO ══ -->
@@ -2124,23 +2087,23 @@ function lakerFallbackImage(label, sublabel) {
         </div>
         <ul class="pk-ul">
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Voskiranje premium voskom</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Voskiranje premium voskom</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Premium Koch Chemie vosak</span><span>Dubok sjaj površine</span><span>Zaštita 4–6 nedelja</span><span>Hidrofobni efekat</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Čišćenje felni</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Čišćenje felni</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Uklanjanje kočione prašine</span><span>Dubinsko čišćenje felni</span><span>Blistav rezultat</span></div>
           </li>
         </ul>
@@ -2167,27 +2130,27 @@ function lakerFallbackImage(label, sublabel) {
         </div>
         <ul class="pk-ul">
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dvoslojno poliranje laka</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dvoslojno poliranje laka</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Uklanjanje sitnih ogrebotina</span><span>Eliminacija holograma</span><span>Vraćanje originalnog sjaja</span><span>2 prolaza mašinom</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno karnauba voskiranje</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno karnauba voskiranje</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Premium Koch Chemie vosak</span><span>Dubok sjaj</span><span>Zaštita do 3 meseca</span><span>Ručna aplikacija</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Uklanjanje žutila i zamagljenja</span><span>Poliranje do providnosti</span><span>UV zaštitni premaz</span><span>Traje mesecima</span></div>
           </li>
         </ul>
@@ -2212,35 +2175,35 @@ function lakerFallbackImage(label, sublabel) {
         </div>
         <ul class="pk-ul">
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Troslojno poliranje laka</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Troslojno poliranje laka</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Uklanjanje dubokih ogrebotina</span><span>Hologrami i oksidacija</span><span>3 prolaza mašinom</span><span>Vraćanje originalnog sjaja</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Keramička zaštita Koch-Chemie (1 sloj)</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Keramička zaštita Koch-Chemie (1 sloj)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Hemijski se vezuje za lak</span><span>UV zaštita od sunca</span><span>Voda se odbija — lako pranje</span><span>Zaštita do 3 godine</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Nano-Glass All — anti-kiša sva stakla</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Nano-Glass All — anti-kiša sva stakla</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Nano premaz na sva stakla</span><span>Voda se odbija od ~80 km/h</span><span>Čista vidljivost u kiši</span><span>Traje do 12 meseci / 20.000 km</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing motornog prostora</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing motornog prostora</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Dubinsko čišćenje motora</span><span>Degreaser i ispiranje</span><span>Zaštita plastike i guma</span><span>Suvo i čisto</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Kompletno čišćenje potkrilja</span><span>Uklanjanje soli i blata i hrđe</span><span>Felne skinute i očišćene</span><span>Sve površine pokrivene</span></div>
           </li>
           <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" onclick="togglePkInfo(this)" aria-label="Detalji">+</button></div>
+            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
             <div class="pk-info"><span>Uklanjanje žutila i zamagljenja</span><span>Poliranje do providnosti</span><span>UV zaštitni premaz</span><span>Traje mesecima</span></div>
           </li>
         </ul>
@@ -2268,15 +2231,15 @@ function lakerFallbackImage(label, sublabel) {
       <div class="loy-toggle-group">
         <span class="loy-toggle-label">Plaćanje</span>
         <div class="loy-bill-toggle">
-          <button class="loy-bill-btn on" id="bill-god" onclick="selectLoyBill('god')">Godišnje <span class="loy-bill-save-tag" id="bill-god-tag">−29%</span></button>
-          <button class="loy-bill-btn" id="bill-mes" onclick="selectLoyBill('mes')">Mesečno</button>
+          <button class="loy-bill-btn on" id="bill-god" data-click="selectLoyBill:god">Godišnje <span class="loy-bill-save-tag" id="bill-god-tag">−29%</span></button>
+          <button class="loy-bill-btn" id="bill-mes" data-click="selectLoyBill:mes">Mesečno</button>
         </div>
       </div>
       <div class="loy-toggle-group">
         <span class="loy-toggle-label">Veličina vozila</span>
         <div class="loy-bill-toggle">
-          <button class="loy-bill-btn on" id="size-ms" onclick="selectLoyVeh('ms')">Mali / Srednji</button>
-          <button class="loy-bill-btn" id="size-vs" onclick="selectLoyVeh('vs')">Veliki / SUV</button>
+          <button class="loy-bill-btn on" id="size-ms" data-click="selectLoyVeh:ms">Mali / Srednji</button>
+          <button class="loy-bill-btn" id="size-vs" data-click="selectLoyVeh:vs">Veliki / SUV</button>
         </div>
       </div>
     </div>
@@ -2298,7 +2261,7 @@ function lakerFallbackImage(label, sublabel) {
             <div class="pk-li-row">
               <i>◆</i>
               <span class="pk-li-txt">24 premium pranja godišnje (2× mesečno)</span>
-              <button class="pk-plus" onclick="togglePkInfo(this)" aria-label="8 koraka pranja">+</button>
+              <button class="pk-plus" data-click="togglePkInfo" aria-label="8 koraka pranja">+</button>
             </div>
             <div class="pk-info">
               <span>01 · Čišćenje felni i ratkapni</span>
@@ -2314,13 +2277,14 @@ function lakerFallbackImage(label, sublabel) {
           <li><i>◆</i>Prioritetan termin — uvek na prvom mestu</li>
           <li><i>◆</i>Bez ugovora — otkažite kad hoćete</li>
         </ul>
-        <button class="loy-join-btn" onclick="activateLoyalty()">Aktiviraj loyalty →</button>
+        <button class="loy-join-btn" data-click="activateLoyalty">Aktiviraj loyalty →</button>
       </div>
     </div>
 
     <div class="care-wash rv" style="display:none">
       <div class="care-wash-head">
         <div></div>
+      </div>
       <div class="care-steps">
         <div class="care-step">
           <span>01</span>
@@ -2410,9 +2374,9 @@ function lakerFallbackImage(label, sublabel) {
     </div>
     <div class="rv">
       <div class="tabs">
-        <button type="button" class="tb on" onclick="ot(this,'te')">Eksterijer</button>
-        <button type="button" class="tb" onclick="ot(this,'ti')">Enterijer</button>
-        <button type="button" class="tb" onclick="ot(this,'tp')">Poliranje &amp; zaštita</button>
+        <button type="button" class="tb on" data-click="ot:te">Eksterijer</button>
+        <button type="button" class="tb" data-click="ot:ti">Enterijer</button>
+        <button type="button" class="tb" data-click="ot:tp">Poliranje &amp; zaštita</button>
       </div>
       <div class="tp on" id="te">
         <table>
@@ -2468,7 +2432,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="faq-list rr">
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Šta je detailing i po čemu se razlikuje od običnog pranja?
             <span class="faq-icon">+</span>
           </button>
@@ -2478,7 +2442,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Koliko traje tretman?
             <span class="faq-icon">+</span>
           </button>
@@ -2488,7 +2452,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Koje proizvode koristite?
             <span class="faq-icon">+</span>
           </button>
@@ -2498,7 +2462,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Šta se dobija keramičkom zaštitom?
             <span class="faq-icon">+</span>
           </button>
@@ -2508,7 +2472,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Kada vozilo sme da se pere nakon keramičke zaštite?
             <span class="faq-icon">+</span>
           </button>
@@ -2518,7 +2482,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Kako se održava vozilo nakon zaštite?
             <span class="faq-icon">+</span>
           </button>
@@ -2528,7 +2492,7 @@ function lakerFallbackImage(label, sublabel) {
         </div>
 
         <div class="faq-item">
-          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Kako zakazujem termin?
             <span class="faq-icon">+</span>
           </button>
@@ -2592,12 +2556,12 @@ function lakerFallbackImage(label, sublabel) {
       <div id="fCont">
         <div class="f-title">Rezervišite termin</div>
         <p class="f-sub">Odgovaramo u roku od nekoliko sati</p>
-        <form action="#" method="POST" onsubmit="handleSubmit(event)">
+        <form action="#" method="POST">
           <div class="fw">
             <div class="fg"><label for="ime_field">Ime i prezime *</label><input type="text" id="ime_field" name="ime" placeholder="Marko Marković" required></div>
-            <div class="fg"><label for="telefon_field">Telefon *</label><input type="tel" name="telefon" id="telefon_field" placeholder="06X XXX XXXX" required oninput="validatePhoneField(this)" onblur="validatePhoneField(this)"><span class="field-hint" id="phone_hint"></span></div>
+            <div class="fg"><label for="telefon_field">Telefon *</label><input type="tel" name="telefon" id="telefon_field" placeholder="06X XXX XXXX" required><span class="field-hint" id="phone_hint"></span></div>
           </div>
-          <div class="fg"><label for="email_field">Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required oninput="validateEmailField(this)" onblur="validateEmailField(this)"><span class="field-hint" id="email_hint"></span></div>
+          <div class="fg"><label for="email_field">Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required><span class="field-hint" id="email_hint"></span></div>
           <div class="fw">
             <div class="fg"><label for="auto_field">Marka i model *</label><input type="text" id="auto_field" name="auto" placeholder="BMW M3, 2021" required></div>
             <div class="fg">
@@ -2669,7 +2633,7 @@ function lakerFallbackImage(label, sublabel) {
         <h2 class="sh">Šta kažu<br><em>klijenti</em></h2>
         <p class="sd" style="margin-top:14px">Iskustva naših klijenata — stvarna, nefiltrirana.</p>
       </div>
-      <button type="button" class="btn-review-open" onclick="openReviewModal()">
+      <button type="button" class="btn-review-open" data-click="openReviewModal">
         <span>✦</span> Ostavi utisak
       </button>
     </div>
@@ -2683,17 +2647,17 @@ function lakerFallbackImage(label, sublabel) {
 <!-- ══ REVIEW MODAL ══ -->
 <div id="reviewModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px">
   <div class="rm-box">
-    <button type="button" onclick="closeReviewModal()" class="rm-close">✕</button>
+    <button type="button" data-click="closeReviewModal" class="rm-close">✕</button>
     <div class="rm-label">Laker Detailing Studio</div>
     <h2 class="rm-title">Ostavi <em>utisak</em></h2>
     <p class="rm-sub">Vaše iskustvo znači nam sve — kratko i iskreno je najbolje.</p>
 
     <div class="rm-stars-row" id="rmStarsRow">
-      <span onclick="setRating(1)" class="rm-star" data-v="1">★</span>
-      <span onclick="setRating(2)" class="rm-star" data-v="2">★</span>
-      <span onclick="setRating(3)" class="rm-star" data-v="3">★</span>
-      <span onclick="setRating(4)" class="rm-star" data-v="4">★</span>
-      <span onclick="setRating(5)" class="rm-star active" data-v="5">★</span>
+      <span data-click="setRating:1" class="rm-star" data-v="1">★</span>
+      <span data-click="setRating:2" class="rm-star" data-v="2">★</span>
+      <span data-click="setRating:3" class="rm-star" data-v="3">★</span>
+      <span data-click="setRating:4" class="rm-star" data-v="4">★</span>
+      <span data-click="setRating:5" class="rm-star active" data-v="5">★</span>
     </div>
 
     <div id="rmForm">
@@ -2705,7 +2669,7 @@ function lakerFallbackImage(label, sublabel) {
       <div class="rm-fg"><label>Vaš utisak *</label><textarea id="rmText" rows="4" placeholder="Šta vas je najviše impresioniralo? Budite konkretni — kratko i iskreno je najbolje." required></textarea></div>
       <div class="hp-field" aria-hidden="true"><input type="text" id="_hp_review" tabindex="-1" autocomplete="off" value=""></div>
       <input type="hidden" id="_review_t" value="">
-      <button type="button" class="rm-btn" onclick="submitReview()">Pošalji utisak &nbsp;→</button>
+      <button type="button" class="rm-btn" data-click="submitReview">Pošalji utisak &nbsp;→</button>
       <p class="rm-note">⏳ Prikazuje se nakon odobrenja — obično u roku od 24h.</p>
     </div>
 
@@ -2782,8 +2746,8 @@ function lakerFallbackImage(label, sublabel) {
 
 <!-- ══ LOYALTY MODAL ══ -->
 <div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px)">
-  <div onclick="event.stopPropagation()" style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
-    <button type="button" onclick="closeLoyalty()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">×</button>
+  <div data-sp style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
+    <button type="button" data-click="closeLoyalty" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s">×</button>
 
     <div class="loy-hero" style="padding:36px 44px 0">
       <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:6px;text-transform:uppercase">LAKER</div>
@@ -2801,8 +2765,8 @@ function lakerFallbackImage(label, sublabel) {
     <!-- AUTH AREA -->
     <div id="loy-auth-area">
       <div style="display:flex;gap:2px;padding:0 44px">
-        <button type="button" id="tab-login" onclick="loyTab('login')" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
-        <button type="button" id="tab-reg"   onclick="loyTab('reg')"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#666;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
+        <button type="button" id="tab-login" data-click="loyTab:login" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
+        <button type="button" id="tab-reg"   data-click="loyTab:reg"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#666;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
       </div>
       <div style="padding:12px 44px 0">
         <label style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#777;cursor:pointer">
@@ -2821,15 +2785,15 @@ function lakerFallbackImage(label, sublabel) {
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email</label>
             <input id="llog-email" type="email" placeholder="vas@email.com"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+             >
           </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka</label>
             <div class="pw-wrap">
               <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
-                onkeydown="if(event.key==='Enter')loyLogin()">
+               
+               >
               <button type="button" class="pw-toggle" data-pw-toggle="llog-pass" aria-label="Prikaži lozinku">👁</button>
             </div>
             <div class="pw-meter m0" id="llog-pass-meter">
@@ -2838,25 +2802,25 @@ function lakerFallbackImage(label, sublabel) {
             </div>
           </div>
           <div id="llog-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="llog-btn" onclick="loyLogin()"
+          <button type="button" id="llog-btn" data-click="loyLogin"
             style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Prijavi se →</button>
+           >Prijavi se →</button>
           <div style="text-align:center;margin-top:10px">
-            <button type="button" onclick="loyForgotPassword()" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s" onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#555'">Zaboravili ste lozinku?</button>
+            <button type="button" data-click="loyForgotPassword" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s">Zaboravili ste lozinku?</button>
           </div>
           <div id="forgot-area" style="display:none;margin-top:14px;padding:14px;background:#141414;border-left:2px solid #C9A84C">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">Reset lozinke</div>
             <input id="forgot-email" type="email" placeholder="vas@email.com"
               style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.07);padding:11px 13px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
-              <button type="button" onclick="sendPasswordReset()"
+             >
+              <button type="button" data-click="sendPasswordReset"
               style="width:100%;background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.3);padding:11px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s"
-              onmouseover="this.style.background='#C9A84C';this.style.color='#fff'" onmouseout="this.style.background='rgba(201,168,76,.15)';this.style.color='#C9A84C'">Pošalji reset link →</button>
+             >Pošalji reset link →</button>
             <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
           </div>
           <div style="text-align:center;margin-top:12px">
             <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog? </span>
-            <button type="button" onclick="loyTab('reg')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
+            <button type="button" data-click="loyTab:reg" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
           </div>
         </div>
 
@@ -2867,37 +2831,37 @@ function lakerFallbackImage(label, sublabel) {
               <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Ime *</label>
               <input id="lreg-name" type="text" placeholder="Marko"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+               >
             </div>
             <div>
               <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Prezime *</label>
               <input id="lreg-surname" type="text" placeholder="Marković"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+               >
             </div>
           </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
             <input id="lreg-email" type="email" placeholder="vas@email.com"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+             >
           </div>
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Telefon * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
             <input id="lreg-phone" type="tel" placeholder="060 726 0302"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-              onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+             >
             <span id="lreg-phone-hint" style="display:block;font-size:11px;margin-top:4px;min-height:14px"></span>
           </div>
           <!-- Veličina vozila -->
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Veličina vozila *</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-              <button type="button" id="lreg-sz-ms" onclick="selectLoySize('ms')"
+              <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms"
                 style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
                 Mali / Srednji<br><span style="font-size:9.5px;color:#666;font-weight:300">A klasa · C klasa</span>
               </button>
-              <button type="button" id="lreg-sz-vs" onclick="selectLoySize('vs')"
+              <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs"
                 style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
                 Veliki / SUV<br><span style="font-size:9.5px;color:#555;font-weight:300">E klasa · SUV · Van</span>
               </button>
@@ -2908,11 +2872,11 @@ function lakerFallbackImage(label, sublabel) {
           <div style="margin-bottom:14px">
             <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Plan *</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-              <button type="button" id="lreg-pl-god" onclick="selectLoyPlan('god')"
+              <button type="button" id="lreg-pl-god" data-click="selectLoyPlan:god"
                 style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
                 Godišnje<br><span id="lreg-pl-god-price" style="font-size:9.5px;color:#C9A84C;font-weight:700">od €299 · uštedi 29%</span>
               </button>
-              <button type="button" id="lreg-pl-mes" onclick="selectLoyPlan('mes')"
+              <button type="button" id="lreg-pl-mes" data-click="selectLoyPlan:mes"
                 style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
                 Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#666;font-weight:700">od €35/mes</span>
               </button>
@@ -2924,7 +2888,7 @@ function lakerFallbackImage(label, sublabel) {
             <div class="pw-wrap">
               <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-                onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+               >
               <button type="button" class="pw-toggle" data-pw-toggle="lreg-pass" aria-label="Prikaži lozinku">👁</button>
             </div>
             <span id="lreg-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
@@ -2934,12 +2898,12 @@ function lakerFallbackImage(label, sublabel) {
             </div>
           </div>
           <div id="lreg-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="lreg-btn" onclick="loyRegister()"
+          <button type="button" id="lreg-btn" data-click="loyRegister"
             style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-            onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Napravi nalog →</button>
+           >Napravi nalog →</button>
           <div style="text-align:center;margin-top:14px">
             <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog? </span>
-            <button type="button" onclick="loyTab('login')" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
+            <button type="button" data-click="loyTab:login" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
           </div>
         </div>
 
@@ -2956,7 +2920,7 @@ function lakerFallbackImage(label, sublabel) {
     <div class="pw-wrap">
       <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter"
         style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'">
+       >
       <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
     </div>
     <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
@@ -2970,15 +2934,15 @@ function lakerFallbackImage(label, sublabel) {
     <div class="pw-wrap">
       <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none"
         style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-        onfocus="this.style.borderColor='rgba(201,168,76,.5)'" onblur="this.style.borderColor='rgba(255,255,255,.07)'"
-        onkeydown="if(event.key==='Enter')submitNewPassword()">
+       
+       >
       <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
     </div>
   </div>
   <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-  <button type="button" onclick="submitNewPassword()"
+  <button type="button" data-click="submitNewPassword"
     style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-    onmouseover="this.style.background='#E8C96A'" onmouseout="this.style.background='#C9A84C'">Sačuvaj novu lozinku →</button>
+   >Sačuvaj novu lozinku →</button>
 </div>
     <div id="loy-dash" class="loy-dash" style="display:none"></div>
   </div>
@@ -2989,7 +2953,7 @@ function lakerFallbackImage(label, sublabel) {
   <div id="pp-modal-box">
 
     <div class="pp-header">
-      <button type="button" class="pp-close" onclick="closePremiumModal()" aria-label="Zatvori">✕</button>
+      <button type="button" class="pp-close" data-click="closePremiumModal" aria-label="Zatvori">✕</button>
       <div class="pp-eyebrow">Premium Pranje</div>
       <h2 class="pp-title" id="pp-modal-title">8 faza<br><em>savršenog pranja</em></h2>
       <p class="pp-subtitle">Trofazno ručno pranje po Koch-Chemie protokolu sa konzervacijom lakirano-farbane površine. Idealno za redovno održavanje i očuvanje spoljašnjeg izgleda vozila.</p>
@@ -3078,7 +3042,7 @@ function lakerFallbackImage(label, sublabel) {
     </div>
 
     <div class="pp-cta">
-      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pp-btn-link" onclick="closePremiumModal()">Kontaktirajte nas →</a>
+      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pp-btn-link" data-click="closePremiumModal">Kontaktirajte nas →</a>
     </div>
 
   </div>
@@ -3087,252 +3051,8 @@ function lakerFallbackImage(label, sublabel) {
 
 
 
-<script>
-function openPremiumModal(){
-  document.getElementById('pp-modal').classList.add('open');
-  document.body.style.overflowY='hidden';
-}
-function closePremiumModal(){
-  document.getElementById('pp-modal').classList.remove('open');
-  document.body.style.overflowY='';
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape') closePremiumModal();
-});
-</script>
 
-<script>
-(function initScrollReveal() {
-  const selectors = [
-    '#phi .sl', '#phi .sh', '#phi .sd', '#phi .pv',
-    '#cs .sl', '#cs .sh', '.cs-card',
-    '#srv .sl', '#srv .sh', '.si',
-    '#proc .sl', '#proc .sh', '.proc-step',
-    '#pkg .sl', '#pkg .sh', '.pk',
-    '#care .sl', '#care .sh', '.care-card', '.care-wash',
-    '.faq-item'
-  ];
 
-  const seen = new Set();
-  const targets = [];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      if (seen.has(el)) return;
-      seen.add(el);
-      targets.push(el);
-    });
-  });
-
-  targets.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.style.setProperty('--reveal-delay', `${Math.min(i % 8, 7) * 70}ms`);
-  });
-
-  if (!targets.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    targets.forEach(el => el.classList.add('in'));
-    return;
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
-
-  targets.forEach(el => io.observe(el));
-})();
-</script>
-
-<script>
-(function registerPWA() {
-  if (!('serviceWorker' in navigator)) return;
-  const params = new URLSearchParams(location.search);
-  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  let swRegistration = null;
-  let updateReady = false;
-  let updatePoll = null;
-  const hadController = !!navigator.serviceWorker.controller;
-  if (params.get('reset') === '1') {
-    navigator.serviceWorker.getRegistrations().then(function (regs) {
-      return Promise.all(regs.map(function (reg) { return reg.unregister(); }));
-    }).then(function () {
-      if ('caches' in window) {
-        return caches.keys().then(function (keys) {
-          return Promise.all(keys.map(function (key) { return caches.delete(key); }));
-        });
-      }
-    }).catch(function () {}).finally(function () {
-      try { history.replaceState(null, '', location.pathname); } catch (e) {}
-    });
-    return;
-  }
-  function getUpdateBanner() {
-    return document.getElementById('pwaUpdateBanner');
-  }
-  function getPushBanner() {
-    return document.getElementById('pwaPushBanner');
-  }
-  function showUpdateBanner() {
-    if (isStandalone) {
-      // Standalone PWA: ne prikazuj baner, odmah reload kad SW preuzme kontrolu
-      // controllerchange listener će uraditi reload
-      return;
-    }
-    const banner = getUpdateBanner();
-    if (!banner) return;
-    banner.hidden = false;
-    banner.style.display = 'flex';
-  }
-  function hideUpdateBanner() {
-    const banner = getUpdateBanner();
-    if (!banner) return;
-    banner.hidden = true;
-    banner.style.display = 'none';
-  }
-  function showPushBanner() {
-    const banner = getPushBanner();
-    if (!banner) return;
-    banner.hidden = false;
-    banner.style.display = 'flex';
-  }
-  function hidePushBanner() {
-    const banner = getPushBanner();
-    if (!banner) return;
-    banner.hidden = true;
-    banner.style.display = 'none';
-  }
-  function checkForUpdate() {
-    if (!swRegistration || typeof swRegistration.update !== 'function') return;
-    swRegistration.update().catch(function () {});
-  }
-  function urlBase64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-    const rawData = atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-    for (let i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i);
-    return outputArray;
-  }
-  async function getPushPublicKey() {
-    const res = await fetch('/api/push-public-key?ts=' + Date.now(), { cache: 'no-store' });
-    if (!res.ok) return '';
-    const data = await res.json().catch(function () { return {}; });
-    return data && data.publicKey ? String(data.publicKey).trim() : '';
-  }
-  async function subscribeForPush() {
-    if (!('Notification' in window) || !('PushManager' in window)) {
-      throw new Error('Tvoj pregledač ne podržava push obaveštenja.');
-    }
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      throw new Error('Dozvola za obaveštenja nije odobrena.');
-    }
-    const publicKey = await getPushPublicKey();
-    if (!publicKey) {
-      throw new Error('Push public key nije podešen na serveru.');
-    }
-    const reg = await navigator.serviceWorker.ready;
-    let sub = await reg.pushManager.getSubscription();
-    if (!sub) {
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey)
-      });
-    }
-    const save = await fetch('/api/push-subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        subscription: sub.toJSON(),
-        userAgent: navigator.userAgent,
-        source: 'pwa'
-      })
-    });
-    if (!save.ok) {
-      const txt = await save.text().catch(function () { return ''; });
-      throw new Error(txt || 'Neuspešno čuvanje subscription-a.');
-    }
-    try { localStorage.setItem('laker-push-enabled', '1'); } catch (e) {}
-    hidePushBanner();
-    return true;
-  }
-  function bindRegistration(reg) {
-    swRegistration = reg;
-    if (reg.waiting && navigator.serviceWorker.controller) {
-      updateReady = true;
-      showUpdateBanner();
-    }
-    reg.addEventListener('updatefound', function () {
-      const installing = reg.installing;
-      if (!installing) return;
-      installing.addEventListener('statechange', function () {
-        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-          updateReady = true;
-          showUpdateBanner();
-        }
-      });
-    });
-    checkForUpdate();
-    if (!updatePoll) {
-      updatePoll = setInterval(checkForUpdate, 30 * 60 * 1000);
-    }
-  }
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/service-worker.js').then(function (reg) {
-      bindRegistration(reg);
-      checkForUpdate();
-    }).catch(function () {});
-  });
-  window.addEventListener('focus', checkForUpdate);
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'visible') checkForUpdate();
-  });
-  navigator.serviceWorker.addEventListener('controllerchange', function () {
-    // hadController: sprečava reload na prvoj instalaciji SW (kad još nema starog controllera)
-    if (!hadController) return;
-    hideUpdateBanner();
-    location.reload();
-  });
-  document.addEventListener('click', function (e) {
-    if (e.target && e.target.id === 'pwaUpdateBtn') {
-      if (swRegistration && swRegistration.waiting) {
-        swRegistration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        return;
-      }
-      hideUpdateBanner();
-      location.reload();
-    }
-    if (e.target && e.target.id === 'pwaUpdateDismissBtn') {
-      hideUpdateBanner();
-    }
-    if (e.target && e.target.id === 'pwaPushEnableBtn') {
-      subscribeForPush().catch(function (err) {
-        console.warn('Push subscription failed:', err);
-        alert(err && err.message ? err.message : 'Obaveštenja nisu uključena.');
-      });
-    }
-    if (e.target && e.target.id === 'pwaPushDismissBtn') {
-      hidePushBanner();
-      try { localStorage.setItem('laker-push-dismissed', '1'); } catch (e) {}
-    }
-  });
-  if (('Notification' in window) && ('PushManager' in window)) {
-    try {
-      const dismissed = localStorage.getItem('laker-push-dismissed');
-      const enabled = localStorage.getItem('laker-push-enabled');
-      if (Notification.permission === 'default' && !dismissed && !enabled) {
-        // U standalone modu pitaj odmah (posle 1.5s), u browseru sacekaj 2.2s
-        setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-      }
-    } catch (e) {
-      if (Notification.permission === 'default') setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-    }
-  }
-})();
-</script>
 
 <div class="pwa-offline" id="pwaOfflineBanner" role="status" aria-live="polite">
   <span class="dot"></span>
@@ -3366,7 +3086,7 @@ document.addEventListener('keydown',function(e){
 
 <div class="pwa-modal" id="pwaIosModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pwaIosTitle">
   <div class="pwa-modal-box">
-    <button class="pwa-modal-close" type="button" aria-label="Zatvori" onclick="closePwaIosModal()">×</button>
+    <button class="pwa-modal-close" type="button" aria-label="Zatvori" data-click="closePwaIosModal">×</button>
     <div class="pwa-modal-kicker">iPhone instalacija</div>
     <div class="pwa-modal-title" id="pwaIosTitle">Dodaj <em>aplikaciju</em> na početni ekran</div>
     <div class="pwa-modal-text">Na iPhone-u PWA se ne instalira kao na Androidu. Otvara se iz Safari-ja i dodaje na Home Screen preko Share menija.</div>
@@ -3376,8 +3096,8 @@ document.addEventListener('keydown',function(e){
       <div class="pwa-step"><b>3</b><span>Izaberi <strong>Add to Home Screen</strong> i potvrdi.</span></div>
     </div>
     <div class="pwa-modal-actions">
-      <button class="pwa-modal-btn primary" type="button" onclick="closePwaIosModal();window.scrollTo({top:0,behavior:'smooth'})">Razumem</button>
-      <button class="pwa-modal-btn secondary" type="button" onclick="closePwaIosModal()">Kasnije</button>
+      <button class="pwa-modal-btn primary" type="button" data-click="closePwaIosModalScroll">Razumem</button>
+      <button class="pwa-modal-btn secondary" type="button" data-click="closePwaIosModal">Kasnije</button>
     </div>
   </div>
 </div>
@@ -3389,85 +3109,8 @@ document.addEventListener('keydown',function(e){
 <nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
   <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
   <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
-  <a href="#book" aria-label="Rezerviši termin" onclick="closeMobileMenu()">Rezerviši</a>
+  <a href="#book" aria-label="Rezerviši termin" data-click="closeMobileMenu">Rezerviši</a>
 </nav>
-<script>
-(function initPwaInstall() {
-  const btn = document.getElementById('pwaInstallBtn');
-  const offlineBanner = document.getElementById('pwaOfflineBanner');
-  const iosModal = document.getElementById('pwaIosModal');
-  if (!btn) return;
-  const isStandalone = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  if (isStandalone) document.body.classList.add('pwa-standalone');
-  if (isStandalone && /iphone/i.test(navigator.userAgent)) document.body.classList.add('ios-standalone-mode');
-
-  let deferredPrompt = null;
-  const iosSeenKey = 'laker-pwa-ios-help';
-
-  function showBtn(label) {
-    btn.hidden = false;
-    btn.querySelector('span:last-child').textContent = label;
-  }
-
-  function updateOfflineState() {
-    if (!offlineBanner) return;
-    if (isStandalone) {
-      offlineBanner.hidden = true;
-      offlineBanner.style.display = 'none';
-      return;
-    }
-    offlineBanner.style.display = navigator.onLine ? 'none' : 'flex';
-  }
-
-  window.closePwaIosModal = function closePwaIosModal() {
-    if (!iosModal) return;
-    iosModal.classList.remove('open');
-    iosModal.setAttribute('aria-hidden', 'true');
-    try { localStorage.setItem(iosSeenKey, '1'); } catch (e) {}
-  };
-
-  function openIosModal() {
-    if (!iosModal) return;
-    iosModal.classList.add('open');
-    iosModal.setAttribute('aria-hidden', 'false');
-  }
-
-  if (isIOS) {
-    showBtn('iPhone: Add to Home');
-    btn.addEventListener('click', function () {
-      openIosModal();
-    });
-    try {
-      if (!localStorage.getItem(iosSeenKey) && !isStandalone) {
-        btn.setAttribute('aria-label', 'Dodaj aplikaciju na početni ekran');
-      }
-    } catch (e) {}
-  }
-
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    deferredPrompt = e;
-    showBtn('Instaliraj aplikaciju');
-  });
-
-  window.addEventListener('online', updateOfflineState);
-  window.addEventListener('offline', updateOfflineState);
-  updateOfflineState();
-  if (isStandalone) return;
-
-  btn.addEventListener('click', async function () {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice.catch(function () {});
-      deferredPrompt = null;
-      btn.hidden = true;
-      return;
-    }
-    if (isIOS) openIosModal();
-  });
-})();
-</script>
 
 <a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
   <span class="wa-ico">💬</span>
@@ -3475,24 +3118,10 @@ document.addEventListener('keydown',function(e){
 </a>
 
 
-<script src="/main.min.js?v=20260610" defer></script>
+<script src="/main.min.js?v=20260611" defer></script>
+<script src="/init.js?v=20260611" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->
-<style>
-#ck-overlay{position:fixed;inset:0;z-index:99998;background:rgba(0,0,0,.55);backdrop-filter:blur(2px);animation:ckFadeIn .3s ease}
-#ck-box{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:99999;width:100%;max-width:680px;background:#141414;border:1px solid rgba(255,255,255,.08);border-bottom:none;border-radius:14px 14px 0 0;padding:32px 36px 28px;font-family:Inter,sans-serif;box-shadow:0 -20px 60px rgba(0,0,0,.6);animation:ckSlideUp .35s cubic-bezier(.22,.68,0,1.2)}
-@keyframes ckFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes ckSlideUp{from{transform:translateX(-50%) translateY(100%)}to{transform:translateX(-50%) translateY(0)}}
-#ck-icon{font-size:22px;margin-bottom:12px;display:block}
-#ck-box h3{color:#fff;font-size:17px;font-weight:600;margin:0 0 10px;letter-spacing:.01em}
-#ck-box p{color:rgba(255,255,255,.6);font-size:13px;line-height:1.65;margin:0 0 24px}
-#ck-btns{display:flex;gap:12px;flex-wrap:wrap}
-#ck-yes{flex:1;min-width:140px;background:#C0392B;color:#fff;border:none;padding:12px 20px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;letter-spacing:.02em}
-#ck-yes:hover{background:#E74C3C}
-#ck-no{flex:1;min-width:140px;background:transparent;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.2);padding:12px 20px;border-radius:6px;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
-#ck-no:hover{border-color:rgba(255,255,255,.45);color:rgba(255,255,255,.85)}
-@media(max-width:480px){#ck-box{padding:24px 20px 20px}#ck-btns{flex-direction:column}#ck-yes,#ck-no{width:100%}}
-</style>
 <div id="ck-overlay" style="display:none"></div>
 <div id="ck-box" role="dialog" aria-modal="true" aria-label="Podešavanja kolačića" style="display:none">
   <span id="ck-icon">🍪</span>
@@ -3503,21 +3132,6 @@ document.addEventListener('keydown',function(e){
     <button id="ck-yes">Prihvati sve</button>
   </div>
 </div>
-<script>
-(function(){
-  var ov=document.getElementById('ck-overlay'),bx=document.getElementById('ck-box');
-  if(!localStorage.getItem('laker_cookie_consent')){ov.style.display='';bx.style.display='';}
-  document.getElementById('ck-yes').addEventListener('click',function(){
-    localStorage.setItem('laker_cookie_consent','yes');
-    ov.style.display='none';bx.style.display='none';
-    if(typeof window._lakerLoadAnalytics==='function')window._lakerLoadAnalytics();
-  });
-  document.getElementById('ck-no').addEventListener('click',function(){
-    localStorage.setItem('laker_cookie_consent','no');
-    ov.style.display='none';bx.style.display='none';
-  });
-})();
-</script>
 
 </body>
 </html>
