@@ -482,10 +482,14 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 /* CASE STUDIES */
 #cs{background:var(--d1);padding-bottom:0;content-visibility:auto;contain-intrinsic-size:auto 700px}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
-.cs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;align-items:end}
-.cs-card{position:relative;overflow:hidden;cursor:none;background:var(--d1)}
-.cs-card img{width:100%;height:auto;display:block;filter:grayscale(15%) brightness(.88);transition:filter .6s,transform .6s}
-.cs-card:hover img{filter:grayscale(0%) brightness(1);transform:scale(1.02)}
+.cs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.cs-card{position:relative;overflow:hidden;cursor:none;height:460px}
+.cs-card img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;filter:brightness(.85);transition:filter .55s,transform .55s}
+.cs-card:hover img{filter:brightness(1);transform:scale(1.04)}
+.cs-1 img{object-position:center 40%}
+.cs-2 img{object-position:center 30%}
+.cs-3 img{object-position:center 45%}
+.cs-4 img{object-position:center 35%}
 
 /* SERVICES */
 #srv{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 800px}
@@ -1090,7 +1094,8 @@ body.pwa-standalone .pwa-push{}
   .ft{grid-template-columns:1fr 1fr;gap:40px;padding:60px 30px 40px}
   .fb{padding:22px 30px}
   .srv-sticky,.faq-sticky{position:static}
-  .cs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cs-grid{grid-template-columns:repeat(2,1fr)}
+  .cs-card{height:380px}
   #soc{padding:80px 30px}
   .proc-steps::before{display:none}
   .proc-steps{grid-template-columns:1fr}
@@ -1173,7 +1178,8 @@ body.menu-open{
   .tst-grid{grid-template-columns:1fr}
   .cs-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:36px}
   .cs-head p{text-align:left!important;max-width:100%!important}
-  .cs-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+  .cs-grid{grid-template-columns:repeat(2,1fr);gap:2px}
+  .cs-card{height:52vw}
   .cs-info{padding:22px 20px}
   .phi-grid,.srv-layout,.prc-top,.faq-layout{gap:28px}
   .proc-header{margin-bottom:54px}
@@ -1283,7 +1289,7 @@ body.menu-open{
   .mq-i{padding:0 18px}
   .sh{font-size:clamp(30px,9.5vw,42px)}
   .sd{font-size:12px;line-height:1.72}
-  .cs-grid{gap:2px}
+  .cs-card{height:48vw}
   .phi-left .phi-img{height:245px}
   .pkg-grid{margin-top:30px}
   .pk{padding:30px 16px}
