@@ -1,4 +1,4 @@
-{
+﻿{
   "rewrites": [
     {
       "source": "/favicon.ico",
@@ -48,6 +48,12 @@
     },
     {
       "source": "/main.min.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/init.js",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
