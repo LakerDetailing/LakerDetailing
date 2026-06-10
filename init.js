@@ -174,9 +174,15 @@ function lakerFallbackImage(label, sublabel) {
     if (!('Notification' in window) || !('PushManager' in window)) {
       throw new Error('Tvoj pregledač ne podržava push obaveštenja.');
     }
+    if (Notification.permission === 'denied') {
+      throw new Error('Obaveštenja su blokirana u podešavanjima pregledača. Otvorite Podešavanja pregledača → Privatnost → Obaveštenja, pronađite ovaj sajt i dozvolite obaveštenja, zatim osvežite stranicu.');
+    }
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      throw new Error('Dozvola za obaveštenja nije odobrena.');
+      if (permission === 'denied') {
+        throw new Error('Obaveštenja su blokirana. Kliknite na ikonu katanca u adresnoj traci, dozvolite obaveštenja za ovaj sajt, pa osvežite stranicu.');
+      }
+      throw new Error('Dozvola za obaveštenja nije odobrena. Pokušajte ponovo i kliknite "Dozvoli" kada pregledač pita.');
     }
     const publicKey = await getPushPublicKey();
     if (!publicKey) {

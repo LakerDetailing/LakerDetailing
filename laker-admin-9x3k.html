@@ -698,10 +698,10 @@ body{
     <h2>Prijavi <em>se</em></h2>
     <p>Pristup samo za vlasnika studija. Recenzije, loyalty korisnici i kontakt upiti.</p>
     <div class="pw-wrap">
-      <input type="password" id="pwInput" placeholder="Lozinka..." autocomplete="current-password" spellcheck="false" autocapitalize="none" onkeydown="if(event.key==='Enter')doLogin()">
+      <input type="password" id="pwInput" placeholder="Lozinka..." autocomplete="current-password" spellcheck="false" autocapitalize="none">
       <button type="button" class="pw-toggle" data-pw-toggle="pwInput" aria-label="Prikaži lozinku">👁</button>
     </div>
-    <button class="login-btn" onclick="doLogin()">Uđi u panel &nbsp;→</button>
+    <button class="login-btn" id="loginBtn">Uđi u panel &nbsp;→</button>
     <p class="login-err" id="loginErr">❌ Pogrešna lozinka.</p>
   </div>
 </div>
@@ -713,7 +713,7 @@ body{
     <div class="tb-right">
       <span id="adminClock"></span>
       <span class="tb-badge" id="pendingBadge" style="display:none">0 na čekanju</span>
-      <button class="logout-btn" onclick="doLogout()">Odjavi se</button>
+      <button class="logout-btn" id="logoutBtn">Odjavi se</button>
     </div>
   </div>
   <div class="demo-banner" id="demoBanner">
@@ -723,10 +723,10 @@ body{
 
   <!-- TABS -->
   <div class="admin-tabs">
-    <button class="admin-tab on" data-tab="dashboard" onclick="switchTab('dashboard',this)"><span class="kbd-hint">1</span>📊 Dashboard</button>
-    <button class="admin-tab" data-tab="reviews" onclick="switchTab('reviews',this)"><span class="kbd-hint">2</span>⭐ Recenzije <span class="tab-cnt" id="reviewsBadge" style="display:none">0</span></button>
-    <button class="admin-tab" data-tab="loyalty" onclick="switchTab('loyalty',this)"><span class="kbd-hint">3</span>💎 Loyalty <span class="tab-cnt" id="loyPendingBadge" style="background:var(--tab-loyalty);color:#000;display:none">0</span></button>
-    <button class="admin-tab" data-tab="care" onclick="switchTab('care',this)"><span class="kbd-hint">4</span>📋 Loyalty Prijave <span class="tab-cnt" id="careTabBadge" style="background:var(--tab-care);display:none">0</span></button>
+    <button class="admin-tab on" data-tab="dashboard"><span class="kbd-hint">1</span>📊 Dashboard</button>
+    <button class="admin-tab" data-tab="reviews"><span class="kbd-hint">2</span>⭐ Recenzije <span class="tab-cnt" id="reviewsBadge" style="display:none">0</span></button>
+    <button class="admin-tab" data-tab="loyalty"><span class="kbd-hint">3</span>💎 Loyalty <span class="tab-cnt" id="loyPendingBadge" style="background:var(--tab-loyalty);color:#000;display:none">0</span></button>
+    <button class="admin-tab" data-tab="care"><span class="kbd-hint">4</span>📋 Loyalty Prijave <span class="tab-cnt" id="careTabBadge" style="background:var(--tab-care);display:none">0</span></button>
   </div>
 
   <!-- 📊 DASHBOARD toolbar -->
@@ -736,41 +736,41 @@ body{
       <div class="search-hint">Pregled u realnom vremenu</div>
     </div>
     <div class="admin-tools">
-      <button class="tool-btn primary" onclick="loadDashboard()">↻ Osveži</button>
+      <button class="tool-btn primary" data-action="load-dashboard">↻ Osveži</button>
     </div>
   </div>
 
   <!-- ⭐ RECENZIJE toolbar -->
   <div class="tab-toolbar" id="toolbar-reviews">
     <div class="global-search-bar">
-      <input id="adminQuickSearch" type="text" placeholder="🔍  Pretraži — ime, tekst, auto..." oninput="setAdminSearch(this.value)">
+      <input id="adminQuickSearch" type="text" placeholder="🔍  Pretraži — ime, tekst, auto..." data-input-action="admin-search">
       <div class="search-hint" id="adminSearchInfo">Rezultati uživo</div>
     </div>
     <div class="admin-tools">
-      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
-      <button class="tool-btn accent" onclick="openPushModal()" style="border-radius:8px">📣 Push</button>
+      <button class="tool-btn" data-action="clear-search" title="Obriši pretragu">✕</button>
+      <button class="tool-btn accent" data-action="open-push" style="border-radius:8px">📣 Push</button>
     </div>
   </div>
 
   <!-- 💎 LOYALTY toolbar -->
   <div class="tab-toolbar" id="toolbar-loyalty">
     <div class="global-search-bar">
-      <input type="text" placeholder="🔍  Pretraži — ime, email, telefon..." oninput="setAdminSearch(this.value); loyApplyFilters()">
+      <input type="text" placeholder="🔍  Pretraži — ime, email, telefon..." data-input-action="admin-search-loy">
       <div class="search-hint">Rezultati uživo</div>
     </div>
     <div class="admin-tools">
-      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+      <button class="tool-btn" data-action="clear-search" title="Obriši pretragu">✕</button>
     </div>
   </div>
 
   <!-- 📋 LOYALTY PRIJAVE toolbar -->
   <div class="tab-toolbar" id="toolbar-care">
     <div class="global-search-bar">
-      <input type="text" placeholder="🔍  Pretraži — ime, email, vozilo..." oninput="setAdminSearch(this.value); careFilter(this.value)">
+      <input type="text" placeholder="🔍  Pretraži — ime, email, vozilo..." data-input-action="admin-search-care">
       <div class="search-hint">Rezultati uživo</div>
     </div>
     <div class="admin-tools">
-      <button class="tool-btn" onclick="setAdminSearch('')" title="Obriši pretragu">✕</button>
+      <button class="tool-btn" data-action="clear-search" title="Obriši pretragu">✕</button>
     </div>
   </div>
 
@@ -831,7 +831,7 @@ body{
       <!-- BRZE AKCIJE — card style -->
       <div class="section-title">Brze akcije</div>
       <div class="dash-actions" style="margin-bottom:32px">
-        <button class="dash-action-card" onclick="switchTab('care',document.querySelector('[data-tab=care]'))">
+        <button class="dash-action-card" data-action="switch-tab" data-tab="care">
           <span class="dac-icon">📋</span>
           <div>
             <div class="dac-label">Loyalty Prijave</div>
@@ -839,7 +839,7 @@ body{
             <div class="dac-badge" id="dac-care-badge">0 čeka</div>
           </div>
         </button>
-        <button class="dash-action-card" onclick="switchTab('reviews',document.querySelector('[data-tab=reviews]'))">
+        <button class="dash-action-card" data-action="switch-tab" data-tab="reviews">
           <span class="dac-icon">⭐</span>
           <div>
             <div class="dac-label">Recenzije</div>
@@ -847,7 +847,7 @@ body{
             <div class="dac-badge" id="dac-review-badge">0 na čekanju</div>
           </div>
         </button>
-        <button class="dash-action-card" onclick="switchTab('loyalty',document.querySelector('[data-tab=loyalty]'))">
+        <button class="dash-action-card" data-action="switch-tab" data-tab="loyalty">
           <span class="dac-icon">💎</span>
           <div>
             <div class="dac-label">Loyalty baza</div>
@@ -869,7 +869,7 @@ body{
           </div>
         </div>
         <div class="tab-intro-right">
-          <button class="tool-btn primary" onclick="loadReviews()" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn primary" data-action="load-reviews" style="border-radius:8px">↻ Osveži</button>
         </div>
       </div>
       <div class="stats-row">
@@ -895,8 +895,8 @@ body{
           </div>
         </div>
         <div class="tab-intro-right">
-          <button class="tool-btn primary" onclick="loadLoyalty()" style="border-radius:8px">↻ Osveži</button>
-          <button class="tool-btn accent" onclick="openPushModal()" style="border-radius:8px">📣 Push svima</button>
+          <button class="tool-btn primary" data-action="load-loyalty" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn accent" data-action="open-push" style="border-radius:8px">📣 Push svima</button>
         </div>
       </div>
       <div class="stats-row">
@@ -908,13 +908,13 @@ body{
 
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px">
         <div class="section-title" style="margin-bottom:0">Baza korisnika</div>
-        <input type="text" class="loy-search" id="loySearchInp" placeholder="Pretraži po imenu / emailu / telefonu..." oninput="loyApplyFilters()">
+        <input type="text" class="loy-search" id="loySearchInp" placeholder="Pretraži po imenu / emailu / telefonu..." data-input-action="loy-filter">
       </div>
       <div class="filter-pills">
-        <button class="fpill on" id="fp-all"        onclick="loySetFilter('all')">● Svi</button>
-        <button class="fpill"    id="fp-god"        onclick="loySetFilter('god')">📅 Godišnji plan</button>
-        <button class="fpill"    id="fp-mes"        onclick="loySetFilter('mes')">🗓 Mesečni plan</button>
-        <button class="fpill"    id="fp-registered" onclick="loySetFilter('registered')">✓ Registrovani</button>
+        <button class="fpill on" id="fp-all"        data-action="loy-filter" data-filter="all">● Svi</button>
+        <button class="fpill"    id="fp-god"        data-action="loy-filter" data-filter="god">📅 Godišnji plan</button>
+        <button class="fpill"    id="fp-mes"        data-action="loy-filter" data-filter="mes">🗓 Mesečni plan</button>
+        <button class="fpill"    id="fp-registered" data-action="loy-filter" data-filter="registered">✓ Registrovani</button>
       </div>
       <div id="loyFilterInfo" style="font-size:11px;color:var(--gray);margin-bottom:12px;display:none"></div>
       <div id="loyCustList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
@@ -931,8 +931,8 @@ body{
           </div>
         </div>
         <div class="tab-intro-right">
-          <button class="tool-btn primary" onclick="loadCare()" style="border-radius:8px">↻ Osveži</button>
-          <button class="tool-btn" onclick="copyAdminWhatsApp()" style="border-radius:8px">💬 WA šablon</button>
+          <button class="tool-btn primary" data-action="load-care" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn" data-action="copy-wa" style="border-radius:8px">💬 WA šablon</button>
         </div>
       </div>
       <div class="stats-row">
@@ -963,7 +963,7 @@ body{
       <div class="care-list-wrap">
         <div class="care-list-head">
           <div class="section-title" style="margin-bottom:0">Prijave koje čekaju aktivaciju ⏳</div>
-          <input type="text" class="loy-search" id="careSearchInp" placeholder="Pretraži Loyalty prijave..." oninput="careFilter(this.value)">
+          <input type="text" class="loy-search" id="careSearchInp" placeholder="Pretraži Loyalty prijave..." data-input-action="care-filter">
         </div>
         <div id="carePendingList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
       </div>
@@ -989,8 +989,8 @@ body{
     <p id="noteModal-label">Napomena za korisnika</p>
     <textarea id="noteModal-txt" placeholder="Unesite napomenu..."></textarea>
     <div class="nm-btns">
-      <button class="nm-save" onclick="saveNote()">Sačuvaj napomenu →</button>
-      <button class="nm-cancel" onclick="closeNoteModal()">Otkaži</button>
+      <button class="nm-save" data-action="save-note">Sačuvaj napomenu →</button>
+      <button class="nm-cancel" data-action="close-note">Otkaži</button>
     </div>
   </div>
 </div>
@@ -1006,8 +1006,8 @@ body{
     <input id="svcModal-note" type="text" placeholder="npr. Eksterijer + interijer" style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.1);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:16px;box-sizing:border-box">
     <div id="svcModal-msg" style="display:none;font-size:12px;color:#E74C3C;margin-bottom:12px"></div>
     <div style="display:flex;gap:8px">
-      <button class="nm-save" onclick="saveAddServiceModal()">Sačuvaj →</button>
-      <button class="nm-cancel" onclick="closeAddServiceModal()">Otkaži</button>
+      <button class="nm-save" data-action="save-svc">Sačuvaj →</button>
+      <button class="nm-cancel" data-action="close-svc">Otkaži</button>
     </div>
   </div>
 </div>
@@ -1026,8 +1026,8 @@ body{
       <option value="care_god_vs">Veliki / SUV — Godišnje · €349/god (ušteda 27%)</option>
     </select>
     <div style="display:flex;gap:8px">
-      <button class="nm-save" onclick="savePlanModal()">Sačuvaj plan →</button>
-      <button class="nm-cancel" onclick="closePlanModal()">Otkaži</button>
+      <button class="nm-save" data-action="save-plan">Sačuvaj plan →</button>
+      <button class="nm-cancel" data-action="close-plan">Otkaži</button>
     </div>
   </div>
 </div>
@@ -1076,8 +1076,8 @@ body{
       <strong style="color:#27AE60">Poruka se snima u bazu</strong> i šalje svim aktivnim pretplatnicima. Ako neki uslov nedostaje, dobićeš tačan razlog u odgovoru.
     </div>
     <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
-      <button class="nm-save" style="flex:1;min-width:180px;background:#27AE60" onclick="sendPushFromModal()">Pošalji obaveštenje →</button>
-      <button class="nm-cancel" onclick="closePushModal()">Otkaži</button>
+      <button class="nm-save" style="flex:1;min-width:180px;background:#27AE60" data-action="send-push">Pošalji obaveštenje →</button>
+      <button class="nm-cancel" data-action="close-push">Otkaži</button>
     </div>
   </div>
 </div>
@@ -1885,9 +1885,9 @@ function renderReviews(id, items, isPending) {
       </div>
       <div class="rv-actions">
         ${isPending
-          ? `<button class="act-btn act-approve" onclick="approveRev('${r.id}')">✓ Odobri</button>
-             <button class="act-btn act-reject"  onclick="rejectRev('${r.id}')">✕ Odbaci</button>`
-          : `<button class="act-btn act-hide" onclick="rejectRev('${r.id}')">Ukloni</button>`
+          ? `<button class="act-btn act-approve" data-action="approve-rev" data-id="${r.id}">✓ Odobri</button>
+             <button class="act-btn act-reject"  data-action="reject-rev"  data-id="${r.id}">✕ Odbaci</button>`
+          : `<button class="act-btn act-hide"    data-action="reject-rev"  data-id="${r.id}">Ukloni</button>`
         }
       </div>
     </div>`).join('');
@@ -2021,12 +2021,12 @@ function renderLoyCust(custs) {
         </div>
       </div>
       <div class="lcc-actions">
-        <button class="lcc-btn" style="background:rgba(192,57,43,.15);color:#E74C3C;border:1px solid rgba(192,57,43,.4);font-weight:700" onclick="openAddServiceModal('${c.id}','${esc(c.name)}')">+ Dodaj uslugu</button>
-        <button class="lcc-btn" onclick="toggleWashHistory('${c.id}')">📋 Istorija</button>
+        <button class="lcc-btn" style="background:rgba(192,57,43,.15);color:#E74C3C;border:1px solid rgba(192,57,43,.4);font-weight:700" data-action="open-add-svc" data-cid="${c.id}" data-name="${esc(c.name)}">+ Dodaj uslugu</button>
+        <button class="lcc-btn" data-action="toggle-hist" data-cid="${c.id}">📋 Istorija</button>
         ${waPhone ? `<a href="https://wa.me/${waPhone}" target="_blank" class="lcc-btn" style="background:rgba(37,211,102,.08);color:#25D366;border:1px solid rgba(37,211,102,.25);text-decoration:none;display:block;text-align:center">💬 WhatsApp</a>` : ''}
-        <button class="lcc-btn" onclick="openNoteModal('${c.id}','${esc(c.name)}','${esc(adminNote)}')">📝 Napomena</button>
-        <button class="lcc-btn" style="background:rgba(255,194,0,.08);color:#F2C200;border:1px solid rgba(255,194,0,.25)" onclick="openPlanModal('${c.id}','${esc(c.name)}','${planKey||''}')">💎 Plan</button>
-        <button class="lcc-btn" style="background:rgba(192,57,43,.1);color:#C0392B;border:1px solid rgba(192,57,43,.3);margin-top:4px" onclick="custDeleteAccount('${c.id}','${esc(c.name)}','${c.auth_user_id || ''}')">🗑 Briši</button>
+        <button class="lcc-btn" data-action="open-note" data-cid="${c.id}" data-name="${esc(c.name)}" data-note="${esc(adminNote)}">📝 Napomena</button>
+        <button class="lcc-btn" style="background:rgba(255,194,0,.08);color:#F2C200;border:1px solid rgba(255,194,0,.25)" data-action="open-plan" data-cid="${c.id}" data-name="${esc(c.name)}" data-plan="${planKey||''}">💎 Plan</button>
+        <button class="lcc-btn" style="background:rgba(192,57,43,.1);color:#C0392B;border:1px solid rgba(192,57,43,.3);margin-top:4px" data-action="delete-cust" data-cid="${c.id}" data-name="${esc(c.name)}" data-auth="${c.auth_user_id || ''}">🗑 Briši</button>
       </div>
       <div id="hist-${c.id}" class="lcc-hist-box"></div>
     </div>`;
@@ -2354,7 +2354,7 @@ function renderCareGroups(id, groups, isPending) {
         ${active ? '<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;background:rgba(39,174,96,.1);color:#27AE60;border:1px solid rgba(39,174,96,.3)">\u2713 Aktivan</span>' : ''}
         ${dob ? '<span style="font-size:11px;color:#666">\uD83C\uDF82 ' + esc(dob) + '</span>' : ''}
         <span style="font-size:10px;color:#444;margin-left:auto">\uD83D\uDD50 ${fmtDate(c.created_at)}</span>
-        ${!active ? `<button onclick="careActivateSingle(event,'${esc(c.id)}','${esc(g.ime||'')}','${esc(g.telefon||'')}','${esc(g.email||'')}','${esc(c.usluga||'')}','${esc(c.napomena||'')}','${esc(c.velicina||'')}')" style="padding:5px 12px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(39,174,96,.3);background:rgba(39,174,96,.12);color:#2ECC71;cursor:pointer;font-family:var(--sans)">Aktiviraj</button><div id="crok-${c.id}" style="display:none;font-size:10px;color:#27AE60;font-weight:700">\u2713 Ok</div>` : ''}
+        ${!active ? `<button data-action="care-act-single" data-cid="${esc(c.id)}" data-name="${esc(g.ime||'')}" data-phone="${esc(g.telefon||'')}" data-email="${esc(g.email||'')}" data-usluga="${esc(c.usluga||'')}" data-note="${esc(c.napomena||'')}" data-velicina="${esc(c.velicina||'')}" style="padding:5px 12px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border:1px solid rgba(39,174,96,.3);background:rgba(39,174,96,.12);color:#2ECC71;cursor:pointer;font-family:var(--sans)">Aktiviraj</button><div id="crok-${c.id}" style="display:none;font-size:10px;color:#27AE60;font-weight:700">\u2713 Ok</div>` : ''}
       </div>`;
     }).join('');
 
@@ -2372,8 +2372,8 @@ function renderCareGroups(id, groups, isPending) {
       </div>
       <div class="ct-actions">
         ${waPhone ? `<a href="https://wa.me/${waPhone}?text=${waTekst}" target="_blank" class="ct-btn" style="background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.3);text-decoration:none;display:block;text-align:center;padding:10px 16px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase">\uD83D\uDCAC WhatsApp klijentu</a>` : ''}
-        ${pendingCars.length > 1 ? `<button class="ct-btn ct-btn-loy" onclick="careActivateAll('${gid}')">\u2713 Aktiviraj sve (${pendingCars.length})</button>` : ''}
-        <button class="ct-btn ct-btn-del" onclick="careDeleteAll('${gid}')">Obriši prijave</button>
+        ${pendingCars.length > 1 ? `<button class="ct-btn ct-btn-loy" data-action="care-act-all" data-gid="${gid}">\u2713 Aktiviraj sve (${pendingCars.length})</button>` : ''}
+        <button class="ct-btn ct-btn-del" data-action="care-del-all" data-gid="${gid}">Obriši prijave</button>
       </div>
     </div>`;
   }).join('');
@@ -2463,6 +2463,78 @@ async function careDelete(id) {
 </script>
 
 <script>
+// ═══════════════════════════════════════════
+// EVENT DELEGATION — replaces all inline onclick/oninput handlers
+// ═══════════════════════════════════════════
+(function initAdminDelegation() {
+  // Login / logout
+  var lb = document.getElementById('loginBtn');
+  if (lb) lb.addEventListener('click', doLogin);
+  var lo = document.getElementById('logoutBtn');
+  if (lo) lo.addEventListener('click', doLogout);
+
+  // Click delegation
+  document.addEventListener('click', function(e) {
+    // Tab buttons
+    var tab = e.target.closest && e.target.closest('.admin-tab[data-tab]');
+    if (tab) { switchTab(tab.dataset.tab, tab); return; }
+
+    var btn = e.target.closest && e.target.closest('[data-action]');
+    if (!btn) return;
+    var action = btn.dataset.action;
+
+    switch (action) {
+      case 'load-dashboard':   loadDashboard(); break;
+      case 'load-reviews':     loadReviews();   break;
+      case 'load-loyalty':     loadLoyalty();   break;
+      case 'load-care':        loadCare();      break;
+      case 'clear-search':
+        var tb = btn.closest('.admin-toolbar');
+        if (tb) { var si = tb.querySelector('input[data-input-action]'); if (si) { si.value = ''; } }
+        setAdminSearch('');
+        break;
+      case 'open-push':        openPushModal();       break;
+      case 'switch-tab':
+        var tb2 = document.querySelector('.admin-tab[data-tab="' + btn.dataset.tab + '"]');
+        switchTab(btn.dataset.tab, tb2);
+        break;
+      case 'loy-filter':       loySetFilter(btn.dataset.filter); break;
+      case 'copy-wa':          copyAdminWhatsApp();   break;
+      case 'save-note':        saveNote();             break;
+      case 'close-note':       closeNoteModal();       break;
+      case 'save-svc':         saveAddServiceModal();  break;
+      case 'close-svc':        closeAddServiceModal(); break;
+      case 'save-plan':        savePlanModal();        break;
+      case 'close-plan':       closePlanModal();       break;
+      case 'send-push':        sendPushFromModal();    break;
+      case 'close-push':       closePushModal();       break;
+      case 'approve-rev':      approveRev(btn.dataset.id);  break;
+      case 'reject-rev':       rejectRev(btn.dataset.id);   break;
+      case 'open-add-svc':     openAddServiceModal(btn.dataset.cid, btn.dataset.name); break;
+      case 'toggle-hist':      toggleWashHistory(btn.dataset.cid); break;
+      case 'open-note':        openNoteModal(btn.dataset.cid, btn.dataset.name, btn.dataset.note); break;
+      case 'open-plan':        openPlanModal(btn.dataset.cid, btn.dataset.name, btn.dataset.plan || ''); break;
+      case 'delete-cust':      custDeleteAccount(btn.dataset.cid, btn.dataset.name, btn.dataset.auth); break;
+      case 'care-act-single':  careActivateSingle(e, btn.dataset.cid, btn.dataset.name, btn.dataset.phone, btn.dataset.email, btn.dataset.usluga, btn.dataset.note, btn.dataset.velicina); break;
+      case 'care-act-all':     careActivateAll(btn.dataset.gid);  break;
+      case 'care-del-all':     careDeleteAll(btn.dataset.gid);    break;
+    }
+  });
+
+  // Input delegation
+  document.addEventListener('input', function(e) {
+    var ia = e.target.dataset && e.target.dataset.inputAction;
+    if (!ia) return;
+    switch (ia) {
+      case 'admin-search':
+      case 'admin-search-loy':
+      case 'admin-search-care': setAdminSearch(e.target.value); break;
+      case 'loy-filter':        loyApplyFilters(); break;
+      case 'care-filter':       careFilter(e.target.value); break;
+    }
+  });
+})();
+
 // ═══════════════════════════════════════════
 // KEYBOARD SHORTCUTS: 1-5 za tabove
 // ═══════════════════════════════════════════
