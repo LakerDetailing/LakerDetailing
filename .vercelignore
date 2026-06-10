@@ -3,3 +3,20 @@ package.json
 package-lock.json
 npm-debug.log*
 .claude/
+
+# Izvorni (neminifikovan) JS — koristiti main.min.js
+main.js
+
+# Interne razvojne beleske
+CLAUDE.md
+
+# SQL migracije — ne treba na Vercel
+supabase/
+
+# Hero originali — sajt koristi .webp i .avif verzije
+assets/hero-900.jpg
+assets/hero-1100.jpg
+assets/hero-1600.jpg
+
+# Primer env fajla
+.env.example
