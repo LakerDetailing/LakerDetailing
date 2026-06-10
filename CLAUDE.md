@@ -15,7 +15,9 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | Fajl/Folder | Opis |
 |---|---|
 | `index.html` | Ceo sajt (~200KB) — sav HTML, CSS i JS u jednom fajlu |
-| `main.js` | Dodatni JS — Supabase recenzije + kompletni Loyalty sistem (IIFE) |
+| `main.js` | Izvorni JS — Supabase recenzije + kompletni Loyalty sistem (IIFE). **Ne učitava se direktno** |
+| `main.min.js` | Minifikovana verzija koju sajt učitava. Posle izmene main.js regeneriši: `npx terser main.js --compress --mangle -o main.min.js` + bump `?v=` u index.html |
+| `assets/fonts/` | Self-hostovani woff2 fontovi (Cormorant Garamond + Inter, latin/latin-ext) + `fonts.css` (koristi ga admin panel; index.html ima isti @font-face inline) |
 | `laker-admin-9x3k.html` | Admin panel (URL je namerno obscure, noindex) |
 | `api/admin.js` | Admin API — sve admin akcije |
 | `api/send-email.js` | Brevo email API — booking, loyalty welcome, recenzije |
@@ -33,10 +35,11 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `supabase/*.sql` | SQL migracije (samo referenca, ne deployuju se) |
 
 ### Slike — važno
-Sve slike u HTML-u koriste `<picture>` tag sa WebP + JPG fallback:
-- Hero: `hero-900/1100/1600.webp` + `.jpg`
-- Galerija: `work1-3.webp`, `path2.webp`, `gallery-wheel.webp` + `-opt.jpg` fallback
+Sve slike u HTML-u koriste `<picture>` tag:
+- Hero: AVIF (`hero-900/1100/1600.avif`) + WebP + JPG fallback; preload u head-u je AVIF
+- Galerija: WebP srcset `*-480.webp 480w` + `*.webp 900w` + `-opt.jpg` fallback; AVIF za galeriju NE koristiti — zrnaste fotke, AVIF ispada veći od WebP
 - Logo: `laker-logo.webp` + `laker-logo-opt.jpg`
+- `favicon.svg` je UKLONJEN (bio je 486KB lažni SVG sa base64 PNG) — koriste se .ico/.png ikone
 
 Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.) su u `.gitignore` — ne idu na Vercel.
 
@@ -153,6 +156,7 @@ loyLogin() / loyRegister()
 
 ## Napomene
 
+- Fontovi su self-hostovani (`assets/fonts/`) — Google Fonts domeni uklonjeni iz HTML-a i CSP-a
 - Custom cursor isključen na touch uređajima (`@media (hover:none)`)
 - PWA push notifikacije rade — setup u `PWA_PUSH_SETUP.md` (lokalno, ne u repo)
 - `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u

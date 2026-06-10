@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v13';
+const CACHE_VERSION = 'laker-pwa-v14';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -7,7 +7,6 @@ const SHELL_ASSETS = [
   '/assets/icons/site.webmanifest',
   '/offline.html',
   '/assets/icons/favicon.ico',
-  '/assets/icons/favicon.svg',
   '/assets/icons/favicon-96x96.png',
   '/assets/icons/apple-touch-icon.png',
   '/assets/icons/web-app-manifest-192x192.png',
