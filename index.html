@@ -259,6 +259,9 @@ body.light #cur{background:var(--gold)}
 body.light .hbg span{background:var(--white)}
 body.light nav.solid{background:rgba(244,242,238,.96)}
 body.light .proc-step{box-shadow:0 4px 32px rgba(0,0,0,.08)}
+/* hero fotka je uvek tamna — tekst preko nje ostaje svetao i u light temi */
+body.light .he-h1{color:#EDF1FA}
+body.light .he-sub{color:#B8C4D0}
 body.light .faq-item{border-color:rgba(0,0,0,.08)}
 
 html{scroll-behavior:smooth;overflow-x:hidden;width:100%;max-width:100vw;overscroll-behavior-x:none;touch-action:pan-y;position:relative;-webkit-text-size-adjust:100%;scroll-padding-top:calc(88px + env(safe-area-inset-top))}
@@ -376,7 +379,8 @@ body.light .theme-btn::after{transform:translateX(20px)}
 .btn-g{display:inline-flex;align-items:center;gap:14px;padding:16px 40px;background:var(--gold);color:var(--black);font-size:10.5px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;cursor:none}
 .btn-g:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 20px 55px rgba(201,168,76,.28)}
 .btn-o{display:inline-flex;align-items:center;gap:14px;padding:16px 40px;border:1px solid rgba(255,255,255,.18);color:var(--lgray);font-size:10.5px;font-weight:500;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all .35s;cursor:none}
-body.light .btn-o{border-color:rgba(0,0,0,.18)}
+body.light .btn-o{border-color:rgba(255,255,255,.3);color:#B8C4D0}
+body.light .btn-o:hover{border-color:var(--gold);color:#EDF1FA}
 .btn-o:hover{border-color:var(--gold);color:var(--white)}
 
 /* PASSWORD UX */
