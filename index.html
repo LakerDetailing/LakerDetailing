@@ -443,7 +443,7 @@ section[id]{scroll-margin-top:calc(100px + env(safe-area-inset-top))}
 .sd{font-size:14.5px;color:#B8B6B2;line-height:1.85;max-width:480px;margin-top:22px;font-weight:300}
 
 /* PHILOSOPHY */
-#phi{background:var(--black)}
+#phi{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 600px}
 .phi-grid{display:grid;grid-template-columns:1fr 1fr;gap:110px;align-items:center}
 .phi-left .phi-img{position:relative;height:620px;overflow:hidden}
 .phi-img img{width:100%;height:100%;object-fit:cover;object-position:center 28%;filter:grayscale(15%) brightness(.85);transition:transform 8s}
@@ -480,7 +480,7 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 }
 
 /* CASE STUDIES */
-#cs{background:var(--d1);padding-bottom:0}
+#cs{background:var(--d1);padding-bottom:0;content-visibility:auto;contain-intrinsic-size:auto 700px}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
 .cs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px}
 .cs-card{position:relative;overflow:hidden;cursor:none;background:var(--d3)}
@@ -499,7 +499,7 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 .cs-1,.cs-2,.cs-3,.cs-4,.cs-5{height:580px}
 
 /* SERVICES */
-#srv{background:var(--black)}
+#srv{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 800px}
 .srv-layout{display:grid;grid-template-columns:420px 1fr;gap:100px;align-items:start}
 .srv-sticky{position:sticky;top:130px}
 .srv-list{display:flex;flex-direction:column}
@@ -516,7 +516,7 @@ body.light .si{border-bottom-color:rgba(0,0,0,.06)}
 .si:hover .si-arr{opacity:1;transform:translateX(0);color:var(--gold)}
 
 /* PROCESS SECTION */
-#proc{background:var(--d1)}
+#proc{background:var(--d1);content-visibility:auto;contain-intrinsic-size:auto 600px}
 .proc-header{text-align:center;margin-bottom:72px}
 .proc-header .sl{justify-content:center}
 .proc-header .sl::before{display:none}
@@ -534,7 +534,7 @@ body.light .si{border-bottom-color:rgba(0,0,0,.06)}
 .ps-desc{font-size:13.5px;color:#A8A6A2;line-height:1.75;font-weight:300}
 
 /* PACKAGES */
-#pkg{background:var(--black)}
+#pkg{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 1200px}
 .pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px}
 .pk{background:var(--d2);padding:52px 44px;position:relative;overflow:hidden;transition:transform .45s}
 .pk:hover{transform:translateY(-7px)}
@@ -666,7 +666,7 @@ body.light .loy-single-card{background:linear-gradient(158deg,var(--d3) 0%,#eee8
 
 
 /* LAKER LOYALTY MEMBERSHIP */
-#care{background:var(--d1)}
+#care{background:var(--d1);content-visibility:auto;contain-intrinsic-size:auto 900px}
 .care-top{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:64px}
 .care-note{font-size:13.5px;color:#A8A6A2;max-width:400px;line-height:1.85;font-weight:300;text-align:right}
 .care-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
@@ -745,7 +745,7 @@ body.light .care-results{border-top-color:rgba(0,0,0,.07)}
 body.light .care-results span{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
 /* PRICING */
-#prc{background:var(--d1)}
+#prc{background:var(--d1);content-visibility:auto;contain-intrinsic-size:auto 600px}
 .prc-top{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:end;margin-bottom:56px}
 .prc-note{background:var(--d2);padding:32px 36px;border-left:2px solid var(--gold)}
 .prc-note p{font-size:13px;color:var(--lgray);line-height:1.9;font-weight:300}
@@ -776,7 +776,7 @@ body.light .pv2-loy-new{color:#8F281E}
 body.light .pv2-loy-badge{background:rgba(201,168,76,.1);color:#8F281E;border-color:rgba(201,168,76,.25)}
 
 /* FAQ */
-#faq{background:var(--black)}
+#faq{background:var(--black);content-visibility:auto;contain-intrinsic-size:auto 800px}
 .faq-layout{display:grid;grid-template-columns:420px 1fr;gap:100px;align-items:start}
 .faq-sticky{position:sticky;top:130px}
 .faq-list{display:flex;flex-direction:column;gap:0}
@@ -1874,6 +1874,7 @@ function lakerFallbackImage(label, sublabel) {
 </script>
 </head>
 <body>
+<script>try{if(localStorage.getItem('laker-theme')==='light')document.body.className='light';}catch(e){}</script>
 <noscript><img alt="" loading="lazy" height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=27521788054080884&ev=PageView&noscript=1"/></noscript>
 <script>document.documentElement.classList.add("js-ready");</script>
@@ -2054,8 +2055,8 @@ function lakerFallbackImage(label, sublabel) {
     </div>
     <div class="cs-card cs-4">
       <picture>
-        <source type="image/webp" srcset="/assets/icons/gallery-wheel-480.webp 480w, /assets/icons/gallery-wheel.webp 900w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 25vw">
-        <img width="900" height="1114" loading="lazy" decoding="async" src="/assets/icons/gallery-wheel-opt.jpg" alt="Detailing rad" onerror="this.onerror=null;this.src=lakerFallbackImage('Detailing rad','Naš rad 4');">
+        <source type="image/webp" srcset="/assets/gallery/gallery-wheel-480.webp 480w, /assets/gallery/gallery-wheel.webp 900w" sizes="(max-width:768px) 100vw, (max-width:1100px) 50vw, 25vw">
+        <img width="900" height="1114" loading="lazy" decoding="async" src="/assets/gallery/gallery-wheel-opt.jpg" alt="Detailing rad" onerror="this.onerror=null;this.src=lakerFallbackImage('Detailing rad','Naš rad 4');">
       </picture>
       <div class="cs-info"><div class="cs-cat">Laker Detailing</div><div class="cs-car">Naš rad</div></div>
     </div>
