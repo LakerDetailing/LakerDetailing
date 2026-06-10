@@ -277,6 +277,18 @@ function lakerFallbackImage(label, sublabel) {
       if (Notification.permission === 'default') setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
     }
   }
+
+  // CONTENT_UPDATED: SW detected fresh HTML (via stale-while-revalidate + ETag comparison).
+  // Standalone PWA auto-reloads; browser users see the update banner.
+  navigator.serviceWorker.addEventListener('message', function (event) {
+    if (!event.data || event.data.type !== 'CONTENT_UPDATED') return;
+    if (isStandalone) {
+      location.reload();
+    } else {
+      updateReady = true;
+      showUpdateBanner();
+    }
+  });
 })();
 
 // ── PWA INSTALL ──

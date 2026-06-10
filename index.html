@@ -42,7 +42,9 @@
 <link rel="preload" as="image" type="image/avif" fetchpriority="high"
   imagesrcset="/assets/hero-900.avif 900w, /assets/hero-1100.avif 1100w, /assets/hero-1600.avif 1600w"
   imagesizes="100vw"
-  href="/assets/hero-1100.avif">
+  href="/assets/hero-900.avif">
+<!-- Early SW update listener — catches controllerchange before deferred init.js loads -->
+<script>(function(){if(!('serviceWorker' in navigator))return;var h=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',function(){if(!h)return;location.reload();});})();</script>
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300i-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
@@ -1889,7 +1891,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <picture>
       <source type="image/avif" srcset="/assets/hero-900.avif 900w, /assets/hero-1100.avif 1100w, /assets/hero-1600.avif 1600w" sizes="100vw">
       <source type="image/webp" srcset="/assets/hero-900.webp 900w, /assets/hero-1100.webp 1100w, /assets/hero-1600.webp 1600w" sizes="100vw">
-      <img width="1600" height="1067" loading="eager" decoding="sync" fetchpriority="high"
+      <img width="1600" height="1067" loading="eager" decoding="async" fetchpriority="high"
         srcset="/assets/hero-900.jpg 900w, /assets/hero-1100.jpg 1100w, /assets/hero-1600.jpg 1600w"
         sizes="100vw"
         src="/assets/hero-1600.jpg"

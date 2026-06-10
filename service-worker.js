@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v14';
+const CACHE_VERSION = 'laker-pwa-v15';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -106,28 +106,67 @@ async function cacheThenReturn(request, response, cacheName = RUNTIME_CACHE) {
   return response;
 }
 
-async function networkFirst(request, fallbackUrl = '/offline.html') {
+// Notify all open windows that fresh content is available
+async function notifyClientsContentUpdated() {
   try {
-    // cache: 'no-store' — uvek bypass-uj HTTP cache, uvek uzmi svežu verziju
-    const response = await fetch(request, { cache: 'no-store' });
-    if (response && response.ok) {
-      await cacheThenReturn(request, response);
-      return response;
-    }
-    throw new Error('Bad response');
-  } catch (e) {
-    // Never serve offline.html to bots/crawlers
-    if (isBot(request)) {
-      return new Response('Service Unavailable', { status: 503, headers: { 'Content-Type': 'text/plain' } });
-    }
-    const cached = await caches.match(request, { ignoreSearch: false });
-    if (cached) return cached;
-    const fallback = await caches.match(fallbackUrl);
-    if (fallback) return fallback;
-    throw e;
-  }
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    clients.forEach(c => c.postMessage({ type: 'CONTENT_UPDATED' }));
+  } catch (e) {}
 }
 
+// Strategy: stale-while-revalidate
+// Serve cached response immediately (fast FCP for returning visitors), then fetch fresh in background.
+// If notifyOnChange=true and ETag/Last-Modified changed, post CONTENT_UPDATED to all clients.
+// If no cache exists, waits for network (first-visit behaviour unchanged).
+async function staleWhileRevalidate(request, fallbackUrl, notifyOnChange) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await cache.match(request);
+
+  // Always kick off a background revalidation (fire-and-forget when cached exists)
+  const networkFetch = fetch(request, { cache: 'no-store' })
+    .then(async response => {
+      if (!response || !response.ok) return null;
+
+      if (notifyOnChange && cached) {
+        // Compare ETag or Last-Modified to detect real content changes
+        const cachedEtag = cached.headers.get('etag');
+        const freshEtag = response.headers.get('etag');
+        const cachedMod = cached.headers.get('last-modified');
+        const freshMod = response.headers.get('last-modified');
+        const changed =
+          (cachedEtag && freshEtag && cachedEtag !== freshEtag) ||
+          (!cachedEtag && cachedMod && freshMod && cachedMod !== freshMod);
+
+        cache.put(request, response.clone()).catch(() => {});
+        if (changed) notifyClientsContentUpdated();
+        return response;
+      }
+
+      cache.put(request, response.clone()).catch(() => {});
+      return response;
+    })
+    .catch(() => null);
+
+  // Serve cached version immediately (returning visitor fast path)
+  if (cached) return cached;
+
+  // No cache: first visit — wait for network
+  const response = await networkFetch;
+  if (response) return response;
+
+  // Network failed on first visit — try offline fallback
+  if (fallbackUrl) {
+    if (!isBot(request)) {
+      const fallback = await caches.match(fallbackUrl);
+      if (fallback) return fallback;
+    }
+    return new Response('Service Unavailable', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+  }
+
+  return new Response('Not Found', { status: 404, headers: { 'Content-Type': 'text/plain' } });
+}
+
+// Strategy: cache-first with network fallback (for immutable assets: images, fonts)
 async function cacheFirst(request) {
   const cached = await caches.match(request, { ignoreSearch: false });
   if (cached) return cached;
@@ -166,12 +205,20 @@ self.addEventListener('fetch', event => {
       event.respondWith(fetch(request));
       return;
     }
-    event.respondWith(networkFirst(request, '/offline.html'));
+    // HTML: stale-while-revalidate — serve cached immediately, notify clients if content changed
+    event.respondWith(staleWhileRevalidate(request, '/offline.html', true));
     return;
   }
 
-  // Cache same-origin static assets
-  if (['style', 'script', 'image', 'font'].includes(request.destination) || url.pathname.endsWith('.png')) {
+  // Scripts and styles: stale-while-revalidate (background update, no notification)
+  // Ensures stale JS/CSS is refreshed in background even if ?v= wasn't bumped
+  if (request.destination === 'script' || request.destination === 'style') {
+    event.respondWith(staleWhileRevalidate(request, null, false));
+    return;
+  }
+
+  // Images and fonts: cache-first (immutable — versioned URLs ensure freshness)
+  if (request.destination === 'image' || request.destination === 'font' || url.pathname.endsWith('.png')) {
     event.respondWith(cacheFirst(request));
     return;
   }
