@@ -686,6 +686,32 @@ body{
   .dash-actions { grid-template-columns:1fr; }
 }
 
+/* ═══ ACCESSIBILITY & POLISH ═══ */
+/* Vidljiv fokus za tastaturu — ne smeta mišu (focus-visible) */
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid rgba(192,57,43,.65);
+  outline-offset:2px;
+  border-radius:6px;
+}
+/* Disabled stanje — jasno vidljivo */
+button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+/* Custom scrollbar — uklapa se u temu */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--d1)}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:6px;border:2px solid var(--d1)}
+::-webkit-scrollbar-thumb:hover{background:rgba(192,57,43,.45)}
+/* Selektovanje teksta u brend boji */
+::selection{background:rgba(192,57,43,.4);color:#fff}
+/* Veći tap target na mobilnom — tabovi i akcijska dugmad */
+@media(max-width:900px){
+  .admin-tab{padding:12px 16px;min-height:44px}
+  .tool-btn{min-height:42px}
+}
+/* Reduced motion — isključi sve animacije za korisnike koji to traže */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 </style>
 </head>
 <body>
@@ -1234,6 +1260,8 @@ function demoApiResult(action, params = {}) {
       return { ok: true };
     case 'get_loyalty':
       return demoClone(DEMO_STATE.loyalty);
+    case 'get_loyalty_customers':
+      return demoClone(DEMO_STATE.loyalty.customers);
     case 'get_period_wash_counts': {
       const yr = {}, mo = {};
       DEMO_STATE.loyalty.customers.forEach(c => {
@@ -2634,10 +2662,11 @@ async function loadDashboard() {
     const loyAll = Array.isArray(loy) ? loy : (loy?.data || []);
     animateCounter('dash-loy-total', loyAll.length);
 
-    // Plan breakdown
+    // Plan breakdown — članovi bez dodeljenog plana ne ulaze u prihod
     let msMes=0, msGod=0, vsMes=0, vsGod=0, revenue=0;
     loyAll.forEach(c => {
       const plan = String(c.care_plan||'').toLowerCase();
+      if (!plan) return;
       const isGod = plan.includes('god') || plan.includes('annual');
       const isVS  = String(c.velicina||c.car_size||'').toLowerCase().match(/veliki|suv|vs|extra/);
       if (isVS && isGod)       { vsGod++;  revenue += 349/12; }

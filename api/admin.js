@@ -44,7 +44,11 @@ async function sb(path, opts = {}) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || err.error || `Supabase error ${res.status}`);
   }
-  if (res.status === 204 || res.status === 201) return { ok: true };
+  if (res.status === 204) return { ok: true };
+  if (res.status === 201) {
+    // return=representation vraća kreirani red u body-ju; return=minimal vraća prazno
+    try { const data = await res.json(); return data ?? { ok: true }; } catch { return { ok: true }; }
+  }
   try { return await res.json(); } catch { return null; }
 }
 
@@ -86,6 +90,13 @@ function parsePlanValue(plan) {
   return planType ? { planType, carSize, carePlan: p } : null;
 }
 
+// ID-jevi idu direktno u PostgREST URL query — dozvoljen je samo bezbedan
+// charset (UUID, broj) da niko ne može da ubaci dodatne filter operatore.
+function safeId(value) {
+  const s = String(value || '').trim();
+  return /^[A-Za-z0-9-]{1,64}$/.test(s) ? s : null;
+}
+
 // ── Route map ─────────────────────────────────────────────
 const ACTIONS = {
 
@@ -100,13 +111,17 @@ const ACTIONS = {
   },
 
   async approve_review({ id }) {
-    return await sb(`/rest/v1/testimonials?id=eq.${id}`, {
+    const rid = safeId(id);
+    if (!rid) return { error: 'Neispravan ID' };
+    return await sb(`/rest/v1/testimonials?id=eq.${rid}`, {
       method: 'PATCH', prefer: 'return=minimal', body: { approved: true }
     });
   },
 
   async delete_review({ id }) {
-    return await sb(`/rest/v1/testimonials?id=eq.${id}`, { method: 'DELETE' });
+    const rid = safeId(id);
+    if (!rid) return { error: 'Neispravan ID' };
+    return await sb(`/rest/v1/testimonials?id=eq.${rid}`, { method: 'DELETE' });
   },
 
   // LOYALTY — REQUESTS
@@ -124,20 +139,22 @@ const ACTIONS = {
   },
 
   async approve_wash_req({ reqId, custId }) {
-    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${custId}&select=wash_count`);
+    const rid = safeId(reqId), cid = safeId(custId);
+    if (!rid || !cid) return { error: 'Neispravan ID' };
+    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
     const c = Array.isArray(cData) ? cData[0] : null;
     if (!c) return { error: 'Korisnik nije pronađen' };
     const newCount = (c.wash_count || 0) + 1;
     const today = new Date().toISOString().split('T')[0];
     await Promise.all([
-      sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+      sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
         method: 'PATCH', prefer: 'return=minimal', body: { wash_count: newCount }
       }),
       sb('/rest/v1/loyalty_washes', {
         method: 'POST', prefer: 'return=minimal',
-        body: { customer_id: custId, note: 'Odobreno od admina', added_by: 'admin', service_date: today }
+        body: { customer_id: cid, note: 'Odobreno od admina', added_by: 'admin', service_date: today }
       }),
-      sb(`/rest/v1/loyalty_wash_requests?id=eq.${reqId}`, {
+      sb(`/rest/v1/loyalty_wash_requests?id=eq.${rid}`, {
         method: 'PATCH', prefer: 'return=minimal', body: { status: 'approved' }
       })
     ]);
@@ -145,68 +162,90 @@ const ACTIONS = {
   },
 
   async reject_wash_req({ reqId }) {
-    return await sb(`/rest/v1/loyalty_wash_requests?id=eq.${reqId}`, {
+    const rid = safeId(reqId);
+    if (!rid) return { error: 'Neispravan ID' };
+    return await sb(`/rest/v1/loyalty_wash_requests?id=eq.${rid}`, {
       method: 'PATCH', prefer: 'return=minimal', body: { status: 'rejected' }
     });
   },
 
   // LOYALTY — CUSTOMERS
   async add_wash({ custId, custName, note, serviceDate }) {
-    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${custId}&select=wash_count`);
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
+    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
     const c = Array.isArray(cData) ? cData[0] : null;
     if (!c) return { error: 'Korisnik nije pronađen' };
     const newCount  = (c.wash_count || 0) + 1;
     const svcDate   = serviceDate || new Date().toISOString().split('T')[0];
     await Promise.all([
-      sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+      sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
         method: 'PATCH', prefer: 'return=minimal', body: { wash_count: newCount }
       }),
       sb('/rest/v1/loyalty_washes', {
         method: 'POST', prefer: 'return=minimal',
-        body: { customer_id: custId, note: note || 'Admin — ručno dodato', added_by: 'admin', service_date: svcDate }
+        body: { customer_id: cid, note: note || 'Admin — ručno dodato', added_by: 'admin', service_date: svcDate }
       })
     ]);
     return { ok: true, newCount };
   },
 
-  async remove_wash({ custId, currentCount }) {
-    if (currentCount <= 0) return { error: 'Već je 0 pranja' };
-    return await sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+  async remove_wash({ custId }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
+    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
+    const c = Array.isArray(cData) ? cData[0] : null;
+    if (!c) return { error: 'Korisnik nije pronađen' };
+    if ((c.wash_count || 0) <= 0) return { error: 'Već je 0 pranja' };
+    const newCount = (c.wash_count || 0) - 1;
+    await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
       method: 'PATCH', prefer: 'return=minimal',
-      body: { wash_count: currentCount - 1 }
+      body: { wash_count: newCount }
     });
+    // Obriši i poslednji zapis iz istorije da wash_count i loyalty_washes ostanu usklađeni
+    const last = await sb(`/rest/v1/loyalty_washes?customer_id=eq.${cid}&order=created_at.desc&limit=1&select=id`);
+    if (Array.isArray(last) && last.length && safeId(last[0].id)) {
+      await sb(`/rest/v1/loyalty_washes?id=eq.${safeId(last[0].id)}`, { method: 'DELETE' });
+    }
+    return { ok: true, newCount };
   },
 
   async save_note({ custId, note }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
     const cleanNote = cleanText(note, 500) || null;
-    return await sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+    return await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
       method: 'PATCH', prefer: 'return=minimal',
       body: { admin_note: cleanNote }
     });
   },
 
   async update_care_plan({ custId, plan }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
     if (!plan) {
-      return await sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+      return await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
         method: 'PATCH', prefer: 'return=minimal',
         body: { plan_type: null, car_size: null, care_plan: null, care_plan_since: null }
       });
     }
     const parsed = parsePlanValue(plan);
     if (!parsed) return { error: 'Neispravan plan' };
-    return await sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, {
+    return await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
       method: 'PATCH', prefer: 'return=minimal',
       body: {
         plan_type: parsed.planType,
         car_size:  parsed.carSize,
-        care_plan: plan,
+        care_plan: parsed.carePlan,
         care_plan_since: new Date().toISOString()
       }
     });
   },
 
   async get_wash_history({ custId }) {
-    return await sb(`/rest/v1/loyalty_washes?customer_id=eq.${custId}&order=service_date.desc,created_at.desc&limit=50`);
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
+    return await sb(`/rest/v1/loyalty_washes?customer_id=eq.${cid}&order=service_date.desc,created_at.desc&limit=50`);
   },
 
   async get_period_wash_counts() {
@@ -224,12 +263,15 @@ const ACTIONS = {
   },
 
   async delete_customer({ custId, authUserId }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
     await Promise.all([
-      sb(`/rest/v1/loyalty_washes?customer_id=eq.${custId}`,        { method: 'DELETE' }),
-      sb(`/rest/v1/loyalty_wash_requests?customer_id=eq.${custId}`, { method: 'DELETE' })
+      sb(`/rest/v1/loyalty_washes?customer_id=eq.${cid}`,        { method: 'DELETE' }),
+      sb(`/rest/v1/loyalty_wash_requests?customer_id=eq.${cid}`, { method: 'DELETE' })
     ]);
-    await sb(`/rest/v1/loyalty_customers?id=eq.${custId}`, { method: 'DELETE' });
-    if (authUserId) await deleteAuthUser(authUserId);
+    await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, { method: 'DELETE' });
+    const aid = safeId(authUserId);
+    if (aid) await deleteAuthUser(aid);
     return { ok: true };
   },
 
@@ -239,6 +281,8 @@ const ACTIONS = {
   },
 
   async add_contact_to_loyalty({ ctId, name, phone, email, plan, note }) {
+    const contactId = safeId(ctId);
+    if (!contactId) return { error: 'Neispravan ID' };
     const cleanName       = cleanText(name, 80);
     const cleanEmailValue = cleanEmail(email);
     const cleanPhoneValue = cleanPhone(phone);
@@ -255,10 +299,11 @@ const ACTIONS = {
       const byPhone = await sb(`/rest/v1/loyalty_customers?phone=eq.${encodeURIComponent(cleanPhoneValue)}&select=id`);
       if (Array.isArray(byPhone) && byPhone.length) existing = byPhone;
     }
-    let customerId = existing.length ? existing[0].id : null;
+    let customerId = existing.length ? safeId(existing[0].id) : null;
     if (!existing.length) {
-      await sb('/rest/v1/loyalty_customers', {
-        method: 'POST', prefer: 'return=minimal',
+      // return=representation odmah vraća kreirani red — nema potrebe za refetch
+      const created = await sb('/rest/v1/loyalty_customers', {
+        method: 'POST', prefer: 'return=representation',
         body: {
           name:  cleanName || cleanEmailValue || cleanPhoneValue || 'Loyalty klijent',
           phone: cleanPhoneValue || null,
@@ -267,11 +312,7 @@ const ACTIONS = {
           ...(parsed ? { plan_type: parsed.planType, car_size: parsed.carSize, care_plan: parsed.carePlan, care_plan_since: new Date().toISOString() } : {})
         }
       });
-      const refetchPath = cleanEmailValue
-        ? `/rest/v1/loyalty_customers?email=eq.${encodeURIComponent(cleanEmailValue)}&select=id`
-        : `/rest/v1/loyalty_customers?phone=eq.${encodeURIComponent(cleanPhoneValue)}&select=id`;
-      const created = await sb(refetchPath);
-      customerId = Array.isArray(created) && created.length ? created[0].id : null;
+      customerId = Array.isArray(created) && created.length ? safeId(created[0].id) : null;
     } else if (parsed) {
       await sb(`/rest/v1/loyalty_customers?id=eq.${existing[0].id}`, {
         method: 'PATCH', prefer: 'return=minimal',
@@ -291,13 +332,15 @@ const ACTIONS = {
         });
       }
     }
-    return await sb(`/rest/v1/contacts?id=eq.${ctId}`, {
+    return await sb(`/rest/v1/contacts?id=eq.${contactId}`, {
       method: 'PATCH', prefer: 'return=minimal', body: { loyalty_added: true }
     });
   },
 
   async delete_contact({ id }) {
-    return await sb(`/rest/v1/contacts?id=eq.${id}`, { method: 'DELETE' });
+    const cid = safeId(id);
+    if (!cid) return { error: 'Neispravan ID' };
+    return await sb(`/rest/v1/contacts?id=eq.${cid}`, { method: 'DELETE' });
   }
 };
 
