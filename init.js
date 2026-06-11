@@ -285,15 +285,10 @@ function lakerFallbackImage(label, sublabel) {
   }
 
   // CONTENT_UPDATED: SW detected fresh HTML (via stale-while-revalidate + ETag comparison).
-  // Standalone PWA auto-reloads; browser users see the update banner.
+  // Auto-reload for all users — ensures mobile gets fresh content without needing manual refresh.
   navigator.serviceWorker.addEventListener('message', function (event) {
     if (!event.data || event.data.type !== 'CONTENT_UPDATED') return;
-    if (isStandalone) {
-      location.reload();
-    } else {
-      updateReady = true;
-      showUpdateBanner();
-    }
+    location.reload();
   });
 })();
 
