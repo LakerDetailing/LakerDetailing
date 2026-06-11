@@ -602,7 +602,7 @@ body.light .loy-card-feat{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5
 .loy-toggle-group{display:flex;flex-direction:column;align-items:center;gap:9px}
 .loy-toggle-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);font-weight:600}
 .loy-bill-toggle{display:flex;background:#111;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:3px;gap:3px}
-.loy-bill-btn{flex:1;padding:11px 22px;background:transparent;border:none;color:#666;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:8px;transition:all .2s;white-space:nowrap;font-family:var(--sans)}
+.loy-bill-btn{flex:1;padding:11px 22px;background:transparent;border:none;color:#888;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:8px;transition:all .2s;white-space:nowrap;font-family:var(--sans)}
 .loy-bill-btn:hover{color:var(--lgray);background:rgba(255,255,255,.04)}
 .loy-bill-btn.on{background:var(--gold);color:#0E0C0C}
 .loy-bill-save-tag{display:inline-block;background:rgba(201,168,76,.2);color:var(--gold);font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
@@ -675,13 +675,13 @@ body.light .care-card.black{background:#1a1410}
 .care-price-amount sup{font-size:24px;letter-spacing:0;vertical-align:top;margin-top:16px;display:inline-block;font-weight:300}
 .care-price-period{display:flex;flex-direction:column;padding-bottom:12px}
 .care-price-period span:first-child{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#888;font-weight:500}
-.care-price-period span:last-child{font-size:11px;color:#666;font-weight:300;margin-top:2px}
+.care-price-period span:last-child{font-size:11px;color:#999;font-weight:300;margin-top:2px}
 
 /* ANNUAL ROW */
 .care-annual-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12)}
 body.light .care-annual-row{background:rgba(201,168,76,.03)}
 .care-annual-left{display:flex;flex-direction:column;gap:2px}
-.care-annual-label{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#777;font-weight:500}
+.care-annual-label{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:500}
 .care-annual-price{font-family:var(--serif);font-size:22px;font-weight:300;color:#C2C0BC;letter-spacing:-0.5px}
 .care-annual-price sup{font-size:11px;vertical-align:top;margin-top:4px;display:inline-block}
 .care-annual-save{font-size:9px;letter-spacing:1.5px;font-weight:700;color:var(--gold);background:rgba(201,168,76,.1);padding:4px 10px;text-transform:uppercase}
@@ -793,6 +793,9 @@ body.light .fg input,body.light .fg select,body.light .fg textarea{border-color:
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(201,168,76,.5);background:rgba(201,168,76,.02)}
 .fg select option{background:var(--d2)}
 .fg textarea{resize:vertical;min-height:88px}
+fieldset.fg{border:none;padding:0;margin:0 0 18px;min-inline-size:0}
+fieldset.fg legend{display:block;font-size:9.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:9px;float:left;width:100%}
+fieldset.fg legend+*{clear:left}
 .f-btn{width:100%;background:var(--gold);color:var(--black);padding:18px;border:none;font-size:10.5px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:none;transition:all .35s;font-family:var(--sans);margin-top:6px}
 .f-btn:hover{background:var(--gold2);box-shadow:0 16px 44px rgba(201,168,76,.22);transform:translateY(-1px)}
 .f-hint{font-size:11px;color:var(--gray);margin-top:10px;line-height:1.55;font-weight:300;display:flex;align-items:flex-start;gap:8px}
@@ -1854,8 +1857,8 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   <ul class="nm" id="nm">
     <li><a href="#phi">O nama</a></li>
     <li><a href="#cs">Galerija</a></li>
-    <li><a href="#pkg">Usluge</a></li>
-    <li><a href="#pkg">Paketi</a></li>
+    <li><a href="#pkg" aria-label="Naše usluge">Usluge</a></li>
+    <li><a href="#pkg" aria-label="Paketi i cene">Paketi</a></li>
     <li><a href="#care">Loyalty</a></li>
     <li><a href="#prc">Cenovnik</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -1874,14 +1877,15 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   <button id="mobileOverlay-close" type="button" aria-label="Zatvori meni" data-click="closeMobileMenu">✕</button>
   <a href="#phi" data-click="closeMobileMenu">O nama</a>
   <a href="#cs" data-click="closeMobileMenu">Galerija</a>
-  <a href="#pkg" data-click="closeMobileMenu">Usluge</a>
-  <a href="#pkg" data-click="closeMobileMenu">Paketi</a>
+  <a href="#pkg" data-click="closeMobileMenu" aria-label="Naše usluge">Usluge</a>
+  <a href="#pkg" data-click="closeMobileMenu" aria-label="Paketi i cene">Paketi</a>
   <a href="#care" data-click="closeMobileMenu">Loyalty</a>
   <a href="#prc" data-click="closeMobileMenu">Cenovnik</a>
   <a href="#faq" data-click="closeMobileMenu">FAQ</a>
   <a href="#" class="nb" data-click="openLoyaltyMenu">PRIJAVA</a>
 </div>
 
+<main id="content">
 <!-- ══ HERO ══ -->
 <section id="hero" style="padding:0">
   <div class="hbg-img">
@@ -2567,9 +2571,9 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
           <div class="fg"><label for="email_field">Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required><span class="field-hint" id="email_hint"></span></div>
           <div class="fw">
             <div class="fg"><label for="auto_field">Marka i model *</label><input type="text" id="auto_field" name="auto" placeholder="BMW M3, 2021" required></div>
-            <div class="fg">
-              <label id="velicina-label">Veličina vozila *</label>
-              <div class="size-selector" role="group" aria-labelledby="velicina-label">
+            <fieldset class="fg">
+              <legend>Veličina vozila *</legend>
+              <div class="size-selector">
                 <input class="sz-opt" type="radio" name="velicina" id="sz1" value="Mali — A klasa" required>
                 <label class="sz-lbl" for="sz1">Mali<span class="sz-sub">A klasa</span></label>
                 <input class="sz-opt" type="radio" name="velicina" id="sz2" value="Srednji — C klasa">
@@ -2579,7 +2583,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
                 <input class="sz-opt" type="radio" name="velicina" id="sz4" value="Ekstra — SUV / Van">
                 <label class="sz-lbl" for="sz4">Ekstra<span class="sz-sub">SUV / Van</span></label>
               </div>
-            </div>
+            </fieldset>
           </div>
           <div class="fg">
             <label for="usluga_field">Usluga ili paket *</label>
@@ -2665,11 +2669,11 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
     <div id="rmForm">
       <div class="rm-row">
-        <div class="rm-fg"><label>Ime i prezime *</label><input id="rmName" type="text" placeholder="Marko Marković" required></div>
-        <div class="rm-fg"><label>Auto (marka i model) *</label><input id="rmCar" type="text" placeholder="BMW E46, Golf 7..."></div>
+        <div class="rm-fg"><label for="rmName">Ime i prezime *</label><input id="rmName" type="text" placeholder="Marko Marković" required></div>
+        <div class="rm-fg"><label for="rmCar">Auto (marka i model) *</label><input id="rmCar" type="text" placeholder="BMW E46, Golf 7..."></div>
       </div>
-      <div class="rm-fg"><label>Grad</label><input id="rmCity" type="text" placeholder="Čačak, Beograd..."></div>
-      <div class="rm-fg"><label>Vaš utisak *</label><textarea id="rmText" rows="4" placeholder="Šta vas je najviše impresioniralo? Budite konkretni — kratko i iskreno je najbolje." required></textarea></div>
+      <div class="rm-fg"><label for="rmCity">Grad</label><input id="rmCity" type="text" placeholder="Čačak, Beograd..."></div>
+      <div class="rm-fg"><label for="rmText">Vaš utisak *</label><textarea id="rmText" rows="4" placeholder="Šta vas je najviše impresioniralo? Budite konkretni — kratko i iskreno je najbolje." required></textarea></div>
       <div class="hp-field" aria-hidden="true"><input type="text" id="_hp_review" tabindex="-1" autocomplete="off" value=""></div>
       <input type="hidden" id="_review_t" value="">
       <button type="button" class="rm-btn" data-click="submitReview">Pošalji utisak &nbsp;→</button>
@@ -2697,6 +2701,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   </div>
 </section>
 
+</main>
 <!-- ══ FOOTER ══ -->
 <footer>
   <div class="ft">
@@ -2750,7 +2755,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 <!-- ══ LOYALTY MODAL ══ -->
 <div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px)">
   <div data-sp style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
-    <button type="button" data-click="closeLoyalty" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s">×</button>
+    <button type="button" data-click="closeLoyalty" aria-label="Zatvori" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#888;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s">×</button>
 
     <div class="loy-hero" style="padding:36px 44px 0">
       <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:6px;text-transform:uppercase">LAKER</div>
@@ -2769,15 +2774,15 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <div id="loy-auth-area">
       <div style="display:flex;gap:2px;padding:0 44px">
         <button type="button" id="tab-login" data-click="loyTab:login" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
-        <button type="button" id="tab-reg"   data-click="loyTab:reg"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#666;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
+        <button type="button" id="tab-reg"   data-click="loyTab:reg"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#999;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
       </div>
       <div style="padding:12px 44px 0">
-        <label style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#777;cursor:pointer">
+        <label for="loyRememberMe" style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#999;cursor:pointer">
           <span style="display:flex;align-items:center;gap:8px">
             <input id="loyRememberMe" type="checkbox" checked style="width:14px;height:14px;accent-color:#C9A84C;margin:0">
             Ostani prijavljen 30 dana
           </span>
-          <span style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1.5px">Na ovom uređaju</span>
+          <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1.5px">Na ovom uređaju</span>
         </label>
       </div>
       <div style="padding:24px 44px 40px">
@@ -2785,13 +2790,13 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
         <!-- LOGIN -->
         <div id="loy-form-login">
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email</label>
+            <label for="llog-email" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Email</label>
             <input id="llog-email" type="email" placeholder="vas@email.com"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
              >
           </div>
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka</label>
+            <label for="llog-pass" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Lozinka</label>
             <div class="pw-wrap">
               <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
@@ -2809,11 +2814,11 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
            >Prijavi se →</button>
           <div style="text-align:center;margin-top:10px">
-            <button type="button" data-click="loyForgotPassword" style="background:none;border:none;color:#555;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s">Zaboravili ste lozinku?</button>
+            <button type="button" data-click="loyForgotPassword" style="background:none;border:none;color:#888;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s">Zaboravili ste lozinku?</button>
           </div>
           <div id="forgot-area" style="display:none;margin-top:14px;padding:14px;background:#141414;border-left:2px solid #C9A84C">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">Reset lozinke</div>
-            <input id="forgot-email" type="email" placeholder="vas@email.com"
+            <input id="forgot-email" type="email" placeholder="vas@email.com" aria-label="Email za reset lozinke"
               style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.07);padding:11px 13px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px"
              >
               <button type="button" data-click="sendPasswordReset"
@@ -2822,7 +2827,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
           </div>
           <div style="text-align:center;margin-top:12px">
-            <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog? </span>
+            <span style="font-size:11px;color:#888;font-weight:300">Nemate nalog? </span>
             <button type="button" data-click="loyTab:reg" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
           </div>
         </div>
@@ -2831,26 +2836,26 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
         <div id="loy-form-reg" style="display:none">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
             <div>
-              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Ime *</label>
+              <label for="lreg-name" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Ime *</label>
               <input id="lreg-name" type="text" placeholder="Marko"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
                >
             </div>
             <div>
-              <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Prezime *</label>
+              <label for="lreg-surname" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Prezime *</label>
               <input id="lreg-surname" type="text" placeholder="Marković"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
                >
             </div>
           </div>
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Email * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
+            <label for="lreg-email" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Email * <span style="font-size:11px;color:#888;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
             <input id="lreg-email" type="email" placeholder="vas@email.com"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
              >
           </div>
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Telefon * <span style="font-size:9px;color:#444;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
+            <label for="lreg-phone" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Telefon * <span style="font-size:11px;color:#888;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
             <input id="lreg-phone" type="tel" placeholder="060 726 0302"
               style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
              >
@@ -2858,36 +2863,36 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
           </div>
           <!-- Veličina vozila -->
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Veličina vozila *</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <p style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:10px">Veličina vozila *</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Veličina vozila">
               <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms"
                 style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mali / Srednji<br><span style="font-size:9.5px;color:#666;font-weight:300">A klasa · C klasa</span>
+                Mali / Srednji<br><span style="font-size:9.5px;color:#888;font-weight:300">A klasa · C klasa</span>
               </button>
               <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs"
                 style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Veliki / SUV<br><span style="font-size:9.5px;color:#555;font-weight:300">E klasa · SUV · Van</span>
+                Veliki / SUV<br><span style="font-size:9.5px;color:#888;font-weight:300">E klasa · SUV · Van</span>
               </button>
             </div>
             <input type="hidden" id="lreg-size" value="ms">
           </div>
           <!-- Plan -->
           <div style="margin-bottom:14px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:10px">Plan *</label>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <p style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:10px">Plan *</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Plan pretplate">
               <button type="button" id="lreg-pl-god" data-click="selectLoyPlan:god"
                 style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
                 Godišnje<br><span id="lreg-pl-god-price" style="font-size:9.5px;color:#C9A84C;font-weight:700">od €299 · uštedi 29%</span>
               </button>
               <button type="button" id="lreg-pl-mes" data-click="selectLoyPlan:mes"
                 style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#666;font-weight:700">od €35/mes</span>
+                Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#888;font-weight:700">od €35/mes</span>
               </button>
             </div>
             <input type="hidden" id="lreg-plan" value="god">
           </div>
           <div style="margin-bottom:16px">
-            <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Lozinka * (min. 10 karaktera)</label>
+            <label for="lreg-pass" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Lozinka * (min. 10 karaktera)</label>
             <div class="pw-wrap">
               <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter"
                 style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
@@ -2905,7 +2910,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
            >Napravi nalog →</button>
           <div style="text-align:center;margin-top:14px">
-            <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog? </span>
+            <span style="font-size:11px;color:#888;font-weight:300">Već imate nalog? </span>
             <button type="button" data-click="loyTab:login" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
           </div>
         </div>
@@ -2919,7 +2924,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 <div id="loy-form-new-pass" class="loy-body" style="display:none">
   <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:16px">Postavite novu lozinku</div>
   <div style="margin-bottom:14px">
-    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Nova lozinka (min. 10 karaktera)</label>
+    <label for="new-pass-1" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Nova lozinka (min. 10 karaktera)</label>
     <div class="pw-wrap">
       <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter"
         style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
@@ -2933,7 +2938,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     </div>
   </div>
   <div style="margin-bottom:14px">
-    <label style="display:block;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#555;margin-bottom:7px">Potvrdi lozinku</label>
+    <label for="new-pass-2" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Potvrdi lozinku</label>
     <div class="pw-wrap">
       <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none"
         style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
