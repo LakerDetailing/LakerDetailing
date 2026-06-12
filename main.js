@@ -461,7 +461,7 @@ window.openLoyalty = function(){
   document.body.style.overflowY  = 'hidden';
   // Restart modal entry animation on each open
   const _box = $('loyOverlay').firstElementChild;
-  if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation=''}
+  if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation='loy-modal-in .38s cubic-bezier(.34,1.3,.64,1) both'}
   if(_user){
     // Korisnik je ulogovan — prikaži dashboard (ne resetuj tab)
     const dash = $('loy-dash');
@@ -482,10 +482,8 @@ window.openLoyalty = function(){
   }
 };
 window.closeLoyalty = function(){
-  // Ne zatvara overlay ako je reset lozinke u toku (token aktivan ili forma vidljiva)
-  const resetFormEl = document.getElementById('loy-form-new-pass');
-  const resetFormVisible = resetFormEl && resetFormEl.style.display !== 'none';
-  if (window._recoveryToken || resetFormVisible) return;
+  // Blokira zatvaranje samo dok je recovery token aktivan (korisnik unosi novu lozinku)
+  if (window._recoveryToken) return;
   $('loyOverlay').style.display = 'none';
   document.body.style.overflowY  = '';
 };

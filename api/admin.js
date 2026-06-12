@@ -411,10 +411,7 @@ module.exports = async function handler(req, res) {
     if (!SB_SVC) missing.push('SUPABASE_SERVICE_KEY');
     if (!ADMIN_PW) missing.push('ADMIN_PASSWORD');
     console.error('Missing env vars for /api/admin:', missing.join(', '));
-    return res.status(500).json({
-      error: 'Server nije konfigurisan',
-      missing
-    });
+    return res.status(500).json({ error: 'Server nije konfigurisan' });
   }
 
   // Vercel auto-parsuje JSON body, ali ako nije, parsujemo ručno

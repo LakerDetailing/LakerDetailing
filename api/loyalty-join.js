@@ -116,7 +116,9 @@ async function verifyAppleIdToken(idToken) {
   if (!valid
     || payload.iss !== 'https://appleid.apple.com'
     || payload.aud !== APPLE_SERVICE_ID
-    || !payload.exp || payload.exp < now) {
+    || !payload.sub
+    || !payload.exp || payload.exp < now
+    || (payload.nbf && payload.nbf > now)) {
     return { ok: false, error: 'Apple prijava nije prošla proveru.' };
   }
   if (!isValidEmail(payload.email)) {

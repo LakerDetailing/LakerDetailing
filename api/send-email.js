@@ -545,7 +545,8 @@ module.exports = async function handler(req, res) {
     } else if (type === 'loyalty_registration') {
       const ime      = cleanText(data.ime || data.name, 80);
       const email    = cleanEmail(data.email);
-      const telefon  = cleanPhone(data.telefon || '');
+      const rawPhone = cleanPhone(data.telefon || '');
+      const telefon  = (rawPhone && isValidPhone(rawPhone)) ? rawPhone : '';
       const planType = cleanText(data.plan_type || '', 10);
       const carSize  = cleanText(data.car_size  || '', 10);
 

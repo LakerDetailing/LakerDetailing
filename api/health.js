@@ -1,10 +1,10 @@
 const { json } = require('./_push');
 const { supabaseFetch } = require('./_push');
-const { setSecurityHeaders } = require('./_security');
+const { setSecurityHeaders, setCorsHeaders } = require('./_security');
 
 module.exports = async function handler(req, res) {
   setSecurityHeaders(res);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  setCorsHeaders(req, res, 'GET,HEAD,OPTIONS');
 
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     json(res, 405, { ok: false });
