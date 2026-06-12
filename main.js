@@ -354,9 +354,7 @@ var _loyPrices = { ms:{mes:'od €35/mes',god:'od €299 · uštedi 29%'}, vs:{m
 
 function _setRegBtn(id, active){
   var el = document.getElementById(id); if(!el) return;
-  el.style.background = active ? '#1C1C1C' : '#141414';
-  el.style.border = active ? '1px solid rgba(201,168,76,.35)' : '1px solid rgba(255,255,255,.07)';
-  el.style.color = active ? '#F2F0EC' : '#888';
+  el.classList.toggle('active', active);
 }
 
 function selectLoySize(val){
@@ -502,10 +500,11 @@ document.addEventListener('keydown', e => {
 window.loyTab = function(t){
   $('loy-form-login').style.display = t === 'login' ? 'block' : 'none';
   $('loy-form-reg').style.display   = t === 'reg'   ? 'block' : 'none';
-  $('tab-login').style.background   = t === 'login' ? '#C9A84C' : '#1C1C1C';
-  $('tab-login').style.color        = t === 'login' ? '#000'    : '#888';
-  $('tab-reg').style.background     = t === 'reg'   ? '#C9A84C' : '#1C1C1C';
-  $('tab-reg').style.color          = t === 'reg'   ? '#000'    : '#888';
+  const tl = $('tab-login'), tr = $('tab-reg');
+  if(tl){ tl.classList.toggle('active', t === 'login'); }
+  if(tr){ tr.classList.toggle('active', t === 'reg'); }
+  const slider = $('loy-tab-slider');
+  if(slider) slider.style.left = t === 'login' ? '0' : '50%';
 };
 
 window.loyProgramTab = function(program){
@@ -811,7 +810,8 @@ window.sendPasswordReset = async function() {
     params[k] = decodeURIComponent(v || '');
   });
   const recoveryToken = params.access_token || params.token || params.token_hash || '';
-  const isRecovery = params.type === 'recovery' || params.recovery === '1' || !!recoveryToken;
+  // Samo recovery tip – ne uključujemo Google OAuth callback (type=bearer)
+  const isRecovery = params.type === 'recovery' || params.recovery === '1';
   if (isRecovery && recoveryToken) {
     window._recoveryToken = recoveryToken;
     history.replaceState(null, '', window.location.pathname);
@@ -1110,12 +1110,14 @@ async function loadAndShowDash(){
 
   // Ako i dalje nema profila — kreiraj novi (novi loyalty clan)
   if(!_profile){
+    const newName = _googleName || _user.email.split('@')[0];
+    _googleName = null;
     await api('/rest/v1/loyalty_customers', {
       method: 'POST',
       prefer: 'return=minimal',
       body: {
         auth_user_id: _user.id,
-        name:         _user.email.split('@')[0],
+        name:         newName,
         email:        _user.email,
         phone:        null,
         wash_count:   0
@@ -1406,6 +1408,102 @@ function updateNavBtn(email, washCount){
   nb.innerHTML = `${label}${countBadge}<span style="font-size:9px;color:#C9A84C;display:inline;margin-left:6px;letter-spacing:1px;font-weight:500;opacity:.9">LOYALTY</span>`;
 }
 
+// ── GOOGLE OAUTH (Loyalty Modal) ──────────
+let _googleName = null;
+
+function initLoyaltyGoogleBtn() {
+  fetch('/api/loyalty-join')
+    .then(function(r){ return r.json(); })
+    .then(function(cfg){
+      if (!cfg || !cfg.google_client_id) return;
+      const zone = $('loy-google-zone');
+      if (!zone) return;
+      zone.style.display = 'block';
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        _setupGSI(cfg.google_client_id);
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = 'https://accounts.google.com/gsi/client';
+      s.async = true;
+      s.defer = true;
+      s.onload = function(){ _setupGSI(cfg.google_client_id); };
+      s.onerror = function(){
+        const z = $('loy-google-zone');
+        if (z) z.style.display = 'none';
+      };
+      document.head.appendChild(s);
+    })
+    .catch(function(){});
+}
+
+function _setupGSI(clientId) {
+  if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
+  window.google.accounts.id.initialize({
+    client_id:   clientId,
+    callback:    _handleGoogleCredential,
+    ux_mode:     'popup',
+    auto_select: false,
+    itp_support: true
+  });
+  const wrap = $('loy-google-wrap');
+  if (!wrap) return;
+  const w = Math.min(400, Math.max(220, (wrap.parentElement ? wrap.parentElement.clientWidth : 360) - 88));
+  window.google.accounts.id.renderButton(wrap, {
+    theme:          'filled_black',
+    size:           'large',
+    shape:          'rectangular',
+    text:           'continue_with',
+    logo_alignment: 'left',
+    locale:         'sr',
+    width:          w
+  });
+}
+
+function _handleGoogleCredential(resp) {
+  const errEl = $('loy-google-err');
+  if (!resp || !resp.credential) {
+    if (errEl) { errEl.textContent = 'Google prijava je otkazana.'; errEl.style.display = 'block'; }
+    return;
+  }
+  if (errEl) errEl.style.display = 'none';
+
+  // Dekoduj Google JWT da izvučemo ime korisnika
+  try {
+    const parts = resp.credential.split('.');
+    const pad = parts[1] + '==='.slice((parts[1].length + 3) % 4);
+    const data = JSON.parse(atob(pad.replace(/-/g, '+').replace(/_/g, '/')));
+    _googleName = data.name || ([data.given_name, data.family_name].filter(Boolean).join(' ')) || null;
+  } catch(e) { _googleName = null; }
+
+  // Razmeni Google ID token za Supabase sesiju (id_token grant)
+  fetch(SB + '/auth/v1/token?grant_type=id_token', {
+    method: 'POST',
+    headers: { 'apikey': ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider: 'google', id_token: resp.credential })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (!d.access_token) {
+      const msg = String(d.error_description || d.error || '').toLowerCase();
+      const txt = (msg.includes('provider') || msg.includes('disabled') || msg.includes('not') || msg.includes('enabled'))
+        ? 'Google prijava nije aktivirana na ovom sajtu. Koristite email/lozinku.'
+        : 'Google prijava nije uspela. Pokušajte ponovo.';
+      if (errEl) { errEl.textContent = txt; errEl.style.display = 'block'; }
+      _googleName = null;
+      return;
+    }
+    _user = { id: d.user.id, email: d.user.email, access_token: d.access_token };
+    saveSession(_user);
+    updateNavBtn(_googleName ? _googleName.split(' ')[0] : _user.email);
+    loadAndShowDash();
+  })
+  .catch(function(){
+    if (errEl) { errEl.textContent = 'Greška u mreži. Pokušajte ponovo.'; errEl.style.display = 'block'; }
+    _googleName = null;
+  });
+}
+
 // ── SESSION ───────────────────────────────
 function saveSession(u){
   const remember = document.getElementById('loyRememberMe')?.checked === true;
@@ -1427,6 +1525,9 @@ function clearSession(){
 
 // ── AUTO-LOGIN ON PAGE LOAD ───────────────
 async function init(){
+  // Inicijalizuj Google dugme (prikazuje se samo ako je GOOGLE_CLIENT_ID podešen)
+  initLoyaltyGoogleBtn();
+
   try{
     let s=null;let source='';
     try{

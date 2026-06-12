@@ -1429,25 +1429,32 @@ input.input-ok{border-color:#4caf50!important}
 /* LOYALTY MODAL */
 #loyOverlay{
   background:
-    radial-gradient(circle at top, rgba(201,168,76,.18), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(255,255,255,.06), transparent 28%),
-    rgba(0,0,0,.9);
-  backdrop-filter: blur(16px);
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(201,168,76,.12), transparent 60%),
+    radial-gradient(circle at bottom left, rgba(255,255,255,.04), transparent 30%),
+    rgba(0,0,0,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
+.loy-modal-box,
 #loyOverlay > div{
+  position:relative;
   width:min(560px, 100%);
   max-height:92vh;
+  overflow-y:auto;
+  overflow-x:hidden;
   border-radius:28px;
-  overflow:hidden;
-  box-shadow:0 32px 90px rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.06);
+  box-shadow:0 40px 100px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.05);
+  border-top:2px solid #C9A84C;
   background:
-    linear-gradient(180deg, rgba(255,255,255,.02), transparent 22%),
-    #0B0B0B;
+    linear-gradient(160deg, rgba(201,168,76,.04) 0%, transparent 40%),
+    #0A0A0A;
+  scrollbar-width:none;
 }
+.loy-modal-box::-webkit-scrollbar,
+#loyOverlay > div::-webkit-scrollbar{display:none}
 #loyOverlay #loy-program-title{
   color:#F2F0EC;
-  opacity:.95;
+  opacity:.9;
 }
 .loy-hero{
   position:relative;
@@ -1636,6 +1643,64 @@ input.input-ok{border-color:#4caf50!important}
 .ld-stats{grid-template-columns:1fr 1fr}
 .size-selector{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .sz-lbl{min-height:72px;padding:12px 8px;font-size:8.5px;letter-spacing:1.2px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+}
+
+/* ══════════════════════════════════════════
+   LOYALTY MODAL — AUTH REDESIGN
+══════════════════════════════════════════ */
+.loy-x-btn{position:absolute;top:16px;right:18px;background:none;border:none;color:#444;cursor:pointer;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .2s,color .2s;z-index:10}
+.loy-x-btn:hover{background:rgba(255,255,255,.06);color:#aaa}
+.loy-mhero{padding:38px 44px 26px;position:relative;overflow:hidden}
+.loy-mhero::before{content:'';position:absolute;inset:auto -60px -80px auto;width:280px;height:280px;background:radial-gradient(circle,rgba(201,168,76,.22),transparent 68%);pointer-events:none}
+.loy-mhero::after{content:'';position:absolute;top:-40px;left:-80px;width:260px;height:260px;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none}
+.loy-mlogo{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;letter-spacing:6px;text-transform:uppercase;position:relative}
+.loy-mtitle{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;position:relative;opacity:.9}
+.loy-mdesc{font-size:12px;color:#5a5a5a;line-height:1.7;margin-bottom:16px;font-weight:300;position:relative}
+.loy-oauth-zone{padding:0 44px;margin-bottom:2px}
+.loy-google-wrap{display:flex;justify-content:center;min-height:46px;align-items:center}
+.loy-google-err{font-size:12px;margin-top:8px;padding:9px 12px;background:rgba(229,57,53,.08);border-left:2px solid #e53935;color:#ef9a9a;font-weight:300;display:none}
+.loy-or-divider{display:flex;align-items:center;gap:14px;margin:14px 0 0;color:#2e2e2e;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.loy-or-divider::before,.loy-or-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05)}
+.loy-tab-bar{padding:16px 44px 0}
+.loy-tab-track{display:flex;background:#111;position:relative;border-radius:0}
+.loy-tab-btn{flex:1;padding:12px 6px;background:none;border:none;color:#555;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:color .2s;position:relative;z-index:1}
+.loy-tab-btn.active{color:#000}
+.loy-tab-slider{position:absolute;top:0;bottom:0;left:0;width:50%;background:#C9A84C;transition:left .22s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+.loy-remember{padding:10px 44px 0}
+.loy-remember-label{display:flex;align-items:center;justify-content:space-between;background:#0f0f0f;border:1px solid rgba(255,255,255,.05);padding:10px 14px;font-size:11px;color:#555;cursor:pointer;transition:border-color .2s}
+.loy-remember-label:hover{border-color:rgba(255,255,255,.1)}
+.loy-remember-left{display:flex;align-items:center;gap:8px}
+.loy-remember-check{width:14px;height:14px;accent-color:#C9A84C;margin:0;cursor:pointer;flex-shrink:0}
+.loy-remember-right{font-size:10px;color:#3e3e3e;text-transform:uppercase;letter-spacing:1.5px}
+.loy-forms-wrap{padding:20px 44px 42px}
+.loy-fld{margin-bottom:15px}
+.loy-lbl{display:block;font-size:10.5px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#666;margin-bottom:7px}
+.loy-lbl-note{font-size:11px;color:#444;text-transform:none;letter-spacing:0;font-weight:300}
+.loy-inp{width:100%;background:#111;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .22s,box-shadow .22s;font-weight:300}
+.loy-inp:focus{border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.05)}
+.loy-inp::placeholder{color:#2e2e2e}
+.loy-inp:-webkit-autofill{-webkit-box-shadow:0 0 0 100px #111 inset;-webkit-text-fill-color:#F2F0EC}
+.loy-submit-btn{width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .22s,transform .1s;margin-top:4px}
+.loy-submit-btn:hover{background:#d4b456}
+.loy-submit-btn:active{transform:scale(.995)}
+.loy-submit-btn:disabled{opacity:.5;cursor:wait;transform:none}
+.loy-secondary-btn{width:100%;background:rgba(201,168,76,.08);color:#C9A84C;border:1px solid rgba(201,168,76,.2);padding:11px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .22s}
+.loy-secondary-btn:hover{background:rgba(201,168,76,.15);border-color:rgba(201,168,76,.35)}
+.loy-link-btn{background:none;border:none;color:#444;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .2s;padding:0}
+.loy-link-btn:hover{color:#888}
+.loy-inline-link{background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;padding:0}
+.loy-pick-btn{padding:12px 8px;background:#111;border:1px solid rgba(255,255,255,.07);color:#555;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;text-align:center;line-height:1.5;width:100%}
+.loy-pick-btn:hover{border-color:rgba(201,168,76,.25);color:#aaa}
+.loy-pick-btn.active{background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.35);color:#F2F0EC}
+.loy-pick-sub{font-size:9.5px;color:#444;font-weight:300;display:block;margin-top:2px}
+.loy-pick-btn.active .loy-pick-sub{color:#888}
+.loy-pick-price{font-size:9.5px;color:#C9A84C;font-weight:700;display:block;margin-top:2px}
+.loy-pick-price-dim{font-size:9.5px;color:#444;font-weight:700;display:block;margin-top:2px}
+.loy-forgot-box{margin-top:14px;padding:14px;background:#0f0f0f;border-left:2px solid rgba(201,168,76,.4)}
+.loy-forgot-title{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px}
+@media(max-width:520px){
+.loy-oauth-zone,.loy-tab-bar,.loy-remember,.loy-forms-wrap,.loy-mhero{padding-left:22px;padding-right:22px}
+.loy-forms-wrap{padding-bottom:32px}
 }
 
 /* ══════════════════════════════════════════
@@ -2753,14 +2818,17 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
 
 <!-- ══ LOYALTY MODAL ══ -->
-<div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.88);backdrop-filter:blur(12px)">
-  <div data-sp style="background:#0E0E0E;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;position:relative;border-top:2px solid #C9A84C">
-    <button type="button" data-click="closeLoyalty" aria-label="Zatvori" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#888;font-size:26px;cursor:pointer;line-height:1;z-index:10;transition:color .3s">×</button>
+<div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div data-sp class="loy-modal-box">
+    <button type="button" data-click="closeLoyalty" class="loy-x-btn" aria-label="Zatvori">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
 
-    <div class="loy-hero" style="padding:36px 44px 0">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:6px;text-transform:uppercase">LAKER</div>
-      <div id="loy-program-title" style="font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">LOYALTY PROGRAM</div>
-      <div style="font-size:12px;color:#8E8E8E;line-height:1.7;margin-bottom:18px;font-weight:300">24 pranja godišnje · prioritetan termin · uvek na prvom mestu.</div>
+    <!-- ── HERO ── -->
+    <div class="loy-mhero">
+      <div class="loy-mlogo">LAKER</div>
+      <div id="loy-program-title" class="loy-mtitle">LOYALTY PROGRAM</div>
+      <div class="loy-mdesc">24 pranja godišnje &middot; prioritetan termin &middot; uvek na prvom mestu.</div>
       <div class="loy-chip-row" id="loy-chip-row-loyalty">
         <span class="loy-chip"><b>24×</b> pranja/god</span>
         <span class="loy-chip"><b>Prioritet</b> termin</span>
@@ -2770,38 +2838,48 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     </div>
 
     <div id="loy-program-areas">
-    <!-- AUTH AREA -->
+    <!-- ── AUTH AREA ── -->
     <div id="loy-auth-area">
-      <div style="display:flex;gap:2px;padding:0 44px">
-        <button type="button" id="tab-login" data-click="loyTab:login" style="flex:1;padding:11px;background:#C9A84C;border:none;color:#000;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Prijava</button>
-        <button type="button" id="tab-reg"   data-click="loyTab:reg"   style="flex:1;padding:11px;background:#1C1C1C;border:none;color:#999;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s">Registracija</button>
+
+      <!-- GOOGLE ZONE (prikazan samo kad je GOOGLE_CLIENT_ID podešen) -->
+      <div id="loy-google-zone" style="display:none" class="loy-oauth-zone">
+        <div id="loy-google-wrap" class="loy-google-wrap"></div>
+        <div id="loy-google-err" class="loy-google-err" role="alert"></div>
+        <div class="loy-or-divider"><span>ili</span></div>
       </div>
-      <div style="padding:12px 44px 0">
-        <label for="loyRememberMe" style="display:flex;align-items:center;gap:10px;justify-content:space-between;background:#141414;border:1px solid rgba(255,255,255,.06);padding:10px 14px;font-size:11px;color:#999;cursor:pointer">
-          <span style="display:flex;align-items:center;gap:8px">
-            <input id="loyRememberMe" type="checkbox" checked style="width:14px;height:14px;accent-color:#C9A84C;margin:0">
+
+      <!-- TAB SWITCHER -->
+      <div class="loy-tab-bar">
+        <div class="loy-tab-track">
+          <button type="button" id="tab-login" data-click="loyTab:login" class="loy-tab-btn active">Prijava</button>
+          <button type="button" id="tab-reg"   data-click="loyTab:reg"   class="loy-tab-btn">Registracija</button>
+          <div class="loy-tab-slider" id="loy-tab-slider"></div>
+        </div>
+      </div>
+
+      <!-- REMEMBER ME -->
+      <div class="loy-remember">
+        <label for="loyRememberMe" class="loy-remember-label">
+          <span class="loy-remember-left">
+            <input id="loyRememberMe" type="checkbox" checked class="loy-remember-check">
             Ostani prijavljen 30 dana
           </span>
-          <span style="font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1.5px">Na ovom uređaju</span>
+          <span class="loy-remember-right">Na ovom uređaju</span>
         </label>
       </div>
-      <div style="padding:24px 44px 40px">
 
-        <!-- LOGIN -->
+      <div class="loy-forms-wrap">
+
+        <!-- ── LOGIN FORMA ── -->
         <div id="loy-form-login">
-          <div style="margin-bottom:14px">
-            <label for="llog-email" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Email</label>
-            <input id="llog-email" type="email" placeholder="vas@email.com"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-             >
+          <div class="loy-fld">
+            <label for="llog-email" class="loy-lbl">Email</label>
+            <input id="llog-email" type="email" placeholder="vas@email.com" class="loy-inp">
           </div>
-          <div style="margin-bottom:14px">
-            <label for="llog-pass" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Lozinka</label>
+          <div class="loy-fld">
+            <label for="llog-pass" class="loy-lbl">Lozinka</label>
             <div class="pw-wrap">
-              <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-               
-               >
+              <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter" class="loy-inp">
               <button type="button" class="pw-toggle" data-pw-toggle="llog-pass" aria-label="Prikaži lozinku">👁</button>
             </div>
             <div class="pw-meter m0" id="llog-pass-meter">
@@ -2810,93 +2888,71 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             </div>
           </div>
           <div id="llog-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="llog-btn" data-click="loyLogin"
-            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-           >Prijavi se →</button>
-          <div style="text-align:center;margin-top:10px">
-            <button type="button" data-click="loyForgotPassword" style="background:none;border:none;color:#888;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline;transition:color .25s">Zaboravili ste lozinku?</button>
+          <button type="button" id="llog-btn" data-click="loyLogin" class="loy-submit-btn">Prijavi se →</button>
+          <div style="text-align:center;margin-top:11px">
+            <button type="button" data-click="loyForgotPassword" class="loy-link-btn">Zaboravili ste lozinku?</button>
           </div>
-          <div id="forgot-area" style="display:none;margin-top:14px;padding:14px;background:#141414;border-left:2px solid #C9A84C">
-            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:10px">Reset lozinke</div>
-            <input id="forgot-email" type="email" placeholder="vas@email.com" aria-label="Email za reset lozinke"
-              style="width:100%;background:#1C1C1C;border:1px solid rgba(255,255,255,.07);padding:11px 13px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;margin-bottom:10px"
-             >
-              <button type="button" data-click="sendPasswordReset"
-              style="width:100%;background:rgba(201,168,76,.15);color:#C9A84C;border:1px solid rgba(201,168,76,.3);padding:11px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s"
-             >Pošalji reset link →</button>
+          <div id="forgot-area" style="display:none" class="loy-forgot-box">
+            <div class="loy-forgot-title">Reset lozinke</div>
+            <input id="forgot-email" type="email" placeholder="vas@email.com" aria-label="Email za reset lozinke" class="loy-inp" style="margin-bottom:10px">
+            <button type="button" data-click="sendPasswordReset" class="loy-secondary-btn">Pošalji reset link →</button>
             <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
           </div>
-          <div style="text-align:center;margin-top:12px">
-            <span style="font-size:11px;color:#888;font-weight:300">Nemate nalog? </span>
-            <button type="button" data-click="loyTab:reg" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Registrujte se</button>
+          <div style="text-align:center;margin-top:14px">
+            <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog?&nbsp;</span>
+            <button type="button" data-click="loyTab:reg" class="loy-inline-link">Registrujte se</button>
           </div>
         </div>
 
-        <!-- REGISTRACIJA -->
+        <!-- ── REGISTRACIJA FORMA ── -->
         <div id="loy-form-reg" style="display:none">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-            <div>
-              <label for="lreg-name" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Ime *</label>
-              <input id="lreg-name" type="text" placeholder="Marko"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-               >
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="loy-fld">
+              <label for="lreg-name" class="loy-lbl">Ime *</label>
+              <input id="lreg-name" type="text" placeholder="Marko" class="loy-inp">
             </div>
-            <div>
-              <label for="lreg-surname" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Prezime *</label>
-              <input id="lreg-surname" type="text" placeholder="Marković"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-               >
+            <div class="loy-fld">
+              <label for="lreg-surname" class="loy-lbl">Prezime *</label>
+              <input id="lreg-surname" type="text" placeholder="Marković" class="loy-inp">
             </div>
           </div>
-          <div style="margin-bottom:14px">
-            <label for="lreg-email" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Email * <span style="font-size:11px;color:#888;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
-            <input id="lreg-email" type="email" placeholder="vas@email.com"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-             >
+          <div class="loy-fld">
+            <label for="lreg-email" class="loy-lbl">Email * <span class="loy-lbl-note">(ne može se menjati)</span></label>
+            <input id="lreg-email" type="email" placeholder="vas@email.com" class="loy-inp">
           </div>
-          <div style="margin-bottom:14px">
-            <label for="lreg-phone" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Telefon * <span style="font-size:11px;color:#888;font-weight:300;text-transform:none;letter-spacing:0">(ne može se menjati)</span></label>
-            <input id="lreg-phone" type="tel" placeholder="060 726 0302"
-              style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-             >
+          <div class="loy-fld">
+            <label for="lreg-phone" class="loy-lbl">Telefon * <span class="loy-lbl-note">(ne može se menjati)</span></label>
+            <input id="lreg-phone" type="tel" placeholder="060 726 0302" class="loy-inp">
             <span id="lreg-phone-hint" style="display:block;font-size:11px;margin-top:4px;min-height:14px"></span>
           </div>
-          <!-- Veličina vozila -->
-          <div style="margin-bottom:14px">
-            <p style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:10px">Veličina vozila *</p>
+          <div class="loy-fld">
+            <p class="loy-lbl" style="margin-bottom:10px">Veličina vozila *</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Veličina vozila">
-              <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms"
-                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mali / Srednji<br><span style="font-size:9.5px;color:#888;font-weight:300">A klasa · C klasa</span>
+              <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms" class="loy-pick-btn active">
+                Mali / Srednji<span class="loy-pick-sub">A klasa · C klasa</span>
               </button>
-              <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs"
-                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Veliki / SUV<br><span style="font-size:9.5px;color:#888;font-weight:300">E klasa · SUV · Van</span>
+              <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs" class="loy-pick-btn">
+                Veliki / SUV<span class="loy-pick-sub">E klasa · SUV · Van</span>
               </button>
             </div>
             <input type="hidden" id="lreg-size" value="ms">
           </div>
-          <!-- Plan -->
-          <div style="margin-bottom:14px">
-            <p style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:10px">Plan *</p>
+          <div class="loy-fld">
+            <p class="loy-lbl" style="margin-bottom:10px">Plan *</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Plan pretplate">
-              <button type="button" id="lreg-pl-god" data-click="selectLoyPlan:god"
-                style="padding:12px 8px;background:#1C1C1C;border:1px solid rgba(201,168,76,.35);color:#F2F0EC;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Godišnje<br><span id="lreg-pl-god-price" style="font-size:9.5px;color:#C9A84C;font-weight:700">od €299 · uštedi 29%</span>
+              <button type="button" id="lreg-pl-god" data-click="selectLoyPlan:god" class="loy-pick-btn active">
+                Godišnje<span id="lreg-pl-god-price" class="loy-pick-price">od €299 · uštedi 29%</span>
               </button>
-              <button type="button" id="lreg-pl-mes" data-click="selectLoyPlan:mes"
-                style="padding:12px 8px;background:#141414;border:1px solid rgba(255,255,255,.07);color:#888;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:all .25s;text-align:center;line-height:1.4">
-                Mesečno<br><span id="lreg-pl-mes-price" style="font-size:9.5px;color:#888;font-weight:700">od €35/mes</span>
+              <button type="button" id="lreg-pl-mes" data-click="selectLoyPlan:mes" class="loy-pick-btn">
+                Mesečno<span id="lreg-pl-mes-price" class="loy-pick-price-dim">od €35/mes</span>
               </button>
             </div>
             <input type="hidden" id="lreg-plan" value="god">
           </div>
-          <div style="margin-bottom:16px">
-            <label for="lreg-pass" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Lozinka * (min. 10 karaktera)</label>
+          <div class="loy-fld">
+            <label for="lreg-pass" class="loy-lbl">Lozinka * <span class="loy-lbl-note">(min. 10 karaktera)</span></label>
             <div class="pw-wrap">
-              <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter"
-                style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-               >
+              <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter" class="loy-inp">
               <button type="button" class="pw-toggle" data-pw-toggle="lreg-pass" aria-label="Prikaži lozinku">👁</button>
             </div>
             <span id="lreg-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
@@ -2906,12 +2962,10 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             </div>
           </div>
           <div id="lreg-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="lreg-btn" data-click="loyRegister"
-            style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-           >Napravi nalog →</button>
+          <button type="button" id="lreg-btn" data-click="loyRegister" class="loy-submit-btn">Napravi nalog →</button>
           <div style="text-align:center;margin-top:14px">
-            <span style="font-size:11px;color:#888;font-weight:300">Već imate nalog? </span>
-            <button type="button" data-click="loyTab:login" style="background:none;border:none;color:#C9A84C;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:underline">Prijavite se</button>
+            <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog?&nbsp;</span>
+            <button type="button" data-click="loyTab:login" class="loy-inline-link">Prijavite se</button>
           </div>
         </div>
 
@@ -2919,39 +2973,33 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     </div>
     </div>
 
+    <!-- RESET LOZINKE — NOVA LOZINKA FORMA -->
+    <div id="loy-form-new-pass" class="loy-body" style="display:none">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:16px">Postavite novu lozinku</div>
+      <div class="loy-fld">
+        <label for="new-pass-1" class="loy-lbl">Nova lozinka <span class="loy-lbl-note">(min. 10 karaktera)</span></label>
+        <div class="pw-wrap">
+          <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter" class="loy-inp">
+          <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
+        </div>
+        <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
+        <div class="pw-meter m0" id="new-pass-1-meter">
+          <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
+          <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
+        </div>
+      </div>
+      <div class="loy-fld">
+        <label for="new-pass-2" class="loy-lbl">Potvrdi lozinku</label>
+        <div class="pw-wrap">
+          <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" class="loy-inp">
+          <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
+        </div>
+      </div>
+      <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
+      <button type="button" data-click="submitNewPassword" class="loy-submit-btn">Sačuvaj novu lozinku →</button>
+    </div>
+
     <!-- DASHBOARD -->
-<!-- RESET LOZINKE — NOVA LOZINKA FORMA -->
-<div id="loy-form-new-pass" class="loy-body" style="display:none">
-  <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A84C;margin-bottom:16px">Postavite novu lozinku</div>
-  <div style="margin-bottom:14px">
-    <label for="new-pass-1" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Nova lozinka (min. 10 karaktera)</label>
-    <div class="pw-wrap">
-      <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter"
-        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-       >
-      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
-    </div>
-    <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
-    <div class="pw-meter m0" id="new-pass-1-meter">
-      <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-      <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-    </div>
-  </div>
-  <div style="margin-bottom:14px">
-    <label for="new-pass-2" style="display:block;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#999;margin-bottom:7px">Potvrdi lozinku</label>
-    <div class="pw-wrap">
-      <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none"
-        style="width:100%;background:#141414;border:1px solid rgba(255,255,255,.07);padding:12px 14px;color:#F2F0EC;font-size:13px;font-family:'Inter',sans-serif;outline:none;box-sizing:border-box;transition:border-color .3s"
-       
-       >
-      <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
-    </div>
-  </div>
-  <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-  <button type="button" data-click="submitNewPassword"
-    style="width:100%;background:#C9A84C;color:#fff;padding:14px;border:none;font-size:10px;font-weight:800;letter-spacing:4px;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:background .3s"
-   >Sačuvaj novu lozinku →</button>
-</div>
     <div id="loy-dash" class="loy-dash" style="display:none"></div>
   </div>
 </div>
@@ -3124,7 +3172,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260611" defer></script>
+<script src="/main.min.js?v=20260612b" defer></script>
 <script src="/init.js?v=20260613" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->
