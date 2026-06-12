@@ -1445,11 +1445,12 @@ function _setupGSI(clientId) {
   });
   const wrap = $('loy-google-wrap');
   if (!wrap) return;
-  const w = Math.min(400, Math.max(220, (wrap.parentElement ? wrap.parentElement.clientWidth : 360) - 88));
+  const outer = wrap.closest('.loy-google-outer');
+  const w = Math.min(340, Math.max(220, (outer ? outer.clientWidth : 300) - 8));
   window.google.accounts.id.renderButton(wrap, {
     theme:          'filled_black',
     size:           'large',
-    shape:          'rectangular',
+    shape:          'pill',
     text:           'continue_with',
     logo_alignment: 'left',
     locale:         'sr',

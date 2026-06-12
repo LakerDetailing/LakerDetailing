@@ -1656,10 +1656,16 @@ input.input-ok{border-color:#4caf50!important}
 .loy-mlogo{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;letter-spacing:6px;text-transform:uppercase;position:relative}
 .loy-mtitle{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#C9A84C;margin-bottom:8px;position:relative;opacity:.9}
 .loy-mdesc{font-size:12px;color:#5a5a5a;line-height:1.7;margin-bottom:16px;font-weight:300;position:relative}
-.loy-oauth-zone{padding:0 44px;margin-bottom:2px}
-.loy-google-wrap{display:flex;justify-content:center;min-height:46px;align-items:center}
-.loy-google-err{font-size:12px;margin-top:8px;padding:9px 12px;background:rgba(229,57,53,.08);border-left:2px solid #e53935;color:#ef9a9a;font-weight:300;display:none}
-.loy-or-divider{display:flex;align-items:center;gap:14px;margin:14px 0 0;color:#2e2e2e;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.loy-oauth-zone{padding:0 36px;margin-bottom:2px}
+.loy-google-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.loy-google-header-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.18),transparent)}
+.loy-google-header-text{font-size:8px;letter-spacing:3px;font-weight:700;text-transform:uppercase;color:#3a3a3a;white-space:nowrap}
+.loy-google-outer{position:relative;border-radius:50px;padding:2px;background:linear-gradient(135deg,rgba(201,168,76,.55) 0%,rgba(201,168,76,.12) 50%,rgba(201,168,76,.55) 100%);box-shadow:0 0 18px rgba(201,168,76,.12);transition:box-shadow .3s,background .3s}
+.loy-google-outer:hover{box-shadow:0 0 28px rgba(201,168,76,.28);background:linear-gradient(135deg,rgba(201,168,76,.75) 0%,rgba(201,168,76,.2) 50%,rgba(201,168,76,.75) 100%)}
+.loy-google-inner{border-radius:50px;overflow:hidden;background:#0a0a0a;display:flex;justify-content:center;align-items:center;min-height:44px}
+.loy-google-wrap{display:flex;justify-content:center;align-items:center;padding:2px 0}
+.loy-google-err{font-size:12px;margin-top:10px;padding:9px 12px;background:rgba(229,57,53,.08);border-left:2px solid #e53935;color:#ef9a9a;font-weight:300;border-radius:0 4px 4px 0;display:none}
+.loy-or-divider{display:flex;align-items:center;gap:14px;margin:16px 0 0;color:#2a2a2a;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
 .loy-or-divider::before,.loy-or-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05)}
 .loy-tab-bar{padding:16px 44px 0}
 .loy-tab-track{display:flex;background:#111;position:relative;border-radius:0}
@@ -2888,7 +2894,16 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
       <!-- GOOGLE ZONE (prikazan samo kad je GOOGLE_CLIENT_ID podešen) -->
       <div id="loy-google-zone" style="display:none" class="loy-oauth-zone">
-        <div id="loy-google-wrap" class="loy-google-wrap"></div>
+        <div class="loy-google-header">
+          <div class="loy-google-header-line"></div>
+          <span class="loy-google-header-text">Brzi pristup</span>
+          <div class="loy-google-header-line"></div>
+        </div>
+        <div class="loy-google-outer">
+          <div class="loy-google-inner">
+            <div id="loy-google-wrap" class="loy-google-wrap"></div>
+          </div>
+        </div>
         <div id="loy-google-err" class="loy-google-err" role="alert"></div>
         <div class="loy-or-divider"><span>ili</span></div>
       </div>
@@ -3217,7 +3232,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260612e" defer></script>
+<script src="/main.min.js?v=20260612f" defer></script>
 <script src="/init.js?v=20260613" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->
