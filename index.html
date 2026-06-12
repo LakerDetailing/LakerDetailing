@@ -1704,6 +1704,44 @@ input.input-ok{border-color:#4caf50!important}
 }
 
 /* ══════════════════════════════════════════
+   LOYALTY MODAL — ALIVE
+══════════════════════════════════════════ */
+@keyframes loy-modal-in{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes loy-shimmer{0%{transform:translateX(-220%) skewX(-18deg)}100%{transform:translateX(360%) skewX(-18deg)}}
+@keyframes loy-float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(-4deg)}}
+@keyframes loy-glow-pulse{0%,100%{box-shadow:0 6px 22px rgba(201,168,76,.22)}50%{box-shadow:0 10px 38px rgba(201,168,76,.44)}}
+@keyframes loy-chip-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+/* modal entrance */
+#loyOverlay>div,.loy-modal-box{animation:loy-modal-in .38s cubic-bezier(.34,1.3,.64,1) both}
+/* richer overlay */
+#loyOverlay{background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(201,168,76,.14),transparent 55%),radial-gradient(circle at 85% 85%,rgba(201,168,76,.06),transparent 35%),rgba(0,0,0,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+/* hero background */
+.loy-mhero{background:radial-gradient(ellipse 65% 90% at 85% 40%,rgba(201,168,76,.08),transparent 60%),radial-gradient(ellipse 40% 60% at 5% 100%,rgba(201,168,76,.05),transparent 50%)}
+/* logo gradient text */
+.loy-mlogo{font-size:26px;letter-spacing:8px;background:linear-gradient(130deg,#F2EAD3 25%,#C9A84C 65%,#E8C96A 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+/* loyalty card preview */
+.loy-card-vis{position:absolute;top:18px;right:28px;width:118px;height:74px;border-radius:10px;background:linear-gradient(138deg,#1d1500 0%,#2e2000 55%,#1d1500 100%);border:1px solid rgba(201,168,76,.32);padding:10px 12px;overflow:hidden;animation:loy-float 4.2s ease-in-out infinite;box-shadow:0 16px 40px rgba(0,0,0,.65),0 0 0 1px rgba(201,168,76,.1),inset 0 1px 0 rgba(201,168,76,.2)}
+.loy-card-vis::after{content:'';position:absolute;top:0;left:-65%;width:52%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transform:skewX(-18deg);animation:loy-shimmer 4s 2s ease-in-out infinite}
+.loy-card-vis-logo{font-family:'Cormorant Garamond',serif;font-size:10px;font-weight:600;letter-spacing:4.5px;color:#C9A84C}
+.loy-card-vis-chip{position:absolute;top:28px;left:12px;width:18px;height:13px;border-radius:2px;background:linear-gradient(135deg,rgba(201,168,76,.72),rgba(201,168,76,.38));border:1px solid rgba(201,168,76,.45)}
+.loy-card-vis-type{position:absolute;bottom:9px;left:12px;font-size:6px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,168,76,.52)}
+.loy-card-vis-dots{position:absolute;bottom:8px;right:12px;display:flex}
+.loy-card-vis-dot{width:13px;height:13px;border-radius:50%;background:rgba(201,168,76,.22)}
+.loy-card-vis-dot+.loy-card-vis-dot{background:rgba(201,168,76,.52);margin-left:-5px}
+/* chips alive */
+.loy-chip-row .loy-chip{animation:loy-chip-in .35s ease both;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.13);color:#C4A04A;transition:background .22s,border-color .22s,transform .18s}
+.loy-chip-row .loy-chip:nth-child(1){animation-delay:.07s}
+.loy-chip-row .loy-chip:nth-child(2){animation-delay:.15s}
+.loy-chip-row .loy-chip:nth-child(3){animation-delay:.23s}
+.loy-chip-row .loy-chip:nth-child(4){animation-delay:.31s}
+.loy-chip-row .loy-chip:hover{background:rgba(201,168,76,.11);border-color:rgba(201,168,76,.28);transform:translateY(-1px)}
+.loy-chip-row .loy-chip b{color:#E0C06A}
+/* submit button */
+.loy-submit-btn{background:linear-gradient(92deg,#B8943E 0%,#D4B356 45%,#C9A84C 100%);background-size:200% 100%;background-position:100%;transition:background-position .4s ease,transform .12s,box-shadow .3s!important;animation:loy-glow-pulse 2.8s ease-in-out infinite}
+.loy-submit-btn:not(:disabled):hover{background-position:0%;box-shadow:0 8px 32px rgba(201,168,76,.38);transform:translateY(-1px);animation:none}
+@media(max-width:520px){.loy-card-vis{top:14px;right:18px;width:100px;height:64px}}
+
+/* ══════════════════════════════════════════
    LAKER LOYALTY — SINGLE CARD
 ══════════════════════════════════════════ */
 .care-single{background:#0A0808;border-top:2px solid var(--gold);padding:60px 52px 52px;position:relative;overflow:hidden}
@@ -2826,6 +2864,13 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
     <!-- ── HERO ── -->
     <div class="loy-mhero">
+      <!-- floating loyalty card preview -->
+      <div class="loy-card-vis" aria-hidden="true">
+        <div class="loy-card-vis-logo">LAKER</div>
+        <div class="loy-card-vis-chip"></div>
+        <div class="loy-card-vis-type">Loyalty Member</div>
+        <div class="loy-card-vis-dots"><div class="loy-card-vis-dot"></div><div class="loy-card-vis-dot"></div></div>
+      </div>
       <div class="loy-mlogo">LAKER</div>
       <div id="loy-program-title" class="loy-mtitle">LOYALTY PROGRAM</div>
       <div class="loy-mdesc">24 pranja godišnje &middot; prioritetan termin &middot; uvek na prvom mestu.</div>
@@ -3172,7 +3217,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260612b" defer></script>
+<script src="/main.min.js?v=20260612c" defer></script>
 <script src="/init.js?v=20260613" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->

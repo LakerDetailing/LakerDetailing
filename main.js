@@ -459,6 +459,9 @@ async function api(path, opts={}){
 window.openLoyalty = function(){
   $('loyOverlay').style.display = 'flex';
   document.body.style.overflowY  = 'hidden';
+  // Restart modal entry animation on each open
+  const _box = $('loyOverlay').firstElementChild;
+  if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation=''}
   if(_user){
     // Korisnik je ulogovan — prikaži dashboard (ne resetuj tab)
     const dash = $('loy-dash');
