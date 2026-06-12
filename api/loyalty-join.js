@@ -197,7 +197,7 @@ function qrClientHtml({ name }) {
   </body></html>`;
 }
 
-function qrAdminHtml({ name, email, telefon, velLabel, sourceLabel, when }) {
+function qrAdminHtml({ name, email, telefon, velLabel, planLabel, sourceLabel, when }) {
   return `<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"></head>
   <body style="margin:0;padding:20px;background:#f0f0f0;font-family:'Helvetica Neue',Arial,sans-serif">
   <div style="max-width:580px;margin:0 auto;background:#fff">
@@ -209,8 +209,9 @@ function qrAdminHtml({ name, email, telefon, velLabel, sourceLabel, when }) {
         <tr><td style="padding:10px 14px;color:#888">Email:</td><td style="padding:10px 14px"><a href="mailto:${esc(email)}" style="color:#C0392B">${esc(email)}</a></td></tr>
         <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Telefon:</td><td style="padding:10px 14px">${telefon ? `<a href="tel:${esc(telefon)}" style="color:#C0392B">${esc(telefon)}</a>` : '<span style="color:#999">— (prijava preko naloga)</span>'}</td></tr>
         <tr><td style="padding:10px 14px;color:#888">Vozilo:</td><td style="padding:10px 14px;font-weight:600">${velLabel ? esc(velLabel) : '<span style="color:#999;font-weight:400">— podesiti pri aktivaciji</span>'}</td></tr>
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Izvor:</td><td style="padding:10px 14px;font-weight:600">${esc(sourceLabel)}</td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Vreme:</td><td style="padding:10px 14px">${esc(when)}</td></tr>
+        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Plan:</td><td style="padding:10px 14px;font-weight:600">${planLabel ? `<span style="color:#C0392B">${esc(planLabel)}</span>` : '<span style="color:#999;font-weight:400">— po dogovoru pri aktivaciji</span>'}</td></tr>
+        <tr><td style="padding:10px 14px;color:#888">Izvor:</td><td style="padding:10px 14px;font-weight:600">${esc(sourceLabel)}</td></tr>
+        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Vreme:</td><td style="padding:10px 14px">${esc(when)}</td></tr>
       </table>
       <div style="margin-top:20px;padding:14px 18px;background:#fff3cd;border-left:2px solid #ffc107;font-size:12px;color:#555">
         ⚡ Aktivirajte nalog u admin panelu — <strong>📋 Loyalty Prijave</strong> → kliknite <strong>Aktiviraj</strong>.
@@ -281,6 +282,10 @@ module.exports = async function handler(req, res) {
     // ── Izvuci identitet po modu ──
     let name = '', email = '', telefon = '', carSize = '';
 
+    // Plan pretplate (opciono za sve modove — sprema se kad je prislan)
+    const planType  = cleanText(data.plan_type, 10).toLowerCase();
+    const planLabel = planType === 'god' ? 'Godišnji' : (planType === 'mes' ? 'Mesečni' : '');
+
     if (mode === 'manual') {
       name    = cleanText(data.name, 80);
       email   = cleanEmail(data.email);
@@ -289,7 +294,6 @@ module.exports = async function handler(req, res) {
       if (!name || name.length < 2)  return res.status(400).json({ error: 'Unesite ime i prezime.' });
       if (!isValidEmail(email))      return res.status(400).json({ error: 'Unesite ispravnu email adresu.' });
       if (!isValidPhone(telefon))    return res.status(400).json({ error: 'Unesite ispravan broj telefona (npr. 060 123 4567).' });
-      if (!carSize)                  return res.status(400).json({ error: 'Odaberite veličinu vozila.' });
     } else if (mode === 'google') {
       const v = await verifyGoogleCredential(data.credential);
       if (!v.ok) {
@@ -314,6 +318,11 @@ module.exports = async function handler(req, res) {
     const source      = SOURCES[mode];
     const sourceLabel = SOURCE_LABELS[source];
     const velLabel    = carSize === 'vs' ? 'Veliki / SUV' : (carSize === 'ms' ? 'Mali / Srednji' : '');
+    // Ažuriraj carSize iz Google/Apple moda ako je klijent poslao
+    if (!carSize && data.car_size) {
+      const cs = cleanText(data.car_size, 5).toLowerCase();
+      if (cs === 'vs' || cs === 'ms') carSize = cs;
+    }
 
     // ── Duplikati ──
     const emailFilter = encodeURIComponent(email);
@@ -335,9 +344,13 @@ module.exports = async function handler(req, res) {
       email,
       telefon: telefon || null,
       velicina: velLabel || null,
-      usluga: 'Laker Loyalty Prijava — QR (plan po dogovoru)',
+      usluga: 'Laker Loyalty — QR'
+        + (velLabel  ? ' · ' + velLabel  : '')
+        + (planLabel ? ' · ' + planLabel : ''),
       datum: new Date().toISOString().split('T')[0],
-      napomena: `QR prijava — ${sourceLabel}`,
+      napomena: `QR prijava — ${sourceLabel}`
+        + (planLabel ? ` · Plan: ${planLabel}` : '')
+        + (velLabel  ? ` · Vozilo: ${velLabel}` : ''),
       source,
       source_ip: sourceIp
     });
@@ -357,7 +370,7 @@ module.exports = async function handler(req, res) {
           to:          [{ email: ADMIN_EMAIL, name: 'Laker Admin' }],
           replyTo:     { email, name },
           subject:     `📱 Nova QR Loyalty prijava: ${name}`,
-          htmlContent: qrAdminHtml({ name, email, telefon, velLabel, sourceLabel, when })
+          htmlContent: qrAdminHtml({ name, email, telefon, velLabel, planLabel, sourceLabel, when })
         });
         results.push({ to: 'admin', ok: rAdmin.ok });
       } catch (e) { results.push({ to: 'admin', ok: false }); }
