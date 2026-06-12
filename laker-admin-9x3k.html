@@ -958,6 +958,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
         </div>
         <div class="tab-intro-right">
           <button class="tool-btn primary" data-action="load-care" style="border-radius:8px">↻ Osveži</button>
+          <button class="tool-btn" data-action="open-qr" style="border-radius:8px">📱 QR za prijavu</button>
           <button class="tool-btn" data-action="copy-wa" style="border-radius:8px">💬 WA šablon</button>
         </div>
       </div>
@@ -990,6 +991,11 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
         <div class="care-list-head">
           <div class="section-title" style="margin-bottom:0">Prijave koje čekaju aktivaciju ⏳</div>
           <input type="text" class="loy-search" id="careSearchInp" placeholder="Pretraži Loyalty prijave..." data-input-action="care-filter">
+        </div>
+        <div class="filter-pills" style="margin-top:10px">
+          <button class="fpill on" id="cfp-all" data-action="care-src-filter" data-filter="all">● Svi</button>
+          <button class="fpill"    id="cfp-qr"  data-action="care-src-filter" data-filter="qr">📱 QR prijave</button>
+          <button class="fpill"    id="cfp-web" data-action="care-src-filter" data-filter="web">🌐 Sajt</button>
         </div>
         <div id="carePendingList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
       </div>
@@ -1054,6 +1060,21 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
     <div style="display:flex;gap:8px">
       <button class="nm-save" data-action="save-plan">Sačuvaj plan →</button>
       <button class="nm-cancel" data-action="close-plan">Otkaži</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/qrcode.min.js" defer></script>
+<!-- QR MODAL — digitalni QR za Loyalty prijavu (pokaži telefonom mušteriji) -->
+<div id="qrModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.88);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#141414;max-width:400px;width:100%;padding:36px;border-top:2px solid #C0392B;position:relative;text-align:center">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px">QR <em style="font-style:italic;color:#C0392B">za prijavu</em></h3>
+    <p style="font-size:12px;color:#666;margin-bottom:20px;font-weight:300;line-height:1.6">Mušterija skenira kod kamerom telefona — otvara se stranica za Loyalty prijavu (Google / Apple / ručno).</p>
+    <div style="background:#fff;padding:18px;display:inline-block;border-radius:8px;margin-bottom:10px"><div id="qrModal-code"></div></div>
+    <div style="font-size:11px;color:#888;letter-spacing:1px;margin-bottom:20px">lakerdetailing.rs/loyalty-join</div>
+    <div style="display:flex;gap:8px">
+      <button class="nm-save" data-action="qr-download">⬇ Preuzmi PNG</button>
+      <button class="nm-cancel" data-action="close-qr">Zatvori</button>
     </div>
   </div>
 </div>
@@ -2317,30 +2338,55 @@ async function loadCare() {
     else { badge.style.display = 'none'; }
   }
 
-  renderCareGroups('carePendingList', pendingGroups, true);
-  renderCareGroups('careDoneList',    doneGroups,    false);
-  applyAdminSearch();
+  careApplyFilters();
   // Ažuriraj dashboard badge
   window._lastCarePending = pendingGroups.length;
   if (typeof updateDashBadges === 'function') updateDashBadges({ reviewPending: window._lastReviewPending || 0, carePending: pendingGroups.length });
 }
 
-function careFilter(val) {
-  const v = (val || '').toLowerCase().trim();
-  const filtered = v
-    ? allCare.filter(c =>
-        (c.ime     || '').toLowerCase().includes(v) ||
-        (c.email   || '').toLowerCase().includes(v) ||
-        (c.telefon || '').toLowerCase().includes(v) ||
-        (c.auto    || '').toLowerCase().includes(v)
-      )
-    : allCare;
-  const allGroups     = groupCareByPerson(filtered);
+let _careSrc = 'all'; // all | qr | web
+
+function careApplyFilters() {
+  const inp = document.getElementById('careSearchInp');
+  const v   = (inp && inp.value || '').toLowerCase().trim();
+  let rows  = allCare;
+  if (_careSrc === 'qr')  rows = rows.filter(c => String(c.source || '').startsWith('qr'));
+  if (_careSrc === 'web') rows = rows.filter(c => !String(c.source || '').startsWith('qr'));
+  if (v) {
+    rows = rows.filter(c =>
+      (c.ime     || '').toLowerCase().includes(v) ||
+      (c.email   || '').toLowerCase().includes(v) ||
+      (c.telefon || '').toLowerCase().includes(v) ||
+      (c.auto    || '').toLowerCase().includes(v)
+    );
+  }
+  const allGroups     = groupCareByPerson(rows);
   const pendingGroups = allGroups.filter(g => g.cars.some(c => !c.loyalty_added));
   const doneGroups    = allGroups.filter(g => g.cars.every(c =>  c.loyalty_added));
   renderCareGroups('carePendingList', pendingGroups, true);
   renderCareGroups('careDoneList',    doneGroups,    false);
   applyAdminSearch();
+}
+
+function careSetSrc(f) {
+  _careSrc = f || 'all';
+  ['all', 'qr', 'web'].forEach(k => {
+    const el = document.getElementById('cfp-' + k);
+    if (el) el.classList.toggle('on', k === _careSrc);
+  });
+  careApplyFilters();
+}
+
+function careFilter() {
+  careApplyFilters();
+}
+
+// Badge izvora prijave — QR prijave dolaze sa /loyalty-join stranice
+function careSourceBadge(source) {
+  const s = String(source || '');
+  if (!s.startsWith('qr')) return '';
+  const label = s === 'qr_google' ? 'Google' : (s === 'qr_apple' ? 'Apple' : 'Ručno');
+  return '<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;background:rgba(52,152,219,.1);color:#5DADE2;border:1px solid rgba(52,152,219,.3)">📱 QR · ' + label + '</span>';
 }
 
 function renderCareGroups(id, groups, isPending) {
@@ -2376,9 +2422,11 @@ function renderCareGroups(id, groups, isPending) {
         : '<span class="care-plan-tag care-plan-mes">Mesečni · ' + planPrice + '</span>';
       const dob      = birthDateFromNote(c.napomena);
       const active   = c.loyalty_added;
+      const srcBadge = careSourceBadge(c.source);
       return `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;margin-top:5px;background:rgba(255,255,255,.025);border-left:2px solid ${active ? 'rgba(39,174,96,.5)' : 'rgba(192,57,43,.4)'}">
         <span style="font-size:12px">\uD83D\uDE97 <strong style="color:${active?'#888':'#eee'}">${esc(c.auto || '\u2014')}</strong>${c.velicina ? ' <span style="color:#555;font-size:11px">(' + esc(c.velicina) + ')</span>' : ''}</span>
         ${planTag}
+        ${srcBadge}
         ${active ? '<span style="font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 6px;background:rgba(39,174,96,.1);color:#27AE60;border:1px solid rgba(39,174,96,.3)">\u2713 Aktivan</span>' : ''}
         ${dob ? '<span style="font-size:11px;color:#666">\uD83C\uDF82 ' + esc(dob) + '</span>' : ''}
         <span style="font-size:10px;color:#444;margin-left:auto">\uD83D\uDD50 ${fmtDate(c.created_at)}</span>
@@ -2487,6 +2535,60 @@ async function careDelete(id) {
   loadCare();
 }
 
+// ── QR MODAL — digitalni QR kod za Loyalty prijavu ────────
+const QR_JOIN_URL = 'https://lakerdetailing.rs/loyalty-join';
+let _qrMade = false;
+
+function openQrModal() {
+  if (!_qrMade && typeof QRCode !== 'undefined') {
+    new QRCode(document.getElementById('qrModal-code'), {
+      text: QR_JOIN_URL, width: 232, height: 232,
+      colorDark: '#0E0E0E', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    _qrMade = true;
+  }
+  document.getElementById('qrModal').style.display = 'flex';
+}
+
+function closeQrModal() {
+  document.getElementById('qrModal').style.display = 'none';
+}
+
+function downloadQr() {
+  const box    = document.getElementById('qrModal-code');
+  const canvas = box.querySelector('canvas');
+  const imgEl  = box.querySelector('img');
+  const src    = canvas ? canvas.toDataURL('image/png') : (imgEl ? imgEl.src : '');
+  if (!src) return;
+  // Beli okvir oko koda — skeneri ga zahtevaju ("quiet zone")
+  const img = new Image();
+  img.onload = function () {
+    const pad = 48, size = img.width + pad * 2;
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, size, size);
+    ctx.drawImage(img, pad, pad);
+    const a = document.createElement('a');
+    a.href = c.toDataURL('image/png');
+    a.download = 'laker-loyalty-qr.png';
+    a.click();
+  };
+  img.src = src;
+}
+
+document.getElementById('qrModal').addEventListener('click', function (e) { if (e.target === this) closeQrModal(); });
+
+// Auto-refresh Loyalty prijava (badge + liste) — svakih 90s dok je admin ulogovan
+setInterval(function () {
+  const app = document.getElementById('app');
+  if (app && app.style.display === 'block' && !document.hidden) {
+    Promise.resolve(loadCare()).catch(function () {});
+  }
+}, 90000);
+
 
 </script>
 
@@ -2546,6 +2648,10 @@ async function careDelete(id) {
       case 'care-act-single':  careActivateSingle(e, btn.dataset.cid, btn.dataset.name, btn.dataset.phone, btn.dataset.email, btn.dataset.usluga, btn.dataset.note, btn.dataset.velicina); break;
       case 'care-act-all':     careActivateAll(btn.dataset.gid);  break;
       case 'care-del-all':     careDeleteAll(btn.dataset.gid);    break;
+      case 'care-src-filter':  careSetSrc(btn.dataset.filter);    break;
+      case 'open-qr':          openQrModal();   break;
+      case 'close-qr':         closeQrModal();  break;
+      case 'qr-download':      downloadQr();    break;
     }
   });
 

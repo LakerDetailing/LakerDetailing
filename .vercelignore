@@ -20,3 +20,8 @@ assets/hero-1600.jpg
 
 # Primer env fajla
 .env.example
+
+# Pomocni skript za CSP hash-eve - ne deployuje se
+tools-csp-hashes.js
+tools-dev-server.js
+SETUP-OAUTH.md

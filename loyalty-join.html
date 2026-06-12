@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laker Loyalty — Prijava | Laker Detailing Studio</title>
+<meta name="description" content="Postani Laker Loyalty član za 30 sekundi — prijava preko Google ili Apple naloga, ili ručno.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#080808">
+<link rel="icon" href="/assets/icons/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+:root{
+  --red:#C0392B; --red-h:#E74C3C; --bg:#080808; --white:#F2F0EC; --gray:#8a8782;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Inter','Helvetica Neue',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--white);font-family:var(--sans);
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 18px calc(28px + env(safe-area-inset-bottom));
+  background-image:radial-gradient(ellipse 90% 55% at 50% -10%,rgba(192,57,43,.14),transparent 60%);
+}
+.wrap{width:100%;max-width:430px;margin:0 auto}
+.brand{text-align:center;margin-bottom:26px}
+.brand-logo{width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.12);display:block;margin:0 auto 14px}
+.brand-name{font-family:var(--serif);font-size:26px;font-weight:600;letter-spacing:7px;text-transform:uppercase;color:var(--white)}
+.brand-sub{font-size:9px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-top:5px}
+.card{
+  background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.08);
+  padding:30px 24px 26px;backdrop-filter:blur(6px)
+}
+h1{font-family:var(--serif);font-size:33px;font-weight:300;line-height:1.15;text-align:center;letter-spacing:.5px}
+h1 em{font-style:italic;color:var(--red-h)}
+.lead{font-size:14px;color:var(--gray);text-align:center;line-height:1.65;margin:12px 0 26px}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  width:100%;min-height:52px;padding:14px 18px;margin-bottom:12px;
+  font-family:var(--sans);font-size:14px;font-weight:600;letter-spacing:.4px;
+  border:none;cursor:pointer;transition:all .25s;border-radius:6px
+}
+.btn:disabled{opacity:.55;cursor:wait}
+.btn svg{flex:none}
+.btn-apple{background:#000;color:#fff;border:1px solid rgba(255,255,255,.22)}
+.btn-apple:hover{background:#161616;border-color:rgba(255,255,255,.4)}
+.btn-manual{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.22)}
+.btn-manual:hover{border-color:var(--red-h);color:var(--red-h)}
+.btn-submit{background:var(--red);color:#fff;font-size:13px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-top:6px}
+.btn-submit:hover{background:var(--red-h)}
+#googleBtn{display:flex;justify-content:center;margin-bottom:12px;min-height:52px;align-items:center}
+.oauth-zone{display:none}
+.oauth-zone.show{display:block}
+.divider{display:flex;align-items:center;gap:14px;margin:18px 0;color:#56524d;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
+.form{display:none;margin-top:4px}
+.form.show{display:block}
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:7px}
+.fld input{
+  width:100%;min-height:52px;padding:14px 16px;font-family:var(--sans);font-size:16px;color:var(--white);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:6px;
+  outline:none;transition:border-color .25s
+}
+.fld input:focus{border-color:var(--red-h)}
+.fld input::placeholder{color:#56524d}
+.size-row{display:flex;gap:10px}
+.size-pill{
+  flex:1;min-height:52px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--sans);font-size:13px;font-weight:600;color:var(--gray);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:6px;
+  cursor:pointer;transition:all .25s;text-align:center;padding:10px
+}
+.size-pill.on{background:rgba(192,57,43,.16);border-color:var(--red);color:var(--white)}
+.hp{position:absolute;left:-9999px;top:-9999px;height:0;width:0;opacity:0;pointer-events:none}
+.msg-err{
+  display:none;margin:0 0 14px;padding:13px 16px;font-size:13px;line-height:1.5;border-radius:6px;
+  background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.4);color:#f0b4ac
+}
+.msg-err.show{display:block}
+.success{display:none;text-align:center;padding:14px 0 6px}
+.success.show{display:block}
+.success-icon{
+  width:74px;height:74px;border-radius:50%;margin:0 auto 22px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(39,174,96,.12);border:1px solid rgba(39,174,96,.45)
+}
+.success h2{font-family:var(--serif);font-size:30px;font-weight:300;margin-bottom:12px}
+.success p{font-size:14px;color:var(--gray);line-height:1.7}
+.success .wa{display:inline-flex;align-items:center;gap:8px;margin-top:22px;padding:13px 24px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.35);color:#25D366;text-decoration:none;font-size:13px;font-weight:600;border-radius:6px}
+.foot{margin-top:26px;text-align:center;font-size:11px;color:#56524d;line-height:1.8}
+.foot a{color:var(--red);text-decoration:none}
+.spin{
+  width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;
+  animation:sp .7s linear infinite;display:none
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading .spin{display:inline-block}
+@media (min-width:480px){
+  body{padding-top:48px}
+  .card{padding:38px 36px 32px}
+  h1{font-size:38px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">
+    <img src="/assets/icons/laker-logo.webp" alt="Laker Detailing Studio" class="brand-logo" width="64" height="64">
+    <div class="brand-name">Laker</div>
+    <div class="brand-sub">Detailing Studio · Čačak</div>
+  </div>
+
+  <div class="card" id="card">
+    <div id="joinView">
+      <h1>Postani <em>Loyalty</em> član</h1>
+      <p class="lead">Prijava traje 30 sekundi. Vlasnik aktivira tvoj nalog i dobijaš potvrdu na email.</p>
+
+      <div class="msg-err" id="errBox" role="alert"></div>
+
+      <div class="oauth-zone" id="oauthZone">
+        <!-- Google dugme (Google Identity Services) — prikazuje se samo kad je GOOGLE_CLIENT_ID podešen u Vercel env -->
+        <div id="googleBtn" style="display:none"></div>
+        <!-- Apple dugme — prikazuje se samo kad je APPLE_SERVICE_ID podešen u Vercel env -->
+        <button type="button" class="btn btn-apple" id="appleBtn" style="display:none">
+          <svg width="18" height="22" viewBox="0 0 814 1000" fill="currentColor" aria-hidden="true"><path d="M788 341c-6 4-107 61-107 188 0 147 129 199 133 200-1 3-21 71-68 141-42 61-87 123-154 123s-85-39-162-39c-76 0-103 40-165 40s-105-57-154-127C54 785 8 657 8 536c0-195 127-298 251-298 66 0 122 43 164 43 40 0 102-46 178-46 29 0 133 3 187 106zM554 144c31-37 53-88 53-139 0-7-1-14-2-20-50 2-110 34-146 76-28 32-55 83-55 135 0 8 1 16 2 18 3 1 8 2 13 2 45 0 102-30 135-72z"/></svg>
+          Nastavi sa Apple nalogom
+        </button>
+        <div class="divider"><span>ili</span></div>
+      </div>
+
+      <button type="button" class="btn btn-manual" id="manualToggle">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Unesi podatke ručno
+      </button>
+
+      <form class="form" id="manualForm" novalidate>
+        <div class="fld">
+          <label for="fName">Ime i prezime</label>
+          <input type="text" id="fName" name="name" placeholder="npr. Marko Marković" autocomplete="name" maxlength="80" required>
+        </div>
+        <div class="fld">
+          <label for="fPhone">Broj telefona</label>
+          <input type="tel" id="fPhone" name="phone" placeholder="060 123 4567" autocomplete="tel" inputmode="tel" maxlength="20" required>
+        </div>
+        <div class="fld">
+          <label for="fEmail">Email adresa</label>
+          <input type="email" id="fEmail" name="email" placeholder="ime@email.com" autocomplete="email" inputmode="email" maxlength="254" required>
+        </div>
+        <div class="fld">
+          <label>Veličina vozila</label>
+          <div class="size-row" role="radiogroup" aria-label="Veličina vozila">
+            <button type="button" class="size-pill" id="sizeMs" data-size="ms" role="radio" aria-checked="false">Mali / Srednji</button>
+            <button type="button" class="size-pill" id="sizeVs" data-size="vs" role="radio" aria-checked="false">Veliki / SUV</button>
+          </div>
+        </div>
+        <!-- Honeypot — botovi ga popune, ljudi ga ne vide -->
+        <input type="text" name="website" id="fWebsite" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn btn-submit" id="submitBtn">
+          <span class="spin" aria-hidden="true"></span><span id="submitTxt">Pošalji zahtev</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="success" id="successView">
+      <div class="success-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#2ECC71" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Zahtev <em style="font-style:italic;color:var(--red-h)">primljen</em></h2>
+      <p id="successMsg">Vlasnik će aktivirati tvoj nalog i dobićeš potvrdu na email.</p>
+      <a class="wa" href="https://wa.me/381607260302" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4l-2.1-1c-.3-.1-.6-.1-.8.2l-.9 1.1c-.2.2-.5.3-.7.2-1-.4-3-2.2-3.6-3.4-.1-.3 0-.5.1-.7l.8-1c.2-.3.2-.6.1-.8l-1-2.2c-.2-.5-.7-.7-1.2-.5-1 .5-1.9 1.4-1.9 2.6 0 2.6 2.3 5.6 5.1 7.2 1.5.9 3.2 1.4 4.4 1 1-.3 1.8-1.2 2-2.1.1-.5-.1-.9-.5-1.1zM12 1a11 11 0 0 0-9.5 16.5L1 23l5.7-1.5A11 11 0 1 0 12 1zm0 20a9 9 0 0 1-4.6-1.3l-.3-.2-3.4.9.9-3.3-.2-.3A9 9 0 1 1 12 21z"/></svg>
+        Piši nam na WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <div class="foot">
+    <a href="https://www.lakerdetailing.rs">lakerdetailing.rs</a> &nbsp;·&nbsp; <a href="tel:+381607260302">060 726 0302</a><br>
+    Podaci se koriste isključivo za aktivaciju Loyalty članstva.
+  </div>
+</div>
+<script src="/loyalty-join.js" defer></script>
+</body>
+</html>

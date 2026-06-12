@@ -21,6 +21,12 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `laker-admin-9x3k.html` | Admin panel (URL je namerno obscure, noindex) |
 | `api/admin.js` | Admin API — sve admin akcije |
 | `api/send-email.js` | Brevo email API — booking, loyalty welcome, recenzije |
+| `loyalty-join.html` + `loyalty-join.js` | QR Loyalty prijava (`/loyalty-join`) — Google/Apple/ručna prijava, mobile-first. JS je eksterni fajl (bez inline skripti → ne dira CSP hash-eve) |
+| `api/loyalty-join.js` | QR prijava backend — GET vraća javni config (Google/Apple ID iz env), POST verifikuje OAuth tokene SERVER-SIDE, rate limit, honeypot, upis u `contacts` + Brevo emailovi |
+| `SETUP-OAUTH.md` | Uputstvo: GOOGLE_CLIENT_ID / APPLE_SERVICE_ID env varijable za /loyalty-join dugmad |
+| `tools-csp-hashes.js` | Helper (ne deployuje se): `node tools-csp-hashes.js` izračuna CSP sha256 hash-eve inline skripti — OBAVEZNO pokrenuti posle izmene inline `<script>` u index/admin/offline.html i ažurirati vercel.json |
+| `tools-dev-server.js` | Lokalni dev server (ne deployuje se): `node tools-dev-server.js` → http://127.0.0.1:4173, mock /api/loyalty-join config |
+| `assets/qrcode.min.js` | Self-hostovana qrcodejs lib — QR modal u admin panelu |
 | `api/push-*.js` | PWA push notifikacije |
 | `api/_push.js` | Supabase helper za push API |
 | `api/_security.js` | Rate limiting, audit log |
@@ -83,7 +89,7 @@ Login: email + lozinka (Supabase auth). 4 taba (prečice 1–4):
 1. **Dashboard** — pregled statova u realnom vremenu
 2. **Recenzije** — odobravanje/odbijanje testimonijala
 3. **Loyalty** — lista članova, dodavanje pranja, napomene, plan
-4. **Loyalty Prijave** — nove prijave koje čekaju aktivaciju (kontakti iz `contacts` tabele sa `submission_type = loyalty_registration`)
+4. **Loyalty Prijave** — nove prijave koje čekaju aktivaciju (kontakti iz `contacts` tabele sa `submission_type = loyalty_registration`). Uključuje QR prijave: filter pills (Svi / 📱 QR prijave / 🌐 Sajt), 📱 QR badge po izvoru (Google/Apple/Ručno), dugme **📱 QR za prijavu** otvara modal sa QR kodom za `/loyalty-join` + download PNG. Liste se auto-osvežavaju na 90s dok je admin ulogovan.
 
 > ⚠️ Tab "Upiti" je uklonjen — booking forma nije aktivna na sajtu.
 
@@ -110,7 +116,7 @@ Login: email + lozinka (Supabase auth). 4 taba (prečice 1–4):
 
 ### Tabele
 - `loyalty_customers` — name, email, phone, care_plan, plan_type, car_size, wash_count, auth_user_id
-- `contacts` — loyalty prijave i booking upiti (submission_type: 'loyalty_registration' | 'booking')
+- `contacts` — loyalty prijave i booking upiti (submission_type: 'loyalty_registration' | 'booking'); kolona `source` = izvor (web | qr_manual | qr_google | qr_apple); trigger `contacts_spam_guard` = max 3 prijave/IP/10min
 - `testimonials` — recenzije (approved: bool)
 - `loyalty_washes` — istorija pranja
 - `loyalty_wash_requests` — zahtevi za pranje
@@ -151,6 +157,8 @@ loyLogin() / loyRegister()
 | `SUPABASE_SERVICE_KEY` | Service role key (server-side only) |
 | `ADMIN_PASSWORD` | Admin panel lozinka |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | PWA push notifikacije |
+| `GOOGLE_CLIENT_ID` | (opciono) Google dugme na `/loyalty-join` — setup u SETUP-OAUTH.md; bez njega dugme je sakriveno |
+| `APPLE_SERVICE_ID` | (opciono) Apple dugme na `/loyalty-join` — setup u SETUP-OAUTH.md; bez njega dugme je sakriveno |
 
 ---
 
@@ -163,6 +171,7 @@ loyLogin() / loyRegister()
 - Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
 - Google Search Console: sajt dodat, sitemap submitan
 - `assets/pwa/` folder ne postoji u repo-u — koristi se isključivo `assets/icons/`
+- **QR Loyalty prijava** (`/loyalty-join`, dodato 2026-06-12): potpuno odvojen flow od loyalty sistema u index.html. Ručna forma radi odmah; Google/Apple dugmad se same pojave kad se podese env varijable (vidi SETUP-OAUTH.md). `/loyalty-join` ruta ima SVOJ CSP header u vercel.json (accounts.google.com + appleid) i COOP `same-origin-allow-popups` (globalni `same-origin` bi blokirao Google popup). Token verifikacija je isključivo server-side u `api/loyalty-join.js`.
 
 ---
 

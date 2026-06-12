@@ -20,7 +20,7 @@ jobs:
       - name: Check JS syntax
         run: |
           FAILED=0
-          for f in main.js service-worker.js api/admin.js api/send-email.js api/health.js api/_security.js api/_push.js api/push-subscribe.js api/push-send.js api/push-latest.js api/push-public-key.js; do
+          for f in main.js service-worker.js loyalty-join.js api/admin.js api/send-email.js api/loyalty-join.js api/health.js api/_security.js api/_push.js api/push-subscribe.js api/push-send.js api/push-latest.js api/push-public-key.js; do
             if [ -f "$f" ]; then
               node --check "$f" && echo "✓ $f" || { echo "✗ GREŠKA: $f"; FAILED=1; }
             fi
