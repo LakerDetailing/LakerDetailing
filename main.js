@@ -1190,9 +1190,7 @@ function renderDash(dash, p, washes){
             </div>
           </div>
 
-          <button type="button" onclick="loyLogout()"
-            style="background:none;border:none;color:#444;font-size:10px;font-family:'Inter',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:0 0 8px;transition:color .3s"
-            onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#444'">↩ Odjavi se</button>
+          <button type="button" data-click="loyLogout" class="ld-logout">↩ Odjavi se</button>
         </div>
       </div>`;
     return;
@@ -1343,9 +1341,7 @@ function renderDash(dash, p, washes){
           <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" style="color:#C9A84C;text-decoration:none;font-weight:600">WhatsApp 060 726 0302 →</a>
         </div>
 
-        <button type="button" onclick="loyLogout()"
-          style="background:none;border:none;color:#444;font-size:10px;font-family:'Inter',sans-serif;letter-spacing:2px;text-transform:uppercase;cursor:pointer;padding:0 0 8px;transition:color .3s"
-          onmouseover="this.style.color='#C9A84C'" onmouseout="this.style.color='#444'">↩ Odjavi se</button>
+        <button type="button" data-click="loyLogout" class="ld-logout">↩ Odjavi se</button>
       </div>
     </div>`;
 }
