@@ -13,7 +13,8 @@ for (const f of files) {
   while ((m = re.exec(html)) !== null) {
     i++;
     if (!m[1].trim()) continue;
-    const hash = crypto.createHash('sha256').update(m[1], 'utf8').digest('base64');
+    const content = m[1].replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const hash = crypto.createHash('sha256').update(content, 'utf8').digest('base64');
     all.push({ file: f, idx: i, hash: `'sha256-${hash}'` });
   }
 }
