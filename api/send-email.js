@@ -417,7 +417,7 @@ function maintenanceAdminHtml({ name, email, telefon, auto, velicina, usluga, na
 // ── MAIN HANDLER (Vercel format) ─────────────────────────
 module.exports = async function handler(req, res) {
   setSecurityHeaders(res);
-  setCorsHeaders(req, res);
+  setCorsHeaders(req, res, 'POST,OPTIONS');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();

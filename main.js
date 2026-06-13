@@ -462,6 +462,8 @@ window.openLoyalty = function(){
   // Restart modal entry animation on each open
   const _box = $('loyOverlay').firstElementChild;
   if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation='loy-modal-in .38s cubic-bezier(.34,1.3,.64,1) both'}
+  // Render Google button now that container has real dimensions
+  _renderGoogleButton();
   if(_user){
     // Korisnik je ulogovan — prikaži dashboard (ne resetuj tab)
     const dash = $('loy-dash');
@@ -1407,6 +1409,7 @@ function updateNavBtn(email, washCount){
 
 // ── GOOGLE OAUTH (Loyalty Modal) ──────────
 let _googleName = null;
+let _gsiRendered = false;
 
 function initLoyaltyGoogleBtn() {
   fetch('/api/loyalty-join')
@@ -1443,10 +1446,21 @@ function _setupGSI(clientId) {
     auto_select: false,
     itp_support: true
   });
+  // Render only if modal is already open (container has dimensions); else deferred to openLoyalty
+  const overlay = $('loyOverlay');
+  if (overlay && overlay.style.display === 'flex') {
+    _renderGoogleButton();
+  }
+}
+
+function _renderGoogleButton() {
+  if (_gsiRendered) return;
+  if (!window.google || !window.google.accounts || !window.google.accounts.id) return;
   const wrap = $('loy-google-wrap');
   if (!wrap) return;
   const outer = wrap.closest('.loy-google-outer');
-  const w = Math.min(340, Math.max(220, (outer ? outer.clientWidth : 300) - 8));
+  // Use container width when visible, fall back to 360
+  const w = Math.min(400, Math.max(280, outer ? outer.clientWidth : 360));
   window.google.accounts.id.renderButton(wrap, {
     theme:          'filled_black',
     size:           'large',
@@ -1456,7 +1470,9 @@ function _setupGSI(clientId) {
     locale:         'sr',
     width:          w
   });
+  _gsiRendered = true;
 }
+window._renderGoogleButton = _renderGoogleButton;
 
 function _handleGoogleCredential(resp) {
   const errEl = $('loy-google-err');

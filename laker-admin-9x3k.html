@@ -848,6 +848,11 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
           <div class="kpi-sub">€299/god</div>
         </div>
         <div class="kpi-box" style="--kpi-color:#F2C200">
+          <div class="kpi-n" id="dash-plan-vs-mes" style="font-size:38px">—</div>
+          <div class="kpi-l">Veliki/SUV · Mes</div>
+          <div class="kpi-sub">€40/mes</div>
+        </div>
+        <div class="kpi-box" style="--kpi-color:#F2C200">
           <div class="kpi-n" id="dash-plan-vs-god" style="font-size:38px">—</div>
           <div class="kpi-l">Veliki/SUV · God</div>
           <div class="kpi-sub">€349/god</div>
@@ -1153,23 +1158,16 @@ const ADMIN_STORAGE_EXP = 'lk-admin-exp';
 const ADMIN_SESSION_DAYS = 30;
 
 function saveAdminSession(pw) {
-  try {
-    const exp = Date.now() + ADMIN_SESSION_DAYS * 24 * 60 * 60 * 1000;
-    localStorage.setItem(ADMIN_STORAGE_KEY, pw);
-    localStorage.setItem(ADMIN_STORAGE_EXP, String(exp));
-  } catch (e) {}
+  try { sessionStorage.setItem(ADMIN_STORAGE_KEY, pw); } catch (e) {}
 }
 
 function loadAdminSession() {
-  try {
-    const exp = Number(localStorage.getItem(ADMIN_STORAGE_EXP) || 0);
-    if (Date.now() > exp) { clearAdminSession(); return ''; }
-    return localStorage.getItem(ADMIN_STORAGE_KEY) || '';
-  } catch (e) { return ''; }
+  try { return sessionStorage.getItem(ADMIN_STORAGE_KEY) || ''; } catch (e) { return ''; }
 }
 
 function clearAdminSession() {
   try {
+    sessionStorage.removeItem(ADMIN_STORAGE_KEY);
     localStorage.removeItem(ADMIN_STORAGE_KEY);
     localStorage.removeItem(ADMIN_STORAGE_EXP);
   } catch (e) {}
@@ -1414,7 +1412,7 @@ function fmtDate(str, withTime = true) {
   return new Date(str).toLocaleDateString('sr-RS', opts);
 }
 
-let _adminCurrentTab = 'reviews';
+let _adminCurrentTab = 'dashboard';
 let _adminSearchQuery = '';
 
 function applyAdminSearch() {

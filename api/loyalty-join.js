@@ -124,6 +124,9 @@ async function verifyAppleIdToken(idToken) {
   if (!isValidEmail(payload.email)) {
     return { ok: false, error: 'Apple nalog nije podelio email adresu.' };
   }
+  if (payload.email_verified === false || String(payload.email_verified) === 'false') {
+    return { ok: false, error: 'Apple nalog nema verifikovan email.' };
+  }
   return { ok: true, email: cleanEmail(payload.email) };
 }
 
@@ -239,7 +242,7 @@ async function brevoSend(payload) {
 // ── MAIN HANDLER ─────────────────────────────────────────
 module.exports = async function handler(req, res) {
   setSecurityHeaders(res);
-  setCorsHeaders(req, res);
+  setCorsHeaders(req, res, 'GET,POST,OPTIONS');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 

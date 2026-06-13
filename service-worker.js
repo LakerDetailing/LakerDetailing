@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v20';
+const CACHE_VERSION = 'laker-pwa-v21';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -205,8 +205,24 @@ self.addEventListener('fetch', event => {
       event.respondWith(fetch(request));
       return;
     }
-    // HTML: stale-while-revalidate — serve cached immediately, notify clients if content changed
-    event.respondWith(staleWhileRevalidate(request, '/offline.html', true));
+    // HTML: network-first — always serve fresh from server, fall back to cache only when offline.
+    // This prevents stale content on Brave/Safari/Chrome after every deploy.
+    event.respondWith((async function() {
+      try {
+        const response = await fetch(request, { cache: 'no-store' });
+        if (response && response.ok) {
+          const cache = await caches.open(RUNTIME_CACHE);
+          cache.put(request, response.clone()).catch(() => {});
+          return response;
+        }
+      } catch (e) {}
+      // Network failed — serve cached version or offline fallback
+      const cached = await caches.match(request);
+      if (cached) return cached;
+      const offline = await caches.match('/offline.html');
+      if (offline) return offline;
+      return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+    })());
     return;
   }
 
