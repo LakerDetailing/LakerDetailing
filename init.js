@@ -106,6 +106,7 @@ function lakerFallbackImage(label, sublabel) {
   let swRegistration = null;
   let updateReady = false;
   let updatePoll = null;
+  let refreshing = false;
   const hadController = !!navigator.serviceWorker.controller;
   if (params.get('reset') === '1') {
     navigator.serviceWorker.getRegistrations().then(function (regs) {
@@ -213,10 +214,15 @@ function lakerFallbackImage(label, sublabel) {
     hidePushBanner();
     return true;
   }
+  function applyUpdate(reg) {
+    // Activate the freshly installed SW immediately → triggers controllerchange → auto-reload.
+    if (reg && reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+  }
   function bindRegistration(reg) {
     swRegistration = reg;
     if (reg.waiting && navigator.serviceWorker.controller) {
       updateReady = true;
+      applyUpdate(reg);
       showUpdateBanner();
     }
     reg.addEventListener('updatefound', function () {
@@ -225,6 +231,7 @@ function lakerFallbackImage(label, sublabel) {
       installing.addEventListener('statechange', function () {
         if (installing.state === 'installed' && navigator.serviceWorker.controller) {
           updateReady = true;
+          applyUpdate(reg);
           showUpdateBanner();
         }
       });
@@ -245,7 +252,8 @@ function lakerFallbackImage(label, sublabel) {
     if (document.visibilityState === 'visible') checkForUpdate();
   });
   navigator.serviceWorker.addEventListener('controllerchange', function () {
-    if (!hadController) return;
+    if (!hadController || refreshing) return;
+    refreshing = true;
     hideUpdateBanner();
     location.reload();
   });
@@ -289,6 +297,16 @@ function lakerFallbackImage(label, sublabel) {
   navigator.serviceWorker.addEventListener('message', function (event) {
     if (!event.data || event.data.type !== 'CONTENT_UPDATED') return;
     location.reload();
+  });
+
+  // Safari/iOS bfcache guard: when a page is restored from the back/forward cache it can be a
+  // stale snapshot from a previous session (a deploy may have happened since). Force a fresh
+  // load so a returning visitor never sees an old cached version after re-opening the tab.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted && !refreshing) {
+      refreshing = true;
+      location.reload();
+    }
   });
 })();
 

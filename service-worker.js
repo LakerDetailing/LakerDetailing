@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v21';
+const CACHE_VERSION = 'laker-pwa-v22';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -174,6 +174,24 @@ async function cacheFirst(request) {
   return cacheThenReturn(request, response);
 }
 
+// Strategy: network-first (for scripts/styles).
+// Always fetch fresh from the network (bypassing the HTTP cache with no-store) so a
+// returning visitor gets the latest JS/CSS on THIS load — never the stale cached copy.
+// Falls back to the cached version only when the network is unavailable (offline).
+async function networkFirst(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok) {
+      cache.put(request, response.clone()).catch(() => {});
+      return response;
+    }
+  } catch (e) {}
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  return fetch(request);
+}
+
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -226,10 +244,11 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Scripts and styles: stale-while-revalidate (background update, no notification)
-  // Ensures stale JS/CSS is refreshed in background even if ?v= wasn't bumped
+  // Scripts and styles: network-first — always serve the freshest JS/CSS when online,
+  // fall back to cache only when offline. Prevents stale main.min.js/init.js after a deploy
+  // even if the ?v= query wasn't bumped.
   if (request.destination === 'script' || request.destination === 'style') {
-    event.respondWith(staleWhileRevalidate(request, null, false));
+    event.respondWith(networkFirst(request));
     return;
   }
 
