@@ -462,8 +462,8 @@ window.openLoyalty = function(){
   // Restart modal entry animation on each open
   const _box = $('loyOverlay').firstElementChild;
   if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation='loy-modal-in .38s cubic-bezier(.34,1.3,.64,1) both'}
-  // Render Google button now that container has real dimensions
-  _renderGoogleButton();
+  // Lazy-load Google Identity script only when modal actually opens (not on page load)
+  initLoyaltyGoogleBtn();
   if(_user){
     // Korisnik je ulogovan — prikaži dashboard (ne resetuj tab)
     const dash = $('loy-dash');
@@ -1410,8 +1410,11 @@ function updateNavBtn(email, washCount){
 // ── GOOGLE OAUTH (Loyalty Modal) ──────────
 let _googleName = null;
 let _gsiRendered = false;
+let _gsiInitStarted = false;
 
 function initLoyaltyGoogleBtn() {
+  if (_gsiInitStarted) { _renderGoogleButton(); return; }
+  _gsiInitStarted = true;
   fetch('/api/loyalty-join')
     .then(function(r){ return r.json(); })
     .then(function(cfg){
@@ -1539,9 +1542,6 @@ function clearSession(){
 
 // ── AUTO-LOGIN ON PAGE LOAD ───────────────
 async function init(){
-  // Inicijalizuj Google dugme (prikazuje se samo ako je GOOGLE_CLIENT_ID podešen)
-  initLoyaltyGoogleBtn();
-
   try{
     let s=null;let source='';
     try{
