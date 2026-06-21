@@ -727,13 +727,16 @@ body.light .care-results span{background:rgba(0,0,0,.03);border-color:rgba(0,0,0
 .tb.on{background:var(--gold);color:var(--black)}
 .tp{display:none;background:var(--d2)}
 .tp.on{display:block}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
+.tbl-wrap::-webkit-scrollbar{height:5px}
+.tbl-wrap::-webkit-scrollbar-thumb{background:rgba(255,42,42,.3);border-radius:2px}
 table{width:100%;border-collapse:collapse}
 thead tr{background:var(--d3)}
-th{padding:18px 26px;text-align:left;font-size:9.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+th{padding:18px 26px;text-align:left;font-size:9.5px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);white-space:nowrap}
 th:not(:first-child){text-align:center}
 td{padding:16px 26px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--lgray);font-weight:300}
 body.light td{border-bottom-color:rgba(0,0,0,.04)}
-td:not(:first-child){text-align:center;font-weight:500;color:var(--white)}
+td:not(:first-child){text-align:center;font-weight:500;color:var(--white);white-space:nowrap}
 tbody tr:hover td{background:rgba(255,42,42,.025)}
 .pv2{color:var(--gold)!important;font-family:var(--serif);font-size:17px!important;font-weight:300!important}
 .pv2-loy{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;background:rgba(255,42,42,.08);border:1px solid rgba(255,42,42,.18);padding:4px 7px}
@@ -1183,6 +1186,11 @@ body.menu-open{
   .wa-stick{right:12px}
   .he-scroll{display:none}
   .mobile-app-dock{width:calc(100% - 24px)}
+  table{min-width:620px}
+  th,td{padding:14px 16px}
+  th:first-child,td:first-child{position:sticky;left:0;z-index:1;box-shadow:6px 0 10px -6px rgba(0,0,0,.4)}
+  th:first-child{background:var(--d3)}
+  td:first-child{background:var(--d2)}
 }
 @media(max-width:480px){
   #hero{min-height:100svh;min-height:100dvh}
@@ -2496,6 +2504,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
         <button type="button" class="tb" data-click="ot:tp">Poliranje &amp; zaštita</button>
       </div>
       <div class="tp on" id="te">
+        <div class="tbl-wrap">
         <table>
           <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
           <tbody>
@@ -2506,8 +2515,10 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             <tr><td>Nano-Glass All — sva stakla</td><td class="pv2">50€</td><td class="pv2">55€</td><td class="pv2">65€</td><td class="pv2">80€</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
       <div class="tp" id="ti">
+        <div class="tbl-wrap">
         <table>
           <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
           <tbody>
@@ -2516,8 +2527,10 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             <tr><td>Impregnacija plastičnih površina</td><td class="pv2">25€</td><td class="pv2">40€</td><td class="pv2">45€</td><td class="pv2">50€</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
       <div class="tp" id="tp">
+        <div class="tbl-wrap">
         <table>
           <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
           <tbody>
@@ -2531,6 +2544,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             <tr><td>Ručno karnauba voskiranje</td><td class="pv2">45€</td><td class="pv2">55€</td><td class="pv2">60€</td><td class="pv2">65€</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   </div>
