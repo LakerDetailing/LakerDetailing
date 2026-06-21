@@ -1024,7 +1024,7 @@ body.pwa-standalone .pwa-push{}
   .pwa-push{top:78px;width:calc(100% - 28px);justify-content:center;text-align:center;flex-wrap:wrap;border-radius:16px}
   .pwa-push-actions{width:100%;justify-content:center}
 }
-.cs-card,.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.rm-box,.loy-modal,#care-modal-box,#pp-modal-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+.cs-card,.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.rm-box,.loy-modal,#care-modal-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
   box-shadow:0 24px 70px rgba(0,0,0,.22);
   border-color:rgba(255,255,255,.05);
   backdrop-filter:saturate(1.03) blur(2px);
@@ -1036,7 +1036,7 @@ body.pwa-standalone .pwa-push{}
   transform:translateY(-6px);
   box-shadow:0 32px 80px rgba(0,0,0,.32);
 }
-.loy-overlay,.care-modal-overlay,.pp-modal,.rm-box,#reviewModal,#care-modal-overlay{
+.loy-overlay,.care-modal-overlay,.rm-box,#reviewModal,#care-modal-overlay{
   backdrop-filter:blur(16px) saturate(1.05);
 }
 .loy-tab,.faq-q,.nm .nb,.btn-o,.pk-btn,.care-cta,.btn-review-open,.rm-btn,.lf-btn,.f-btn{
@@ -1893,53 +1893,6 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 .cm-ok-tag{font-size:10px;letter-spacing:1px;color:var(--gold);font-weight:600;text-transform:uppercase}
 @media(max-width:520px){.cm-head,.cm-body{padding-left:20px;padding-right:20px}.cm-ok{padding:36px 20px}.cm-size-grid{grid-template-columns:repeat(2,1fr)}.cm-row2{grid-template-columns:1fr}}
 
-/* ══ PREMIUM PRANJE MODAL ══ */
-#pp-modal{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .35s}
-#pp-modal.open{opacity:1;pointer-events:all}
-#pp-modal-bg{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px)}
-#pp-modal-box{position:relative;background:var(--d1);max-width:680px;width:100%;max-height:88vh;overflow-y:auto;transform:translateY(24px);transition:transform .4s;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
-#pp-modal.open #pp-modal-box{transform:translateY(0)}
-#pp-modal-box::-webkit-scrollbar{width:4px}
-#pp-modal-box::-webkit-scrollbar-thumb{background:rgba(255,42,42,.3);border-radius:2px}
-.pp-header{background:var(--d2);padding:36px 44px 28px;border-bottom:1px solid rgba(255,42,42,.15);position:sticky;top:0;z-index:2}
-.pp-close{position:absolute;top:22px;right:28px;background:none;border:none;color:var(--mgray);font-size:20px;cursor:none;line-height:1;transition:color .2s;padding:4px 8px}
-.pp-close:hover{color:var(--gold)}
-.pp-eyebrow{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:12px}
-.pp-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold)}
-.pp-title{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:300;line-height:1;letter-spacing:-1px;color:var(--white)}
-.pp-title em{font-style:italic;color:var(--gold)}
-.pp-subtitle{font-size:12px;color:var(--mgray);margin-top:10px;font-weight:300;line-height:1.7;max-width:480px}
-.pp-body{padding:32px 44px 40px}
-.pp-desc{font-size:13.5px;color:var(--lgray);line-height:1.85;font-weight:300;margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid rgba(255,255,255,.06)}
-.pp-phases-title{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:20px}
-.pp-phase{display:grid;grid-template-columns:48px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:start}
-.pp-phase:last-child{border-bottom:none}
-.pp-phase-num{font-family:var(--serif);font-size:32px;font-weight:300;color:rgba(255,42,42,.25);line-height:1;font-style:italic}
-.pp-phase-content h3{font-size:11.5px;font-weight:700;letter-spacing:.5px;color:var(--white);margin-bottom:5px}
-.pp-phase-content p{font-size:13px;color:#B8B6B2;line-height:1.75;font-weight:300}
-.pp-results{background:var(--d3);padding:22px 26px;margin-top:28px;border-left:2px solid var(--gold)}
-.pp-results-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}
-.pp-results-list{display:flex;flex-wrap:wrap;gap:8px}
-.pp-result-tag{font-size:10.5px;color:var(--lgray);padding:5px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);font-weight:300}
-.pp-loyalty{background:var(--d2);margin:28px 0 0;padding:22px 26px;display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid rgba(255,42,42,.12)}
-.pp-loy-item{display:flex;gap:14px;align-items:flex-start}
-.pp-loy-icon{font-size:22px;flex-shrink:0;line-height:1;margin-top:2px}
-.pp-loy-text h5{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--white);margin-bottom:4px}
-.pp-loy-text p{font-size:11.5px;color:var(--mgray);line-height:1.6;font-weight:300}
-.pp-loy-text strong{color:var(--gold)}
-.pp-cta{text-align:center;padding:28px 44px 36px;border-top:1px solid rgba(255,255,255,.05)}
-.pp-loy-badge{display:inline-block;background:rgba(255,42,42,.1);border:1px solid rgba(255,42,42,.25);color:var(--gold);font-size:8.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;margin-bottom:18px}
-.pp-btn-link{display:inline-flex;align-items:center;gap:10px;background:var(--gold);color:var(--black);font-size:10px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;text-decoration:none;padding:14px 36px;transition:all .3s;cursor:none;border:none}
-.pp-btn-link:hover{background:var(--gold2);transform:translateY(-2px)}
-/* "Saznaj više" link u tabeli */
-.pp-link{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;text-decoration:none;cursor:none;transition:all .25s;border:none;background:none;padding:0;font-family:var(--sans);margin-top:5px}
-.pp-link:hover{gap:8px;opacity:.8}
-.pp-link::after{content:'→';font-size:10px}
-@media(max-width:600px){
-  .pp-header,.pp-body,.pp-cta{padding-left:24px;padding-right:24px}
-  .pp-loyalty{grid-template-columns:1fr}
-  .pp-phase{grid-template-columns:36px 1fr;gap:12px}
-}
 /* ── inline handler replacements ── */
 #loyOverlay input:focus{border-color:rgba(255,42,42,.5)!important}
 #llog-btn:hover,#lreg-btn:hover,#new-pass-btn:hover{background:#FF5C5C!important}
@@ -3090,109 +3043,6 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <div id="loy-dash" class="loy-dash" style="display:none"></div>
   </div>
 </div>
-<!-- ══ PREMIUM PRANJE MODAL ══ -->
-<div id="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-modal-title">
-  <div id="pp-modal-bg"></div>
-  <div id="pp-modal-box">
-
-    <div class="pp-header">
-      <button type="button" class="pp-close" data-click="closePremiumModal" aria-label="Zatvori">✕</button>
-      <div class="pp-eyebrow">Premium Pranje</div>
-      <h2 class="pp-title" id="pp-modal-title">8 faza<br><em>savršenog pranja</em></h2>
-      <p class="pp-subtitle">Trofazno ručno pranje po Koch-Chemie protokolu sa konzervacijom lakirano-farbane površine. Idealno za redovno održavanje i očuvanje spoljašnjeg izgleda vozila.</p>
-    </div>
-
-    <div class="pp-body">
-      <p class="pp-desc">Koristimo najsavremenije proizvode i alate kako bismo bili sigurni da je tretman bezbedan i efikasan. Premium pranje pomaže u očuvanju vrednosti automobila i optimalnog izgleda karoserije tokom vremena.</p>
-
-      <div class="pp-phases-title">Faze tretmana</div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">1</div>
-        <div class="pp-phase-content">
-          <h3>Čišćenje felni i ratkapni</h3>
-          <p>Specijalizovana sredstva za uklanjanje tvrdokornih naslaga nečistoće i kočione prašine — Felgenblitz säurefrei ili Alkali Wheel Cleaner.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">2</div>
-        <div class="pp-phase-content">
-          <h3>Beskontaktno pretpranje</h3>
-          <p>Obrada karoserije primarnim sredstvom Vorreiniger B — jako penušavo sredstvo koje efikasno uklanja putnu prljavštinu i bezbedno je za lak, hrom, aluminijum i gumene elemente.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">3</div>
-        <div class="pp-phase-content">
-          <h3>Ručno pranje šamponom Gentle Snow Foam</h3>
-          <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">4</div>
-        <div class="pp-phase-content">
-          <h3>Konzervacija LFP sredstvom ProtectorWax</h3>
-          <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">5</div>
-        <div class="pp-phase-content">
-          <h3>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h3>
-          <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan mat finiš bez masnog izgleda.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">6</div>
-        <div class="pp-phase-content">
-          <h3>Usisavanje enterijera</h3>
-          <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">7</div>
-        <div class="pp-phase-content">
-          <h3>Vlažno čišćenje enterijera</h3>
-          <p>Čišćenje svih površina u enterijeru uz primenu Allround Surface Cleaner — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
-        </div>
-      </div>
-
-      <div class="pp-phase">
-        <div class="pp-phase-num">8</div>
-        <div class="pp-phase-content">
-          <h3>Čišćenje stakala — Glass Cleaner</h3>
-          <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja.</p>
-        </div>
-      </div>
-
-      <div class="pp-results">
-        <div class="pp-results-label">Rezultat nakon tretmana</div>
-        <div class="pp-results-list">
-          <span class="pp-result-tag">◆ 100% čista karoserija</span>
-          <span class="pp-result-tag">◆ Besprekoran izgled</span>
-          <span class="pp-result-tag">◆ Dubok sjaj</span>
-          <span class="pp-result-tag">◆ Zaštita od prljavštine</span>
-          <span class="pp-result-tag">◆ Savršena stakla</span>
-          <span class="pp-result-tag">◆ Čist enterijer</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="pp-cta">
-      <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pp-btn-link" data-click="closePremiumModal">Kontaktirajte nas →</a>
-    </div>
-
-  </div>
-</div>
-<!-- ══ END PREMIUM PRANJE MODAL ══ -->
-
-
 <script id="scroll-reveal-init">(function(){var s=['#phi .sl','#phi .sh','#phi .sd','#phi .pv','#cs .sl','#cs .sh','.cs-card','#srv .sl','#srv .sh','.si','#proc .sl','#proc .sh','.proc-step','#pkg .sl','#pkg .sh','.pk','#care .sl','#care .sh','.care-card','.care-wash','.faq-item'];var seen=new Set();var t=[];s.forEach(function(sel){document.querySelectorAll(sel).forEach(function(el){if(seen.has(el))return;seen.add(el);t.push(el);});});t.forEach(function(el,i){el.classList.add('reveal');el.style.setProperty('--reveal-delay',(Math.min(i%8,7)*70)+'ms');});if(!t.length||window.matchMedia('(prefers-reduced-motion:reduce)').matches){t.forEach(function(el){el.classList.add('in');});return;}var io=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.16,rootMargin:'0px 0px -8% 0px'});t.forEach(function(el){io.observe(el);});})();</script>
 
 <div class="pwa-offline" id="pwaOfflineBanner" role="status" aria-live="polite">
@@ -3259,7 +3109,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260621a" defer></script>
+<script src="/main.min.js?v=20260621b" defer></script>
 <script src="/init.js?v=20260620" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->

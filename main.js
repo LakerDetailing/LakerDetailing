@@ -494,8 +494,7 @@ document.addEventListener('keydown', e => {
     // Ne zatvara loyalty ako je care modal ili review modal otvoren iznad
     const careOpen = document.getElementById('care-modal-overlay')?.classList.contains('open');
     const reviewOpen = document.getElementById('reviewModal')?.style.display === 'flex';
-    const ppOpen = document.getElementById('pp-modal')?.classList.contains('open');
-    if (!careOpen && !reviewOpen && !ppOpen) window.closeLoyalty();
+    if (!careOpen && !reviewOpen) window.closeLoyalty();
   }
 });
 
@@ -1581,21 +1580,6 @@ if(document.readyState==='complete'){init();}
 else{window.addEventListener('load',init,{once:true});}
 
 })();
-
-// ── PREMIUM MODAL ──────────────────────────────────────────────────────────
-function openPremiumModal(){
-  document.getElementById('pp-modal').classList.add('open');
-  document.body.style.overflowY='hidden';
-}
-function closePremiumModal(){
-  document.getElementById('pp-modal').classList.remove('open');
-  document.body.style.overflowY='';
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape' && document.getElementById('pp-modal')?.classList.contains('open')){
-    closePremiumModal();
-  }
-});
 
 // ── COMPOUND CLICK HELPERS ─────────────────────────────────────────────────
 window.openLoyaltyMenu = function(){

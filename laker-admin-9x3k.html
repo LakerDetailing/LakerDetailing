@@ -1219,10 +1219,6 @@ function demoContactById(id) {
   return DEMO_STATE?.contacts?.find(c => c.id === id) || null;
 }
 
-function demoRequestById(id) {
-  return DEMO_STATE?.loyalty?.requests?.find(r => r.id === id) || null;
-}
-
 function demoAddHistory(cust, note) {
   if (!cust.wash_history) cust.wash_history = [];
   cust.wash_history.unshift({
@@ -1296,30 +1292,12 @@ function demoApiResult(action, params = {}) {
       });
       return { yearCounts: yr, monthCounts: mo };
     }
-    case 'approve_wash_req': {
-      const req = demoRequestById(params.reqId);
-      const cust = demoCustomerById(params.custId);
-      if (req) req.status = 'approved';
-      if (cust) {
-        cust.wash_count = Number(cust.wash_count || 0) + 1;
-        demoAddHistory(cust, req?.note || 'Premium pranje');
-      }
-      return { ok: true };
-    }
-    case 'reject_wash_req':
-      DEMO_STATE.loyalty.requests = DEMO_STATE.loyalty.requests.filter(r => r.id !== params.reqId);
-      return { ok: true };
     case 'add_wash': {
       const cust = demoCustomerById(params.custId);
       if (cust) {
         cust.wash_count = Number(cust.wash_count || 0) + 1;
         demoAddHistory(cust, params.note || 'Admin — ručno dodato');
       }
-      return { ok: true };
-    }
-    case 'remove_wash': {
-      const cust = demoCustomerById(params.custId);
-      if (cust) cust.wash_count = Math.max(0, Number(cust.wash_count || 0) - 1);
       return { ok: true };
     }
     case 'delete_customer':

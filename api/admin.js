@@ -138,37 +138,6 @@ const ACTIONS = {
     return Array.isArray(custs) ? custs : [];
   },
 
-  async approve_wash_req({ reqId, custId }) {
-    const rid = safeId(reqId), cid = safeId(custId);
-    if (!rid || !cid) return { error: 'Neispravan ID' };
-    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
-    const c = Array.isArray(cData) ? cData[0] : null;
-    if (!c) return { error: 'Korisnik nije pronađen' };
-    const newCount = (c.wash_count || 0) + 1;
-    const today = new Date().toISOString().split('T')[0];
-    await Promise.all([
-      sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
-        method: 'PATCH', prefer: 'return=minimal', body: { wash_count: newCount }
-      }),
-      sb('/rest/v1/loyalty_washes', {
-        method: 'POST', prefer: 'return=minimal',
-        body: { customer_id: cid, note: 'Odobreno od admina', added_by: 'admin', service_date: today }
-      }),
-      sb(`/rest/v1/loyalty_wash_requests?id=eq.${rid}`, {
-        method: 'PATCH', prefer: 'return=minimal', body: { status: 'approved' }
-      })
-    ]);
-    return { ok: true, newCount };
-  },
-
-  async reject_wash_req({ reqId }) {
-    const rid = safeId(reqId);
-    if (!rid) return { error: 'Neispravan ID' };
-    return await sb(`/rest/v1/loyalty_wash_requests?id=eq.${rid}`, {
-      method: 'PATCH', prefer: 'return=minimal', body: { status: 'rejected' }
-    });
-  },
-
   // LOYALTY — CUSTOMERS
   async add_wash({ custId, custName, note, serviceDate }) {
     const cid = safeId(custId);
@@ -187,26 +156,6 @@ const ACTIONS = {
         body: { customer_id: cid, note: note || 'Admin — ručno dodato', added_by: 'admin', service_date: svcDate }
       })
     ]);
-    return { ok: true, newCount };
-  },
-
-  async remove_wash({ custId }) {
-    const cid = safeId(custId);
-    if (!cid) return { error: 'Neispravan ID' };
-    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
-    const c = Array.isArray(cData) ? cData[0] : null;
-    if (!c) return { error: 'Korisnik nije pronađen' };
-    if ((c.wash_count || 0) <= 0) return { error: 'Već je 0 pranja' };
-    const newCount = (c.wash_count || 0) - 1;
-    await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
-      method: 'PATCH', prefer: 'return=minimal',
-      body: { wash_count: newCount }
-    });
-    // Obriši i poslednji zapis iz istorije da wash_count i loyalty_washes ostanu usklađeni
-    const last = await sb(`/rest/v1/loyalty_washes?customer_id=eq.${cid}&order=created_at.desc&limit=1&select=id`);
-    if (Array.isArray(last) && last.length && safeId(last[0].id)) {
-      await sb(`/rest/v1/loyalty_washes?id=eq.${safeId(last[0].id)}`, { method: 'DELETE' });
-    }
     return { ok: true, newCount };
   },
 

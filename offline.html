@@ -54,9 +54,9 @@
       <div class="step"><b>3</b><span>Na telefonu i dalje mozes da koristis aplikaciju ako je instalirana kao PWA.</span></div>
     </div>
     <div class="actions">
-      <button class="btn primary" type="button" onclick="location.reload()">Pokusaj ponovo</button>
+      <button class="btn primary" type="button" id="btnRetry">Pokusaj ponovo</button>
       <a class="btn secondary" href="/index.html">Nazad na sajt</a>
-      <button class="btn reset" type="button" onclick="resetPwa()">Reset sajt</button>
+      <button class="btn reset" type="button" id="btnReset">Reset sajt</button>
     </div>
     <div class="foot">
       <div class="brand">Laker Detailing Studio</div>
@@ -85,6 +85,9 @@
     if (navigator.onLine) {
       setTimeout(resetPwa, 500);
     }
+
+    document.getElementById('btnRetry').addEventListener('click', function () { location.reload(); });
+    document.getElementById('btnReset').addEventListener('click', resetPwa);
   </script>
 </body>
 </html>
