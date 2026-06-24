@@ -19,15 +19,20 @@ if(_hasHover){
 }
 
 // ── THEME TOGGLE ──
+// document.documentElement.style.colorScheme mora pratiti temu, jer Chrome/Edge
+// "force dark mode" inače auto-zatamni stranicu na desktopu kad root nema
+// deklarisan color-scheme koji se slaže sa stvarnom pozadinom (radi ok na mobilnom).
 const themeBtn=document.getElementById('themeBtn');
 let _lakerTheme='dark';
 try{
   const _ts=localStorage.getItem('laker-theme');
   if(_ts==='light'){document.body.classList.add('light');_lakerTheme='light';}
 }catch(e){}
+document.documentElement.style.colorScheme=_lakerTheme;
 themeBtn.addEventListener('click',()=>{
   document.body.classList.toggle('light');
   _lakerTheme=document.body.classList.contains('light')?'light':'dark';
+  document.documentElement.style.colorScheme=_lakerTheme;
   try{localStorage.setItem('laker-theme',_lakerTheme);}catch(e){}
 });
 
