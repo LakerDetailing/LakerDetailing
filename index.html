@@ -14,6 +14,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="google-site-verification" content="u5J1l96Q1CNZ78KsJryTi98MLmmsZVd5eSmz3tu3oP4" />
 <link rel="canonical" href="https://www.lakerdetailing.rs/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="geo.region" content="RS-17">
+<meta name="geo.placename" content="Čačak">
+<meta name="geo.position" content="43.8914;20.3498">
+<meta name="ICBM" content="43.8914, 20.3498">
 
 <!-- ══ SENTRY ERROR TRACKING — non-blocking ══ -->
 <!-- ══ ANALYTICS (učitava se samo uz cookie saglasnost) ══ -->
@@ -37,6 +42,7 @@
 <meta name="keywords" content="pranje auta Čačak, auto detailing Čačak, poliranje laka Čačak, keramička zaštita automobila Čačak, perionice Čačak, ručno pranje automobila, korekcija laka Čačak, detailing Čačak, auto kozmetika Čačak, pranje vozila Čačak, dubinsko čišćenje auta Čačak, nano zaštita automobila Čačak, auto pranje Čačak, poliranje automobila Čačak, car detailing Čačak, detailing studio Čačak, sjajenje auta Čačak, auto detailing cacak, pranje auta cacak, keramicka zastita Čačak, polishing Čačak">
 <link rel="alternate" hreflang="sr" href="https://www.lakerdetailing.rs/">
 <link rel="alternate" hreflang="x-default" href="https://www.lakerdetailing.rs/">
+<link rel="preconnect" href="https://raxdsanycyycroucxtmy.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="https://browser.sentry-cdn.com">
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 <link rel="dns-prefetch" href="https://connect.facebook.net">
@@ -66,7 +72,7 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": ["LocalBusiness", "AutoBodyShop", "AutoRepair"],
+      "@type": ["LocalBusiness", "AutoBodyShop", "AutoRepair", "CarWash"],
       "@id": "https://www.lakerdetailing.rs/#business",
       "name": "Laker Detailing Studio",
       "alternateName": ["Laker Detailing", "Laker Čačak"],
@@ -74,6 +80,10 @@
       "url": "https://www.lakerdetailing.rs",
       "telephone": "+381607260302",
       "priceRange": "€€€",
+      "slogan": "Do poslednjeg detalja.",
+      "foundingDate": "2025",
+      "paymentAccepted": "Cash",
+      "currenciesAccepted": "RSD, EUR",
       "image": "https://www.lakerdetailing.rs/og-image.jpg",
       "logo": "https://www.lakerdetailing.rs/assets/icons/web-app-manifest-512x512.png",
       "address": {
@@ -92,7 +102,15 @@
         {"@type": "City", "name": "Čačak"},
         {"@type": "City", "name": "Gornji Milanovac"},
         {"@type": "City", "name": "Kraljevo"},
-        {"@type": "City", "name": "Kragujevac"}
+        {"@type": "City", "name": "Kragujevac"},
+        {"@type": "City", "name": "Lučani"},
+        {"@type": "City", "name": "Guča"},
+        {"@type": "City", "name": "Požega"},
+        {"@type": "City", "name": "Ivanjica"},
+        {"@type": "City", "name": "Arilje"},
+        {"@type": "City", "name": "Mrčajevci"},
+        {"@type": "City", "name": "Preljina"},
+        {"@type": "AdministrativeArea", "name": "Moravički okrug"}
       ],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
@@ -100,7 +118,12 @@
         "itemListElement": [
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Pranje auta — Clean paket", "description": "Ručno premium pranje automobila po Koch-Chemie protokolu"}, "price": "99", "priceCurrency": "EUR"},
           {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poliranje laka — Boost paket", "description": "Korekcija laka i poliranje sa zaštitom"}, "price": "249", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita — Laker paket", "description": "Kompletna keramička nano-zaštita laka"}, "price": "499", "priceCurrency": "EUR"}
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita — Laker paket", "description": "Kompletna keramička nano-zaštita laka"}, "price": "499", "priceCurrency": "EUR"},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Ručno pranje auta", "description": "Ručno premium pranje automobila u 3 faze sa voskiranjem"}, "price": "30", "priceCurrency": "EUR"},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita laka (1 sloj)", "description": "Koch-Chemie keramički premaz — dugotrajna zaštita i sjaj"}, "price": "140", "priceCurrency": "EUR"},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poliranje i zaštita farova", "description": "Restauracija i poliranje zamućenih farova"}, "price": "25", "priceCurrency": "EUR"},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Nano-Glass zaštita stakala", "description": "Anti-kiša nano premaz za vetrobransko staklo"}, "price": "30", "priceCurrency": "EUR"},
+          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Dubinsko čišćenje enterijera", "description": "Usisavanje, vlažno dubinsko čišćenje i impregnacija enterijera"}}
         ]
       },
       "contactPoint": {
@@ -143,42 +166,74 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "Koliko košta pranje auta u Čačku?",
+          "name": "Šta je detailing i po čemu se razlikuje od običnog pranja?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ručno premium pranje u Laker Detailing studiju u Čačku počinje od €99 za mali automobil (A klasa, hatchback). Cena zavisi od veličine vozila i paketa — Clean (od €99), Boost sa poliranjem (od €249) ili Laker paket sa keramičkom zaštitom (od €499)."
+            "text": "Detailing je detaljan proces čišćenja, korekcije i zaštite vozila, sa fokusom na stanje površina, završni rezultat i dugoročnu negu. Za razliku od brzog spoljašnjeg pranja, svaki tretman je individualan i podrazumeva obradu svakog detalja — vidljivog i skrivenog."
           }
         },
         {
           "@type": "Question",
-          "name": "Šta je auto detailing?",
+          "name": "Koliko košta detailing u Čačku?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Auto detailing je profesionalno i temeljno čišćenje, poliranje i zaštita automobila. Uključuje ručno pranje po protokolu, korekciju laka, keramičku zaštitu i dubinsko čišćenje enterijera. Laker Detailing Studio u Čačku koristi Koch-Chemie proizvode za vrhunske rezultate."
+            "text": "Ručno premium pranje je od 30€, kompletan Clean paket (enterijer + eksterijer) od 99€, poliranje laka od 100€, a keramička zaštita od 140€. Konačna cena zavisi od veličine i stanja vozila — procena uz fotografije je besplatna."
           }
         },
         {
           "@type": "Question",
-          "name": "Koliko traje keramička zaštita auta?",
+          "name": "Koliko traje tretman?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Keramička zaštita laka traje od 2 do 5+ godina, zavisno od kvaliteta premaza i načina korišćenja vozila. Koch-Chemie keramika pruža dugotrajnu UV zaštitu, odbijanje vode i lako pranje."
+            "text": "Clean paket: do 3 radna dana. Boost: 3–5 dana. Laker (keramika): 5–7 dana. Svakom vozilu pristupamo individualno — ove su okvirne vrednosti za prosečno vozilo u dobrom stanju."
           }
         },
         {
           "@type": "Question",
-          "name": "Da li ručno pranje auta oštećuje lak?",
+          "name": "Koje proizvode koristite?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Ne — ručno pranje sa profesionalnim Koch-Chemie sredstvima i poroznim sunđerima je potpuno bezbedno za lak. Preporučujemo ručno pranje umesto automatskih peračica koje mogu ogrebati i oštetiti lakirano-farbanu površinu."
+            "text": "Koristimo isključivo profesionalnu Koch Chemie hemiju. Svaki proizvod biramo prema materijalu, stepenu zaprljanosti i vrsti tretmana — ista hemija koju koriste top detailing studiji širom Evrope."
           }
         },
         {
           "@type": "Question",
-          "name": "Gde se nalazi Laker Detailing Studio u Čačku?",
+          "name": "Šta se dobija keramičkom zaštitom?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Laker Detailing Studio se nalazi u Čačku. Za zakazivanje termina pozovite 060 726 0302 ili koristite kontakt formu na lakerdetailing.rs."
+            "text": "Keramička zaštita doprinosi izraženijem sjaju, lakšem održavanju i većoj otpornosti površine na spoljne uticaje i hemijska opterećenja. Premaz se vezuje direktno za lak i pruža dugogodišnju zaštitu koja se ne skida pranjem."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kada vozilo sme da se pere nakon keramičke zaštite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vozilo treba zaštititi od vlage tokom prvih 24 sata, dok se potpuno hemijsko očvršćavanje premaza odvija u narednih 9 dana. U tom periodu preporučujemo da izbegavate automobilske perionice i agresivna sredstva."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kako se održava vozilo nakon zaštite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Preporučuje se pravilno ručno održavanje uz hemiju namenjenu za zaštićene površine, bez agresivnih sredstava i grubog mehaničkog kontakta. Dajemo vam konkretne savete za svaki tretman koji obavimo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Da li primate vozila iz okoline Čačka?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Naravno. Pored Čačka, kod nas redovno dolaze klijenti iz Gornjeg Milanovca, Kraljeva, Lučana, Guče, Požege, Ivanjice, Mrčajevaca i Preljine. Termin se zakazuje unapred — pozivom ili porukom na WhatsApp."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kako zakazujem termin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pošaljite fotografije vozila i kratak opis stanja putem forme ispod, WhatsApp-a ili Instagrama. Nakon toga dobijate preporuku tretmana i okviran termin. Procena je uvek besplatna i bez obaveze."
           }
         }
       ]
@@ -769,7 +824,7 @@ body.light .faq-item:first-child{border-top-color:rgba(0,0,0,.08)}
 .faq-item.open .faq-icon{background:var(--gold);color:var(--black);border-color:var(--gold);transform:rotate(45deg)}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .45s ease,padding .35s}
 .faq-a-inner{padding:0 0 26px 0;font-size:14px;color:var(--mgray);line-height:1.85;font-weight:300}
-.faq-item.open .faq-a{max-height:200px}
+.faq-item.open .faq-a{max-height:340px}
 
 /* BOOKING */
 #book{background:var(--d1);padding:0}
@@ -1985,7 +2040,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
         srcset="/assets/hero-900.jpg 900w, /assets/hero-1100.jpg 1100w, /assets/hero-1600.jpg 1600w"
         sizes="100vw"
         src="/assets/hero-1600.jpg"
-        alt="Laker Detailing">
+        alt="Profesionalni auto detailing u Čačku — Laker Detailing Studio">
     </picture>
   </div>
   <div class="hc">
@@ -2039,7 +2094,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
             <picture>
               <source type="image/avif" srcset="/assets/gallery/path2-2-480.avif 480w, /assets/gallery/path2-2.avif 900w" sizes="(max-width:1100px) 100vw, 50vw">
               <source type="image/webp" srcset="/assets/gallery/path2-2-480.webp 480w, /assets/gallery/path2-2.webp 900w" sizes="(max-width:1100px) 100vw, 50vw">
-              <img width="900" height="900" loading="lazy" decoding="async" src="/assets/gallery/path2-2-opt.jpg" alt="Laker Detailing Studio">
+              <img width="900" height="900" loading="lazy" decoding="async" src="/assets/gallery/path2-2-opt.jpg" alt="Laker Detailing Studio u Čačku — pranje, poliranje i zaštita automobila">
             </picture>
             <div class="phi-img-tag">Čačak · 2025</div>
           </div>
@@ -2549,6 +2604,16 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 
         <div class="faq-item">
           <button type="button" class="faq-q" data-click="toggleFaq">
+            Koliko košta detailing u Čačku?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p class="faq-a-inner">Ručno premium pranje je od 30€, kompletan Clean paket (enterijer + eksterijer) od 99€, poliranje laka od 100€, a keramička zaštita od 140€. Konačna cena zavisi od veličine i stanja vozila — procena uz fotografije je besplatna.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" data-click="toggleFaq">
             Koliko traje tretman?
             <span class="faq-icon">+</span>
           </button>
@@ -2594,6 +2659,16 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
           </button>
           <div class="faq-a">
             <p class="faq-a-inner">Preporučuje se pravilno ručno održavanje uz hemiju namenjenu za zaštićene površine, bez agresivnih sredstava i grubog mehaničkog kontakta. Dajemo vam konkretne savete za svaki tretman koji obavimo.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" data-click="toggleFaq">
+            Da li primate vozila iz okoline Čačka?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-a">
+            <p class="faq-a-inner">Naravno. Pored Čačka, kod nas redovno dolaze klijenti iz Gornjeg Milanovca, Kraljeva, Lučana, Guče, Požege, Ivanjice, Mrčajevaca i Preljine. Termin se zakazuje unapred — pozivom ili porukom na WhatsApp.</p>
           </div>
         </div>
 
@@ -2808,6 +2883,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
       <div class="ft-logo">Laker</div>
       <div class="ft-sub">Detailing Studio · Čačak</div>
       <p class="ft-desc">Premium auto detailing studio u Čačku. Svaki automobil koji prođe kroz naš studio dobija jednaku pažnju — bez obzira na marku ili model.</p>
+      <p class="ft-desc" style="margin-top:10px">Pranje auta, poliranje laka i keramička zaštita za Čačak i okolinu — Gornji Milanovac, Kraljevo, Lučani, Guča, Požega, Ivanjica, Mrčajevci, Preljina.</p>
       <div class="ft-slogan">Svaki detalj je važan.</div>
     </div>
     <div class="ft-col">
@@ -3111,7 +3187,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 <nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
   <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
   <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
-  <a href="#book" aria-label="Rezerviši termin" data-click="closeMobileMenu">Rezerviši</a>
+  <a href="#prc" aria-label="Pogledaj cenovnik i rezerviši termin" data-click="closeMobileMenu">Rezerviši</a>
 </nav>
 
 <a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">

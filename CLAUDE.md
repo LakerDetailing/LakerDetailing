@@ -55,7 +55,7 @@ Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.)
 
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
-- **Sekcije:** `#hero` `#phi` `#cs` `#srv` `#pkg` `#care` `#prc` `#faq` `#rvw`
+- **Sekcije:** `#hero` `#phi` `#cs` `#proc` `#pkg` `#care` `#prc` `#faq` `#tst` `#soc` (sekcije `#srv` i `#rvw` NE postoje — svi "Usluge" linkovi vode na `#pkg`)
 
 ---
 
@@ -170,6 +170,8 @@ loyLogin() / loyRegister()
 - `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u
 - Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
 - Google Search Console: sajt dodat, sitemap submitan
+- IndexNow (Bing/Edge): ključ u fajlu `2e68d4c0350193ca6d78089e4129f608.txt` u root-u. Posle većih izmena pingovati: `https://api.indexnow.org/indexnow?url=https://www.lakerdetailing.rs/&key=2e68d4c0350193ca6d78089e4129f608`
+- SEO (2026-07-12): JSON-LD FAQ mora biti identičan vidljivim FAQ pitanjima (trenutno 9) — pri izmeni FAQ sekcije ažurirati i JSON-LD! Schema tipovi: LocalBusiness+AutoBodyShop+AutoRepair+CarWash; 12 areaServed lokacija; 8 offera u OfferCatalog
 - `assets/pwa/` folder ne postoji u repo-u — koristi se isključivo `assets/icons/`
 - **QR Loyalty prijava** (`/loyalty-join`, dodato 2026-06-12): potpuno odvojen flow od loyalty sistema u index.html. Ručna forma radi odmah; Google/Apple dugmad se same pojave kad se podese env varijable (vidi SETUP-OAUTH.md). `/loyalty-join` ruta ima SVOJ CSP header u vercel.json (accounts.google.com + appleid) i COOP `same-origin-allow-popups` (globalni `same-origin` bi blokirao Google popup). Token verifikacija je isključivo server-side u `api/loyalty-join.js`.
 
