@@ -75,7 +75,16 @@ function closeMobileMenu(){
   document.documentElement.style.overflowX='';
   const s=hbg.querySelectorAll('span');
   s[0].style.transform='';s[1].style.opacity='';s[2].style.transform='';
-  requestAnimationFrame(()=>window.scrollTo({top:mobileMenuScrollY,left:0,behavior:'auto'}));
+  // Meni je držao body na position:fixed → dokument je na scrollY 0, pa poziciju
+  // moramo vratiti. MORA sinhrono i bez animacije: html{scroll-behavior:smooth}
+  // pretvara behavior:'auto' u SMOOTH, pa je restore startovao animaciju koja je
+  // otimala skrol <a href="#sekcija"> linku i vraćala korisnika na staro mesto.
+  // Ovako restore završi pre nego što browser odradi default akciju linka.
+  const html=document.documentElement;
+  const prevBehavior=html.style.scrollBehavior;
+  html.style.scrollBehavior='auto';
+  window.scrollTo(0,mobileMenuScrollY);
+  html.style.scrollBehavior=prevBehavior;
 }
 hbg.addEventListener('click',()=>{
   mobileOverlay.classList.contains('open')?closeMobileMenu():openMobileMenu();
@@ -1588,8 +1597,10 @@ else{window.addEventListener('load',init,{once:true});}
 
 // ── COMPOUND CLICK HELPERS ─────────────────────────────────────────────────
 window.openLoyaltyMenu = function(){
-  window.openLoyalty && window.openLoyalty();
+  // Meni PRVO, modal POSLE: closeMobileMenu() briše body.style.overflowY, pa bi
+  // obrnutim redom obrisao i scroll lock koji openLoyalty() postavlja za modal.
   typeof closeMobileMenu === 'function' && closeMobileMenu();
+  window.openLoyalty && window.openLoyalty();
 };
 window.closePwaIosModalScroll = function(){
   window.closePwaIosModal && window.closePwaIosModal();
