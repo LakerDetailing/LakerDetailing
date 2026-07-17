@@ -1,0 +1,6 @@
+{
+  "name": "laker-detailing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Laker Detailing Studio — staticki sajt + Vercel serverless funkcije (api/)"
+}
