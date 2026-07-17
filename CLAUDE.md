@@ -187,12 +187,29 @@ loyLogin() / loyRegister()
 | Auth & Permissions | ✅ | Supabase JWT, brute-force zaštita |
 | Hosting & Deployment | ✅ | Vercel, GitHub→Vercel auto-deploy |
 | Cloud & Compute | ✅ | Vercel serverless auto-scale |
-| CI/CD & Version Control | ✅ | Git/GitHub + GitHub Actions CI (`.github/workflows/ci.yml`) — JS syntax check na svakom push |
+| CI/CD & Version Control | ✅ | Git/GitHub + GitHub Actions CI (`.github/workflows/ci.yml`) — JS syntax check + smoke test produkcije posle deploya |
 | Security & RLS | ✅ | CSP, HSTS, CORS, RLS, XSS, audit logs |
 | Rate Limiting | ✅ | Persistent per-IP u `security_rate_limits` tabeli |
 | Caching & CDN | ✅ | Vercel edge CDN, 1yr asset cache, PWA Service Worker |
 | Load Balancing & Scaling | ✅ | Vercel serverless — automatski |
 | Error Tracking & Logs | ✅ | `health.js` + audit logs + Sentry Browser JS (DSN: `o4511525862309888`) |
-| Availability & Recovery | ⚠️ | Vercel/Supabase HA ✅ — nedostaje uptime monitoring (UptimeRobot) |
+| Availability & Recovery | ✅ | Vercel/Supabase HA + UptimeRobot gađa `/api/health` na 5 min (monitor 803242939) |
 
 **Score: 13/13 ✅ — sve implementirano**
+
+---
+
+## Deploy — OBAVEZNA provera posle pusha
+
+**Zeleni build ≠ sajt radi.** Statika ide sa CDN-a, pa sajt izgleda ispravno i kad su sve serverless funkcije mrtve.
+
+Posle svakog `git push origin main` proveri:
+```bash
+curl -s https://www.lakerdetailing.rs/api/health   # mora: {"ok":true,...,"db":"ok"}
+```
+
+CI ovo radi automatski (job `production-smoke`), ali proveri i ručno kad menjaš nešto u `api/`.
+
+**Poznat kvar (2026-07-17):** deploy je prošao kao READY, ali Vercel runtime nije zakačio env varijable — svih 5 `api/*` funkcija je vraćalo `500 FUNCTION_INVOCATION_FAILED` ~25 min. Nije bilo do koda (menjan samo frontend). Lek: **prazan commit → rebuild** (`git commit --allow-empty`), env varijable se ponovo zakače. Ako ne prođe iz drugog puta, rollback na prethodni deploy u Vercel dashboardu.
+
+> Prepoznavanje: `/api/health` vraća **500** umesto svog urednog **503**. 503 = baza pala. 500 = funkcija uopšte ne startuje (env/runtime).
