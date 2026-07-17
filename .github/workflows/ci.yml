@@ -26,3 +26,65 @@ jobs:
             fi
           done
           exit $FAILED
+
+  # 2026-07-17: deploy je jednom prosao kao READY, ali Vercel runtime nije zakacio
+  # env varijable — svih 5 api/* funkcija je vracalo 500 (FUNCTION_INVOCATION_FAILED)
+  # ~25min dok monitor nije javio. Build je bio zelen jer statika radi; samo poziv
+  # pravog endpointa to uhvati. Zato posle svakog deploya gadjamo produkciju.
+  production-smoke:
+    name: Produkcija — provera posle deploya
+    runs-on: ubuntu-latest
+    needs: syntax-check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Sačekaj da Vercel deploy stigne u produkciju
+        run: sleep 90
+
+      - name: /api/health mora biti 200 + ok:true, stabilno 3 minuta
+        run: |
+          # Provera se ponavlja da bi uhvatila i slucaj kad se novi (pokvaren)
+          # deploy tek na pola ovog prozora prebaci u produkciju.
+          FAILED=0
+          for i in $(seq 1 12); do
+            RESP=$(curl -s --max-time 20 -w '\n%{http_code}' https://www.lakerdetailing.rs/api/health || printf '\n000')
+            CODE=$(printf '%s' "$RESP" | tail -n1)
+            BODY=$(printf '%s' "$RESP" | sed '$d')
+            if [ "$CODE" = "200" ] && printf '%s' "$BODY" | grep -q '"ok":true'; then
+              echo "✓ [$i/12] 200 ok:true — $BODY"
+            else
+              echo "✗ [$i/12] status=$CODE body=$BODY"
+              FAILED=1
+            fi
+            [ "$i" -lt 12 ] && sleep 15
+          done
+          if [ "$FAILED" = "1" ]; then
+            echo ""
+            echo "PRODUKCIJA NE RADI: /api/health nije stabilno 200 ok:true."
+            echo "Znaci baza ili env varijable ne rade — proveri Vercel runtime logove."
+            exit 1
+          fi
+
+      - name: Nijedna api/* funkcija ne sme pucati (5xx)
+        run: |
+          # 405 je ispravno za POST-only endpointe — znaci funkcija je ziva i
+          # uredno odbila GET. 5xx znaci da funkcija uopste ne startuje.
+          FAILED=0
+          check() {
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 "https://www.lakerdetailing.rs$1" || echo 000)
+            case "$CODE" in
+              5*|000) echo "✗ $1 -> $CODE (funkcija puca)"; FAILED=1 ;;
+              *)      echo "✓ $1 -> $CODE" ;;
+            esac
+          }
+          check /api/health
+          check /api/loyalty-join
+          check /api/push-public-key
+          check /api/admin
+          check /api/send-email
+          check /api/push-subscribe
+          exit $FAILED
+
+      - name: Sajt se mora učitati
+        run: |
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 20 https://www.lakerdetailing.rs/ || echo 000)
+          [ "$CODE" = "200" ] && echo "✓ / -> 200" || { echo "✗ / -> $CODE"; exit 1; }
