@@ -1024,7 +1024,9 @@ section::before{
   border-color:transparent;
 }
 body.pwa-standalone .mobile-app-dock{display:none!important}
-body.pwa-standalone .wa-stick,
+/* WhatsApp dugme se vidi UVEK (i u instaliranoj PWA aplikaciji) — vlasnik trazi
+   da uvek bude dostupno na telefonu. Samo dugme za instalaciju (.pwa-stick) se
+   skriva u standalone-u jer je aplikacija vec instalirana. */
 body.pwa-standalone .pwa-stick{display:none!important}
 body.pwa-standalone .pwa-offline,
 body.pwa-standalone .pwa-update,
@@ -2927,7 +2929,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>24</b> · 2026-07-19</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>25</b> · 2026-07-19</span>
   </div>
 </footer>
 
