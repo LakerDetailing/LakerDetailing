@@ -9,9 +9,24 @@ function escHtml(s){
 const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
 const _hasHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 if(_hasHover){
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'},{passive:true});
-  (function anim(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(anim)})();
+  // transform umesto left/top = kompozitor, bez layout-a; rAF petlja staje kad se kursor smiri
+  let mx=0,my=0,rx=0,ry=0,_curRaf=null;
+  function _curTick(){
+    _curRaf=null;
+    rx+=(mx-rx)*.16;ry+=(my-ry)*.16;
+    if(Math.abs(mx-rx)>.4||Math.abs(my-ry)>.4){
+      cr.style.transform='translate3d('+rx+'px,'+ry+'px,0) translate(-50%,-50%)';
+      _curRaf=requestAnimationFrame(_curTick);
+    }else{
+      rx=mx;ry=my;
+      cr.style.transform='translate3d('+mx+'px,'+my+'px,0) translate(-50%,-50%)';
+    }
+  }
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    cur.style.transform='translate3d('+mx+'px,'+my+'px,0) translate(-50%,-50%)';
+    if(!_curRaf)_curRaf=requestAnimationFrame(_curTick);
+  },{passive:true});
   document.querySelectorAll('a,button,.si,.pk,.cs-card,.tst-card,.faq-q,.sz-lbl').forEach(el=>{
     el.addEventListener('mouseenter',()=>{cr.style.width='54px';cr.style.height='54px'},{passive:true});
     el.addEventListener('mouseleave',()=>{cr.style.width='32px';cr.style.height='32px'},{passive:true});
@@ -110,15 +125,8 @@ function toggleFaq(btn){
   if(!isOpen)item.classList.add('open');
 }
 
-// ── REVEAL (IntersectionObserver — passivan, nema forced reflow) ──
-(function(){
-  try{
-    const obs=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}});},{threshold:.07});
-    document.querySelectorAll('.rv,.rl,.rr').forEach(function(el){obs.observe(el);});
-  }catch(e){
-    document.querySelectorAll('.rv,.rl,.rr').forEach(function(el){el.classList.add('in');});
-  }
-})();
+// ── REVEAL — prebačen u inline #scroll-reveal-init u index.html.
+// Sekcije se otkrivaju odmah, bez čekanja da se ovaj fajl skine sa mreže.
 
 // ── DATE MIN ──
 const di=document.getElementById('di');

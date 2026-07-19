@@ -54,49 +54,8 @@ function lakerFallbackImage(label, sublabel) {
   return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
 
-// ── SCROLL REVEAL ──
-(function initScrollReveal() {
-  const selectors = [
-    '#phi .sl', '#phi .sh', '#phi .sd', '#phi .pv',
-    '#cs .sl', '#cs .sh', '.cs-card',
-    '#srv .sl', '#srv .sh', '.si',
-    '#proc .sl', '#proc .sh', '.proc-step',
-    '#pkg .sl', '#pkg .sh', '.pk',
-    '#care .sl', '#care .sh', '.care-card', '.care-wash',
-    '.faq-item'
-  ];
-
-  const seen = new Set();
-  const targets = [];
-  selectors.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      if (seen.has(el)) return;
-      seen.add(el);
-      targets.push(el);
-    });
-  });
-
-  targets.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.style.setProperty('--reveal-delay', `${Math.min(i % 8, 7) * 70}ms`);
-  });
-
-  if (!targets.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    targets.forEach(el => el.classList.add('in'));
-    return;
-  }
-
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
-
-  targets.forEach(el => io.observe(el));
-})();
+// ── SCROLL REVEAL ── prebačen u inline #scroll-reveal-init u index.html
+// (duplikat je ovde pravio drugi IntersectionObserver nad istim elementima).
 
 // ── PWA REGISTRATION ──
 (function registerPWA() {
@@ -218,21 +177,27 @@ function lakerFallbackImage(label, sublabel) {
     // Activate the freshly installed SW immediately → triggers controllerchange → auto-reload.
     if (reg && reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
   }
+  // Tihi update SAMO odmah po otvaranju (korisnik još ništa ne radi) — kasnije
+  // se prikazuje baner umesto nasilnog reload-a usred čitanja/skrolovanja.
+  function isEarlyInLoad() {
+    return performance.now() < 3500 && (window.scrollY || 0) < 120;
+  }
+  function promptOrApplyUpdate(reg) {
+    updateReady = true;
+    if (isEarlyInLoad()) { applyUpdate(reg); return; }
+    showUpdateBanner();
+  }
   function bindRegistration(reg) {
     swRegistration = reg;
     if (reg.waiting && navigator.serviceWorker.controller) {
-      updateReady = true;
-      applyUpdate(reg);
-      showUpdateBanner();
+      promptOrApplyUpdate(reg);
     }
     reg.addEventListener('updatefound', function () {
       const installing = reg.installing;
       if (!installing) return;
       installing.addEventListener('statechange', function () {
         if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-          updateReady = true;
-          applyUpdate(reg);
-          showUpdateBanner();
+          promptOrApplyUpdate(reg);
         }
       });
     });
@@ -292,21 +257,24 @@ function lakerFallbackImage(label, sublabel) {
     }
   }
 
-  // CONTENT_UPDATED: SW detected fresh HTML (via stale-while-revalidate + ETag comparison).
-  // Auto-reload for all users — ensures mobile gets fresh content without needing manual refresh.
+  // CONTENT_UPDATED: SW detektovao svež HTML (stale-while-revalidate + ETag poređenje).
+  // Odmah po otvaranju → tihi reload (deluje kao deo učitavanja). Kasnije → baner,
+  // jer nasilni reload usred skrolovanja izgleda kao da je sajt pukao.
   navigator.serviceWorker.addEventListener('message', function (event) {
     if (!event.data || event.data.type !== 'CONTENT_UPDATED') return;
-    location.reload();
-  });
-
-  // Safari/iOS bfcache guard: when a page is restored from the back/forward cache it can be a
-  // stale snapshot from a previous session (a deploy may have happened since). Force a fresh
-  // load so a returning visitor never sees an old cached version after re-opening the tab.
-  window.addEventListener('pageshow', function (event) {
-    if (event.persisted && !refreshing) {
+    if (refreshing) return;
+    if (isEarlyInLoad()) {
       refreshing = true;
       location.reload();
+      return;
     }
+    showUpdateBanner();
+  });
+
+  // bfcache restore (back/forward) ostaje INSTANT — samo proveri update u pozadini,
+  // ako ima novog sadržaja gornji mehanizmi (banner / SW update) to rešavaju.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) checkForUpdate();
   });
 })();
 

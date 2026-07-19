@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v22';
+const CACHE_VERSION = 'laker-pwa-v23';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -174,24 +174,6 @@ async function cacheFirst(request) {
   return cacheThenReturn(request, response);
 }
 
-// Strategy: network-first (for scripts/styles).
-// Always fetch fresh from the network (bypassing the HTTP cache with no-store) so a
-// returning visitor gets the latest JS/CSS on THIS load — never the stale cached copy.
-// Falls back to the cached version only when the network is unavailable (offline).
-async function networkFirst(request) {
-  const cache = await caches.open(RUNTIME_CACHE);
-  try {
-    const response = await fetch(request, { cache: 'no-store' });
-    if (response && response.ok) {
-      cache.put(request, response.clone()).catch(() => {});
-      return response;
-    }
-  } catch (e) {}
-  const cached = await cache.match(request);
-  if (cached) return cached;
-  return fetch(request);
-}
-
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET') return;
@@ -223,32 +205,19 @@ self.addEventListener('fetch', event => {
       event.respondWith(fetch(request));
       return;
     }
-    // HTML: network-first — always serve fresh from server, fall back to cache only when offline.
-    // This prevents stale content on Brave/Safari/Chrome after every deploy.
-    event.respondWith((async function() {
-      try {
-        const response = await fetch(request, { cache: 'no-store' });
-        if (response && response.ok) {
-          const cache = await caches.open(RUNTIME_CACHE);
-          cache.put(request, response.clone()).catch(() => {});
-          return response;
-        }
-      } catch (e) {}
-      // Network failed — serve cached version or offline fallback
-      const cached = await caches.match(request);
-      if (cached) return cached;
-      const offline = await caches.match('/offline.html');
-      if (offline) return offline;
-      return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
-    })());
+    // HTML: stale-while-revalidate — keširana verzija se servira ODMAH (instant load),
+    // sveža se povlači u pozadini. Ako se sadržaj promenio (ETag), klijenti dobiju
+    // CONTENT_UPDATED → init.js uradi tihi reload odmah po otvaranju ili pokaže baner.
+    // Svežina posle deploya je i dalje garantovana, ali korisnik više NIKAD ne čeka mrežu.
+    event.respondWith(staleWhileRevalidate(request, '/offline.html', true));
     return;
   }
 
-  // Scripts and styles: network-first — always serve the freshest JS/CSS when online,
-  // fall back to cache only when offline. Prevents stale main.min.js/init.js after a deploy
-  // even if the ?v= query wasn't bumped.
+  // Scripts and styles: stale-while-revalidate — instant iz keša, revalidacija u pozadini.
+  // ?v= verzija u HTML-u garantuje svež JS posle deploya (nov URL = network fetch);
+  // pozadinska revalidacija pokriva i slučaj kad ?v= nije bump-ovan.
   if (request.destination === 'script' || request.destination === 'style') {
-    event.respondWith(networkFirst(request));
+    event.respondWith(staleWhileRevalidate(request, null, false));
     return;
   }
 
