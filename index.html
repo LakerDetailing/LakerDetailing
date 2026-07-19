@@ -788,7 +788,7 @@ body.light .care-results span{background:rgba(0,0,0,.03);border-color:rgba(0,0,0
 .tb.on{background:var(--gold);color:var(--black)}
 .tp{display:none;background:var(--d2)}
 .tp.on{display:block}
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
+.tbl-wrap{overflow-x:auto;overflow-y:hidden;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
 .tbl-wrap::-webkit-scrollbar{height:5px}
 .tbl-wrap::-webkit-scrollbar-thumb{background:rgba(255,42,42,.3);border-radius:2px}
 table{width:100%;border-collapse:collapse}
@@ -923,6 +923,9 @@ body.light footer{border-top-color:rgba(0,0,0,.06)}
 .fb{padding:22px 70px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
 body.light .fb{border-top-color:rgba(0,0,0,.06)}
 .fb-c{font-size:11.5px;color:var(--gray);font-weight:300}
+.fb-v{font-size:10px;color:var(--gray);opacity:.55;font-weight:500;letter-spacing:.6px;font-variant-numeric:tabular-nums;white-space:nowrap;transition:opacity .25s}
+.fb-v:hover{opacity:.9}
+.fb-v b{color:var(--gold);font-weight:700}
 .fb-c span{color:var(--gold)}
 
 /* VISUAL POLISH */
@@ -1203,7 +1206,7 @@ body.menu-open{
   }
   textarea{min-height:110px}
   select{padding-right:44px}
-  .ctn{max-width:100%;overflow-x:hidden}
+  .ctn{max-width:100%;overflow-x:clip}
   .hc{padding:0 18px;max-width:100%}
   .he-eyebrow{gap:10px;margin-bottom:24px;flex-wrap:wrap;justify-content:center}
   .he-line{width:24px}
@@ -2923,6 +2926,8 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
+    <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>24</b> · 2026-07-19</span>
   </div>
 </footer>
 
@@ -3196,8 +3201,8 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260719a" defer></script>
-<script src="/init.js?v=20260719a" defer></script>
+<script src="/main.min.js?v=20260719b" defer></script>
+<script src="/init.js?v=20260719b" defer></script>
 
 <!-- ══ COOKIE BANNER ══ -->
 <div id="ck-overlay" style="display:none"></div>

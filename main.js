@@ -1,3 +1,6 @@
+// ── VERZIJA SAJTA (ispis u konzoli — brza provera da li je updejt uhvatio) ──
+try{var _sv=document.getElementById('siteVersion');console.log('%cLaker Detailing%c  '+(_sv?_sv.textContent.replace(/\s+/g,' ').trim():'verzija ?'),'color:#C0392B;font-weight:800;font-size:13px','color:#999;font-size:12px');}catch(e){}
+
 // ── HTML ESCAPE (sprečava XSS kad ubacujemo korisnički tekst u innerHTML) ──
 function escHtml(s){
   return String(s==null?'':s)
