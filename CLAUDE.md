@@ -148,6 +148,37 @@ loyLogin() / loyRegister()
 
 ---
 
+## Analitika (GA4 + Facebook Pixel)
+
+Sve je u [init.js](init.js) — blok `ANALYTICS` + blok `PRAĆENJE INTERAKCIJA`.
+
+| Alat | ID | Kada se učitava |
+|---|---|---|
+| GA4 | `G-DP87917XW3` | **uvek** (Consent Mode v2, default `denied` → cookieless ping) |
+| Facebook Pixel | `27521788054080884` | tek posle klika na „Prihvati sve" |
+
+**GA nalog:** property `lakerdetailing.rs` (a395479676 / p538559050) je na nalogu **detailinglaker@gmail.com**, koji je u Chrome-u obično `authuser=2` — bez toga GA otvori pogrešan nalog. Direktan link:
+`https://analytics.google.com/analytics/web/?authuser=2#/p538559050/reports/intelligenthome`
+
+### Custom eventi
+| Event | Okidač | Parametri |
+|---|---|---|
+| `kontakt_whatsapp` | klik na bilo koji `wa.me` link | `metod`, `sekcija` |
+| `kontakt_telefon` | klik na `tel:` | `metod`, `sekcija` |
+| `kontakt_email` | klik na `mailto:` | `metod`, `sekcija` |
+| `klik_instagram` | klik na Instagram | `sekcija` |
+| `sekcija_prikazana` | sekcija (`pkg`/`care`/`prc`/`faq`/`tst`) pređe sredinu ekrana | `sekcija` |
+| `recenzija_poslata` | uspešno poslata recenzija ([main.js](main.js)) | `ocena`, `grad` |
+| `loyalty_prijava` | uspešna loyalty registracija ([main.js](main.js)) | `plan`, `velicina`, `izvor` |
+
+> Novi event se u GA4 Admin → Events pojavi tek **do 24h** posle prvog slanja — tek tada može zvezdicom da se označi kao **Key event**.
+
+> `/loyalty-join` (QR strana) NEMA analitiku — nema GA skriptu ni cookie baner, a njen CSP ne dozvoljava googletagmanager. Ako zatreba, mora i CSP i baner na toj ruti.
+
+**Search Console** je povezan sa GA4 (Admin → Product links) — izveštaj „Google Organic Search Queries" počinje da se puni ~48h posle povezivanja.
+
+---
+
 ## Env varijable (Vercel dashboard)
 
 | Promenljiva | Opis |
