@@ -123,6 +123,8 @@ Login: email + lozinka (Supabase auth). 4 taba (prečice 1–4):
 
 ### RLS politike — sve konfigurisano ispravno
 - `loyalty_customers`: SELECT/INSERT/UPDATE samo za sopstveni red (`auth_user_id = auth.uid()`), anon nema pristup
+- **Lozinke:** Supabase „leaked password protection" traži **Pro plan** (projekat je Free), pa je ista zaštita ugrađena u sajt — `isPasswordLeaked()` u [main.js](main.js) proverava HaveIBeenPwned preko k-anonimnosti (šalje se samo prvih 5 znakova SHA-1 heša). Radi u loyalty registraciji i pri resetu lozinke, fail-open uz 4s timeout. CSP: `connect-src` sadrži `https://api.pwnedpasswords.com`
+- ⚠️ U istom Supabase projektu postoje `fin.*` tabele i `public.fin_*` SECURITY DEFINER funkcije (drugi projekat) koje anon može da poziva — **ne tiče se sajta**, ali stoji u `get_advisors` upozorenjima
 - `contacts`: INSERT za anon/authenticated (samo dozvoljeni submission_type), SELECT blokiran
 - `testimonials`: SELECT samo approved=true (public), ostalo blokirana
 - `push_*`, `security_*`: blokirani za sve public role
@@ -156,6 +158,12 @@ Sve je u [init.js](init.js) — blok `ANALYTICS` + blok `PRAĆENJE INTERAKCIJA`.
 |---|---|---|
 | GA4 | `G-DP87917XW3` | **uvek** (Consent Mode v2, default `denied` → cookieless ping) |
 | Facebook Pixel | `27521788054080884` | tek posle klika na „Prihvati sve" |
+| Vercel Web Analytics | `/_vercel/insights/script.js` | **uvek** — bez kolačića, ne traži pristanak |
+
+**Vercel Web Analytics** (uključen 2026-08-02, Hobby plan: 50k događaja/mesec, 30 dana istorije, bez custom eventa) je jedini izvor **tačnog** broja poseta — GA4 bez pristanka šalje samo cookieless ping koji Google ne prikazuje jer modelovanje traži mnogo veći saobraćaj. Skripta je na `index.html` i `loyalty-join.html`; `service-worker.js` propušta `/_vercel/*` uvek na mrežu. CSP nije trebalo dirati (`script-src 'self'` + `connect-src 'self'`, sve je same-origin).
+Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analytics
+
+**Mesečni izveštaj:** GA4 Admin → Scheduled emails → „Mesecni izvestaj - Laker Detailing" (PDF, mesečno, na detailinglaker@gmail.com, aktivno do 3.8.2027).
 
 **GA nalog:** property `lakerdetailing.rs` (a395479676 / p538559050) je na nalogu **detailinglaker@gmail.com**, koji je u Chrome-u obično `authuser=2` — bez toga GA otvori pogrešan nalog. Direktan link:
 `https://analytics.google.com/analytics/web/?authuser=2#/p538559050/reports/intelligenthome`
