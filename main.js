@@ -573,6 +573,32 @@ function validateStrongPassword(pw){
   };
 }
 
+// Provera da lozinka nije u poznatim bazama procurelih lozinki (HaveIBeenPwned).
+// Koristi k-anonimnost: SAMO prvih 5 hex znakova SHA-1 heša napušta pregledač —
+// sama lozinka se nikad ne šalje. Isti mehanizam koji Supabase nudi na Pro planu.
+// Ako API ne odgovori, prijava se NE blokira (fail-open) — bolje pustiti nego zaglaviti korisnika.
+async function isPasswordLeaked(pw){
+  try{
+    if (!(window.crypto && crypto.subtle)) return false;
+    const bytes  = new TextEncoder().encode(String(pw));
+    const digest = await crypto.subtle.digest('SHA-1', bytes);
+    const hash   = Array.from(new Uint8Array(digest))
+      .map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    const prefix = hash.slice(0, 5), suffix = hash.slice(5);
+
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 4000);
+    const res = await fetch('https://api.pwnedpasswords.com/range/' + prefix, { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!res.ok) return false;
+
+    const body = await res.text();
+    return body.split('\n').some(line => line.split(':')[0].trim() === suffix);
+  }catch(e){
+    return false;
+  }
+}
+
 function updatePasswordHint(inputId, hintId){
   const input = $(inputId);
   const hint  = $(hintId);
@@ -883,6 +909,10 @@ window.submitNewPassword = async function() {
   if (p1 !== p2)             { showMsg('Lozinke se ne poklapaju.', false); return; }
   if (!window._recoveryToken){ showMsg('Token je istekao. Zatražite novi reset link.', false); return; }
 
+  if (await isPasswordLeaked(p1)) {
+    showMsg('Ova lozinka se nalazi u javnim bazama procurelih lozinki. Izaberite drugu.', false); return;
+  }
+
   try {
     const res = await fetch(SB + '/auth/v1/user', {
       method:  'PUT',
@@ -932,6 +962,9 @@ window.loyRegister = async function(){
   const pwState = validateStrongPassword(pass);
   if (!pwState.ok) {
     setMsg('lreg-msg', 'Lozinka mora imati najmanje 10 karaktera, veliko i malo slovo, broj i simbol.', false); return;
+  }
+  if (await isPasswordLeaked(pass)) {
+    setMsg('lreg-msg', 'Ova lozinka se nalazi u javnim bazama procurelih lozinki. Izaberite drugu.', false); return;
   }
 
   const btn = $('lreg-btn');
