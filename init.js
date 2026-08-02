@@ -6,25 +6,58 @@
   document.readyState==='complete'?scheduleSentry():window.addEventListener('load',scheduleSentry,{once:true});
 })();
 
-// ── ANALYTICS ──
+// ── ANALYTICS (Google Consent Mode v2) ──
+// GA4 se učitava SVIM posetiocima, ali dok nema pristanka radi bez kolačića
+// (analytics_storage:'denied' → cookieless ping): posetu izbroji, ali ne prati osobu.
+// Facebook Pixel i reklamni signali se pale TEK kad posetilac klikne "Prihvati".
 (function(){
-  function _loadAnalytics(){
-    if(window._analyticsLoaded)return;
-    window._analyticsLoaded=true;
+  var GA_ID='G-DP87917XW3', FB_ID='27521788054080884';
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  window.gtag=gtag;
+
+  // Podrazumevano sve odbijeno — mora da ide PRE učitavanja gtag skripte.
+  gtag('consent','default',{
+    ad_storage:'denied', ad_user_data:'denied', ad_personalization:'denied',
+    analytics_storage:'denied', functionality_storage:'granted', security_storage:'granted'
+  });
+
+  function _loadGA(){
+    if(window._gaLoaded)return;
+    window._gaLoaded=true;
     var ga=document.createElement('script');ga.async=true;
-    ga.src='https://www.googletagmanager.com/gtag/js?id=G-DP87917XW3';
+    ga.src='https://www.googletagmanager.com/gtag/js?id='+GA_ID;
     document.head.appendChild(ga);
-    window.dataLayer=window.dataLayer||[];
-    function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
-    gtag('js',new Date());gtag('config','G-DP87917XW3');
+    gtag('js',new Date());
+    gtag('config',GA_ID);
+  }
+  function _loadPixel(){
+    if(window._fbqLoaded)return;
+    window._fbqLoaded=true;
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init','27521788054080884');fbq('track','PageView');
+    fbq('init',FB_ID);fbq('track','PageView');
   }
-  window._lakerLoadAnalytics=_loadAnalytics;
-  if(localStorage.getItem('laker_cookie_consent')==='yes'){
-    if(document.readyState==='complete'){_loadAnalytics();}
-    else{window.addEventListener('load',_loadAnalytics,{once:true});}
+
+  // Poziva se iz cookie banera kad korisnik prihvati.
+  window._lakerConsentGrant=function(){
+    gtag('consent','update',{
+      ad_storage:'granted', ad_user_data:'granted',
+      ad_personalization:'granted', analytics_storage:'granted'
+    });
+    _loadPixel();
+  };
+  window._lakerLoadAnalytics=window._lakerConsentGrant; // stari naziv, radi isto
+
+  var accepted=localStorage.getItem('laker_cookie_consent')==='yes';
+  if(accepted){
+    gtag('consent','update',{
+      ad_storage:'granted', ad_user_data:'granted',
+      ad_personalization:'granted', analytics_storage:'granted'
+    });
   }
+  function _boot(){ _loadGA(); if(accepted) _loadPixel(); }
+  if(document.readyState==='complete'){_boot();}
+  else{window.addEventListener('load',_boot,{once:true});}
 })();
 
 // ── FALLBACK IMAGE ──
@@ -368,10 +401,58 @@ function lakerFallbackImage(label, sublabel) {
   document.getElementById('ck-yes').addEventListener('click',function(){
     localStorage.setItem('laker_cookie_consent','yes');
     ov.style.display='none';bx.style.display='none';
-    if(typeof window._lakerLoadAnalytics==='function')window._lakerLoadAnalytics();
+    if(typeof window._lakerConsentGrant==='function')window._lakerConsentGrant();
   });
   document.getElementById('ck-no').addEventListener('click',function(){
     localStorage.setItem('laker_cookie_consent','no');
     ov.style.display='none';bx.style.display='none';
+    // GA ostaje u cookieless režimu (consent default = denied) — poseta se broji anonimno.
   });
+})();
+
+// ── PRAĆENJE INTERAKCIJA (GA4 eventi) ──
+// Beleži šta posetilac zaista uradi: kontakt, dokle je stigao na strani.
+(function(){
+  function ev(name,params){ if(typeof window.gtag==='function') window.gtag('event',name,params||{}); }
+  window._lakerEvent=ev;
+
+  // 1) Klik na kontakt (WhatsApp / telefon / email / Instagram)
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(!t || !t.closest) t = t && t.parentElement;
+    var a = t && t.closest ? t.closest('a[href]') : null;
+    if(!a) return;
+    var href=a.getAttribute('href')||'';
+    var sec=a.closest('section');
+    var gde=(sec && sec.id) ? sec.id : 'ostalo';
+
+    if(href.indexOf('wa.me/')>-1 || href.indexOf('api.whatsapp.com')>-1){
+      ev('kontakt_whatsapp',{metod:'whatsapp',sekcija:gde});
+      if(typeof window.fbq==='function') fbq('track','Contact',{content_name:'whatsapp'});
+    } else if(href.indexOf('tel:')===0){
+      ev('kontakt_telefon',{metod:'telefon',sekcija:gde});
+      if(typeof window.fbq==='function') fbq('track','Contact',{content_name:'telefon'});
+    } else if(href.indexOf('mailto:')===0){
+      ev('kontakt_email',{metod:'email',sekcija:gde});
+    } else if(href.indexOf('instagram.com')>-1){
+      ev('klik_instagram',{sekcija:gde});
+    }
+  },true);
+
+  // 2) Dokle su stigli — javi se kad sekcija pređe sredinu ekrana (jednom po poseti)
+  if('IntersectionObserver' in window){
+    var mapa={pkg:'paketi',care:'loyalty',prc:'cenovnik',faq:'faq',tst:'recenzije'};
+    var io=new IntersectionObserver(function(list){
+      for(var i=0;i<list.length;i++){
+        if(!list[i].isIntersecting) continue;
+        var el=list[i].target;
+        io.unobserve(el);
+        ev('sekcija_prikazana',{sekcija:mapa[el.id]||el.id});
+      }
+    },{rootMargin:'-50% 0px -50% 0px',threshold:0});
+    Object.keys(mapa).forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) io.observe(el);
+    });
+  }
 })();

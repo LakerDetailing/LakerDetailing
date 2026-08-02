@@ -351,6 +351,7 @@ async function submitReview(){
     if(r.ok && data.success !== false){
       document.getElementById('rmForm').style.display='none';
       document.getElementById('rmOk').style.display='block';
+      if(typeof window.gtag === 'function') window.gtag('event','recenzija_poslata',{ocena:rmRating, grad:city||'—'});
     }else{
       btn.textContent='Pošalji utisak →';
       btn.disabled=false;
@@ -1033,6 +1034,8 @@ window.loyRegister = async function(){
   }).catch(() => {});
 
   // KORAK 6: Sačuvaj sesiju i prikaži dashboard
+  if(typeof window.gtag === 'function') window.gtag('event','loyalty_prijava',{plan:planType, velicina:carSize, izvor:'sajt'});
+  if(typeof window.fbq  === 'function') window.fbq('track','Lead',{content_name:'loyalty '+planType});
   saveSession(_user);
   updateNavBtn(firstName || _user.email, 0);
   btn.textContent = 'Napravi nalog →'; btn.disabled = false;
