@@ -1,7 +1,42 @@
 // ── SENTRY ── učitava se tek kad je glavna nit slobodna (requestIdleCallback),
 // da veliki Sentry bundle ne blokira renderovanje i ne diže TBT na PageSpeed-u.
 (function(){
-  function loadSentry(){var s=document.createElement('script');s.src='https://browser.sentry-cdn.com/8.47.0/bundle.min.js';s.crossOrigin='anonymous';s.onload=function(){if(window.Sentry)Sentry.init({dsn:'https://e8a5c3264a9a4dec0cd6d951e20028d5@o4511525862309888.ingest.de.sentry.io/4511525878825040',environment:'production',tracesSampleRate:0,ignoreErrors:['ResizeObserver loop','Non-Error promise rejection']});};document.head.appendChild(s);}
+  // Samo pravi sajt prijavljuje greške. localhost, preview deploy i *.vercel.app
+  // se preskaču — inače lokalno testiranje puni dnevnik lažnim "production" greškama.
+  var host = location.hostname;
+  if (host !== 'www.lakerdetailing.rs' && host !== 'lakerdetailing.rs') return;
+
+  function loadSentry(){
+    var s=document.createElement('script');
+    s.src='https://browser.sentry-cdn.com/8.47.0/bundle.min.js';
+    s.crossOrigin='anonymous';
+    s.onload=function(){
+      if(!window.Sentry) return;
+      Sentry.init({
+        dsn:'https://e8a5c3264a9a4dec0cd6d951e20028d5@o4511525862309888.ingest.de.sentry.io/4511525878825040',
+        environment:'production',
+        tracesSampleRate:0,
+        ignoreErrors:['ResizeObserver loop','Non-Error promise rejection','Script error.'],
+        denyUrls:[/extension:\/\//i, /^chrome:\/\//i, /^about:/i],
+        beforeSend:function(event){
+          // Propusti samo greške čiji stack pokazuje na NAŠ kod. Sve ostalo
+          // (dodaci pregledača, kod kucan u konzoli, injektovane skripte) je šum.
+          try{
+            var v = event.exception && event.exception.values;
+            var frames = v && v[0] && v[0].stacktrace && v[0].stacktrace.frames;
+            if (frames && frames.length){
+              var ours = frames.some(function(f){
+                return String(f.filename || '').indexOf('lakerdetailing.rs') > -1;
+              });
+              if (!ours) return null;
+            }
+          }catch(e){}
+          return event;
+        }
+      });
+    };
+    document.head.appendChild(s);
+  }
   function scheduleSentry(){ if('requestIdleCallback' in window){requestIdleCallback(loadSentry,{timeout:5000});} else {setTimeout(loadSentry,2500);} }
   document.readyState==='complete'?scheduleSentry():window.addEventListener('load',scheduleSentry,{once:true});
 })();

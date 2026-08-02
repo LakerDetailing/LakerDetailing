@@ -1982,9 +1982,14 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </head>
 <body>
 <script>try{if(localStorage.getItem('laker-theme')==='light')document.body.className='light';}catch(e){}</script>
-<noscript><img alt="" loading="lazy" height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=27521788054080884&ev=PageView&noscript=1"/></noscript>
 <script>document.documentElement.classList.add("js-ready");</script>
+
+<style>
+  .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
+    padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
+  .skip-link:focus{left:0}
+</style>
+<a class="skip-link" href="#hero">Preskoči na sadržaj</a>
 
 <div id="cur"></div>
 <div id="cur-r"></div>
@@ -2929,7 +2934,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>28</b> · 2026-08-02</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>29</b> · 2026-08-02</span>
   </div>
 </footer>
 
@@ -3203,8 +3208,8 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260802b" defer></script>
-<script src="/init.js?v=20260802b" defer></script>
+<script src="/main.min.js?v=20260802c" defer></script>
+<script src="/init.js?v=20260802c" defer></script>
 
 <!-- Vercel Web Analytics — bez kolačića, ne traži pristanak, broji 100% poseta -->
 <script defer src="/_vercel/insights/script.js"></script>
