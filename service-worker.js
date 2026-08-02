@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v26';
+const CACHE_VERSION = 'laker-pwa-v27';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -193,6 +193,13 @@ self.addEventListener('fetch', event => {
 
   // API calls always go straight to network
   if (url.pathname.startsWith('/api/')) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Vercel Web Analytics (/_vercel/insights/*) — nikad ne kešira se; mora uvek
+  // sveže sa mreže da brojanje poseta ne bi zavisilo od keša Service Worker-a.
+  if (url.pathname.startsWith('/_vercel/')) {
     event.respondWith(fetch(request));
     return;
   }
