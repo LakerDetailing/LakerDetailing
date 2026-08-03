@@ -16,15 +16,31 @@
         dsn:'https://e8a5c3264a9a4dec0cd6d951e20028d5@o4511525862309888.ingest.de.sentry.io/4511525878825040',
         environment:'production',
         tracesSampleRate:0,
-        ignoreErrors:['ResizeObserver loop','Non-Error promise rejection','Script error.'],
+        ignoreErrors:[
+          'ResizeObserver loop','Non-Error promise rejection','Script error.',
+          // In-app pregledači (Instagram/Facebook/TikTok webview) ubacuju svoj
+          // most ka native aplikaciji; on puca na iOS-u i nema veze sa sajtom.
+          'window.webkit.messageHandlers',
+          'webkit.messageHandlers',
+          '_AutofillCallbackHandler'
+        ],
         denyUrls:[/extension:\/\//i, /^chrome:\/\//i, /^about:/i],
         beforeSend:function(event){
-          // Propusti samo greške čiji stack pokazuje na NAŠ kod. Sve ostalo
-          // (dodaci pregledača, kod kucan u konzoli, injektovane skripte) je šum.
           try{
             var v = event.exception && event.exception.values;
             var frames = v && v[0] && v[0].stacktrace && v[0].stacktrace.frames;
             if (frames && frames.length){
+              // Skripte koje in-app pregledači ubacuju INLINE u stranicu nemaju
+              // svoj fajl, pa ih pregledač prijavi pod URL-om dokumenta — filter
+              // po nazivu fajla ih ne hvata. Prepoznaj ih po imenu funkcije.
+              var INJECTED = /^(sendDataToNative|sendPageHideMessage|sendMessageToNative|_AutofillCallbackHandler|__fb|__ig)/;
+              var injected = frames.some(function(f){
+                return INJECTED.test(String(f.function || ''));
+              });
+              if (injected) return null;
+
+              // Propusti samo greške čiji stack pokazuje na NAŠ kod. Sve ostalo
+              // (dodaci pregledača, kod kucan u konzoli) je šum.
               var ours = frames.some(function(f){
                 return String(f.filename || '').indexOf('lakerdetailing.rs') > -1;
               });
