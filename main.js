@@ -892,6 +892,22 @@ window.sendPasswordReset = async function() {
     }
   }
 
+  // Supabase vraća grešku u fragmentu kad je link istekao ili je već iskorišćen
+  // (npr. skener u mejl klijentu ga otvori pre korisnika):
+  //   #error=access_denied&error_code=otp_expired&error_description=Email+link+is+invalid...
+  // Bez ove grane korisnik završi na običnom sajtu bez ijedne poruke — izgleda
+  // identično kao da link uopšte ne radi.
+  if (params.error || params.error_code) {
+    const ec = String(params.error_code || '') + ' ' + String(params.error_description || '');
+    if (/otp|expired|invalid/i.test(ec)) {
+      history.replaceState(null, '', window.location.pathname);
+      setTimeout(function(){
+        showNewPasswordForm('Link za reset je istekao ili je već iskorišćen. Zatražite novi — dugme „Zaboravljena lozinka".');
+      }, 0);
+      return;
+    }
+  }
+
   if (isRecovery && recoveryToken) {
     window._recoveryToken = recoveryToken;
     history.replaceState(null, '', window.location.pathname);

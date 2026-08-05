@@ -271,8 +271,18 @@ function lakerFallbackImage(label, sublabel) {
   function isEarlyInLoad() {
     return performance.now() < 3500 && (window.scrollY || 0) < 120;
   }
+  // ── RESET LOZINKE: nikad ne reload-uj usred toka ──────────
+  // main.js uhvati token iz #fragmenta, sacuva ga u window._recoveryToken i
+  // ODMAH ocisti URL (history.replaceState). Ako SW u tom trenutku uradi tihi
+  // reload, token je nepovratno izgubljen — URL vise nema fragment, a promenljiva
+  // se brise sa stranicom. Korisnik zavrsi na obicnom sajtu i nema pojma zasto.
+  // Race je bio zagarantovan: oba reload-a se okidaju bas kad i isEarlyInLoad().
+  function recoveryInProgress() {
+    return !!window._recoveryToken;
+  }
   function promptOrApplyUpdate(reg) {
     updateReady = true;
+    if (recoveryInProgress()) return;
     if (isEarlyInLoad()) { applyUpdate(reg); return; }
     showUpdateBanner();
   }
@@ -306,7 +316,7 @@ function lakerFallbackImage(label, sublabel) {
     if (document.visibilityState === 'visible') checkForUpdate();
   });
   navigator.serviceWorker.addEventListener('controllerchange', function () {
-    if (!hadController || refreshing) return;
+    if (!hadController || refreshing || recoveryInProgress()) return;
     refreshing = true;
     hideUpdateBanner();
     location.reload();
@@ -352,6 +362,7 @@ function lakerFallbackImage(label, sublabel) {
   navigator.serviceWorker.addEventListener('message', function (event) {
     if (!event.data || event.data.type !== 'CONTENT_UPDATED') return;
     if (refreshing) return;
+    if (recoveryInProgress()) return;
     if (isEarlyInLoad()) {
       refreshing = true;
       location.reload();
