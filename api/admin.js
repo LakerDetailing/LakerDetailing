@@ -139,14 +139,43 @@ const ACTIONS = {
   },
 
   // LOYALTY — CUSTOMERS
-  async add_wash({ custId, custName, note, serviceDate }) {
+  async add_wash({ custId, custName, note, serviceDate, force }) {
     const cid = safeId(custId);
     if (!cid) return { error: 'Neispravan ID' };
-    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count`);
+    const cData = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=wash_count,plan_paid_until,plan_type`);
     const c = Array.isArray(cData) ? cData[0] : null;
     if (!c) return { error: 'Korisnik nije pronađen' };
     const newCount  = (c.wash_count || 0) + 1;
     const svcDate   = serviceDate || new Date().toISOString().split('T')[0];
+
+    // ── Provera pretplate ────────────────────────────────
+    // plan_paid_until = null → nije podešeno, ne blokiramo.
+    // force:true → admin je svesno potvrdio da ipak upiše.
+    if (!force) {
+      if (c.plan_paid_until && svcDate > c.plan_paid_until) {
+        return {
+          error: 'blokirano',
+          reason: 'isteklo',
+          message: 'Pretplata je istekla ' + c.plan_paid_until + '. Evidentirajte uplatu ili potvrdite da ipak upišete pranje.',
+          plan_paid_until: c.plan_paid_until
+        };
+      }
+      // Max 2 pranja u kalendarskom mesecu datuma usluge
+      const pocetak = svcDate.slice(0, 7) + '-01';
+      const d = new Date(pocetak + 'T00:00:00Z');
+      d.setUTCMonth(d.getUTCMonth() + 1);
+      const kraj = d.toISOString().split('T')[0];
+      const uMesecu = await sb(`/rest/v1/loyalty_washes?customer_id=eq.${cid}&service_date=gte.${pocetak}&service_date=lt.${kraj}&select=id`);
+      const broj = Array.isArray(uMesecu) ? uMesecu.length : 0;
+      if (broj >= 2) {
+        return {
+          error: 'blokirano',
+          reason: 'kvota',
+          message: 'Klijent je već iskoristio oba pranja za taj mesec (' + broj + '/2). Potvrdite da ipak upišete.',
+          used: broj
+        };
+      }
+    }
     await Promise.all([
       sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
         method: 'PATCH', prefer: 'return=minimal', body: { wash_count: newCount }
@@ -189,6 +218,53 @@ const ACTIONS = {
         care_plan_since: new Date().toISOString()
       }
     });
+  },
+
+  // Ručno postavljanje datuma do kog je pretplata plaćena.
+  // Prazan datum = "nije podešeno" → klijent se NE blokira.
+  async set_paid_until({ custId, date }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
+    const raw = String(date || '').trim();
+    if (!raw) {
+      await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
+        method: 'PATCH', prefer: 'return=minimal', body: { plan_paid_until: null }
+      });
+      return { ok: true, plan_paid_until: null };
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) return { error: 'Neispravan datum (očekivano GGGG-MM-DD)' };
+    const d = new Date(raw + 'T00:00:00Z');
+    if (isNaN(d.getTime())) return { error: 'Neispravan datum' };
+    await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
+      method: 'PATCH', prefer: 'return=minimal', body: { plan_paid_until: raw }
+    });
+    return { ok: true, plan_paid_until: raw };
+  },
+
+  // Evidentiranje uplate — produžava pretplatu.
+  // Računa se od DANAS ili od postojećeg isteka (šta je kasnije), da klijent
+  // ne gubi preostale dane ako plati ranije.
+  async extend_subscription({ custId }) {
+    const cid = safeId(custId);
+    if (!cid) return { error: 'Neispravan ID' };
+    const rows = await sb(`/rest/v1/loyalty_customers?id=eq.${cid}&select=plan_type,plan_paid_until`);
+    const c = Array.isArray(rows) ? rows[0] : null;
+    if (!c) return { error: 'Korisnik nije pronađen' };
+
+    const danas = new Date();
+    danas.setUTCHours(0, 0, 0, 0);
+    const postojeci = c.plan_paid_until ? new Date(c.plan_paid_until + 'T00:00:00Z') : null;
+    const baza = (postojeci && postojeci.getTime() > danas.getTime()) ? postojeci : danas;
+
+    const novi = new Date(baza.getTime());
+    if (c.plan_type === 'god') novi.setUTCFullYear(novi.getUTCFullYear() + 1);
+    else novi.setUTCDate(novi.getUTCDate() + 30);
+
+    const iso = novi.toISOString().split('T')[0];
+    await sb(`/rest/v1/loyalty_customers?id=eq.${cid}`, {
+      method: 'PATCH', prefer: 'return=minimal', body: { plan_paid_until: iso }
+    });
+    return { ok: true, plan_paid_until: iso, plan_type: c.plan_type || 'mes' };
   },
 
   async get_wash_history({ custId }) {

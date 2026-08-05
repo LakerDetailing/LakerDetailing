@@ -1296,25 +1296,38 @@ function renderDash(dash, p, washes){
     : (carSize === 'vs' ? '€40 / mesečno'   : '€35 / mesečno');
 
   const now = new Date();
-  let totalAllowed, usedThisPeriod, periodLabel;
-  if (planType === 'god') {
-    totalAllowed = 24;
-    const yr = now.getFullYear();
-    usedThisPeriod = washes.filter(w => {
-      const d = new Date(w.service_date ? w.service_date + 'T00:00:00' : w.created_at);
-      return d.getFullYear() === yr;
-    }).length;
-    periodLabel = String(yr) + '. godine';
-  } else {
-    totalAllowed = 2;
-    const yr = now.getFullYear(), mo = now.getMonth();
-    usedThisPeriod = washes.filter(w => {
-      const d = new Date(w.service_date ? w.service_date + 'T00:00:00' : w.created_at);
-      return d.getFullYear() === yr && d.getMonth() === mo;
-    }).length;
-    const meseci = ['januara','februara','marta','aprila','maja','juna','jula','avgusta','septembra','oktobra','novembra','decembra'];
-    periodLabel = meseci[mo];
+  // Oba plana: 2 pranja MESEČNO. Godišnji je 24/god, ali i dalje max 2 mesečno —
+  // da se cela godina ne potroši odjednom. Neiskorišćeno se NE prenosi u sledeći mesec.
+  const totalAllowed = 2;
+  const yr = now.getFullYear(), mo = now.getMonth();
+  const usedThisPeriod = washes.filter(w => {
+    const d = new Date(w.service_date ? w.service_date + 'T00:00:00' : w.created_at);
+    return d.getFullYear() === yr && d.getMonth() === mo;
+  }).length;
+  const meseci = ['januara','februara','marta','aprila','maja','juna','jula','avgusta','septembra','oktobra','novembra','decembra'];
+  const periodLabel = meseci[mo];
+
+  // Status pretplate. plan_paid_until = null → nije podešeno, ne blokiramo.
+  const paidUntilRaw = _profile.plan_paid_until || null;
+  let subIstekla = false, subTekst = '', subBoja = '';
+  if (paidUntilRaw) {
+    const pu = new Date(paidUntilRaw + 'T00:00:00');
+    const danas = new Date(); danas.setHours(0,0,0,0);
+    const danaLeft = Math.round((pu - danas) / 86400000);
+    const puLabel = pu.toLocaleDateString('sr-RS', { day:'2-digit', month:'2-digit', year:'numeric' });
+    if (danaLeft < 0) {
+      subIstekla = true;
+      subTekst = 'Pretplata je istekla ' + puLabel + '. Obnovite je da biste zakazali pranje.';
+      subBoja = '#E8C96A';
+    } else if (danaLeft <= 5) {
+      subTekst = 'Pretplata ističe ' + puLabel + ' (za ' + danaLeft + ' d).';
+      subBoja = '#E8C96A';
+    } else {
+      subTekst = 'Pretplata važi do ' + puLabel + '.';
+      subBoja = '#27AE60';
+    }
   }
+  const kvotaPotrosena = usedThisPeriod >= totalAllowed;
 
   const pct = Math.min(100, totalAllowed > 0 ? Math.round((usedThisPeriod / totalAllowed) * 100) : 0);
 
@@ -1400,6 +1413,12 @@ function renderDash(dash, p, washes){
           })()}
         </div>
 
+        ${subTekst ? `<div style="padding:10px 14px;margin-bottom:4px;background:${subIstekla ? 'rgba(229,57,53,.08)' : 'rgba(76,175,80,.06)'};border-left:2px solid ${subBoja};font-size:12px;color:${subBoja};line-height:1.6">
+          ${subIstekla ? '⚠ ' : ''}${escHtml(subTekst)}${subIstekla ? '<br><span style="color:#888;font-size:11px">Javite se na WhatsApp 060 726 0302 za obnovu.</span>' : ''}
+        </div>` : ''}
+        ${(!subIstekla && kvotaPotrosena) ? `<div style="padding:10px 14px;margin-bottom:4px;background:rgba(229,57,53,.06);border-left:2px solid #E8C96A;font-size:12px;color:#E8C96A;line-height:1.6">
+          Iskoristili ste oba pranja za ovaj mesec. Nova dva se otključavaju 1. ${meseci[(mo + 1) % 12]}.
+        </div>` : ''}
         <div style="background:#141414;padding:20px 22px;margin-bottom:4px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
             <div style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300">

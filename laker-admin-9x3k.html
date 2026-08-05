@@ -1473,8 +1473,21 @@ function stripMaintenanceMeta(note) {
 }
 
 function getTotalAllowed(c) {
-  const pt = c.plan_type || (String(c.care_plan||'').includes('god') ? 'god' : 'mes');
-  return pt === 'god' ? 24 : 2;
+  // Oba plana: 2 pranja MESEČNO. Godišnji je 24/god, ali i dalje max 2 mesečno —
+  // da niko ne potroši celu godinu odjednom. Neiskorišćeno se ne prenosi.
+  return 2;
+}
+
+// Status pretplate. plan_paid_until = NULL znači "nije podešeno" → ne blokira se.
+function subStatus(c) {
+  const raw = c.plan_paid_until;
+  if (!raw) return { kod:'nepodeseno', tekst:'⚠ Pretplata nije podešena', boja:'#F2C200', bg:'rgba(255,194,0,.10)' };
+  const d = new Date(raw + 'T00:00:00');
+  const danas = new Date(); danas.setHours(0,0,0,0);
+  const dana = Math.round((d - danas) / 86400000);
+  if (dana < 0)  return { kod:'isteklo', tekst:'✕ ISTEKLO pre ' + Math.abs(dana) + ' d · ' + fmtDate(raw, false), boja:'#E74C3C', bg:'rgba(231,76,60,.12)' };
+  if (dana <= 5) return { kod:'uskoro',  tekst:'⏳ Ističe za ' + dana + ' d · ' + fmtDate(raw, false), boja:'#F2C200', bg:'rgba(255,194,0,.10)' };
+  return { kod:'aktivno', tekst:'✓ Plaćeno do ' + fmtDate(raw, false), boja:'#27AE60', bg:'rgba(39,174,96,.10)' };
 }
 
 function getUsageThisPeriod(c, washCountsByCustomer) {
@@ -1976,11 +1989,9 @@ async function loadLoyalty() {
   try {
     const counts = await api('get_period_wash_counts').catch(() => ({ yearCounts: {}, monthCounts: {} }));
     _washCountsByCustomer = {};
+    // Uvek MESEČNI brojač — i za godišnji plan, jer je limit 2 mesečno za oba.
     custArr.forEach(c => {
-      const isGod = (c.plan_type || c.care_plan || '').includes('god');
-      _washCountsByCustomer[c.id] = isGod
-        ? (counts.yearCounts?.[c.id]  || 0)
-        : (counts.monthCounts?.[c.id] || 0);
+      _washCountsByCustomer[c.id] = counts.monthCounts?.[c.id] || 0;
     });
   } catch(e) { _washCountsByCustomer = {}; }
 
@@ -2007,38 +2018,27 @@ function renderLoyCust(custs) {
     const totalAlw  = getTotalAllowed(c);
     const used      = getUsageThisPeriod(c, _washCountsByCustomer);
     const pct       = totalAlw > 0 ? Math.min(100, Math.round((used / totalAlw) * 100)) : 0;
-    const periodLbl = (c.plan_type || c.care_plan || '').includes('god') ? 'ove god.' : 'ovog mes.';
+    const periodLbl = 'ovog mes.';
     return `<div class="loy-cust-card" id="lc-${c.id}" data-admin-search="${esc([c.name, c.email, c.phone, planKey, c.admin_note].filter(Boolean).join(' '))}">
       <div style="flex:1;min-width:0">
         <div class="lcc-name">${esc(c.name || '—')} ${regBadge}${planTag}</div>
         <div class="lcc-meta">
           <div>✉️ <span>${esc(c.email || '—')}</span> &nbsp;·&nbsp; 📱 <span>${esc(c.phone || '—')}</span></div>
           <div>📅 Registrovan: <span>${fmtDate(c.created_at, false)}</span></div>
-          ${(()=>{
-            // Datumi pretplate
-            if (!planInfo || !c.care_plan_since) return '';
-            const isAnnual = (c.plan_type || c.care_plan || '').includes('god');
-            const sinceDate = new Date(c.care_plan_since);
-            const sinceLabel = sinceDate.toLocaleDateString('sr-RS', {day:'2-digit',month:'2-digit',year:'numeric'});
-            let expiryHtml = '';
-            if (isAnnual) {
-              const expDate = new Date(sinceDate);
-              expDate.setFullYear(expDate.getFullYear() + 1);
-              const expLabel = expDate.toLocaleDateString('sr-RS', {day:'2-digit',month:'2-digit',year:'numeric'});
-              const now = new Date();
-              const daysLeft = Math.ceil((expDate - now) / 86400000);
-              const expColor = daysLeft < 0 ? '#C0392B' : daysLeft < 30 ? '#E67E22' : '#2ECC71';
-              const expNote  = daysLeft < 0
-                ? `<span style="color:#C0392B;font-size:10px;font-weight:700;margin-left:6px">ISTEKLO</span>`
-                : daysLeft < 30
-                  ? `<span style="color:#E67E22;font-size:10px;margin-left:6px">za ${daysLeft} dana</span>`
-                  : `<span style="color:#555;font-size:10px;margin-left:6px">za ${daysLeft} dana</span>`;
-              expiryHtml = `<span style="color:${expColor}">važi do ${expLabel}</span>${expNote}`;
-            } else {
-              expiryHtml = '<span style="color:#555">mesečno obnavljanje</span>';
-            }
-            return `<div style="margin-top:3px">🗓 Pretplata od: <span style="color:#F2C200">${sinceLabel}</span> &nbsp;—&nbsp; ${expiryHtml}</div>`;
-          })()}
+          ${c.care_plan_since ? `<div style="margin-top:3px">🗓 Pretplata od: <span style="color:#F2C200">${fmtDate(c.care_plan_since, false)}</span></div>` : ''}
+          ${planInfo ? (()=>{
+            const s = subStatus(c);
+            const trajanje = (c.plan_type === 'god') ? '1 god' : '30 dana';
+            return `<div style="margin-top:7px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+              <span style="font-size:11px;font-weight:700;padding:3px 10px;background:${s.bg};color:${s.boja};border:1px solid ${s.boja}55">${s.tekst}</span>
+              <input type="date" id="pu-${c.id}" value="${esc(c.plan_paid_until || '')}" title="Datum do kog je plaćeno"
+                     style="background:#141414;border:1px solid rgba(255,255,255,.12);color:#ddd;font-size:11px;padding:3px 6px;font-family:var(--sans)">
+              <button class="lcc-btn" style="padding:4px 10px;font-size:9px;background:rgba(255,255,255,.05);color:#bbb;border:1px solid rgba(255,255,255,.12)"
+                      data-action="save-paid-until" data-cid="${c.id}">Sačuvaj</button>
+              <button class="lcc-btn" style="padding:4px 10px;font-size:9px;background:rgba(39,174,96,.12);color:#2ECC71;border:1px solid rgba(39,174,96,.35);font-weight:700"
+                      data-action="extend-sub" data-cid="${c.id}" data-name="${esc(c.name || '')}">💰 Uplaćeno +${trajanje}</button>
+            </div>`;
+          })() : ''}
           ${planInfo ? `<div style="margin-top:8px;padding:10px 14px;background:${planInfo.bg};border-left:2px solid ${planInfo.color};display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
             <span style="font-size:11px;color:${planInfo.color};font-weight:600">★ ${planInfo.label}</span>
             <span style="font-family:var(--serif);font-size:22px;font-weight:300;color:#F2F0EC;line-height:1">
@@ -2066,6 +2066,32 @@ function renderLoyCust(custs) {
   applyAdminSearch();
 }
 
+// ── PRETPLATA: datum isteka i evidentiranje uplate ──────
+async function savePaidUntil(custId) {
+  const input = document.getElementById('pu-' + custId);
+  if (!input) return;
+  const datum = input.value || '';
+  try {
+    await api('set_paid_until', { custId, date: datum });
+    alert(datum ? '✓ Plaćeno do ' + fmtDate(datum, false) : 'Datum obrisan — pretplata nije podešena (ne blokira se).');
+    loadLoyalty();
+  } catch (e) {
+    alert('Greška: ' + (e.message || 'nije sačuvano'));
+  }
+}
+
+async function extendSubscription(custId, name) {
+  if (!confirm('Evidentirati uplatu za ' + (name || 'klijenta') + '?\n\nPretplata se produžava od danas (ili od postojećeg isteka ako je kasniji).')) return;
+  try {
+    const r = await api('extend_subscription', { custId });
+    const doKad = r && r.plan_paid_until ? fmtDate(r.plan_paid_until, false) : '';
+    alert('✓ Uplata evidentirana.\nPlaćeno do: ' + doKad);
+    loadLoyalty();
+  } catch (e) {
+    alert('Greška: ' + (e.message || 'nije evidentirano'));
+  }
+}
+
 // ── DODAJ USLUGU MODAL ──────────────────────────────────
 let _svcCustId = '', _svcCustName = '';
 function openAddServiceModal(custId, name) {
@@ -2090,7 +2116,17 @@ async function saveAddServiceModal() {
   const btn = document.querySelector('#svcModal .nm-save');
   btn.textContent = 'Čuvam...'; btn.disabled = true;
   try {
-    await api('add_wash', { custId: _svcCustId, custName: _svcCustName, note, serviceDate: date });
+    let r = await api('add_wash', { custId: _svcCustId, custName: _svcCustName, note, serviceDate: date });
+    // Server javlja da je pretplata istekla ili da je kvota potrošena.
+    // Ne blokiramo nasilno — pitamo admina da potvrdi.
+    if (r && r.error === 'blokirano') {
+      const naslov = r.reason === 'isteklo' ? '⚠️ PRETPLATA JE ISTEKLA' : '⚠️ KVOTA JE POTROŠENA';
+      if (!confirm(naslov + '\n\n' + r.message + '\n\nSvejedno upisati pranje?')) {
+        btn.textContent = 'Sačuvaj →'; btn.disabled = false;
+        return;
+      }
+      r = await api('add_wash', { custId: _svcCustId, custName: _svcCustName, note, serviceDate: date, force: true });
+    }
     closeAddServiceModal();
     loadLoyalty();
   } catch(e) {
@@ -2630,6 +2666,8 @@ setInterval(function () {
       case 'open-note':        openNoteModal(btn.dataset.cid, btn.dataset.name, btn.dataset.note); break;
       case 'open-plan':        openPlanModal(btn.dataset.cid, btn.dataset.name, btn.dataset.plan || ''); break;
       case 'delete-cust':      custDeleteAccount(btn.dataset.cid, btn.dataset.name, btn.dataset.auth); break;
+      case 'save-paid-until':  savePaidUntil(btn.dataset.cid);  break;
+      case 'extend-sub':       extendSubscription(btn.dataset.cid, btn.dataset.name); break;
       case 'care-act-single':  careActivateSingle(e, btn.dataset.cid, btn.dataset.name, btn.dataset.phone, btn.dataset.email, btn.dataset.usluga, btn.dataset.note, btn.dataset.velicina); break;
       case 'care-act-all':     careActivateAll(btn.dataset.gid);  break;
       case 'care-del-all':     careDeleteAll(btn.dataset.gid);    break;
