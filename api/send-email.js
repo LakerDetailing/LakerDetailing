@@ -3,6 +3,8 @@
 //  Vercel serverless function
 // ══════════════════════════════════════════════════════════
 
+const crypto = require('node:crypto');
+
 function getEnv(...names) {
   for (const name of names) {
     const value = process.env[name];
@@ -23,6 +25,27 @@ const SENDER_NAME   = 'Laker Detailing Studio';
 const ADMIN_EMAIL   = 'detailinglaker@gmail.com';
 const SUPABASE_URL  = getEnv('SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL', 'VITE_SUPABASE_URL');
 const SUPABASE_KEY  = getEnv('SUPABASE_SERVICE_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE');
+const ADMIN_PASSWORD = getEnv('ADMIN_PASSWORD', 'ADMIN_PW', 'VERCEL_ADMIN_PASSWORD');
+
+// ── Ko sme šta ────────────────────────────────────────────
+// Tipovi koje zove ISKLJUČIVO admin panel — traže lozinku.
+const ADMIN_ONLY_TYPES = new Set(['loyalty_welcome']);
+// Javni tipovi koji šalju mejl na adresu koju pošiljalac bira.
+// Ovo je jedini put kojim se nepoznatoj osobi može poslati mejl,
+// pa samo on dobija limit po primaocu. ('testimonial' ide samo adminu.)
+const PUBLIC_OUTBOUND_TYPES = new Set(['loyalty_registration']);
+
+const DAY_MS                = 24 * 60 * 60 * 1000;
+const MAX_PER_RECIPIENT_DAY = 10;   // ista adresa max 10 mejlova dnevno
+const MAX_TOTAL_PER_DAY     = 250;  // osigurač ispod Brevo plafona (300/dan)
+
+// Konstantno-vremensko poređenje — ne odaje lozinku kroz vreme odgovora.
+function safeEqual(a, b) {
+  const left  = Buffer.from(String(a || ''), 'utf8');
+  const right = Buffer.from(String(b || ''), 'utf8');
+  if (left.length !== right.length) return false;
+  return crypto.timingSafeEqual(left, right);
+}
 
 async function brevoSend(payload) {
   const res = await fetch(BREVO_URL, {
@@ -123,67 +146,6 @@ function footerHtml() {
       <a href="https://www.lakerdetailing.rs" style="color:#C0392B;text-decoration:none">lakerdetailing.rs</a>
     </p>
   </div>`;
-}
-
-// ── EMAIL: BOOKING POTVRDA — KLIJENT ────────────────────
-function bookingClientHtml({ ime, email, telefon, auto, velicina, usluga, datum, napomena }) {
-  return `<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-  <body style="margin:0;padding:20px;background:#f0f0f0;font-family:'Helvetica Neue',Arial,sans-serif">
-  <div style="max-width:580px;margin:0 auto;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.1)">
-    ${headerHtml()}
-    <div style="padding:40px">
-      <h1 style="font-family:Georgia,serif;font-size:34px;font-weight:300;color:#0E0E0E;margin:0 0 6px;letter-spacing:-1px">Zahtev <em style="font-style:italic;color:#C0392B">primljen</em></h1>
-      <p style="font-size:13px;color:#888;margin:0 0 28px">Hvala, ${esc(ime)}. Javićemo Vam se uskoro radi potvrde termina.</p>
-      
-      <div style="background:#f7f7f7;border-left:2px solid #C0392B;padding:22px 26px;margin-bottom:24px">
-        <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#C0392B;margin-bottom:14px">Detalji zahteva</div>
-        <table style="width:100%;border-collapse:collapse;font-size:13px">
-          <tr><td style="padding:6px 0;color:#888;width:120px">Vozilo:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(auto)} (${esc(velicina)})</td></tr>
-          <tr><td style="padding:6px 0;color:#888">Usluga:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(usluga)}</td></tr>
-          <tr><td style="padding:6px 0;color:#888">Datum:</td><td style="padding:6px 0;color:#111;font-weight:500">${datum || 'Po dogovoru'}</td></tr>
-          <tr><td style="padding:6px 0;color:#888">Telefon:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(telefon)}</td></tr>
-          ${cleanMaintenanceNote(napomena) ? `<tr><td style="padding:6px 0;color:#888;vertical-align:top">Napomena:</td><td style="padding:6px 0;color:#111">${esc(cleanMaintenanceNote(napomena))}</td></tr>` : ''}
-        </table>
-      </div>
-
-      <p style="font-size:13px;color:#555;line-height:1.8;margin:0 0 24px">
-        Za brži odgovor pišite nam na WhatsApp:<br>
-        <a href="https://wa.me/381607260302" style="color:#C0392B;font-weight:600;text-decoration:none">060 726 0302</a>
-      </p>
-
-      <div style="text-align:center;margin-top:28px">
-        <a href="https://www.lakerdetailing.rs" style="display:inline-block;background:#C0392B;color:#fff;padding:14px 36px;text-decoration:none;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase">Posetite sajt →</a>
-      </div>
-    </div>
-    ${footerHtml()}
-  </div>
-  </body></html>`;
-}
-
-// ── EMAIL: BOOKING NOTIFIKACIJA — ADMIN ─────────────────
-function bookingAdminHtml({ ime, email, telefon, auto, velicina, usluga, datum, napomena }) {
-  return `<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"></head>
-  <body style="margin:0;padding:20px;background:#f0f0f0;font-family:'Helvetica Neue',Arial,sans-serif">
-  <div style="max-width:580px;margin:0 auto;background:#fff">
-    ${headerHtml()}
-    <div style="padding:32px 40px">
-      <div style="background:#C0392B;color:#fff;padding:8px 16px;display:inline-block;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px">NOVI ZAHTEV ZA TERMIN</div>
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888;width:130px">Klijent:</td><td style="padding:10px 14px;color:#111;font-weight:600">${esc(ime)}</td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Email:</td><td style="padding:10px 14px"><a href="mailto:${esc(email)}" style="color:#C0392B">${esc(email)}</a></td></tr>
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Telefon:</td><td style="padding:10px 14px"><a href="tel:${esc(telefon)}" style="color:#C0392B">${esc(telefon)}</a></td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Vozilo:</td><td style="padding:10px 14px;font-weight:600">${esc(auto)} (${esc(velicina)})</td></tr>
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Usluga:</td><td style="padding:10px 14px;font-weight:600">${esc(usluga)}</td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Željeni datum:</td><td style="padding:10px 14px">${datum || 'Nije naveden'}</td></tr>
-        ${cleanMaintenanceNote(napomena) ? `<tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888;vertical-align:top">Napomena:</td><td style="padding:10px 14px">${esc(cleanMaintenanceNote(napomena))}</td></tr>` : ''}
-      </table>
-      <div style="margin-top:20px;padding:14px 18px;background:#fff3cd;border-left:2px solid #ffc107;font-size:12px;color:#555">
-        ⚡ Odgovorite klijentu što pre — pogledajte admin panel za upravljanje upitima.
-      </div>
-    </div>
-    ${footerHtml()}
-  </div>
-  </body></html>`;
 }
 
 // ── EMAIL: LOYALTY WELCOME (šalje se kad admin ODOBRI) ───
@@ -348,72 +310,6 @@ function testimonialAdminHtml({ name, car, city, text, rating }) {
   </body></html>`;
 }
 
-// ── EMAIL: LOYALTY PRIJAVA — KLIJENT ──────────────────────
-function maintenanceClientHtml({ name, email, telefon, auto, velicina, usluga, napomena }) {
-  return `<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"></head>
-  <body style="margin:0;padding:20px;background:#f0f0f0;font-family:'Helvetica Neue',Arial,sans-serif">
-  <div style="max-width:580px;margin:0 auto;background:#fff">
-    ${headerHtml()}
-    <div style="padding:40px">
-      <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#C0392B;margin-bottom:12px">LAKER LOYALTY MEMBERSHIP</div>
-      <h1 style="font-family:Georgia,serif;font-size:34px;font-weight:300;color:#0E0E0E;margin:0 0 6px">Prijava <em style="font-style:italic;color:#C0392B">primljena</em>, ${esc(name)}!</h1>
-      <p style="font-size:13px;color:#888;margin:0 0 28px">Hvala na interesovanju za Laker Loyalty. Javljamo se uskoro radi potvrde i aktivacije.</p>
-
-      <div style="background:#f7f7f7;border-left:2px solid #C0392B;padding:22px 26px;margin-bottom:24px">
-        <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#C0392B;margin-bottom:14px">Detalji prijave</div>
-        <table style="width:100%;border-collapse:collapse;font-size:13px">
-          ${auto ? `<tr><td style="padding:6px 0;color:#888;width:120px">Vozilo:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(auto)}</td></tr>` : ''}
-          <tr><td style="padding:6px 0;color:#888">Veličina:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(velicina)}</td></tr>
-          <tr><td style="padding:6px 0;color:#888">Plan:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(usluga)}</td></tr>
-          <tr><td style="padding:6px 0;color:#888">Telefon:</td><td style="padding:6px 0;color:#111;font-weight:500">${esc(telefon)}</td></tr>
-          ${cleanMaintenanceNote(napomena) ? `<tr><td style="padding:6px 0;color:#888;vertical-align:top">Napomena:</td><td style="padding:6px 0;color:#111">${esc(cleanMaintenanceNote(napomena))}</td></tr>` : ''}
-        </table>
-      </div>
-
-      <div style="background:#0E0E0E;padding:18px 22px;margin-bottom:24px">
-        <div style="font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#C0392B;margin-bottom:10px">Vaše članstvo uključuje</div>
-        <div style="font-size:13px;color:#F2F0EC;line-height:2.0">
-          ◆ 2 premium usluge mesečno<br>
-          ◆ Prioritetan termin — uvek na prvom mestu
-        </div>
-      </div>
-
-      <p style="font-size:13px;color:#555;line-height:1.8;margin:0 0 24px">
-        Za brži odgovor pišite nam na WhatsApp:<br>
-        <a href="https://wa.me/381607260302" style="color:#C0392B;font-weight:600;text-decoration:none">060 726 0302</a>
-      </p>
-    </div>
-    ${footerHtml()}
-  </div>
-  </body></html>`;
-}
-
-// ── EMAIL: LOYALTY PRIJAVA — ADMIN ────────────────────────
-function maintenanceAdminHtml({ name, email, telefon, auto, velicina, usluga, napomena }) {
-  return `<!DOCTYPE html><html lang="sr"><head><meta charset="UTF-8"></head>
-  <body style="margin:0;padding:20px;background:#f0f0f0;font-family:'Helvetica Neue',Arial,sans-serif">
-  <div style="max-width:580px;margin:0 auto;background:#fff">
-    ${headerHtml()}
-    <div style="padding:32px 40px">
-      <div style="background:#C0392B;color:#fff;padding:8px 16px;display:inline-block;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px">NOVA LOYALTY PRIJAVA</div>
-      <table style="width:100%;border-collapse:collapse;font-size:13px">
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888;width:130px">Klijent:</td><td style="padding:10px 14px;color:#111;font-weight:600">${esc(name)}</td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Email:</td><td style="padding:10px 14px"><a href="mailto:${esc(email)}" style="color:#C0392B">${esc(email)}</a></td></tr>
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Telefon:</td><td style="padding:10px 14px"><a href="tel:${esc(telefon)}" style="color:#C0392B">${esc(telefon)}</a></td></tr>
-        ${auto ? `<tr><td style="padding:10px 14px;color:#888">Vozilo:</td><td style="padding:10px 14px;font-weight:600">${esc(auto)}</td></tr>` : ''}
-        <tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888">Veličina:</td><td style="padding:10px 14px;font-weight:600">${esc(velicina)}</td></tr>
-        <tr><td style="padding:10px 14px;color:#888">Plan:</td><td style="padding:10px 14px;font-weight:600">${esc(usluga)}</td></tr>
-        ${cleanMaintenanceNote(napomena) ? `<tr style="background:#f7f7f7"><td style="padding:10px 14px;color:#888;vertical-align:top">Napomena:</td><td style="padding:10px 14px">${esc(cleanMaintenanceNote(napomena))}</td></tr>` : ''}
-      </table>
-      <div style="margin-top:20px;padding:14px 18px;background:#fff3cd;border-left:2px solid #ffc107;font-size:12px;color:#555">
-        ⚡ Novi Loyalty član — potvrdite plan i aktivirajte termin u admin panelu.
-      </div>
-    </div>
-    ${footerHtml()}
-  </div>
-  </body></html>`;
-}
-
 // ── MAIN HANDLER (Vercel format) ─────────────────────────
 module.exports = async function handler(req, res) {
   setSecurityHeaders(res);
@@ -469,6 +365,60 @@ module.exports = async function handler(req, res) {
       });
       return res.status(429).json({ error: 'Previše zahteva. Pokušajte kasnije.' });
     }
+
+    // ── Admin-only tipovi traže lozinku ─────────────────────
+    if (ADMIN_ONLY_TYPES.has(type)) {
+      if (!ADMIN_PASSWORD || !safeEqual(String(data.adminPassword || ''), ADMIN_PASSWORD)) {
+        await auditSecurityEvent({
+          scope: 'send-email',
+          action: 'auth_failed',
+          status: 'blocked',
+          ip: sourceIp,
+          user_agent: String(req.headers['user-agent'] || ''),
+          subject: type
+        });
+        return res.status(401).json({ error: 'Neovlašćen pristup.' });
+      }
+    } else {
+      // ── Limiti slanja — VAŽE SAMO ZA JAVNE TIPOVE ─────────
+      // Admin tipovi su gore već prošli lozinku i namerno se ne broje,
+      // da limit nikada ne može da blokira vlasnika u radu.
+
+      // 1) Ista adresa ne sme da primi više od MAX_PER_RECIPIENT_DAY dnevno.
+      //    Ne smeta rastu — 1000 RAZLIČITIH klijenata svi prođu.
+      if (PUBLIC_OUTBOUND_TYPES.has(type)) {
+        const rcpt = cleanEmail(data.email);
+        if (rcpt) {
+          const perRcpt = await checkPersistentRateLimit({
+            scope: 'send-email-rcpt', key: rcpt,
+            max: MAX_PER_RECIPIENT_DAY, windowMs: DAY_MS
+          });
+          if (!perRcpt.allowed) {
+            await auditSecurityEvent({
+              scope: 'send-email', action: 'recipient_limit_block', status: 'blocked',
+              ip: sourceIp, user_agent: String(req.headers['user-agent'] || ''),
+              subject: type, details: { limit: MAX_PER_RECIPIENT_DAY }
+            });
+            return res.status(429).json({ error: 'Previše zahteva za ovu email adresu. Pokušajte sutra.' });
+          }
+        }
+      }
+
+      // 2) Osigurač: ukupno dnevno slanje sa sajta.
+      const daily = await checkPersistentRateLimit({
+        scope: 'send-email-day', key: 'global',
+        max: MAX_TOTAL_PER_DAY, windowMs: DAY_MS
+      });
+      if (!daily.allowed) {
+        await auditSecurityEvent({
+          scope: 'send-email', action: 'daily_cap_block', status: 'blocked',
+          ip: sourceIp, user_agent: String(req.headers['user-agent'] || ''),
+          subject: type, details: { limit: MAX_TOTAL_PER_DAY, hits: daily.hits }
+        });
+        return res.status(429).json({ error: 'Dnevni limit slanja je dostignut. Pokušajte sutra ili nas pozovite: 060 726 0302.' });
+      }
+    }
+
     await auditSecurityEvent({
       scope: 'send-email',
       action: 'submission_received',
@@ -478,55 +428,7 @@ module.exports = async function handler(req, res) {
       subject: type
     });
 
-    if (type === 'booking') {
-      const ime = cleanText(data.ime, 80);
-      const email = cleanEmail(data.email);
-      const telefon = cleanPhone(data.telefon);
-      const auto = cleanText(data.auto, 120);
-      const velicina = cleanText(data.velicina, 80);
-      const usluga = cleanText(data.usluga, 120);
-      const datum = cleanText(data.datum, 40);
-      const napomena = cleanParagraph(data.napomena, 500);
-
-      if (!ime || !isValidEmail(email) || !isValidPhone(telefon) || !auto || !velicina || !usluga) {
-        return res.status(400).json({ error: 'Nedostaju ili nisu ispravna obavezna polja za booking' });
-      }
-
-      const r1 = await brevoSend({
-        sender:      { name: SENDER_NAME, email: SENDER_EMAIL },
-        to:          [{ email, name: ime }],
-        replyTo:     { email: ADMIN_EMAIL },
-        subject:     `✅ Zahtev primljen — Laker Detailing Studio`,
-        htmlContent: bookingClientHtml({ ime, email, telefon, auto, velicina, usluga, datum, napomena })
-      });
-      results.push({ to: 'client', ok: r1.ok });
-
-      const r2 = await brevoSend({
-        sender:      { name: SENDER_NAME, email: SENDER_EMAIL },
-        to:          [{ email: ADMIN_EMAIL, name: 'Laker Admin' }],
-        replyTo:     { email, name: ime },
-        subject:     `🚗 Novi zahtev: ${esc(ime)} — ${esc(usluga)}`,
-        htmlContent: bookingAdminHtml({ ime, email, telefon, auto, velicina, usluga, datum, napomena })
-      });
-      results.push({ to: 'admin', ok: r2.ok });
-      try {
-        const save = await supabaseWrite('/rest/v1/contacts', {
-          submission_type: 'booking',
-          ime,
-          email,
-          telefon,
-          auto,
-          velicina,
-          usluga,
-          datum,
-          napomena: cleanParagraph(napomena, 500),
-          source_ip: sourceIp
-        });
-        results.push({ to: 'contacts_db', ok: save.ok });
-      } catch (err) {
-        results.push({ to: 'contacts_db', ok: false, error: err.message });
-      }
-    } else if (type === 'loyalty_welcome') {
+    if (type === 'loyalty_welcome') {
       const name     = cleanText(data.name, 80);
       const email    = cleanEmail(data.email);
       const plan     = cleanText(data.plan     || '', 20);
@@ -598,55 +500,6 @@ module.exports = async function handler(req, res) {
         results.push({ to: 'contacts_db', ok: false, error: err.message });
       }
 
-    } else if (type === 'maintenance' || type === 'care' || type === 'loyalty') {
-      const ime = cleanText(data.ime, 80);
-      const email = cleanEmail(data.email);
-      const telefon = cleanPhone(data.telefon);
-      const auto = cleanText(data.auto, 120);
-      const velicina = cleanText(data.velicina, 80);
-      const usluga = cleanText(data.usluga, 120);
-      const napomena = cleanParagraph(data.napomena, 500);
-
-      if (!ime || !isValidEmail(email) || !isValidPhone(telefon) || !usluga) {
-        return res.status(400).json({ error: 'Nedostaju ili nisu ispravna obavezna polja za Maintenance prijavu' });
-      }
-      const r1 = await brevoSend({
-        sender:      { name: SENDER_NAME, email: SENDER_EMAIL },
-        to:          [{ email, name: ime }],
-        replyTo:     { email: ADMIN_EMAIL },
-        subject:     `✅ Loyalty prijava primljena — Laker Detailing`,
-        htmlContent: maintenanceClientHtml({ name: ime, email, telefon, auto, velicina, usluga, napomena })
-      });
-      results.push({ to: 'client', ok: r1.ok });
-
-      const r2 = await brevoSend({
-        sender:      { name: SENDER_NAME, email: SENDER_EMAIL },
-        to:          [{ email: ADMIN_EMAIL, name: 'Laker Admin' }],
-        replyTo:     { email, name: ime },
-        subject:     `🏅 Nova Loyalty prijava: ${ime}`,
-        htmlContent: maintenanceAdminHtml({ name: ime, email, telefon, auto, velicina, usluga, napomena })
-      });
-      results.push({ to: 'admin', ok: r2.ok });
-      try {
-        const save = await supabaseWrite('/rest/v1/contacts', {
-          submission_type: 'maintenance',
-          ime,
-          email,
-          telefon,
-          auto,
-          velicina,
-          usluga: cleanText('Laker Maintenance — ' + usluga, 120),
-          datum: new Date().toISOString().split('T')[0],
-          napomena: cleanParagraph(`Maintenance membership prijava | ${napomena}`, 500),
-          source_ip: sourceIp
-        });
-        results.push({ to: 'contacts_db', ok: save.ok });
-      } catch (err) {
-        results.push({ to: 'contacts_db', ok: false, error: err.message });
-      }
-    } else if (type === 'birthday') {
-      // Birthday email je ukinut — Loyalty 2.0 ne koristi više birthday pogodnosti
-      results.push({ to: 'member', ok: true, info: 'birthday_disabled' });
     } else if (type === 'testimonial') {
       const name   = cleanText(data.name, 80);
       const car    = cleanText(data.car, 80);

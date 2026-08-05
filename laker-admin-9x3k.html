@@ -2253,10 +2253,12 @@ function birthDateFromNote(note) {
 // ── Šalje welcome email klijentu pri aktivaciji ───────────
 function sendLoyaltyWelcomeEmail(name, email, plan, velicina) {
   if (!email) return;
+  if (DEMO_MODE) return;
   fetch('/api/send-email', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ type: 'loyalty_welcome', name, email, plan, velicina })
+    // adminPassword — welcome mejl je admin-only, server ga bez ovoga odbija (401)
+    body: JSON.stringify({ type: 'loyalty_welcome', adminPassword: _pw, name, email, plan, velicina })
   }).catch(() => {});
 }
 
