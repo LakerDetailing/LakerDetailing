@@ -489,7 +489,9 @@ window.openLoyalty = function(){
   const _box = $('loyOverlay').firstElementChild;
   if(_box){_box.style.animation='none';_box.offsetHeight;_box.style.animation='loy-modal-in .38s cubic-bezier(.34,1.3,.64,1) both'}
   // Lazy-load Google Identity script only when modal actually opens (not on page load)
-  initLoyaltyGoogleBtn();
+  // try/catch: Google dugme je sporedno — ako pukne, modal MORA da nastavi da radi.
+  // (Ranije je TDZ greška odavde obarala ceo reset-lozinke tok.)
+  try { initLoyaltyGoogleBtn(); } catch (e) { console.warn('Google dugme nije učitano:', e && e.message); }
   if(_user){
     // Korisnik je ulogovan — prikaži dashboard (ne resetuj tab)
     const dash = $('loy-dash');
@@ -866,28 +868,40 @@ window.sendPasswordReset = async function() {
   const recoveryToken = params.access_token || params.token || params.token_hash || '';
   // Samo recovery tip – ne uključujemo Google OAuth callback (type=bearer)
   const isRecovery = params.type === 'recovery' || params.recovery === '1';
+
+  // VAŽNO: otvaranje UI-ja MORA da ide u sledeći tick.
+  // Ova IIFE se izvršava dok main.js još teče odozgo nadole. openLoyalty()
+  // zove initLoyaltyGoogleBtn(), koja čita `let _gsiInitStarted` deklarisan
+  // niže u fajlu — pozvano odmah odavde to puca na TDZ grešci
+  // ("Cannot access '_gsiInitStarted' before initialization"). Izuzetak je
+  // prekidao tok TAČNO između otvaranja modala i prikazivanja forme, pa se
+  // videla login forma umesto forme za novu lozinku. setTimeout(...,0)
+  // sačeka da ceo fajl odradi i sve deklaracije budu inicijalizovane.
+  function showNewPasswordForm(errMsg) {
+    openLoyalty();
+    const auth = document.getElementById('loy-auth-area');
+    const form = document.getElementById('loy-form-new-pass');
+    if (auth) auth.style.display = 'none';
+    if (form) form.style.display = 'block';
+    if (errMsg) {
+      const _msg = document.getElementById('new-pass-msg');
+      if (_msg) {
+        _msg.style.cssText = 'display:block;color:#E8C96A;background:rgba(229,57,53,.08);border-left:2px solid #E8C96A;padding:9px 12px';
+        _msg.textContent = errMsg;
+      }
+    }
+  }
+
   if (isRecovery && recoveryToken) {
     window._recoveryToken = recoveryToken;
     history.replaceState(null, '', window.location.pathname);
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        openLoyalty();
-        document.getElementById('loy-auth-area').style.display = 'none';
-        document.getElementById('loy-form-new-pass').style.display = 'block';
-      });
-    } else {
-      openLoyalty();
-      document.getElementById('loy-auth-area').style.display = 'none';
-      document.getElementById('loy-form-new-pass').style.display = 'block';
-    }
+    setTimeout(function(){ showNewPasswordForm(null); }, 0);
     return;
   }
   if (params.type === 'recovery' || params.recovery === '1') {
-    openLoyalty();
-    document.getElementById('loy-auth-area').style.display = 'none';
-    document.getElementById('loy-form-new-pass').style.display = 'block';
-    const _msg = document.getElementById('new-pass-msg');
-    if(_msg){ _msg.style.cssText = 'display:block;color:#E8C96A;background:rgba(229,57,53,.08);border-left:2px solid #E8C96A;padding:9px 12px'; _msg.textContent = 'Link je otvoren, ali token nije stigao. Zatražite novi reset link.'; }
+    setTimeout(function(){
+      showNewPasswordForm('Link je otvoren, ali token nije stigao. Zatražite novi reset link.');
+    }, 0);
   }
 })();
 
