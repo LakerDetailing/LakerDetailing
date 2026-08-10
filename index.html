@@ -17,8 +17,8 @@
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="geo.region" content="RS-17">
 <meta name="geo.placename" content="Čačak">
-<meta name="geo.position" content="43.8914;20.3498">
-<meta name="ICBM" content="43.8914, 20.3498">
+<meta name="geo.position" content="43.876345;20.3501718">
+<meta name="ICBM" content="43.876345, 20.3501718">
 
 <!-- ══ SENTRY ERROR TRACKING — non-blocking ══ -->
 <!-- ══ ANALYTICS (učitava se samo uz cookie saglasnost) ══ -->
@@ -88,15 +88,16 @@
       "logo": "https://www.lakerdetailing.rs/assets/icons/web-app-manifest-512x512.png",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "Ulica 600 br. 9",
         "addressLocality": "Čačak",
         "addressRegion": "Moravički okrug",
-        "postalCode": "32000",
+        "postalCode": "32102",
         "addressCountry": "RS"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": "43.8914",
-        "longitude": "20.3498"
+        "latitude": "43.876345",
+        "longitude": "20.3501718"
       },
       "areaServed": [
         {"@type": "City", "name": "Čačak"},
@@ -906,6 +907,44 @@ body.light .soc-tt{border-color:rgba(0,0,0,.08)}
 .soc-wa{background:#075E54;color:#fff}
 .soc-wa:hover{background:#128C7E;transform:translateY(-3px)}
 
+/* LOKACIJA / MAPA */
+#loc{background:var(--d1);padding:120px 70px}
+.loc-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:70px;align-items:center;max-width:1220px;margin:0 auto}
+.loc-info .sd{max-width:none}
+.loc-meta{margin-top:40px;display:flex;flex-direction:column;gap:24px}
+.loc-item{display:grid;grid-template-columns:106px 1fr;gap:18px;align-items:start}
+.loc-k{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;padding-top:4px}
+.loc-v{font-size:14px;color:var(--lgray);line-height:1.75;font-weight:300}
+.loc-v a{color:inherit;text-decoration:none;transition:color .3s}
+.loc-v a:hover{color:var(--gold)}
+.loc-v small{display:block;font-size:12.5px;color:var(--gray);margin-top:3px}
+.loc-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:42px}
+.loc-btn{display:inline-flex;align-items:center;gap:11px;padding:16px 32px;font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;cursor:none;border:1px solid transparent}
+.loc-btn.pri{background:var(--gold);color:#fff}
+.loc-btn.pri:hover{background:var(--gold2);transform:translateY(-3px);box-shadow:0 18px 48px rgba(255,42,42,.25)}
+.loc-btn.sec{color:var(--white);border-color:rgba(255,255,255,.14)}
+body.light .loc-btn.sec{border-color:rgba(0,0,0,.12)}
+.loc-btn.sec:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+.loc-map{position:relative;aspect-ratio:4/3;background:var(--d3);border:1px solid rgba(255,255,255,.08);overflow:hidden}
+body.light .loc-map{border-color:rgba(0,0,0,.08)}
+/* mapa je namerno neinteraktivna — ceo blok je link ka Google Mapama, pa scroll strane ne upada u mapu */
+/* BEZ transition na filteru: Chrome na Maps iframe-u zaglavi CSSTransition na currentTime 0
+   i mapa zauvek ostane u tamnoj varijanti posle prebacivanja na svetlu temu. */
+.loc-map iframe{width:100%;height:100%;border:0;display:block;pointer-events:none;filter:invert(92%) hue-rotate(180deg) brightness(.94) contrast(.92)}
+body.light .loc-map iframe{filter:none}
+/* sopstveni marker: Google embed prikazuje svoj pin nedosledno (isti URL nekad da, nekad ne),
+   pa mapa ide bez pretrage (ll=) i pin crtamo sami — uvek tu i u brend boji */
+.loc-pin{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(255,42,42,.22),0 3px 14px rgba(0,0,0,.55);pointer-events:none;z-index:2}
+.loc-pin::after{content:'';position:absolute;inset:-9px;border-radius:50%;border:1px solid rgba(255,42,42,.55);animation:locPulse 2.8s ease-out infinite}
+@keyframes locPulse{0%{transform:scale(.65);opacity:.85}100%{transform:scale(1.9);opacity:0}}
+@media(prefers-reduced-motion:reduce){.loc-pin::after{animation:none}}
+.loc-hit{position:absolute;inset:0;z-index:3;display:block}
+/* hint stoji GORE desno — dole je Google atribucija koja ne sme da se prekriva */
+.loc-hit::after{content:'Otvori u Google Mapama ↗';position:absolute;right:14px;top:14px;padding:10px 17px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:600;white-space:nowrap;background:rgba(8,8,8,.85);color:var(--white);border:1px solid rgba(255,255,255,.13);opacity:0;transform:translateY(-6px);transition:opacity .35s,transform .35s}
+body.light .loc-hit::after{background:rgba(244,242,238,.92);border-color:rgba(0,0,0,.1)}
+.loc-map:hover .loc-hit::after{opacity:1;transform:none}
+@media(hover:none){.loc-hit::after{opacity:1;transform:none}}
+
 /* FOOTER */
 footer{background:var(--d1);border-top:1px solid rgba(255,255,255,.05);overflow-x:hidden}
 body.light footer{border-top-color:rgba(0,0,0,.06)}
@@ -1146,6 +1185,9 @@ html.js-ready .rr.in{opacity:1;transform:translateX(0)}
   .cs-grid{grid-template-columns:repeat(2,1fr)}
   .cs-card{height:380px}
   #soc{padding:80px 30px}
+  #loc{padding:80px 30px}
+  .loc-grid{grid-template-columns:1fr;gap:46px}
+  .loc-map{aspect-ratio:1/1}
   .proc-steps::before{display:none}
   .proc-steps{grid-template-columns:1fr}
 }
@@ -2885,6 +2927,46 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   </div>
 </section>
 
+<!-- ══ LOKACIJA ══ -->
+<section id="loc">
+  <div class="loc-grid">
+    <div class="loc-info rv">
+      <div class="sl">Lokacija</div>
+      <h2 class="sh">Gde nas<br><em>nađete</em></h2>
+      <p class="sd">Studio je u Čačku, na desetak minuta od centra. Radimo isključivo po zakazivanju — jedan automobil u terminu, bez žurbe.</p>
+      <div class="loc-meta">
+        <div class="loc-item">
+          <span class="loc-k">Adresa</span>
+          <span class="loc-v">Ulica 600 br. 9<small>32102 Čačak, Srbija</small></span>
+        </div>
+        <div class="loc-item">
+          <span class="loc-k">Radno vreme</span>
+          <span class="loc-v">Ponedeljak — Subota, 09—20h<small>Nedeljom ne radimo</small></span>
+        </div>
+        <div class="loc-item">
+          <span class="loc-k">Telefon</span>
+          <span class="loc-v"><a href="tel:+381607260302">060 726 0302</a><small>Pozovite za termin</small></span>
+        </div>
+      </div>
+      <div class="loc-btns">
+        <a class="loc-btn pri" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.876345%2C20.3501718&amp;destination_place_id=ChIJUbhOjVRzV0cRQpiB_thOjDg" target="_blank" rel="noopener noreferrer"><span>➜</span> Navigacija</a>
+        <a class="loc-btn sec" href="https://www.google.com/maps/search/?api=1&amp;query=Laker%20detailing&amp;query_place_id=ChIJUbhOjVRzV0cRQpiB_thOjDg" target="_blank" rel="noopener noreferrer">Otvori u Google Mapama</a>
+      </div>
+    </div>
+    <div class="loc-map rv">
+      <iframe
+        src="https://www.google.com/maps?ll=43.876345,20.3501718&amp;z=16&amp;hl=sr&amp;output=embed"
+        title="Laker Detailing Studio — Ulica 600 br. 9, Čačak na Google mapi"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        tabindex="-1"
+        aria-hidden="true"></iframe>
+      <span class="loc-pin" aria-hidden="true"></span>
+      <a class="loc-hit" href="https://www.google.com/maps/search/?api=1&amp;query=Laker%20detailing&amp;query_place_id=ChIJUbhOjVRzV0cRQpiB_thOjDg" target="_blank" rel="noopener noreferrer" aria-label="Otvori lokaciju studija u Google Mapama"></a>
+    </div>
+  </div>
+</section>
+
 </main>
 <!-- ══ FOOTER ══ -->
 <footer>
@@ -2934,7 +3016,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>30</b> · 2026-08-05</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>31</b> · 2026-08-10</span>
   </div>
 </footer>
 
