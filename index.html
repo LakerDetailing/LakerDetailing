@@ -489,9 +489,11 @@ section[id]{scroll-margin-top:calc(88px + env(safe-area-inset-top))}
 .phi-img picture{display:block;width:100%;height:100%}
 .phi-img img{width:100%;height:100%;object-fit:contain;transition:transform .9s ease}
 .phi-img:hover img{transform:scale(1.04)}
-.phi-img-light{display:none}
-body.light .phi-img-dark{display:none}
-body.light .phi-img-light{display:flex}
+/* selektori moraju biti bar iste specifičnosti kao `.phi-left .phi-img` iznad,
+   inače display:flex odatle nadjača skrivanje i obe varijante se prikažu */
+.phi-left .phi-img-light{display:none}
+body.light .phi-left .phi-img-dark{display:none}
+body.light .phi-left .phi-img-light{display:flex}
 .phi-vals{display:flex;flex-direction:column;gap:0;margin-top:52px}
 .pv{display:flex;gap:26px;padding:28px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 body.light .pv{border-bottom-color:rgba(0,0,0,.06)}
@@ -3018,7 +3020,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>32</b> · 2026-08-10</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>33</b> · 2026-08-10</span>
   </div>
 </footer>
 
