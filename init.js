@@ -57,11 +57,31 @@
   document.readyState==='complete'?scheduleSentry():window.addEventListener('load',scheduleSentry,{once:true});
 })();
 
+// ── ISKLJUČIVANJE SOPSTVENOG SAOBRAĆAJA ──
+// Vlasnik otvori https://www.lakerdetailing.rs/?analitika=off  → ovaj uređaj se više
+// ne broji ni u GA4, ni u Facebook Pixel-u, ni u Vercel Analytics-u.
+// Vraćanje: ?analitika=on
+// Radi po uređaju/pregledaču i ne zavisi od IP adrese — za razliku od GA filtera po IP-u,
+// preživi promenu IP-a i pokriva i mobilni internet. Ponoviti na svakom uređaju.
+(function(){
+  try{
+    var q = new URLSearchParams(location.search).get('analitika');
+    if(q === 'off')      localStorage.setItem('laker_no_analytics','1');
+    else if(q === 'on')  localStorage.removeItem('laker_no_analytics');
+    window._lakerNoAnalytics = localStorage.getItem('laker_no_analytics') === '1';
+    if(q){
+      console.log('%cLaker analitika: ' + (window._lakerNoAnalytics ? 'ISKLJUČENA na ovom uređaju' : 'uključena'),
+                  'color:#FF2A2A;font-weight:700;font-size:13px');
+    }
+  }catch(e){ window._lakerNoAnalytics = false; }
+})();
+
 // ── ANALYTICS (Google Consent Mode v2) ──
 // GA4 se učitava SVIM posetiocima, ali dok nema pristanka radi bez kolačića
 // (analytics_storage:'denied' → cookieless ping): posetu izbroji, ali ne prati osobu.
 // Facebook Pixel i reklamni signali se pale TEK kad posetilac klikne "Prihvati".
 (function(){
+  if(window._lakerNoAnalytics) return;   // vlasnikov uređaj — ništa se ne učitava
   var GA_ID='G-DP87917XW3', FB_ID='27521788054080884';
   window.dataLayer=window.dataLayer||[];
   function gtag(){dataLayer.push(arguments);}
@@ -106,7 +126,16 @@
       ad_personalization:'granted', analytics_storage:'granted'
     });
   }
-  function _boot(){ _loadGA(); if(accepted) _loadPixel(); }
+  // Vercel Web Analytics — učitava se odavde (a ne statičkim tagom u index.html)
+  // da bi i on poštovao ?analitika=off. Bez kolačića, ne traži pristanak.
+  function _loadVercel(){
+    if(window._vercelLoaded) return;
+    window._vercelLoaded = true;
+    var v=document.createElement('script'); v.defer=true;
+    v.src='/_vercel/insights/script.js';
+    document.head.appendChild(v);
+  }
+  function _boot(){ _loadGA(); _loadVercel(); if(accepted) _loadPixel(); }
   if(document.readyState==='complete'){_boot();}
   else{window.addEventListener('load',_boot,{once:true});}
 })();
