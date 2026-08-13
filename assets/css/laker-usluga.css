@@ -1,0 +1,179 @@
+/* ══════════════════════════════════════════════════════════════
+   STRANICE USLUGA — dodatak na laker-base.css
+   Koristi iste promenljive, tipografiju, nav i footer kao index.html.
+   Ovde su samo stilovi kojih na početnoj nema.
+
+   NAMERNO BEZ IJEDNE SLIKE. Ritam stranice nose brojevi, razmak i
+   tanke linije — nigde nema okvira koji čeka fotografiju, pa se ne
+   vidi da je nema. Kad fotografije stignu, dodaje se nova komponenta,
+   ništa od ovoga se ne prepravlja.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── HERO PODSTRANICE ── */
+.us-hero{position:relative;padding:190px 70px 90px;background:var(--black);overflow:hidden}
+.us-hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,42,42,.35),transparent)}
+.us-hero-in{max-width:1220px;margin:0 auto;position:relative;z-index:2}
+/* Putanja je <nav> radi pristupačnosti, pa mora da poništi globalno
+   `nav{position:fixed}` iz laker-base.css — inače odleti na vrh ekrana. */
+nav.us-crumb{position:static;top:auto;left:auto;right:auto;width:auto;height:auto;padding:0;background:none;backdrop-filter:none;box-shadow:none;border:0;z-index:auto;justify-content:flex-start}
+.us-crumb{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:26px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.us-crumb a{color:var(--gray);text-decoration:none;transition:color .3s}
+.us-crumb a:hover{color:var(--gold)}
+.us-crumb span{opacity:.5}
+.us-h1{font-family:var(--serif);font-size:clamp(34px,4.4vw,62px);font-weight:300;line-height:1;letter-spacing:-1.5px;margin-bottom:20px;max-width:16ch}
+.us-h1 em{font-style:italic;color:var(--gold)}
+.us-lead{font-size:15.5px;color:#B8B6B2;line-height:1.85;max-width:600px;font-weight:300}
+body.light .us-lead{color:var(--mgray)}
+.us-hero-meta{display:flex;gap:38px;flex-wrap:wrap;margin-top:44px}
+.us-meta-i{display:flex;flex-direction:column;gap:5px}
+.us-meta-k{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.us-meta-v{font-size:19px;font-family:var(--serif);color:var(--white);font-weight:300}
+
+/* ── OPŠTA SEKCIJA ── */
+.us-sec{padding:100px 70px}
+.us-sec.alt{background:var(--d1)}
+.us-in{max-width:1220px;margin:0 auto}
+
+/* ── PROBLEM / ZAŠTO ── */
+.us-why{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px}
+.us-why-c{background:var(--d2);padding:38px 32px;transition:background .35s}
+.us-why-c:hover{background:var(--d3)}
+.us-why-n{font-family:var(--serif);font-size:34px;color:var(--gold);font-style:italic;margin-bottom:14px;opacity:.8}
+.us-why-c h3{font-size:14px;letter-spacing:1px;text-transform:uppercase;font-weight:700;margin-bottom:12px;color:var(--white)}
+.us-why-c p{font-size:13.5px;color:var(--gray);line-height:1.8;font-weight:300}
+
+/* ── KORACI POSTUPKA ── */
+.us-steps{display:flex;flex-direction:column;gap:2px;margin-top:52px}
+.us-step{display:grid;grid-template-columns:92px 1fr;gap:30px;background:var(--d2);padding:34px 36px;align-items:start;transition:background .35s}
+.us-step:hover{background:var(--d3)}
+.us-step-n{font-family:var(--serif);font-size:42px;font-weight:300;color:var(--gold);line-height:.9;opacity:.55}
+.us-step h3{font-size:15px;letter-spacing:.5px;font-weight:700;margin-bottom:10px;color:var(--white)}
+.us-step p{font-size:14px;color:var(--gray);line-height:1.85;font-weight:300}
+
+/* ── ŠTA DOBIJAŠ ──
+   Zamena za nekadašnji „pre/posle" klizač: rezultat se nabraja
+   rečima umesto da se pokazuje slikom. */
+.us-get{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-top:52px}
+.us-get-i{background:var(--d2);padding:32px 34px;display:grid;grid-template-columns:16px 1fr;gap:18px;align-items:start;transition:background .35s}
+.us-get-i:hover{background:var(--d3)}
+.us-get-m{color:var(--gold);font-size:11px;line-height:1.9}
+.us-get-i h3{font-size:14px;letter-spacing:.4px;font-weight:700;margin-bottom:9px;color:var(--white)}
+.us-get-i p{font-size:13.5px;color:var(--gray);line-height:1.8;font-weight:300}
+
+/* ── TEHNIČKI PODACI ──
+   Trajanje / priprema / vreme u studiju / održavanje. */
+.us-spec{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:52px}
+.us-spec-i{background:var(--d2);padding:32px 28px}
+.us-spec-k{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+.us-spec-v{font-family:var(--serif);font-size:25px;font-weight:300;color:var(--white);line-height:1.2;letter-spacing:-.3px}
+.us-spec-n{font-size:12.5px;color:var(--gray);line-height:1.75;font-weight:300;margin-top:11px}
+
+/* ── IZDVOJENA REČENICA ── */
+.us-quote{margin-top:52px;padding-left:30px;border-left:2px solid var(--gold);max-width:840px}
+.us-quote p{font-family:var(--serif);font-size:clamp(20px,2.4vw,29px);font-weight:300;font-style:italic;line-height:1.5;color:var(--white);letter-spacing:-.4px}
+.us-quote cite{display:block;margin-top:15px;font-family:var(--sans);font-style:normal;font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);font-weight:600}
+
+/* ── NAPOMENA ── */
+.us-note{margin-top:34px;padding:24px 28px;background:var(--d2);border-left:2px solid var(--gold)}
+.us-note p{font-size:13.5px;color:var(--gray);line-height:1.85;font-weight:300}
+.us-note p + p{margin-top:10px}
+.us-note strong{color:var(--white);font-weight:600}
+
+/* ── ČEKA POTVRDU VLASNIKA ──
+   Podaci koje ne smem sam da izmislim (trajnost premaza, tačan proizvod).
+   Namerno vrišteće žuto. PRE PUŠTANJA U ŽIVO na sajtu ne sme da ostane
+   nijedan .us-todo — proveri sa:  grep -rn "us-todo" *.html
+   Stranice su do tada iza režima pregleda, pa ovo vidi samo vlasnik. */
+.us-todo{display:inline-block;background:#F2C200;color:#141414;font-family:var(--sans);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;padding:5px 10px;border-radius:3px;vertical-align:middle}
+/* Ime namerno sadrži "us-todo" da ga isti grep uhvati kao i bedž iznad. */
+.us-note.us-todo-blok{border-left-color:#F2C200}
+
+/* ── CENOVNIK USLUGE ──
+   overflow-x + touch-action:pan-x MORAJU da stoje: sajt globalno drži
+   touch-action:pan-y da bi sprečio horizontalni scroll cele stranice, pa se
+   bez ovoga tabela od 5 kolona na telefonu seče i ne može da se dohvati.
+   Isto rešenje kao .tbl-wrap u index.html. */
+.us-price{margin-top:52px;border:1px solid rgba(255,255,255,.08);overflow-x:auto;overflow-y:hidden;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
+.us-price::-webkit-scrollbar{height:5px}
+.us-price::-webkit-scrollbar-thumb{background:rgba(255,42,42,.3)}
+body.light .us-price{border-color:rgba(0,0,0,.08)}
+.us-price table{width:100%;border-collapse:collapse;min-width:540px}
+.us-price th{background:var(--d2);padding:18px 22px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;text-align:right;white-space:nowrap}
+.us-price th:first-child{text-align:left}
+.us-price td{padding:19px 22px;font-size:14px;color:var(--lgray);border-top:1px solid rgba(255,255,255,.05);text-align:right;font-weight:300;white-space:nowrap}
+body.light .us-price td{border-top-color:rgba(0,0,0,.06)}
+.us-price td:first-child{text-align:left;color:var(--white);white-space:normal}
+.us-price tr:hover td{background:rgba(255,255,255,.02)}
+body.light .us-price tr:hover td{background:rgba(0,0,0,.02)}
+/* Red koji deli tabelu na grupe (npr. keramika / vosak / stakla). */
+.us-price tr.grp td{background:var(--d3);color:var(--gold);font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;padding:13px 22px;text-align:left}
+.us-price tr.grp:hover td{background:var(--d3)}
+.us-price td small{display:block;font-size:12px;color:var(--gray);margin-top:5px;white-space:normal}
+.us-price-note{font-size:12.5px;color:var(--gray);line-height:1.8;margin-top:18px;font-weight:300}
+
+/* ── FAQ ── */
+.us-faq{margin-top:52px;display:flex;flex-direction:column}
+.us-q{border-top:1px solid rgba(255,255,255,.08);padding:26px 0}
+.us-q:last-child{border-bottom:1px solid rgba(255,255,255,.08)}
+body.light .us-q{border-top-color:rgba(0,0,0,.08)}
+body.light .us-q:last-child{border-bottom-color:rgba(0,0,0,.08)}
+.us-q h3{font-size:15.5px;font-weight:600;color:var(--white);margin-bottom:10px}
+.us-q p{font-size:14px;color:var(--gray);line-height:1.85;font-weight:300;max-width:760px}
+
+/* ── ZAVRŠNI POZIV ── */
+.us-cta{padding:100px 70px;background:var(--d1);text-align:center}
+.us-cta h2{font-family:var(--serif);font-size:clamp(32px,4vw,54px);font-weight:300;letter-spacing:-1px;margin-bottom:16px}
+.us-cta h2 em{font-style:italic;color:var(--gold)}
+.us-cta p{font-size:14.5px;color:var(--gray);line-height:1.85;max-width:520px;margin:0 auto 38px;font-weight:300}
+.us-cta-b{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.us-b{display:inline-flex;align-items:center;gap:11px;padding:17px 34px;font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;cursor:none;border:1px solid transparent}
+.us-b.pri{background:var(--gold);color:#fff}
+.us-b.pri:hover{background:var(--gold2);transform:translateY(-3px);box-shadow:0 18px 48px rgba(255,42,42,.25)}
+.us-b.sec{color:var(--white);border-color:rgba(255,255,255,.14)}
+body.light .us-b.sec{border-color:rgba(0,0,0,.12)}
+.us-b.sec:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+
+/* ── OSTALE USLUGE ── */
+.us-other{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px}
+.us-o{background:var(--d2);padding:34px 30px;text-decoration:none;display:block;transition:background .35s,transform .35s}
+.us-o:hover{background:var(--d3);transform:translateY(-4px)}
+.us-o-k{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}
+.us-o h3{font-family:var(--serif);font-size:23px;font-weight:300;color:var(--white);margin-bottom:10px;letter-spacing:-.3px}
+.us-o p{font-size:13px;color:var(--gray);line-height:1.75;font-weight:300}
+.us-o-arrow{margin-top:16px;font-size:13px;color:var(--gold);letter-spacing:2px}
+
+/* ── HUB KARTICE (/usluge) ── */
+.us-hub{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-top:52px}
+.us-hub-c{background:var(--d2);padding:44px 40px;text-decoration:none;display:flex;flex-direction:column;transition:background .35s,transform .35s}
+.us-hub-c:hover{background:var(--d3);transform:translateY(-4px)}
+.us-hub-k{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px}
+.us-hub-c h3{font-family:var(--serif);font-size:clamp(26px,2.6vw,33px);font-weight:300;color:var(--white);margin-bottom:14px;letter-spacing:-.6px;line-height:1.1}
+.us-hub-c > p{font-size:13.5px;color:var(--gray);line-height:1.8;font-weight:300;flex:1}
+.us-hub-f{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
+body.light .us-hub-f{border-top-color:rgba(0,0,0,.08)}
+.us-hub-p{font-family:var(--serif);font-size:23px;color:var(--gold);font-weight:300;letter-spacing:-.3px}
+.us-hub-p small{font-family:var(--sans);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:600;margin-right:9px}
+.us-hub-a{font-size:13px;color:var(--gold);letter-spacing:2px;flex-shrink:0}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .us-hero{padding:150px 30px 70px}
+  .us-sec,.us-cta{padding:70px 30px}
+  .us-why,.us-other{grid-template-columns:1fr}
+  .us-spec{grid-template-columns:repeat(2,1fr)}
+  .us-hub,.us-get{grid-template-columns:1fr}
+  .us-hero-meta{gap:26px}
+}
+@media(max-width:620px){
+  .us-step{grid-template-columns:1fr;gap:12px;padding:28px 24px}
+  .us-step-n{font-size:32px}
+  .us-spec{grid-template-columns:1fr}
+  .us-hub-c{padding:34px 28px}
+  .us-price th,.us-price td{padding:14px 12px;font-size:12.5px}
+  .us-price th{font-size:8.5px;letter-spacing:1px}
+  .us-price tr.grp td{padding:11px 12px;font-size:8.5px;letter-spacing:1.5px}
+  .us-quote{padding-left:20px}
+}
+@media(hover:none){
+  .us-b,.us-o,.us-hub-c{cursor:pointer}
+}

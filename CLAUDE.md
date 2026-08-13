@@ -37,6 +37,8 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `sitemap.xml` | Sitemap za Google |
 | `robots.txt` | Blokira admin i api, linkuje sitemap |
 | `offline.html` | PWA offline fallback |
+| `usluge.html` + 5 stranica usluga | Vidi sekciju **Stranice usluga** niže. Dele `assets/css/laker-base.css`, `assets/css/laker-usluga.css` i `assets/js/usluga.js` |
+| `radovi.html` | „Sajt u radovima" — spremna, prekidač UGAŠEN. Vidi sekciju **Prekidač „u radovima"** |
 | `assets/` | Slike: hero (900/1100/1600 .jpg+.webp), gallery (work1-3, path2, wheel), icons |
 | `supabase/*.sql` | SQL migracije (samo referenca, ne deployuju se) |
 
@@ -48,6 +50,80 @@ Sve slike u HTML-u koriste `<picture>` tag:
 - `favicon.svg` je UKLONJEN (bio je 486KB lažni SVG sa base64 PNG) — koriste se .ico/.png ikone
 
 Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.) su u `.gitignore` — ne idu na Vercel.
+
+---
+
+## Stranice usluga — U REŽIMU PREGLEDA, NISU JAVNE
+
+Šest stranica je na sajtu ali **klijenti ih ne vide** dok vlasnik ne kaže da su gotove (dodato 2026-08-13).
+
+| Ruta | Sadržaj | Cene |
+|---|---|---|
+| `/usluge` | Hub — kartice svih usluga, „kako izabrati", kategorije vozila | — |
+| `/premium-pranje` | Ručno pranje u 3 faze, potkrila, motorni prostor | 20–35 €, 25–40 €, 30–50 € |
+| `/poliranje-laka` | 4 nivoa korekcije laka | 100–290 € |
+| `/keramicka-zastita` | **Svi premazi**: keramika, 1K-Nano, karnauba vosak, Nano-Glass | 140–235 €, 80–135 €, 45–65 €, 30–80 € |
+| `/dubinsko-ciscenje` | Enterijer + impregnacija kože i plastike | 99–145 €, 25–50 € |
+| `/poliranje-farova` | Poliranje i UV zaštita farova | 25 € (sve kategorije) |
+
+**Bez ijedne slike — namerno.** Nema praznih okvira koji čekaju fotografiju; ritam nose brojevi koraka, tabele i razmak. Kad fotografije stignu, dodaje se nova komponenta, postojeće se ne prepravlja.
+
+### Kako se ulazi u režim pregleda
+
+1. Otvori `https://www.lakerdetailing.rs/?pregled=on` — jednom po uređaju
+2. Upisuje se `localStorage['laker_pregled']`, kôd je u [init.js](init.js) (blok „REŽIM PREGLEDA")
+3. Tek tada se u navu, footeru i cenovniku pojave linkovi ka novim stranicama
+4. Gašenje: `?pregled=off`
+
+Isti obrazac kao `?analitika=off`. Radi po uređaju, ne po nalogu.
+
+### Tri sloja koji drže stranice van očiju klijenata
+
+- **`data-href` umesto `href`** u [index.html](index.html) — nav, footer i 16 naziva u cenovniku. Bez režima pregleda Googlebot nema šta da prati. U navu/footeru `href` ostaje `#pkg`, pa za klijenta ništa nije promenjeno.
+- **`X-Robots-Tag: noindex, nofollow`** na svih 6 ruta u [vercel.json](vercel.json)
+- **Nisu u `sitemap.xml`**
+
+### PUŠTANJE U ŽIVO — tačno 6 koraka
+
+1. `assets/css/laker-usluga.css` — proveri da nema više nijednog `.us-todo`: `grep -rn "us-todo" *.html`
+2. [index.html](index.html) — `data-href` → `href` (nav, footer, 16 redova cenovnika), skloni `html.pregled ` sa 5 `.prc-more` pravila u `<style>`
+3. [init.js](init.js) — obriši ceo blok „REŽIM PREGLEDA"
+4. [vercel.json](vercel.json) — obriši headers blok sa `X-Robots-Tag` za tih 6 ruta (blok sa `usluge|premium-pranje|...`)
+5. `sitemap.xml` — dodaj 6 unosa, `priority 0.8`, `changefreq monthly`
+6. Bump `CACHE_VERSION` + verzija u footeru, `git push origin main`, pa `curl /api/health`
+
+### Trajnost premaza — ČEKA VLASNIKA
+
+Na `/keramicka-zastita` i `/premium-pranje` stoje žuti `.us-todo` markeri. Potvrđeno sa **zvaničnog koch-chemie.com**:
+
+| Proizvod | Zvanična trajnost |
+|---|---|
+| 1K-Nano | ~1 godina, do 3 godine uz negu NanoMagicShampoo-om + godišnju kontrolu |
+| Nano-Glasversiegelung | do 1 godine ili 20.000 km |
+| Ceramic Body Cb0.01 | preko 36 meseci, do 2 sloja |
+| Ceramic Rims Cr0.01 | do 12 meseci |
+
+**Nepotvrđeno — ne sme javno bez vlasnika:** koji je tačno keramički proizvod za 140 € (Cb0.01 / C0.01 / drugo) i koji vosak za 45 €. Takođe: [index.html](index.html) tvrdi „zaštita 4–6 nedelja" za vosak u Clean paketu, a „do 3 meseca" kao dodatna usluga — treba ujednačiti.
+
+---
+
+## Prekidač „u radovima"
+
+`radovi.html` (ruta `/radovi`) je gotova i `noindex`, ali **nije uključena**. Bez inline skripti → ne dira CSP.
+
+Paljenje: dodaj kao **prvi** unos u `redirects` niz u [vercel.json](vercel.json), pa push:
+
+```json
+{
+  "source": "/((?!radovi|assets|api|_vercel|favicon.ico|robots.txt|sitemap.xml|service-worker.js).*)",
+  "destination": "/radovi",
+  "permanent": false
+}
+```
+
+Gašenje: obriši taj unos i push.
+
+**Dva ograničenja:** koristi se za **sate, ne dane** (Google skida rangiranje ako stoji dugo), i posetioci sa instaliranom PWA mogu na prvo otvaranje videti keširanu verziju jer Service Worker servira keš pre mreže.
 
 ---
 

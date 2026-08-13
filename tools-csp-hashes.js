@@ -3,7 +3,15 @@
 const fs = require('fs');
 const crypto = require('crypto');
 
-const files = ['index.html', 'laker-admin-9x3k.html', 'offline.html'];
+// Ovde MORA da stoji svaki HTML fajl koji ima inline <script>. Ako se novi
+// fajl zaboravi, hash mu se nikad ne izračuna → u produkciji CSP blokira
+// skriptu (a kod stranica usluga to je JSON-LD, pa Google ne vidi podatke).
+// radovi.html, 404.html i loyalty-join.html namerno nemaju inline skripte.
+const files = [
+  'index.html', 'laker-admin-9x3k.html', 'offline.html',
+  'usluge.html', 'premium-pranje.html', 'poliranje-laka.html',
+  'keramicka-zastita.html', 'dubinsko-ciscenje.html', 'poliranje-farova.html'
+];
 const all = [];
 for (const f of files) {
   if (!fs.existsSync(f)) continue;

@@ -13,7 +13,11 @@ const mime = {
 http.createServer((req, res) => {
   let p = req.url.split('?')[0];
   if (p === '/') p = '/index.html';
-  if (p === '/loyalty-join') p = '/loyalty-join.html';
+  // Ruta bez ekstenzije → .html, isto kao "rewrites" u vercel.json.
+  // Time /usluge, /premium-pranje, /radovi itd. rade i lokalno.
+  if (!path.extname(p) && !p.startsWith('/api/') && fs.existsSync(path.join(__dirname, p + '.html'))) {
+    p = p + '.html';
+  }
   if (p === '/api/loyalty-join') {
     // Mock config — simulira podešen Google client ID da se vidi dugme
     res.writeHead(200, { 'Content-Type': 'application/json' });
