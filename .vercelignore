@@ -23,4 +23,5 @@ assets/hero-1600.jpg
 # Pomocni skript za CSP hash-eve - ne deployuje se
 tools-csp-hashes.js
 tools-dev-server.js
+tools-demo-build.js
 SETUP-OAUTH.md

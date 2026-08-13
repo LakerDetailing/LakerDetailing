@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Demo — Laker Detailing</title>
+<meta name="description" content="Demo nove strukture sajta: tri varijante početne i sve podstranice.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/icons/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#080808">
+
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
+<link rel="stylesheet" href="/assets/css/laker-base.css?v=3">
+<link rel="stylesheet" href="/assets/css/laker-usluga.css?v=3">
+<link rel="stylesheet" href="/assets/css/laker-demo.css?v=1">
+</head>
+<body>
+<script>try{if(localStorage.getItem('laker-theme')==='light')document.body.className='light';}catch(e){}</script>
+
+<div class="demo-traka">
+  <span class="demo-traka-tag">Demo</span>
+  <span class="demo-traka-txt">Ovo nije javni sajt — proba nove strukture</span>
+  <a class="demo-traka-link" href="/demo">Sve varijante</a>
+</div>
+
+<div id="cur"></div>
+<div id="cur-r"></div>
+
+<nav id="nav" class="solid">
+  <a class="nl" href="/demo" aria-label="Laker Detailing Studio — demo početna">
+    <div class="nl-text">
+      <span class="nl-m">Laker</span>
+      <span class="nl-s">Detailing Studio</span>
+    </div>
+    <picture>
+      <source type="image/avif" srcset="/assets/icons/laker-logo-2.avif?v=2">
+      <source type="image/webp" srcset="/assets/icons/laker-logo-2.webp?v=2">
+      <img class="nl-logo" src="/assets/icons/laker-logo-2-opt.jpg?v=2" alt="Laker Auto Detailing Studio logo" width="219" height="120" loading="eager" decoding="async">
+    </picture>
+  </a>
+  <ul class="nm" id="nm">
+    <li><a href="/demo" aria-current="page">Početna</a></li>
+    <li><a href="/usluge">Usluge</a></li>
+    <li><a href="/demo-paketi">Paketi</a></li>
+    <li><a href="/demo-cenovnik">Cenovnik</a></li>
+    <li><a href="/demo-loyalty">Loyalty</a></li>
+    <li><a href="/demo-o-nama">O nama</a></li>
+    <li><a href="/demo-kontakt">Kontakt</a></li>
+    <li><a href="/demo-loyalty" class="nb nb-loy" id="loyNavBtn">PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span></a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Promeni temu" title="Tamni / svetli režim"></button>
+    <button class="hbg" id="hbg" type="button" aria-label="Meni"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div id="mobileOverlay" role="dialog" aria-modal="true" aria-label="Navigacija">
+  <button id="mobileOverlay-close" type="button" aria-label="Zatvori meni" data-click="closeMobileMenu">✕</button>
+  <a href="/demo" data-click="closeMobileMenu">Početna</a>
+  <a href="/usluge" data-click="closeMobileMenu">Usluge</a>
+  <a href="/demo-paketi" data-click="closeMobileMenu">Paketi</a>
+  <a href="/demo-cenovnik" data-click="closeMobileMenu">Cenovnik</a>
+  <a href="/demo-loyalty" data-click="closeMobileMenu">Loyalty</a>
+  <a href="/demo-o-nama" data-click="closeMobileMenu">O nama</a>
+  <a href="/demo-kontakt" data-click="closeMobileMenu">Kontakt</a>
+  <a href="/demo-loyalty" class="nb" data-click="closeMobileMenu">PRIJAVA</a>
+</div>
+
+<main id="content">
+<section class="us-hero">
+  <div class="us-hero-in">
+    <h1 class="us-h1">Tri varijante<br><em>početne.</em></h1>
+    <p class="us-lead">Podstranice su iste za sve tri — razlikuje se samo početna strana. Otvorite jednu po jednu,
+    prođite kroz meni kao posetilac, pa recite koja vam sedi. Ništa od ovoga nije javno.</p>
+  </div>
+</section>
+
+<section class="us-sec">
+  <div class="us-in">
+    <div class="sl">Uporedite</div>
+    <h2 class="sh">Početna<br><em>strana</em></h2>
+    <div class="us-hub">
+      <a class="us-hub-c" href="/demo-a">
+        <div class="us-hub-k">Varijanta A</div>
+        <h3>Uravnoteženo</h3>
+        <p>Hero, kratak pasus o studiju, četiri kartice puteva i mapa. Posetilac odmah vidi šta radite i ima gde da klikne.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">2—3 ekrana</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-b">
+        <div class="us-hub-k">Varijanta B</div>
+        <h3>Maksimalno golo</h3>
+        <p>Samo hero i mapa. Najčistije izgleda, ali ko ne klikne nikad ne sazna šta radite ni koliko košta.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">1—2 ekrana</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-c">
+        <div class="us-hub-k">Varijanta C</div>
+        <h3>Sa cenama</h3>
+        <p>Hero, putevi i tri paketa sa cenom „od". Cena se vidi bez ijednog klika, ali je strana najduža.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">3—4 ekrana</span><span class="us-hub-a">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="us-sec alt">
+  <div class="us-in">
+    <div class="sl">Iste za sve tri</div>
+    <h2 class="sh">Podstranice<br><em>iz menija</em></h2>
+    <div class="us-hub">
+      <a class="us-hub-c" href="/demo-paketi">
+        <div class="us-hub-k">Meni</div>
+        <h3>Paketi</h3>
+        <p>Clean, Boost i Laker sa svim stavkama koje se otvaraju na plus.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-cenovnik">
+        <div class="us-hub-k">Meni</div>
+        <h3>Cenovnik</h3>
+        <p>Sve cene po kategorijama vozila, sa tabovima, i česta pitanja na dnu.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-loyalty">
+        <div class="us-hub-k">Meni</div>
+        <h3>Loyalty</h3>
+        <p>Program sa dva pranja mesečno. Prijava radi kao na pravom sajtu.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-o-nama">
+        <div class="us-hub-k">Meni</div>
+        <h3>O nama</h3>
+        <p>Ko smo, kako radimo, galerija i utisci klijenata — spojeno u jednu stranu.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/demo-kontakt">
+        <div class="us-hub-k">Meni</div>
+        <h3>Kontakt</h3>
+        <p>Adresa, radno vreme, telefon i mapa.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+      <a class="us-hub-c" href="/usluge">
+        <div class="us-hub-k">Meni</div>
+        <h3>Usluge</h3>
+        <p>Postojeći hub sa pet stranica usluga — ovo je već napravljeno, ne menja se.</p>
+        <div class="us-hub-f"><span class="demo-sadrzaj">Pogledaj</span><span class="us-hub-a">→</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="us-sec">
+  <div class="us-in">
+    <div class="us-note">
+      <p><strong>Živi sajt nije diran.</strong> <a href="/" style="color:var(--gold)">lakerdetailing.rs</a> radi
+      tačno kao pre — ovo su zasebne stranice koje nigde nisu linkovane i koje Google ne indeksira.</p>
+      <p>Kad izaberete varijantu, ona postaje pravi sajt. Do tada se ništa ne menja.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="ft">
+    <div>
+      <div class="ft-logo">Laker</div>
+      <div class="ft-sub">Detailing Studio · Čačak</div>
+      <p class="ft-desc">Premium auto detailing studio u Čačku. Svaki automobil koji prođe kroz naš studio dobija jednaku pažnju — bez obzira na marku ili model.</p>
+      <p class="ft-desc" style="margin-top:10px">Pranje auta, poliranje laka i keramička zaštita za Čačak i okolinu — Gornji Milanovac, Kraljevo, Lučani, Guča, Požega, Ivanjica, Mrčajevci, Preljina.</p>
+      <div class="ft-slogan">Svaki detalj je važan.</div>
+    </div>
+    <div class="ft-col">
+      <p class="ft-col-title">Navigacija</p>
+      <ul>
+        <li><a href="/demo-o-nama">O nama</a></li>
+        <li><a href="/demo-o-nama">Galerija</a></li>
+        <li><a href="/demo-paketi">Usluge</a></li>
+        <li><a href="/demo-paketi">Paketi</a></li>
+        <li><a href="/demo-cenovnik">Cenovnik</a></li>
+        <li><a href="/demo-cenovnik#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <p class="ft-col-title">Usluge</p>
+      <ul>
+        <!-- data-href: vidi komentar u navu. Bez režima pregleda svi vode na #pkg. -->
+        <li><a href="/dubinsko-ciscenje">Detailing enterijera</a></li>
+        <li><a href="/premium-pranje">Detailing eksterijera</a></li>
+        <li><a href="/poliranje-laka">Korekcija laka</a></li>
+        <li><a href="/keramicka-zastita">Keramička zaštita</a></li>
+        <li><a href="/keramicka-zastita">Nano-Glass zaštita</a></li>
+        <li><a href="/poliranje-farova">Restauracija farova</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <p class="ft-col-title">Kontakt</p>
+      <p class="ft-p">
+        <a href="tel:+381607260302">060 726 0302</a><br>
+        <a href="mailto:detailinglaker@gmail.com" style="color:inherit">detailinglaker&#64;gmail.com</a><br><br>
+        Čačak, Srbija<br><br>
+        <a href="https://www.instagram.com/laker_detailing/" target="_blank" rel="noopener noreferrer">Instagram</a> &nbsp;·&nbsp;
+        <a href="https://www.tiktok.com/@laker_detailing" target="_blank" rel="noopener noreferrer">TikTok</a><br>
+        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+      </p>
+    </div>
+  </div>
+  <div class="fb">
+    <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
+    <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
+    <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>43</b> · 2026-08-13</span>
+  </div>
+</footer>
+
+<a class="wa-stick" href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" aria-label="Pišite nam na WhatsApp">
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.5-.3zM12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.3c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2z"/></svg>
+</a>
+
+
+<script src="/main.min.js?v=20260805c" defer></script>
+<script src="/assets/js/demo-reveal.js?v=2" defer></script>
+<script src="/init.js?v=20260813a" defer></script>
+</body>
+</html>
