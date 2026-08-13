@@ -106,6 +106,11 @@ Vlasnik je potvrdio koje proizvode koristi; brojevi su sa **zvaničnog koch-chem
 
 > **Dva voska, ne jedan.** „4–6 nedelja" i „do 3 meseca" NISU protivrečnost — to su različiti proizvodi: Protector Wax ide uz pranje, Hand Wax W0.01 se nanosi ručno kao zasebna, skuplja usluga (najčešće posle poliranja). Ne „ujednačavati" ta dva broja.
 
+**Tri odluke vlasnika od 2026-08-13 — ne menjati bez njega:**
+- **Keramika se radi samo u 1 sloju.** Koch-Chemie dozvoljava 2, ali vlasnik ne nudi — ne pominjati drugi sloj na sajtu.
+- **Bez ikakve garancije.** Na stranicama sme da stoji samo trajnost koju deklariše proizvođač, nikad obećanje studija. Provera: `grep -in garanc *.html` mora biti prazno.
+- **Premium pranje traje 1–2 h** (njegovo merenje: 1:30–2:00 na dva auta). Broj uvek ide sa ogradom „zavisi od stanja vozila" jer ume da potraje duže.
+
 **Keramika — pravilo koje mora da stoji na sajtu:** Koch-Chemie traži da se auto **ne pere prvih 9 dana** (posle 24 h je otporan na kišu, ali potpuno očvrsne tek deveti dan; ispod 15 °C i duže).
 
 ### Radno vreme — jedan izvor istine
