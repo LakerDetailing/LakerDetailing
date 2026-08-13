@@ -92,18 +92,25 @@ Isti obrazac kao `?analitika=off`. Radi po uređaju, ne po nalogu.
 5. `sitemap.xml` — dodaj 6 unosa, `priority 0.8`, `changefreq monthly`
 6. Bump `CACHE_VERSION` + verzija u footeru, `git push origin main`, pa `curl /api/health`
 
-### Trajnost premaza — ČEKA VLASNIKA
+### Proizvodi i trajnost — POTVRĐENO (2026-08-13)
 
-Na `/keramicka-zastita` i `/premium-pranje` stoje žuti `.us-todo` markeri. Potvrđeno sa **zvaničnog koch-chemie.com**:
+Vlasnik je potvrdio koje proizvode koristi; brojevi su sa **zvaničnog koch-chemie.com**:
 
-| Proizvod | Zvanična trajnost |
-|---|---|
-| 1K-Nano | ~1 godina, do 3 godine uz negu NanoMagicShampoo-om + godišnju kontrolu |
-| Nano-Glasversiegelung | do 1 godine ili 20.000 km |
-| Ceramic Body Cb0.01 | preko 36 meseci, do 2 sloja |
-| Ceramic Rims Cr0.01 | do 12 meseci |
+| Usluga (cena) | Proizvod | Trajnost | Izvor |
+|---|---|---|---|
+| Keramička zaštita (140–235 €) | **Ceramic Body Cb0.01** | preko 36 meseci, moguća 2 sloja | zvanični KC |
+| 1K-Nano premaz (80–135 €) | 1K-Nano | ~1 godina, do 3 uz negu + godišnju kontrolu | zvanični KC |
+| Ručno karnauba voskiranje (45–65 €) | **Hand Wax W0.01** (karnauba) | do 3 meseca | vlasnik |
+| Vosak u pranju / Clean paketu | **Protector Wax** | 4–6 nedelja | vlasnik |
+| Nano-Glass (30–80 €) | Nano-Glasversiegelung | do 1 godine ili 20.000 km | zvanični KC |
 
-**Nepotvrđeno — ne sme javno bez vlasnika:** koji je tačno keramički proizvod za 140 € (Cb0.01 / C0.01 / drugo) i koji vosak za 45 €. Takođe: [index.html](index.html) tvrdi „zaštita 4–6 nedelja" za vosak u Clean paketu, a „do 3 meseca" kao dodatna usluga — treba ujednačiti.
+> **Dva voska, ne jedan.** „4–6 nedelja" i „do 3 meseca" NISU protivrečnost — to su različiti proizvodi: Protector Wax ide uz pranje, Hand Wax W0.01 se nanosi ručno kao zasebna, skuplja usluga (najčešće posle poliranja). Ne „ujednačavati" ta dva broja.
+
+**Keramika — pravilo koje mora da stoji na sajtu:** Koch-Chemie traži da se auto **ne pere prvih 9 dana** (posle 24 h je otporan na kišu, ali potpuno očvrsne tek deveti dan; ispod 15 °C i duže).
+
+### Radno vreme — jedan izvor istine
+
+**Ponedeljak — Subota, 09:00–20:00. Nedeljom ne radi.** Isto na sajtu, u JSON-LD `openingHoursSpecification` i na Google Mapama. Ranije je JSON-LD tvrdio pon–pet 08–18 i sub 09–15 — ispravljeno 2026-08-13. Pri svakoj izmeni ovoga proveri **oba** mesta u [index.html](index.html) i Google profil.
 
 ---
 
