@@ -520,11 +520,12 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 /* CASE STUDIES */
 #cs{background:var(--d1);padding-bottom:0}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
-/* flex (a ne grid) namerno: kad broj slika nije deljiv sa 4, poslednji red se razvuce
-   i popuni sirinu umesto da ostane rupa. Broj slika menja tools-galerija.js. */
-.cs-grid{display:flex;flex-wrap:wrap;gap:2px}
-.cs-card{flex:1 1 calc(25% - 2px);position:relative;overflow:hidden;cursor:none;height:460px}
-.cs-card img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block;filter:brightness(.85);transition:filter .55s,transform .55s}
+/* Kolone (masonry) namerno: svaka slika zadrzi SVOJ oblik i vidi se cela — nista se ne
+   isece. Radi sa bilo kojim brojem slika i bilo kojim odnosom stranica (uspravne sa
+   telefona, polozene, kvadratne). Sadrzaj upisuje tools-galerija.js. */
+.cs-grid{column-count:4;column-gap:2px}
+.cs-card{break-inside:avoid;margin:0 0 2px;position:relative;overflow:hidden;cursor:none}
+.cs-card img{width:100%;height:auto;display:block;filter:brightness(.85);transition:filter .55s,transform .55s}
 .cs-card:hover img{filter:brightness(1);transform:scale(1.04)}
 
 /* SERVICES */
@@ -1188,7 +1189,7 @@ html.js-ready .rr.in{opacity:1;transform:translateX(0)}
   .ft{grid-template-columns:1fr 1fr;gap:40px;padding:60px 30px 40px}
   .fb{padding:22px 30px}
   .srv-sticky,.faq-sticky{position:static}
-  .cs-card{flex-basis:calc(50% - 1px);height:380px}
+  .cs-grid{column-count:2}
   #soc{padding:80px 30px}
   #loc{padding:80px 30px}
   .loc-grid{grid-template-columns:1fr;gap:46px}
@@ -1274,8 +1275,7 @@ body.menu-open{
   .tst-grid{grid-template-columns:1fr}
   .cs-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:36px}
   .cs-head p{text-align:left!important;max-width:100%!important}
-  .cs-grid{gap:2px}
-  .cs-card{flex-basis:calc(50% - 1px);height:52vw}
+  .cs-grid{column-count:2;column-gap:2px}
   .cs-info{padding:22px 20px}
   .phi-grid,.srv-layout,.prc-top,.faq-layout{gap:28px}
   .proc-header{margin-bottom:54px}
@@ -1401,7 +1401,6 @@ body.menu-open{
   .mq-i{padding:0 18px}
   .sh{font-size:clamp(30px,9.5vw,42px)}
   .sd{font-size:12px;line-height:1.72}
-  .cs-card{height:48vw}
   .phi-left .phi-img{height:245px}
   .pkg-grid{margin-top:30px}
   .pk{padding:30px 16px}
@@ -2213,25 +2212,25 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <div class="cs-card">
       <picture>
         <source type="image/webp" srcset="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-480.webp 480w, /assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
-        <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-opt.jpg" alt="Mercedes A-Class u Laker Detailing studiju" style="object-position:center 60%">
+        <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-opt.jpg" alt="Mercedes A-Class u Laker Detailing studiju">
       </picture>
     </div>
     <div class="cs-card">
       <picture>
         <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
-        <img width="900" height="1036" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera" style="object-position:center 30%">
+        <img width="900" height="1036" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera">
       </picture>
     </div>
     <div class="cs-card">
       <picture>
         <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
-        <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c-opt.jpg" alt="Alfa Romeo Giulietta felna detailing" style="object-position:center 45%">
+        <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
       </picture>
     </div>
     <div class="cs-card">
       <picture>
         <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22.webp 900w" sizes="(max-width:600px) 50vw, 25vw">
-        <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera" style="object-position:center 35%">
+        <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
       </picture>
     </div>
   <!-- GALERIJA:KRAJ -->
@@ -3028,7 +3027,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>45</b> · 2026-08-13</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>46</b> · 2026-08-13</span>
   </div>
 </footer>
 
