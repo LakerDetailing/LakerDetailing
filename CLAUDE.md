@@ -130,7 +130,7 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 
 | Deo | Detalj |
 |---|---|
-| Ulaz | `galerija/` — ime fajla je `<broj> - <opis>[@kadar].jpg`; broj = redosled, opis = `alt` tekst, `@0-100` = `object-position` po visini (opciono) |
+| Ulaz | `galerija/` — ime fajla je `<broj> - <opis>.jpg`; broj = redosled, opis = `alt` tekst. Eventualni stari `@NN` na kraju imena se odbacuje |
 | Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-opt.jpg` (900px / 480px, WebP q82 + JPG fallback) |
 | Alat | **ffmpeg + ffprobe** (`winget install Gyan.FFmpeg`) — nema npm zavisnosti, `package.json` ostaje prazan |
 | Markeri | `<!-- GALERIJA:POCETAK ... -->` / `<!-- GALERIJA:KRAJ -->` u [index.html](index.html) — **između njih ne pisati rukom**, skripta pregazi |
@@ -144,9 +144,11 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 - **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
 - Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
 
-**CSS:** `.cs-grid` je **flex, ne grid** — kad broj slika nije deljiv sa 4, poslednji red se razvuče umesto da ostane rupa. `.cs-1`–`.cs-4` pravila su obrisana iz index.html (kadar ide inline preko `style`); ista pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
+**CSS:** `.cs-grid` je **`column-count` (masonry), ne grid ni flex** — kartice nemaju fiksnu visinu, `img{height:auto}`, pa svaka slika zadrži svoj odnos stranica i **nijedna se ne seče**. 4 kolone, 2 ispod 1100px. Vlasnik je 2026-08-13 tražio baš to: uspravnu fotku sa telefona je fiksna visina kartice sekla na pola.
 
-> `.cs-card` više nema `cs-1`…`cs-4` klase u index.html. Ako nešto u budućnosti cilja te klase — cilja prazno.
+> Cena: donja ivica galerije nije prava linija (kolone su različite visine). To je svesna zamena za necenzurisanu sliku — ne „popravljati" vraćanjem fiksne visine bez pitanja vlasnika.
+
+> `.cs-card` više nema `cs-1`…`cs-4` klase ni `object-position` — ništa se ne seče, pa kadar nema šta da pomera. Ista `.cs-1`–`.cs-4` pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
 
 ---
 

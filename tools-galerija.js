@@ -108,16 +108,16 @@ function uSlug(tekst) {
     .slice(0, 48);
 }
 
-/* "3 - Mercedes AMG enterijer@40.jpg" -> { redni:3, opis:"Mercedes AMG enterijer", kadar:40 } */
+/* "3 - Mercedes AMG enterijer.jpg" -> { redni:3, opis:"Mercedes AMG enterijer" }
+   Stari "@40" na kraju imena se samo odbaci — kadar se vise ne koristi jer se
+   slike ne seku (galerija postuje oblik svake slike). */
 function razloziIme(imeFajla) {
   let ime = imeFajla.replace(/\.[^.]+$/, '');
   let redni = null;
   const m = ime.match(/^\s*(\d{1,3})\s*[-_.\s]\s*(.+)$/);
   if (m) { redni = Number(m[1]); ime = m[2]; }
-  let kadar = null;
-  const k = ime.match(/@\s*(\d{1,3})\s*$/);
-  if (k) { kadar = Math.min(100, Math.max(0, Number(k[1]))); ime = ime.slice(0, k.index); }
-  return { redni, opis: ime.trim().replace(/\s+/g, ' '), kadar };
+  ime = ime.replace(/@\s*\d{1,3}\s*$/, '');
+  return { redni, opis: ime.trim().replace(/\s+/g, ' ') };
 }
 
 const escHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -154,13 +154,13 @@ function ucitajUlaz() {
   const stavke = slike.map(ime => {
     const pun = path.join(DROP, ime);
     const bajt = fs.readFileSync(pun);
-    const { redni, opis, kadar } = razloziIme(ime);
+    const { redni, opis } = razloziIme(ime);
     if (!opis) {
       stop(`slika "${ime}" nema opis u imenu`,
         'Ime treba da bude npr:  1 - Mercedes AMG enterijer.jpg\n  (broj = redosled, tekst posle crte = opis slike za Google)');
     }
     return {
-      ime, pun, opis, kadar,
+      ime, pun, opis,
       redni: redni === null ? 999 : redni,
       hash: crypto.createHash('sha256').update(bajt).digest('hex').slice(0, 8),
       izvorBajtova: bajt.length
@@ -222,12 +222,11 @@ function obradi(s, proba) {
 /* ─────────────── HTML ─────────────── */
 function napraviHtml(stavke, eol) {
   const kartice = stavke.map(s => {
-    const poz = s.kadar === null ? '' : ` style="object-position:center ${s.kadar}%"`;
     return [
       '    <div class="cs-card">',
       '      <picture>',
       `        <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:600px) 50vw, 25vw">`,
-      `        <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}"${poz}>`,
+      `        <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
       '      </picture>',
       '    </div>'
     ].join(eol);
@@ -398,7 +397,7 @@ async function main() {
   const stavke = ucitajUlaz();
 
   nasl(`Slike u folderu galerija\\  (${stavke.length})`);
-  stavke.forEach((s, i) => info(`${String(i + 1).padStart(2)}. ${s.opis}${s.kadar === null ? '' : `   ${C.siv}[kadar ${s.kadar}%]${C.r}`}`));
+  stavke.forEach((s, i) => info(`${String(i + 1).padStart(2)}. ${s.opis}`));
 
   if (stavke.length < 3) upoz('manje od 3 slike — galerija ce izgledati prazno');
   if (stavke.length > 12) upoz('vise od 12 slika — stranica ce se sporije ucitavati');

@@ -50,32 +50,30 @@
 
 
 ----------------------------------------------------------
+  OBLIK SLIKE — nista se ne isece
+----------------------------------------------------------
+
+  Svaka slika se na sajtu vidi CELA, tacno onako kako si je
+  slikao. Uspravna slika sa telefona ostaje uspravna,
+  polozena ostaje polozena, kvadratna kvadratna.
+
+  Zato ne moras nista da podesavas oko kadra — sta si
+  slikao, to se vidi.
+
+  Posledica: slike su razlicite visine, pa donja ivica
+  galerije nije prava linija. To je normalno i izgleda
+  bolje sto vise slika imas.
+
+
+----------------------------------------------------------
   KOLIKO SLIKA
 ----------------------------------------------------------
 
-  Najbolje: 4 ili 8 slika (lepo popune redove).
-  Radi i sa bilo kojim brojem — poslednji red se razvuce
-  preko cele sirine, ne ostaje rupa.
+  Najbolje: 4 ili 8 slika.
+  Radi sa bilo kojim brojem.
 
   Manje od 3 = galerija izgleda prazno.
   Vise od 12 = sajt se sporije ucitava.
-
-
-----------------------------------------------------------
-  KADAR (za napredne — moze se preskociti)
-----------------------------------------------------------
-
-  Slike u galeriji su isecene u pravougaonik. Ako je bas
-  ono najvaznije na slici otislo van kadra, dodaj @broj
-  na kraj imena:
-
-      1 - Mercedes AMG enterijer@30.jpg
-
-      @0    poravnaj po VRHU slike
-      @50   sredina (tako je i bez @)
-      @100  poravnaj po DNU slike
-
-  Znaci: manji broj = kadar se pomera na gore.
 
 
 ----------------------------------------------------------

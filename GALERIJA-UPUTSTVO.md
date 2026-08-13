@@ -40,6 +40,8 @@ Ili ručno: `D:\d Destkop\sajt laker\LakerDetailing-main\galerija\`
 └────── redni broj (1 je prva u galeriji)
 ```
 
+To je celo pravilo — nema ničeg drugog da se pamti.
+
 Piši normalno: razmaci, velika slova, naša slova (č, ć, ž, š, đ) — sve radi.
 Opis nije ukras: to je ono što Google čita o slici i po čemu te ljudi nalaze u pretrazi slika.
 
@@ -74,31 +76,22 @@ Onda otvori sajt i pritisni **Ctrl+F5** (osvežava i briše keš).
 
 ---
 
-## Koliko slika
+## Slika se vidi cela — ništa se ne seče
 
-- **4 ili 8** — najlepše, tačno popune redove
-- Radi sa bilo kojim brojem: ako broj nije deljiv sa 4, poslednja slika se razvuče preko cele širine. Nema praznih rupa.
-- Manje od 3 — galerija izgleda prazno
-- Više od 12 — sajt se sporije učitava
+Galerija poštuje oblik svake slike. Uspravna sa telefona ostaje uspravna, položena ostaje položena. Ne moraš ništa da podešavaš oko kadra: **šta si slikao, to se vidi.**
+
+Posledica koju treba da znaš: pošto su slike različite visine, donja ivica galerije nije prava linija. To je normalno za ovakvu galeriju i izgleda sve bolje što više slika imaš.
+
+> Ako ti se ipak više sviđa stara varijanta — sve kartice iste visine, slike malo isečene — reci Claude Code-u „vrati galeriju na jednake visine".
 
 ---
 
-## Kadar (ako je nešto važno „iseklo")
+## Koliko slika
 
-Slike u galeriji su isečene u pravougaonik, pa se ponekad desi da glavna stvar ostane van kadra.
-Dodaj `@broj` na kraj imena, pre tačke:
-
-```
-1 - Mercedes AMG enterijer@30.jpg
-```
-
-| Broj | Šta radi |
-|---|---|
-| `@0` | poravnaj po **vrhu** slike |
-| `@50` | sredina (isto kao bez `@`) |
-| `@100` | poravnaj po **dnu** slike |
-
-Manji broj = kadar se pomera naviše. Ako ne staviš `@`, uzima se sredina.
+- **4 ili 8** — najlepše
+- Radi sa bilo kojim brojem
+- Manje od 3 — galerija izgleda prazno
+- Više od 12 — sajt se sporije učitava
 
 ---
 
