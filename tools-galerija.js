@@ -65,10 +65,14 @@ function stop(poruka, savet) {
   process.exit(1);
 }
 
+/* jedan jedini readline za ceo tok — ako se pravi novi po pitanju,
+   Node zna da proguta ono sto je vec u redu za citanje */
+let _rl = null;
 function pitaj(tekst) {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  return new Promise(res => rl.question(tekst, a => { rl.close(); res(a.trim().toLowerCase()); }));
+  if (!_rl) _rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise(res => _rl.question(tekst, a => res(a.trim().toLowerCase())));
 }
+function zatvoriPitanja() { if (_rl) { _rl.close(); _rl = null; } }
 const potvrda = (a) => a === 'd' || a === 'da' || a === 'y' || a === 'yes';
 
 /* ─────────────── alati ─────────────── */
@@ -416,8 +420,22 @@ async function main() {
 
   if (novo === staro && !zaBrisanje.length) {
     nasl('Nema promena');
-    ok('galerija na sajtu je vec tacno ovakva — nista nije dirano');
-    log('');
+    ok('galerija je vec tacno ovakva kakva treba — nista nije dirano');
+
+    // ali mozda je proslo pokretanje sve pripremilo, a objava odbijena
+    const neobjavljeno = git(['status', '--porcelain', '--', 'index.html', 'service-worker.js', 'assets/gallery'], true).trim();
+    if (neobjavljeno && !proba) {
+      log('');
+      upoz('ima pripremljenih izmena koje jos NISU na sajtu');
+      if (potvrda(await pitaj(`\n  ${C.b}Objaviti ih sada?${C.r} (d/n) `))) {
+        const sw = fs.readFileSync(SW, 'utf8').match(/laker-pwa-v(\d+)/);
+        await objavi(stavke, { nova: sw ? sw[1] : '?' });
+      } else {
+        log('\n  U redu, ostaje kod tebe na racunaru.\n');
+      }
+    } else {
+      log('');
+    }
     return;
   }
 
@@ -465,7 +483,8 @@ async function main() {
   await objavi(stavke, verzija);
 }
 
-main().catch(e => {
+main().then(zatvoriPitanja).catch(e => {
+  zatvoriPitanja();
   log('');
   log(`${C.crv}${C.b}  NEOCEKIVANA GRESKA${C.r}`);
   log(`  ${String(e && e.message || e)}`);
