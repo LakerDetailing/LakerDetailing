@@ -89,15 +89,13 @@ body.light .us-lead{color:var(--mgray)}
 .us-note.us-todo-blok{border-left-color:#F2C200}
 
 /* ── CENOVNIK USLUGE ──
-   overflow-x + touch-action:pan-x MORAJU da stoje: sajt globalno drži
-   touch-action:pan-y da bi sprečio horizontalni scroll cele stranice, pa se
-   bez ovoga tabela od 5 kolona na telefonu seče i ne može da se dohvati.
-   Isto rešenje kao .tbl-wrap u index.html. */
-.us-price{margin-top:52px;border:1px solid rgba(255,255,255,.08);overflow-x:auto;overflow-y:hidden;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,42,42,.3) transparent}
-.us-price::-webkit-scrollbar{height:5px}
-.us-price::-webkit-scrollbar-thumb{background:rgba(255,42,42,.3)}
+   Na telefonu se tabela NE skroluje bočno — prelama se u kartice, isto kao
+   cenovnik na početnoj: naziv preko celog reda, pa četiri kutijice sa cenom
+   i labelom veličine iznad. Sve četiri kategorije se vide odjednom.
+   Zato svaka cena MORA imati data-l="Mali|Srednji|Veliki|Ekstra". */
+.us-price{margin-top:52px;border:1px solid rgba(255,255,255,.08)}
 body.light .us-price{border-color:rgba(0,0,0,.08)}
-.us-price table{width:100%;border-collapse:collapse;min-width:540px}
+.us-price table{width:100%;border-collapse:collapse}
 .us-price th{background:var(--d2);padding:18px 22px;font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;text-align:right;white-space:nowrap}
 .us-price th:first-child{text-align:left}
 .us-price td{padding:19px 22px;font-size:14px;color:var(--lgray);border-top:1px solid rgba(255,255,255,.05);text-align:right;font-weight:300;white-space:nowrap}
@@ -164,14 +162,33 @@ body.light .us-hub-f{border-top-color:rgba(0,0,0,.08)}
   .us-hub,.us-get{grid-template-columns:1fr}
   .us-hero-meta{gap:26px}
 }
+/* Cenovnik na telefonu — prelamanje u kartice umesto bočnog skrola.
+   Preslikano sa .tp tabele u index.html da izgleda isto na celom sajtu. */
+@media(max-width:768px){
+  .us-price{border:none}
+  .us-price thead{display:none}
+  .us-price table,.us-price tbody{display:block;width:100%}
+  .us-price tr{display:grid;grid-template-columns:repeat(4,1fr);column-gap:8px;row-gap:10px;padding:18px 4px;border-bottom:1px solid rgba(255,255,255,.06)}
+  body.light .us-price tr{border-bottom-color:rgba(0,0,0,.07)}
+  .us-price tr:last-child{border-bottom:none}
+  .us-price tr:hover td{background:none}
+  .us-price td{display:block;border:none;padding:0;text-align:center;white-space:nowrap}
+  .us-price td:first-child{grid-column:1/-1;text-align:left;font-size:13.5px;font-weight:500;color:var(--white);line-height:1.45;white-space:normal}
+  .us-price td:not(:first-child){background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:9px 4px 8px;font-family:var(--serif);font-size:16px;color:var(--gold)}
+  body.light .us-price td:not(:first-child){background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.07)}
+  .us-price td:not(:first-child)::before{content:attr(data-l);display:block;font-size:7.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);font-family:var(--sans);font-weight:700;margin-bottom:4px}
+  /* Red koji deli tabelu na grupe ostaje pun red, ne ulazi u grid od 4 kolone. */
+  .us-price tr.grp{display:block;padding:16px 4px 6px;border-bottom:none}
+  .us-price tr.grp td{grid-column:1/-1;text-align:left;padding:0;background:none;border:none;color:var(--gold);font-family:var(--sans);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700}
+  .us-price tr.grp:hover td{background:none}
+}
 @media(max-width:620px){
   .us-step{grid-template-columns:1fr;gap:12px;padding:28px 24px}
   .us-step-n{font-size:32px}
   .us-spec{grid-template-columns:1fr}
   .us-hub-c{padding:34px 28px}
-  .us-price th,.us-price td{padding:14px 12px;font-size:12.5px}
-  .us-price th{font-size:8.5px;letter-spacing:1px}
-  .us-price tr.grp td{padding:11px 12px;font-size:8.5px;letter-spacing:1.5px}
+  .us-price tr{column-gap:6px}
+  .us-price td:not(:first-child){font-size:14.5px;padding:8px 2px 7px}
   .us-quote{padding-left:20px}
 }
 @media(hover:none){
