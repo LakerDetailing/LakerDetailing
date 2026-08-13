@@ -47,6 +47,12 @@ assets/icons/laker-logo.jpg
 # Duplikat PWA foldera — koristi se samo assets/icons/
 assets/pwa/
 
+# Galerija: originalne (velike) slike vlasnika — sajt koristi assets/gallery/g-*.webp
+# koje pravi tools-galerija.js. Uputstvo ostaje u repou.
+galerija/*
+!galerija/PROCITAJ-ME.txt
+.galerija-backup/
+
 # Lighthouse / npm lokalni alati
 lighthouse-report.json
 package-lock.json

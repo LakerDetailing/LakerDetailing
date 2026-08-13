@@ -26,6 +26,9 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `SETUP-OAUTH.md` | Uputstvo: GOOGLE_CLIENT_ID / APPLE_SERVICE_ID env varijable za /loyalty-join dugmad |
 | `tools-csp-hashes.js` | Helper (ne deployuje se): `node tools-csp-hashes.js` izračuna CSP sha256 hash-eve inline skripti — OBAVEZNO pokrenuti posle izmene inline `<script>` u index/admin/offline.html i ažurirati vercel.json |
 | `tools-dev-server.js` | Lokalni dev server (ne deployuje se): `node tools-dev-server.js` → http://127.0.0.1:4173, mock /api/loyalty-join config |
+| `tools-galerija.js` + `SLIKE.bat` | Sistem za slike u galeriji — vlasnik sam menja slike. Vidi sekciju **Galerija** niže. Ne deployuje se |
+| `galerija/` | Dropzone za originalne slike galerije (gitignored, osim `PROCITAJ-ME.txt`) — šta je ovde, to je na sajtu |
+| `GALERIJA-UPUTSTVO.md` | Uputstvo za vlasnika (ne deployuje se) |
 | `assets/qrcode.min.js` | Self-hostovana qrcodejs lib — QR modal u admin panelu |
 | `api/push-*.js` | PWA push notifikacije |
 | `api/_push.js` | Supabase helper za push API |
@@ -116,6 +119,34 @@ Vlasnik je potvrdio koje proizvode koristi; brojevi su sa **zvaničnog koch-chem
 ### Radno vreme — jedan izvor istine
 
 **Ponedeljak — Subota, 09:00–20:00. Nedeljom ne radi.** Isto na sajtu, u JSON-LD `openingHoursSpecification` i na Google Mapama. Ranije je JSON-LD tvrdio pon–pet 08–18 i sub 09–15 — ispravljeno 2026-08-13. Pri svakoj izmeni ovoga proveri **oba** mesta u [index.html](index.html) i Google profil.
+
+---
+
+## Galerija — vlasnik je menja sam (2026-08-13)
+
+Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se rukom.
+
+**Tok:** vlasnik ubaci/obriše sliku u `galerija\` → dupli klik na `SLIKE.bat` → opcija 1 → skripta smanji slike, upiše HTML u index.html, podigne verziju, pita za objavu, pa `git push` i sačeka da slike budu žive.
+
+| Deo | Detalj |
+|---|---|
+| Ulaz | `galerija/` — ime fajla je `<broj> - <opis>[@kadar].jpg`; broj = redosled, opis = `alt` tekst, `@0-100` = `object-position` po visini (opciono) |
+| Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-opt.jpg` (900px / 480px, WebP q82 + JPG fallback) |
+| Alat | **ffmpeg + ffprobe** (`winget install Gyan.FFmpeg`) — nema npm zavisnosti, `package.json` ostaje prazan |
+| Markeri | `<!-- GALERIJA:POCETAK ... -->` / `<!-- GALERIJA:KRAJ -->` u [index.html](index.html) — **između njih ne pisati rukom**, skripta pregazi |
+| Undo | `.galerija-backup/` — `SLIKE.bat` opcija 3 vraća index.html, service-worker.js i obrisane slike |
+
+**Zašto hash u imenu:** `/assets/(.*)` ima `max-age=31536000, immutable` u [vercel.json](vercel.json). Da se ime ponovi, posetioci bi zauvek gledali staru sliku iz keša. Nova sadržina → nov hash → novo ime → nema keš problema.
+
+**Pravila koja skripta poštuje (ne kvariti ih):**
+- **Rotacija:** ffmpeg sam primeni EXIF orijentaciju (fotke sa telefona), pa se `width`/`height` čitaju sa **gotove** slike, nikad sa originala — inače bi uspravne fotke dobile ležeći odnos
+- **Brisanje:** briše samo `g-*` fajlove kojih nema ni u novom index.html ni u ostalim `.html` stranama. `work1/work2/work3/gallery-wheel` koristi `demo-o-nama.html` — zato nikad ne nestaju
+- **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
+- Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
+
+**CSS:** `.cs-grid` je **flex, ne grid** — kad broj slika nije deljiv sa 4, poslednji red se razvuče umesto da ostane rupa. `.cs-1`–`.cs-4` pravila su obrisana iz index.html (kadar ide inline preko `style`); ista pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
+
+> `.cs-card` više nema `cs-1`…`cs-4` klase u index.html. Ako nešto u budućnosti cilja te klase — cilja prazno.
 
 ---
 

@@ -25,3 +25,10 @@ tools-csp-hashes.js
 tools-dev-server.js
 tools-demo-build.js
 SETUP-OAUTH.md
+
+# Galerija: alat + originalne slike + rezervna kopija - ne deployuju se
+tools-galerija.js
+SLIKE.bat
+GALERIJA-UPUTSTVO.md
+galerija/
+.galerija-backup/
