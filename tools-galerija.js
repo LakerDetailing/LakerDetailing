@@ -198,7 +198,7 @@ function obradi(s, proba) {
   if (postoje) {
     s.status = 'ista';
     const d = dimenzije(j900);
-    s.w = d.w; s.h = d.h;
+    s.w = d.w; s.h = d.h; s.ar = d.w / d.h;
     s.bajtova = fs.statSync(w900).size;
     return;
   }
@@ -215,25 +215,64 @@ function obradi(s, proba) {
 
   // dimenzije se citaju sa GOTOVE slike — tako su tacne i kad je slika sa telefona okrenuta (EXIF rotacija)
   const d = dimenzije(j900);
-  s.w = d.w; s.h = d.h;
+  s.w = d.w; s.h = d.h; s.ar = d.w / d.h;
   s.bajtova = fs.statSync(w900).size;
 }
 
 /* ─────────────── HTML ─────────────── */
+/* Podela slika u redove.
+   U jednom redu sve slike imaju istu visinu (CSS to izvede iz --ar), a red popuni
+   celu sirinu. Visina reda = sirina / zbir odnosa stranica. Zato biramo koliko
+   redova treba da visina bude oko CILJNA_VISINA, pa slike delimo na redove
+   sto ravnomernije PO BROJU — tako nijedan red ne ostane sa jednom slikom
+   razvucenom preko cele sirine. */
+const SIRINA_TRAKE = 1126;   // priblizna sirina galerije na kompjuteru
+const CILJNA_VISINA = 400;
+
+function podeliURedove(stavke) {
+  const n = stavke.length;
+  if (n <= 1) return [stavke];
+
+  const zbirAr = stavke.reduce((z, s) => z + s.ar, 0);
+  let redova = Math.round(zbirAr / (SIRINA_TRAKE / CILJNA_VISINA)) || 1;
+  redova = Math.min(redova, Math.floor(n / 2));          // bar 2 slike u redu
+  redova = Math.max(redova, 1);
+
+  const osnovni = Math.floor(n / redova);
+  const visak = n % redova;
+  const redovi = [];
+  let i = 0;
+  for (let r = 0; r < redova; r++) {
+    const koliko = osnovni + (r < visak ? 1 : 0);        // veci redovi idu prvi
+    redovi.push(stavke.slice(i, i + koliko));
+    i += koliko;
+  }
+  return redovi;
+}
+
 function napraviHtml(stavke, eol) {
-  const kartice = stavke.map(s => {
-    return [
-      '    <div class="cs-card">',
-      '      <picture>',
-      `        <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:600px) 50vw, 25vw">`,
-      `        <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
-      '      </picture>',
-      '    </div>'
-    ].join(eol);
+  const redovi = podeliURedove(stavke).map(red => {
+    // unutar reda: parovi po dve slike — to je raspored koji vazi na telefonu
+    const parovi = [];
+    for (let i = 0; i < red.length; i += 2) parovi.push(red.slice(i, i + 2));
+
+    const sadrzaj = parovi.map(par => {
+      const kartice = par.map(s => [
+        '        <div class="cs-card" style="--ar:' + s.ar.toFixed(4) + '">',
+        '          <picture>',
+        `            <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:768px) 50vw, 25vw">`,
+        `            <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
+        '          </picture>',
+        '        </div>'
+      ].join(eol)).join(eol);
+      return `      <div class="cs-pair">${eol}${kartice}${eol}      </div>`;
+    }).join(eol);
+
+    return `    <div class="cs-row">${eol}${sadrzaj}${eol}    </div>`;
   }).join(eol);
 
   // isti prelom reda kao ostatak fajla (LF ili CRLF) — da se ne mesaju
-  return `${MARK_A} — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->${eol}${kartice}${eol}  ${MARK_B}`;
+  return `${MARK_A} — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->${eol}${redovi}${eol}  ${MARK_B}`;
 }
 
 function zameniBlok(html) {

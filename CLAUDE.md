@@ -144,9 +144,22 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 - **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
 - Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
 
-**CSS:** `.cs-grid` je **`column-count` (masonry), ne grid ni flex** — kartice nemaju fiksnu visinu, `img{height:auto}`, pa svaka slika zadrži svoj odnos stranica i **nijedna se ne seče**. 4 kolone, 2 ispod 1100px. Vlasnik je 2026-08-13 tražio baš to: uspravnu fotku sa telefona je fiksna visina kartice sekla na pola.
+### Raspored galerije — poravnati redovi (justified)
 
-> Cena: donja ivica galerije nije prava linija (kolone su različite visine). To je svesna zamena za necenzurisanu sliku — ne „popravljati" vraćanjem fiksne visine bez pitanja vlasnika.
+Vlasnik je 2026-08-13 odbio i fiksne visine (sekle su mu uspravnu fotku sa telefona) i masonry (ragava donja ivica). Traženo i urađeno: **u redu sve slike iste visine, širine srazmerne obliku, red popuni tačno celu širinu, ništa se ne seče.**
+
+Kako radi — svaka kartica nosi `style="--ar:0.5625"` (odnos stranica iz stvarnih dimenzija):
+
+```css
+.cs-card{flex:calc(var(--ar) * 100) 1 0;aspect-ratio:var(--ar)}
+```
+
+`flex-basis:0` + `flex-grow ∝ --ar` daje širine tačno srazmerne odnosu stranica → sve visine u redu su jednake, a red popuni širinu do piksela. `aspect-ratio` daje visinu.
+
+**Tri zamke — ne dirati bez razumevanja:**
+- **`* 100` u `flex-grow` je obavezno.** Ako je zbir `flex-grow` u redu manji od 1 (npr. jedna uspravna slika, `--ar:0.77`), flexbox razdeli **samo taj deo** slobodnog prostora i red ostane kraći od širine. Množenje sa 100 ne menja srazmere, samo diže zbir preko 1.
+- **Dva rasporeda, ne jedan.** `tools-galerija.js` upisuje i redove (`.cs-row`, za kompjuter) i parove (`.cs-pair`, za telefon). CSS bira koji važi preko `display:contents`: iznad 768px `.cs-pair{display:contents}` (kartice postaju deca reda), ispod `.cs-row{display:contents}` + `.cs-pair{display:flex}`. Prelamanje sa `flex-wrap` je probano i **ne valja** — pravi redove sa jednom slikom razvučenom preko cele širine.
+- **Broj slika u redu računa `podeliURedove()`** iz zbira odnosa stranica, ciljajući visinu reda ~400px pri širini ~1126px, uz pravilo „bar 2 slike u redu". Provereno za 2–12 slika: visine redova ostaju u opsegu 325–530px (osim kad ima svega 2–3 uspravne slike, tad je red neizbežno visok).
 
 > `.cs-card` više nema `cs-1`…`cs-4` klase ni `object-position` — ništa se ne seče, pa kadar nema šta da pomera. Ista `.cs-1`–`.cs-4` pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
 

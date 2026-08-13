@@ -76,13 +76,13 @@ Onda otvori sajt i pritisni **Ctrl+F5** (osvežava i briše keš).
 
 ---
 
-## Slika se vidi cela — ništa se ne seče
+## Kako galerija slaže slike
 
-Galerija poštuje oblik svake slike. Uspravna sa telefona ostaje uspravna, položena ostaje položena. Ne moraš ništa da podešavaš oko kadra: **šta si slikao, to se vidi.**
+Slike se slažu u redove. **U jednom redu sve slike imaju istu visinu**, a širine se prilagode obliku slike — uspravna je uža, položena šira. Red uvek popuni celu širinu, ivice su prave, i **nijedna slika se ne seče**.
 
-Posledica koju treba da znaš: pošto su slike različite visine, donja ivica galerije nije prava linija. To je normalno za ovakvu galeriju i izgleda sve bolje što više slika imaš.
+Sve to se računa samo, iz stvarnih dimenzija tvojih slika. Ne moraš ništa da podešavaš — ubaci sliku bilo kog oblika i ona se uklopi.
 
-> Ako ti se ipak više sviđa stara varijanta — sve kartice iste visine, slike malo isečene — reci Claude Code-u „vrati galeriju na jednake visine".
+Na telefonu idu po dve slike u redu, na kompjuteru obično četiri — zavisi od toga koliko ih ima i kakvog su oblika.
 
 ---
 

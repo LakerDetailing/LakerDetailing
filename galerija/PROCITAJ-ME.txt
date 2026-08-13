@@ -53,16 +53,13 @@
   OBLIK SLIKE — nista se ne isece
 ----------------------------------------------------------
 
-  Svaka slika se na sajtu vidi CELA, tacno onako kako si je
-  slikao. Uspravna slika sa telefona ostaje uspravna,
-  polozena ostaje polozena, kvadratna kvadratna.
+  Slike se slazu u redove. U jednom redu sve imaju ISTU
+  VISINU, a sirine se prilagode obliku slike: uspravna je
+  uza, polozena sira. Red popuni celu sirinu, ivice su
+  prave, i nijedna slika se ne isece.
 
-  Zato ne moras nista da podesavas oko kadra — sta si
-  slikao, to se vidi.
-
-  Posledica: slike su razlicite visine, pa donja ivica
-  galerije nije prava linija. To je normalno i izgleda
-  bolje sto vise slika imas.
+  Sve se racuna samo. Ubaci sliku bilo kog oblika i ona
+  se uklopi — ne moras nista da podesavas.
 
 
 ----------------------------------------------------------
