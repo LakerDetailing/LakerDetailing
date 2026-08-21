@@ -163,6 +163,52 @@ Kako radi — svaka kartica nosi `style="--ar:0.5625"` (odnos stranica iz stvarn
 
 > `.cs-card` više nema `cs-1`…`cs-4` klase ni `object-position` — ništa se ne seče, pa kadar nema šta da pomera. Ista `.cs-1`–`.cs-4` pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
 
+### Neparan broj slika — najšira ide POSLEDNJA (2026-08-21)
+
+Na telefonu se slike slažu u parove. Kad je broj neparan, **poslednja ostaje sama i razvuče se preko cele širine**. Ako je tu uspravna fotka (9:16), dobije ~800px visine i proguta ceo ekran.
+
+Zato redosled u `galerija/` bira **koja** slika ostaje sama: stavi najširu (pejzažnu) pod najveći broj.
+
+Trenutnih 5 slika (redosled je namerno takav):
+
+| # | Slika | Odnos |
+|---|---|---|
+| 1 | Mercedes A-Class | 0.5625 |
+| 2 | Alfa Romeo Giulietta | 0.8687 |
+| 3 | Alfa Romeo Giulietta felna | 0.7745 |
+| 4 | Volkswagen Arteon | 0.5625 |
+| 5 | Mercedes S-Class AMG | **1.2605** ← najšira, ostaje sama |
+
+Rezultat: telefon 315 / 337 / 359 px (sa uspravnom poslednjom bilo bi 315 / 222 / **805**), kompjuter jedan red 1769×437.
+
+> **Provera pri svakoj izmeni:** ako broj slika postane neparan, uveri se da je najšira pod najvećim brojem. Ako je paran, redosled je slobodan.
+
+> ⚠️ **Opis u imenu fajla je jedini izvor `alt` teksta — proveri da opis odgovara slici.** Do 2026-08-21 su dva opisa bila zamenjena (fajl „Alfa Romeo felna" je sadržao Mercedes S-Class i obrnuto), pa su `alt` tekstovi bili pogrešni na živom sajtu.
+
+---
+
+## Performanse — zamućeni overlay i animacije (2026-08-21)
+
+Modali preko celog ekrana (`#loyOverlay`, `#reviewModal`, `#care-modal-overlay`, `#pwaIosModal`) imaju `backdrop-filter: blur(...)`. **Zamućenje je skupo samo dok se pozadina menja** — tada Chrome mora da ga preračuna preko celog ekrana u svakom frejmu.
+
+Vlasnik je prijavio da mu „ceo tab secka dok koristi miš" kad otvori **Prijava**. Merenje na njegovom računaru (144 Hz, budžet po frejmu 6.9 ms) je potvrdilo uzrok — krivac su bile ukrasne animacije **iza** modala (`.mq-t`, `.hs-line`, `.loc-pin::after`), ne sam modal:
+
+| Stanje | fps | p95 | najduži frejm | preskočeni |
+|---|---|---|---|---|
+| modal zatvoren | 139.4 | 7.0 ms | 20.8 ms | 1 |
+| modal otvoren (pre popravke) | 135.0 | **13.8 ms** | **34.8 ms** | 1–3 |
+| modal otvoren (posle popravke) | 142.6 | 7.0 ms | 13.9 ms | **0** |
+
+**Rešenje — dva pravila, oba u `main.js` (blok „MIROVANJE UKRASNIH ANIMACIJA") + CSS u `index.html`:**
+- `body.bg-freeze` — dok je otvoren bilo koji modal preko celog ekrana, ukrasne animacije u pozadini stoje. Klasu postavlja MutationObserver nad ta 4 elementa, pa hvata **svaki** način otvaranja (inline `display`, klasa `.open`) — ne treba dirati pojedinačne open/close funkcije.
+- `.anim-pauza` — IntersectionObserver pauzira ukras koji nije na ekranu. Isti obrazac koji `.mq-t` već koristi preko `.paused`.
+
+**Ne brisati te pauze da bi se „očistio kod" — vraća seckanje.** `blur(22px)` na `#loyOverlay` **ostaje**; probano je i uklanjanje i jeste brzo, ali se tada kroz overlay čitaju nav, logo i WhatsApp dugme.
+
+> **Hero nije bio kriv.** `filter: brightness(.45) saturate(.8)` na hero slici je mereno na 140+ fps čak i kad se slika prerisava svaki frejm — `brightness`/`saturate` su operacije po pikselu (jeftine na grafičkoj), za razliku od `blur` koji je konvolucija. Ne dirati hero filter zbog brzine.
+
+> **Kako meriti ponovo:** tab u pozadini ne crta frejmove, pa obično merenje ne radi. Postupak koji radi: pokreni rAF petlju koja skuplja razmake između frejmova, pa je „budi" nizom sitnih snimaka ekrana; na kraju filtriraj razmake < 200 ms. Gledaj **p95 i broj preskočenih frejmova**, ne najduži frejm — najduži je artefakt buđenja taba.
+
 ---
 
 ## Prekidač „u radovima"
