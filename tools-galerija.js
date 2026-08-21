@@ -95,6 +95,22 @@ function dimenzije(fajl) {
   return { w, h };
 }
 
+/* EXIF rotacija originala (fotke sa telefona su cesto zapisane polozeno
+   + oznakom "okreni za 90"). Vraca 0 kad oznake nema. */
+function rotacija(fajl) {
+  for (const upit of ['stream_side_data=rotation', 'stream_tags=rotate']) {
+    try {
+      const out = execFileSync('ffprobe', [
+        '-v', 'error', '-select_streams', 'v:0',
+        '-show_entries', upit, '-of', 'default=nw=1:nk=1', fajl
+      ], { encoding: 'utf8' }).trim().split(/\s+/)[0];
+      const n = Number(out);
+      if (Number.isFinite(n) && n) return n;
+    } catch (e) { /* starija verzija ffprobe-a ne zna ovaj upit — probamo sledeci */ }
+  }
+  return 0;
+}
+
 /* ─────────────── imena ─────────────── */
 const SLOVA = { 'č': 'c', 'ć': 'c', 'ž': 'z', 'š': 's', 'đ': 'dj', 'Č': 'c', 'Ć': 'c', 'Ž': 'z', 'Š': 's', 'Đ': 'dj' };
 
@@ -203,7 +219,18 @@ function obradi(s, proba) {
     return;
   }
   s.status = 'nova';
-  if (proba) return;
+  if (proba) {
+    // U probi se slika ne pravi, pa dimenzije citamo sa ORIGINALA — inace
+    // ostanu prazne i ispis rasporeda pukne ("Cannot read properties of
+    // undefined"). Racunamo i EXIF rotaciju, da procena bude ista kao posle
+    // pravog pokretanja (ffmpeg sam okrene fotku sa telefona).
+    const d0 = dimenzije(s.pun);
+    const rot = Math.abs(rotacija(s.pun)) % 180;
+    s.w = rot === 90 ? d0.h : d0.w;
+    s.h = rot === 90 ? d0.w : d0.h;
+    s.ar = s.w / s.h;
+    return;
+  }
 
   const skala = (sirina) => `scale='min(${sirina},iw)':-2:flags=lanczos`;
   ffmpeg(['-i', s.pun, '-map_metadata', '-1', '-vf', skala(SIRINA_VELIKA),

@@ -6,7 +6,7 @@ const path = require('path');
 
 const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css',
-  '.webp': 'image/webp', '.png': 'image/png', '.ico': 'image/x-icon',
+  '.webp': 'image/webp', '.avif': 'image/avif', '.png': 'image/png', '.ico': 'image/x-icon',
   '.woff2': 'font/woff2', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.json': 'application/json'
 };
 

@@ -1155,6 +1155,22 @@ body.pwa-standalone .pwa-push{}
 .loy-overlay,.care-modal-overlay,.rm-box,#reviewModal,#care-modal-overlay{
   backdrop-filter:blur(16px) saturate(1.05);
 }
+/* ── UKRASNE ANIMACIJE SE PAUZIRAJU KAD IH NIKO NE GLEDA ──────────────────
+   Modali preko celog ekrana imaju backdrop-filter (zamucenje). Dok se BILO STA
+   iza njih pomera, Chrome mora ponovo da izracuna zamucenje CELOG ekrana u
+   svakom frejmu. Na 144Hz monitoru to je bilo vidljivo seckanje misa dok je
+   "Prijava" otvorena. Kad se pozadina smiri, zamucenje se izracuna jednom.
+   Izgled se ne menja: sve ovo je ionako iza zamucenja, ili van ekrana.
+   Mereno na zivom sajtu (1924x915, 144Hz), modal otvoren:
+     pre  — 135.0 fps, najduzi frejm 34.8 ms, 1 preskocen frejm
+     posle — 144.0 fps, najduzi frejm  7.1 ms, 0 preskocenih
+   Klase postavlja main.js (blok "MIROVANJE UKRASNIH ANIMACIJA").
+   .mq-t vec ima isti obrazac preko .paused — ovde se samo prosiruje. */
+.anim-pauza,.anim-pauza::after{animation-play-state:paused}
+body.bg-freeze .hs-line,
+body.bg-freeze .mq-t,
+body.bg-freeze .care-glow,
+body.bg-freeze .loc-pin::after{animation-play-state:paused}
 .loy-tab,.faq-q,.nm .nb,.btn-o,.pk-btn,.care-cta,.btn-review-open,.rm-btn,.lf-btn,.f-btn{
   transition:transform .25s ease, background .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease;
 }
@@ -2231,16 +2247,24 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
         </div>
       </div>
       <div class="cs-pair">
-        <div class="cs-card" style="--ar:1.2605">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-aa269b6c-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
-          </picture>
-        </div>
         <div class="cs-card" style="--ar:0.7745">
           <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-1f224f22-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
+            <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
+            <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
+          </picture>
+        </div>
+        <div class="cs-card" style="--ar:0.5625">
+          <picture>
+            <source type="image/webp" srcset="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-480.webp 480w, /assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
+            <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-opt.jpg" alt="Volkswagen Arteon u Laker Detailing studiju">
+          </picture>
+        </div>
+      </div>
+      <div class="cs-pair">
+        <div class="cs-card" style="--ar:1.2605">
+          <picture>
+            <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
+            <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
           </picture>
         </div>
       </div>
@@ -3039,7 +3063,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>48</b> · 2026-08-13</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>51</b> · 2026-08-21</span>
   </div>
 </footer>
 
@@ -3313,7 +3337,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260805c" defer></script>
+<script src="/main.min.js?v=20260821a" defer></script>
 <script src="/init.js?v=20260813a" defer></script>
 
 <!-- Vercel Web Analytics se učitava iz init.js (blok ANALYTICS) da bi poštovao

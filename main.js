@@ -12,10 +12,18 @@ function escHtml(s){
 const cur=document.getElementById('cur'),cr=document.getElementById('cur-r');
 const _hasHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
 if(_hasHover){
-  // transform umesto left/top = kompozitor, bez layout-a; rAF petlja staje kad se kursor smiri
-  let mx=0,my=0,rx=0,ry=0,_curRaf=null;
+  // transform umesto left/top = kompozitor, bez layout-a; rAF petlja staje kad se kursor smiri.
+  // Pozicija se upisuje ISKLJUCIVO unutar rAF-a: gejmerski mis salje mousemove
+  // 500-1000 puta u sekundi, a ekran se osvezava najvise 144 puta — upis stila
+  // u samom dogadjaju je znacio i do 7 nepotrebnih invalidacija po frejmu.
+  // Vizuelno je isto (izmedju dva frejma se ionako nista ne iscrtava).
+  let mx=0,my=0,rx=0,ry=0,_dotX=null,_dotY=null,_curRaf=null;
   function _curTick(){
     _curRaf=null;
+    if(_dotX!==mx||_dotY!==my){
+      _dotX=mx;_dotY=my;
+      cur.style.transform='translate3d('+mx+'px,'+my+'px,0) translate(-50%,-50%)';
+    }
     rx+=(mx-rx)*.16;ry+=(my-ry)*.16;
     if(Math.abs(mx-rx)>.4||Math.abs(my-ry)>.4){
       cr.style.transform='translate3d('+rx+'px,'+ry+'px,0) translate(-50%,-50%)';
@@ -27,7 +35,6 @@ if(_hasHover){
   }
   document.addEventListener('mousemove',e=>{
     mx=e.clientX;my=e.clientY;
-    cur.style.transform='translate3d('+mx+'px,'+my+'px,0) translate(-50%,-50%)';
     if(!_curRaf)_curRaf=requestAnimationFrame(_curTick);
   },{passive:true});
   document.querySelectorAll('a,button,.si,.pk,.cs-card,.tst-card,.faq-q,.sz-lbl').forEach(el=>{
@@ -35,6 +42,46 @@ if(_hasHover){
     el.addEventListener('mouseleave',()=>{cr.style.width='32px';cr.style.height='32px'},{passive:true});
   });
 }
+
+// ── MIROVANJE UKRASNIH ANIMACIJA ────────────────────────────────────────────
+// Animacija ume da trosi frejmove ni za sta u dve situacije:
+//   1) otvoren je modal preko celog ekrana — sve iza njega je zamuceno
+//      backdrop-filter-om, pa svaki pomeraj u pozadini tera Chrome da ponovo
+//      izracuna zamucenje CELOG ekrana, u svakom frejmu. To je bilo seckanje
+//      misa dok je "Prijava" otvorena (mereno na 144Hz: najduzi frejm 34.8ms).
+//   2) ukras nije na ekranu — niko ga ne vidi, a i dalje se vrti.
+// U oba slucaja animacija se samo pauzira. Vizuelno se ne gubi nista.
+// Marquee (.mq-t) vec ima svoj IntersectionObserver preko klase .paused —
+// njega ne diramo, samo ga hvatamo pravilom body.bg-freeze .mq-t.
+(function(){
+  // 1) modali preko celog ekrana
+  var modali = ['loyOverlay','reviewModal','care-modal-overlay','pwaIosModal']
+    .map(function(id){ return document.getElementById(id); })
+    .filter(Boolean);
+  if(modali.length){
+    var otvoren = function(el){ return getComputedStyle(el).display !== 'none'; };
+    var uskladi = function(){
+      document.body.classList.toggle('bg-freeze', modali.some(otvoren));
+    };
+    // hvata SVAKI nacin otvaranja (inline display, klasa .open) — ne moramo da
+    // diramo svaku open/close funkciju ponaosob
+    var mo = new MutationObserver(uskladi);
+    modali.forEach(function(el){
+      mo.observe(el, { attributes:true, attributeFilter:['style','class'] });
+    });
+    uskladi();
+  }
+  // 2) ukrasi van ekrana
+  var ukrasi = document.querySelectorAll('.hs-line,.care-glow,.loc-pin');
+  if(ukrasi.length && 'IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(lista){
+      lista.forEach(function(e){
+        e.target.classList.toggle('anim-pauza', !e.isIntersecting);
+      });
+    }, { rootMargin:'150px 0px' });
+    ukrasi.forEach(function(el){ io.observe(el); });
+  }
+})();
 
 // ── THEME TOGGLE ──
 // document.documentElement.style.colorScheme mora pratiti temu, jer Chrome/Edge
