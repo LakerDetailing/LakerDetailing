@@ -38,6 +38,11 @@ const SITE   = 'https://www.lakerdetailing.rs';
 
 const SIRINA_VELIKA = 900;
 const SIRINA_MALA   = 480;
+// Sicusna, unapred zamucena kopija — sluzi kao pozadina izloga iza uspravnih
+// fotki. Zamucenje se PECE u sliku, ne racuna se u browseru: CSS filter:blur()
+// preko cele te povrsine se ponovo racuna pri svakom iscrtavanju i mereno je
+// obarao p95 sa 7.1 na 13.8 ms. Ovako je ~700 bajtova i kosta nista.
+const SIRINA_MUTNA  = 64;
 const KVALITET_WEBP = 82;
 
 const EXT_OK  = new Set(['.jpg', '.jpeg', '.png', '.webp']);
@@ -207,10 +212,11 @@ function ucitajUlaz() {
 function obradi(s, proba) {
   const w900  = path.join(OUT, `${s.osnova}.webp`);
   const w480  = path.join(OUT, `${s.osnova}-${SIRINA_MALA}.webp`);
+  const wMut  = path.join(OUT, `${s.osnova}-blur.webp`);
   const j900  = path.join(OUT, `${s.osnova}-opt.jpg`);
-  s.fajlovi = { w900, w480, j900 };
+  s.fajlovi = { w900, w480, wMut, j900 };
 
-  const postoje = fs.existsSync(w900) && fs.existsSync(w480) && fs.existsSync(j900);
+  const postoje = fs.existsSync(w900) && fs.existsSync(w480) && fs.existsSync(wMut) && fs.existsSync(j900);
   if (postoje) {
     s.status = 'ista';
     const d = dimenzije(j900);
@@ -239,6 +245,10 @@ function obradi(s, proba) {
     '-c:v', 'libwebp', '-quality', String(KVALITET_WEBP), '-preset', 'photo', '-compression_level', '6', w480]);
   ffmpeg(['-i', s.pun, '-map_metadata', '-1', '-vf', skala(SIRINA_VELIKA),
     '-c:v', 'mjpeg', '-q:v', '4', '-pix_fmt', 'yuvj420p', j900]);
+  // mutna kopija: smanji na 64px pa blago zamuti — browser je razvuce na punu
+  // sirinu okvira i to izgleda kao zamucenje, a nista se ne racuna u hodu
+  ffmpeg(['-i', s.pun, '-map_metadata', '-1', '-vf', `scale=${SIRINA_MUTNA}:-2:flags=lanczos,gblur=sigma=2`,
+    '-c:v', 'libwebp', '-quality', '60', '-preset', 'photo', wMut]);
 
   // dimenzije se citaju sa GOTOVE slike — tako su tacne i kad je slika sa telefona okrenuta (EXIF rotacija)
   const d = dimenzije(j900);
@@ -247,59 +257,53 @@ function obradi(s, proba) {
 }
 
 /* ─────────────── HTML ─────────────── */
-/* Podela slika u redove.
-   U jednom redu sve slike imaju istu visinu (CSS to izvede iz --ar), a red popuni
-   celu sirinu. Visina reda = sirina / zbir odnosa stranica. Zato biramo koliko
-   redova treba da visina bude oko CILJNA_VISINA, pa slike delimo na redove
-   sto ravnomernije PO BROJU — tako nijedan red ne ostane sa jednom slikom
-   razvucenom preko cele sirine. */
-const SIRINA_TRAKE = 1126;   // priblizna sirina galerije na kompjuteru
-const CILJNA_VISINA = 400;
+/* Izlog: jedna velika slika u okviru koji se NE MENJA + slicice ispod.
+   Slika stoji CELA u okviru (CSS: object-fit:contain), a prazan prostor pored
+   uspravnih fotki popunjava zamucena kopija te iste slike (data-mini).
 
-function podeliURedove(stavke) {
-  const n = stavke.length;
-  if (n <= 1) return [stavke];
+   Zato ovde nema nikakvog racunanja rasporeda: okvir je uvek isti, pa je
+   svejedno koliko slika ima i kakvog su oblika. Raniji racun redova
+   (podeliURedove, SIRINA_TRAKE, CILJNA_VISINA) je zato uklonjen.
 
-  const zbirAr = stavke.reduce((z, s) => z + s.ar, 0);
-  let redova = Math.round(zbirAr / (SIRINA_TRAKE / CILJNA_VISINA)) || 1;
-  redova = Math.min(redova, Math.floor(n / 2));          // bar 2 slike u redu
-  redova = Math.max(redova, 1);
-
-  const osnovni = Math.floor(n / redova);
-  const visak = n % redova;
-  const redovi = [];
-  let i = 0;
-  for (let r = 0; r < redova; r++) {
-    const koliko = osnovni + (r < visak ? 1 : 0);        // veci redovi idu prvi
-    redovi.push(stavke.slice(i, i + koliko));
-    i += koliko;
-  }
-  return redovi;
-}
+   Stilovi: index.html, blok "GALERIJA — IZLOG".
+   Ponasanje: main.js, blok "GALERIJA — IZLOG". */
 
 function napraviHtml(stavke, eol) {
-  const redovi = podeliURedove(stavke).map(red => {
-    // unutar reda: parovi po dve slike — to je raspored koji vazi na telefonu
-    const parovi = [];
-    for (let i = 0; i < red.length; i += 2) parovi.push(red.slice(i, i + 2));
+  const slajdovi = stavke.map((s, i) => [
+    `        <picture class="izl-slide${i === 0 ? ' on' : ''}" data-mini="/assets/gallery/${s.osnova}-blur.webp" data-veliko="/assets/gallery/${s.osnova}.webp">`,
+    `          <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:760px) 92vw, 900px">`,
+    `          <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
+    '        </picture>'
+  ].join(eol)).join(eol);
 
-    const sadrzaj = parovi.map(par => {
-      const kartice = par.map(s => [
-        '        <div class="cs-card" style="--ar:' + s.ar.toFixed(4) + '">',
-        '          <picture>',
-        `            <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:768px) 50vw, 25vw">`,
-        `            <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
-        '          </picture>',
-        '        </div>'
-      ].join(eol)).join(eol);
-      return `      <div class="cs-pair">${eol}${kartice}${eol}      </div>`;
-    }).join(eol);
+  const slicice = stavke.map((s, i) => [
+    `      <button type="button" class="izl-thumb${i === 0 ? ' on' : ''}" aria-current="${i === 0 ? 'true' : 'false'}" aria-label="${escHtml(s.opis)}">`,
+    `        <img loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp" alt="">`,
+    '      </button>'
+  ].join(eol)).join(eol);
 
-    return `    <div class="cs-row">${eol}${sadrzaj}${eol}    </div>`;
-  }).join(eol);
+  const telo = [
+    '  <div class="izl" id="izl">',
+    '    <div class="izl-frame">',
+    '      <div class="izl-bg"></div>',
+    '      <div class="izl-slides">',
+    slajdovi,
+    '      </div>',
+    '      <button type="button" class="izl-open" aria-label="Otvori sliku preko celog ekrana"></button>',
+    // ikonica "uvecaj" kao SVG, ne kao Unicode strelica — strelicu neki fontovi nemaju
+    '      <span class="izl-zoom" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></span>',
+    '      <button type="button" class="izl-nav izl-prev" aria-label="Prethodna slika">‹</button>',
+    '      <button type="button" class="izl-nav izl-next" aria-label="Sledeća slika">›</button>',
+    '      <div class="izl-cap"><b class="izl-cap-t"></b><span class="izl-num"></span></div>',
+    '    </div>',
+    '    <div class="izl-strip">',
+    slicice,
+    '    </div>',
+    '  </div>'
+  ].join(eol);
 
   // isti prelom reda kao ostatak fajla (LF ili CRLF) — da se ne mesaju
-  return `${MARK_A} — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->${eol}${redovi}${eol}  ${MARK_B}`;
+  return `${MARK_A} — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->${eol}${telo}${eol}  ${MARK_B}`;
 }
 
 function zameniBlok(html) {
@@ -373,6 +377,7 @@ function nadjiZaBrisanje(stavke, noviIndex) {
   stavke.forEach(s => {
     zadrzi.add(`${s.osnova}.webp`);
     zadrzi.add(`${s.osnova}-${SIRINA_MALA}.webp`);
+    zadrzi.add(`${s.osnova}-blur.webp`);
     zadrzi.add(`${s.osnova}-opt.jpg`);
   });
 
@@ -517,7 +522,9 @@ async function main() {
   }
 
   // sigurnosna brava: ako se galerija smanjuje, trazi izricitu potvrdu PRE nego sto isceta bilo sta
-  const staroBrojac = (staro.match(/<div class="cs-card"/g) || []).length;
+  // izl-slide je danasnji raspored; cs-card je stari (poravnati redovi, do 2026-08-21)
+  const staroBrojac = (staro.match(/class="izl-slide[" ]/g) || []).length
+                   || (staro.match(/<div class="cs-card"/g) || []).length;
   if (stavke.length < staroBrojac) {
     log('');
     upoz(`galerija se smanjuje: ${staroBrojac} → ${stavke.length} slika`);

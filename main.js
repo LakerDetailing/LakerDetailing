@@ -55,7 +55,7 @@ if(_hasHover){
 // njega ne diramo, samo ga hvatamo pravilom body.bg-freeze .mq-t.
 (function(){
   // 1) modali preko celog ekrana
-  var modali = ['loyOverlay','reviewModal','care-modal-overlay','pwaIosModal']
+  var modali = ['loyOverlay','reviewModal','care-modal-overlay','pwaIosModal','galView']
     .map(function(id){ return document.getElementById(id); })
     .filter(Boolean);
   if(modali.length){
@@ -81,6 +81,150 @@ if(_hasHover){
     }, { rootMargin:'150px 0px' });
     ukrasi.forEach(function(el){ io.observe(el); });
   }
+})();
+
+// ── GALERIJA — IZLOG ────────────────────────────────────────────────
+// Jedna velika slika + slicice ispod; klik na sliku je otvara preko celog
+// ekrana. Markup izmedju markera galerije pise tools-galerija.js,
+// stilovi su u index.html (blokovi "GALERIJA — IZLOG" i "PREGLED SLIKE...").
+// Sve je u jednoj IIFE i gasi se samo od sebe ako galerije nema na stranici.
+(function(){
+  var izl = document.getElementById('izl');
+  if(!izl) return;
+  var slajdovi = [].slice.call(izl.querySelectorAll('.izl-slide'));
+  if(!slajdovi.length) return;
+
+  var slicice = [].slice.call(izl.querySelectorAll('.izl-thumb'));
+  var traka   = izl.querySelector('.izl-strip');
+  var poz     = izl.querySelector('.izl-bg');
+  var natpis  = izl.querySelector('.izl-cap-t');
+  var brojac  = izl.querySelector('.izl-num');
+  var okvir   = izl.querySelector('.izl-frame');
+  var gv      = document.getElementById('galView');
+  var gvImg   = gv && gv.querySelector('.gv-img');
+  var gvCap   = gv && gv.querySelector('.gv-cap');
+  var gvNum   = gv && gv.querySelector('.gv-num');
+  var gvX     = gv && gv.querySelector('.gv-x');
+  var mirno   = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var i = 0, vracaFokus = null, prevuceno = false;
+
+  function aktivnaImg(){ return slajdovi[i].querySelector('img'); }
+  function aktivniOpis(){ return aktivnaImg().getAttribute('alt') || ''; }
+  // data-veliko je uvek 900px webp — pouzdanije od currentSrc, koji je prazan
+  // dok se slika jos nije ucitala (slajdovi su loading="lazy")
+  function aktivnaSrc(){
+    return slajdovi[i].getAttribute('data-veliko') || aktivnaImg().currentSrc || aktivnaImg().src;
+  }
+  function gvOtvoren(){ return !!gv && gv.classList.contains('open'); }
+
+  function centrirajSlicicu(){
+    if(!traka || traka.scrollWidth <= traka.clientWidth + 1) return;
+    var t = slicice[i];
+    if(!t) return;
+    traka.scrollTo({
+      left: Math.max(0, t.offsetLeft - (traka.clientWidth - t.offsetWidth) / 2),
+      behavior: mirno ? 'auto' : 'smooth'
+    });
+  }
+
+  function gvOsvezi(){
+    if(!gv) return;
+    gvImg.src = aktivnaSrc();
+    gvImg.alt = aktivniOpis();
+    gvCap.textContent = aktivniOpis();
+    gvNum.textContent = (i + 1) + ' / ' + slajdovi.length;
+  }
+
+  function prikazi(n){
+    i = (n + slajdovi.length) % slajdovi.length;
+    slajdovi.forEach(function(sl, j){ sl.classList.toggle('on', j === i); });
+    slicice.forEach(function(t, j){
+      t.classList.toggle('on', j === i);
+      t.setAttribute('aria-current', j === i ? 'true' : 'false');
+    });
+    var mini = slajdovi[i].getAttribute('data-mini');
+    if(poz && mini) poz.style.backgroundImage = 'url("' + mini + '")';
+    if(natpis) natpis.textContent = aktivniOpis();
+    if(brojac) brojac.textContent = (i + 1) + ' / ' + slajdovi.length;
+    centrirajSlicicu();
+    if(gvOtvoren()) gvOsvezi();
+  }
+
+  function gvOtvori(izvor){
+    if(!gv) return;
+    vracaFokus = izvor || null;
+    gvOsvezi();
+    gv.classList.add('open');
+    document.body.style.overflowY = 'hidden';
+    if(gvX) gvX.focus();
+  }
+  function gvZatvori(){
+    if(!gv) return;
+    gv.classList.remove('open');
+    document.body.style.overflowY = '';
+    if(vracaFokus){ try{ vracaFokus.focus(); }catch(e){} }
+    vracaFokus = null;
+  }
+
+  slicice.forEach(function(t, j){
+    t.addEventListener('click', function(){ prikazi(j); });
+  });
+  var bPrev = izl.querySelector('.izl-prev'), bNext = izl.querySelector('.izl-next');
+  if(bPrev) bPrev.addEventListener('click', function(){ prikazi(i - 1); });
+  if(bNext) bNext.addEventListener('click', function(){ prikazi(i + 1); });
+  var bOpen = izl.querySelector('.izl-open');
+  if(bOpen) bOpen.addEventListener('click', function(){
+    if(prevuceno) return;            // prevlacenje ne sme i da otvori pregled
+    gvOtvori(bOpen);
+  });
+
+  izl.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); prikazi(i - 1); }
+    else if(e.key === 'ArrowRight'){ e.preventDefault(); prikazi(i + 1); }
+  });
+
+  if(okvir){
+    var px = 0, py = 0;
+    okvir.addEventListener('touchstart', function(e){
+      px = e.touches[0].clientX; py = e.touches[0].clientY;
+    }, {passive:true});
+    okvir.addEventListener('touchend', function(e){
+      var dx = e.changedTouches[0].clientX - px, dy = e.changedTouches[0].clientY - py;
+      if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+        prevuceno = true;
+        prikazi(i + (dx < 0 ? 1 : -1));
+        setTimeout(function(){ prevuceno = false; }, 500);
+      }
+    }, {passive:true});
+  }
+
+  if(gv){
+    if(gvX) gvX.addEventListener('click', gvZatvori);
+    var gvP = gv.querySelector('.gv-prev'), gvN = gv.querySelector('.gv-next');
+    if(gvP) gvP.addEventListener('click', function(){ prikazi(i - 1); });
+    if(gvN) gvN.addEventListener('click', function(){ prikazi(i + 1); });
+    // klik pored slike zatvara; klik na samu sliku ne (da se ne zatvara slucajno)
+    gv.addEventListener('click', function(e){ if(e.target === gv) gvZatvori(); });
+
+    document.addEventListener('keydown', function(e){
+      if(!gvOtvoren()) return;
+      if(e.key === 'Escape'){ gvZatvori(); }
+      else if(e.key === 'ArrowLeft'){ e.preventDefault(); prikazi(i - 1); }
+      else if(e.key === 'ArrowRight'){ e.preventDefault(); prikazi(i + 1); }
+    });
+
+    var gx = 0, gy = 0;
+    gv.addEventListener('touchstart', function(e){
+      gx = e.touches[0].clientX; gy = e.touches[0].clientY;
+    }, {passive:true});
+    gv.addEventListener('touchend', function(e){
+      var dx = e.changedTouches[0].clientX - gx, dy = e.changedTouches[0].clientY - gy;
+      if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) prikazi(i + (dx < 0 ? 1 : -1));
+      else if(dy > 90 && Math.abs(dy) > Math.abs(dx)) gvZatvori();   // prevuci nadole = izlaz
+    }, {passive:true});
+  }
+
+  prikazi(0);
 })();
 
 // ── THEME TOGGLE ──

@@ -518,20 +518,72 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 }
 
 /* CASE STUDIES */
-#cs{background:var(--d1);padding-bottom:0}
+#cs{background:var(--d1)}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
-/* Poravnata galerija: unutar jednog reda sve slike imaju ISTU VISINU, sirine su
-   srazmerne obliku slike, red popuni tacno celu sirinu i NISTA se ne isece.
-   Trik: sirina = flex-grow srazmeran odnosu stranica (--ar), visina = aspect-ratio.
-   Redove i --ar racuna tools-galerija.js iz stvarnih dimenzija slika. */
-.cs-grid{display:flex;flex-direction:column;gap:2px}
-.cs-row{display:flex;gap:2px}
-.cs-pair{display:contents}
-/* flex-grow mora biti >=1 po redu, inace flexbox razdeli samo deo slobodnog
-   prostora i red ne popuni sirinu — otuda mnozenje sa 100 */
-.cs-card{flex:calc(var(--ar) * 100) 1 0;aspect-ratio:var(--ar);position:relative;overflow:hidden;cursor:none}
-.cs-card img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.85);transition:filter .55s,transform .55s}
-.cs-card:hover img{filter:brightness(1);transform:scale(1.04)}
+/* ── GALERIJA — IZLOG ─────────────────────────────────────────────
+   Jedna velika slika u okviru koji se NIKAD ne menja + slicice ispod. Slika
+   stoji CELA u okviru (object-fit:contain, nista se ne isece), a prazan prostor
+   pored uspravnih fotki popunjava zamucena kopija te iste slike. Zato uspravna
+   i polozena fotografija izgledaju podjednako dobro i galerija ne moze da
+   ispadne neujednacena, bez obzira koje slike vlasnik ubaci.
+   Markup izmedju markera galerije pise tools-galerija.js.
+   Ponasanje je u main.js, blok "GALERIJA — IZLOG". */
+.cs-grid{display:block}
+.izl{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.izl-frame{position:relative;aspect-ratio:4/3;overflow:hidden;background:#050505;border:1px solid rgba(255,255,255,.07)}
+body.light .izl-frame{border-color:rgba(0,0,0,.09)}
+/* Pozadina je vec ZAMUCENA SLIKA (64px kopija koju browser razvuce), pa ovde
+   NEMA filter:blur(). Blur preko ove povrsine se ponovo racuna pri svakom
+   iscrtavanju — mereno je obarao p95 sa 7.1 na 13.8 ms cim se mis pomeri preko
+   galerije. brightness/saturate ostaju: to su operacije po pikselu i besplatne su. */
+.izl-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.32) saturate(1.2);transform:scale(1.08)}
+.izl-slides{position:absolute;inset:0}
+/* visibility, ne display:none — tako se i neaktivne slike ucitaju unapred,
+   pa je prelaz izmedju njih trenutan */
+.izl-slide{position:absolute;inset:0;display:block;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s linear .5s}
+.izl-slide.on{opacity:1;visibility:visible;transition:opacity .5s ease}
+.izl-slide img{width:100%;height:100%;object-fit:contain;display:block}
+/* ceo okvir je dugme: klik otvara pregled preko celog ekrana */
+.izl-open{position:absolute;inset:0;z-index:2;background:none;border:none;padding:0;cursor:none;-webkit-tap-highlight-color:transparent}
+.izl-zoom{position:absolute;top:14px;right:14px;z-index:4;pointer-events:none;width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:13px;line-height:1;opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s}
+.izl-frame:hover .izl-zoom,.izl-open:focus-visible~.izl-zoom{opacity:1;transform:none}
+.izl-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:18px;line-height:1;cursor:none;font-family:var(--sans);box-shadow:0 2px 10px rgba(0,0,0,.35);transition:background .3s,border-color .3s}
+.izl-nav:hover{background:var(--gold);border-color:var(--gold)}
+.izl-prev{left:16px}
+.izl-next{right:16px}
+.izl-cap{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;padding:64px 22px 16px;background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.45) 42%,transparent);font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:#E6E3DE;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.izl-cap-t{font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.izl-num{flex-shrink:0;color:#B9B5B0;font-variant-numeric:tabular-nums;letter-spacing:1.5px}
+/* width:fit-content + margin:auto — slicice su centrirane dok staju u red, a
+   kad ih bude previse traka se skroluje bez secenja prve (justify-content
+   :center bi u tom slucaju odsekao pocetak trake) */
+.izl-strip{position:relative;display:flex;gap:10px;width:fit-content;max-width:100%;margin:0 auto;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.izl-strip::-webkit-scrollbar{display:none}
+.izl-thumb{flex:0 0 auto;width:118px;aspect-ratio:1/1;position:relative;overflow:hidden;border:none;padding:0;background:var(--d3);cursor:none;opacity:.42;transition:opacity .3s}
+.izl-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.izl-thumb::after{content:'';position:absolute;inset:0;border:2px solid transparent;transition:border-color .3s}
+.izl-thumb:hover{opacity:.8}
+.izl-thumb.on{opacity:1}
+.izl-thumb.on::after{border-color:var(--gold)}
+@media(hover:none){.izl-zoom{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.izl-slide,.izl-slide.on{transition:none}}
+
+/* ── PREGLED SLIKE PREKO CELOG EKRANA ───────────────────────────────
+   Namerno BEZ backdrop-filter-a: zamucenje preko celog ekrana je bas ono sto
+   je pravilo seckanje misa na 144Hz (vidi "Performanse" u CLAUDE.md). Ovde je
+   pozadina skoro neprozirna, pa se iza ionako nista ne nazire. */
+.gv{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(3,3,3,.988);touch-action:pan-y}
+.gv.open{display:flex}
+.gv-img{max-width:calc(100vw - 104px);max-height:calc(100vh - 132px);width:auto;height:auto;object-fit:contain;box-shadow:0 40px 110px rgba(0,0,0,.85);user-select:none;-webkit-user-drag:none}
+.gv-x{position:absolute;top:18px;right:18px;z-index:3;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:50%;color:#F4F4F4;font-size:17px;line-height:1;cursor:none;font-family:var(--sans);transition:background .3s,border-color .3s}
+.gv-x:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.gv-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:50%;color:#F4F4F4;font-size:19px;line-height:1;cursor:none;font-family:var(--sans);transition:background .3s,border-color .3s}
+.gv-nav:hover{background:var(--gold);border-color:var(--gold);color:#fff}
+.gv-prev{left:18px}
+.gv-next{right:18px}
+.gv-bar{position:absolute;left:0;right:0;bottom:0;z-index:3;pointer-events:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 24px calc(20px + env(safe-area-inset-bottom));font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:#8A8A8A}
+.gv-cap{color:#C4C4C4;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gv-num{flex-shrink:0;font-variant-numeric:tabular-nums;letter-spacing:1.5px}
 
 /* SERVICES */
 #srv{background:var(--black)}
@@ -1141,14 +1193,14 @@ body.pwa-standalone .pwa-push{}
   .pwa-push{top:78px;width:calc(100% - 28px);justify-content:center;text-align:center;flex-wrap:wrap;border-radius:16px}
   .pwa-push-actions{width:100%;justify-content:center}
 }
-.cs-card,.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.rm-box,.loy-modal,#care-modal-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.rm-box,.loy-modal,#care-modal-box,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
   box-shadow:0 24px 70px rgba(0,0,0,.22);
   border-color:rgba(255,255,255,.05);
 }
-.cs-card,.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
+.care-card,.tst-card,.faq-item,.bk-l,.bk-r,.review-card,.loy-req-card,.loy-cust-card,.ct-card{
   transition:transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
 }
-.cs-card:hover,.care-card:hover,.tst-card:hover,.faq-item:hover,.bk-l:hover,.bk-r:hover,.review-card:hover,.loy-req-card:hover,.loy-cust-card:hover,.ct-card:hover{
+.care-card:hover,.tst-card:hover,.faq-item:hover,.bk-l:hover,.bk-r:hover,.review-card:hover,.loy-req-card:hover,.loy-cust-card:hover,.ct-card:hover{
   transform:translateY(-6px);
   box-shadow:0 32px 80px rgba(0,0,0,.32);
 }
@@ -1296,8 +1348,16 @@ body.menu-open{
   .cs-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:36px}
   .cs-head p{text-align:left!important;max-width:100%!important}
   /* telefon: vazi raspored po parovima (racuna ga tools-galerija.js), ne po redovima */
-  .cs-row{display:contents}
-  .cs-pair{display:flex;gap:2px}
+  .izl{gap:12px}
+  .izl-frame{aspect-ratio:3/4}
+  .izl-nav{width:38px;height:38px;font-size:15px}
+  .izl-prev{left:10px}
+  .izl-next{right:10px}
+  .izl-cap{padding:44px 14px 12px;font-size:9px;letter-spacing:1.8px}
+  .izl-thumb{width:62px}
+  .gv-img{max-width:calc(100vw - 20px);max-height:calc(100vh - 150px)}
+  .gv-nav{display:none}
+  .gv-x{top:12px;right:12px;width:40px;height:40px}
   .cs-info{padding:22px 20px}
   .phi-grid,.srv-layout,.prc-top,.faq-layout{gap:28px}
   .proc-header{margin-bottom:54px}
@@ -2219,7 +2279,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </section>
 
 <!-- ══ CASE STUDIES ══ -->
-<section id="cs" style="padding-bottom:0;background:var(--d1)">
+<section id="cs">
   <div class="ctn rv">
     <div class="cs-head">
       <div>
@@ -2231,44 +2291,55 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   </div>
   <div class="cs-grid rv">
   <!-- GALERIJA:POCETAK — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->
-    <div class="cs-row">
-      <div class="cs-pair">
-        <div class="cs-card" style="--ar:0.5625">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-480.webp 480w, /assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-opt.jpg" alt="Mercedes A-Class u Laker Detailing studiju">
-          </picture>
-        </div>
-        <div class="cs-card" style="--ar:0.8687">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="1036" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera">
-          </picture>
-        </div>
+  <div class="izl" id="izl">
+    <div class="izl-frame">
+      <div class="izl-bg"></div>
+      <div class="izl-slides">
+        <picture class="izl-slide on" data-mini="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-blur.webp" data-veliko="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp">
+          <source type="image/webp" srcset="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-480.webp 480w, /assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp 900w" sizes="(max-width:760px) 92vw, 900px">
+          <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-opt.jpg" alt="Mercedes A-Class u Laker Detailing studiju">
+        </picture>
+        <picture class="izl-slide" data-mini="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-blur.webp" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp">
+          <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp 900w" sizes="(max-width:760px) 92vw, 900px">
+          <img width="900" height="1036" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera">
+        </picture>
+        <picture class="izl-slide" data-mini="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-blur.webp" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp">
+          <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp 900w" sizes="(max-width:760px) 92vw, 900px">
+          <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
+        </picture>
+        <picture class="izl-slide" data-mini="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-blur.webp" data-veliko="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp">
+          <source type="image/webp" srcset="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-480.webp 480w, /assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp 900w" sizes="(max-width:760px) 92vw, 900px">
+          <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-opt.jpg" alt="Volkswagen Arteon u Laker Detailing studiju">
+        </picture>
+        <picture class="izl-slide" data-mini="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-blur.webp" data-veliko="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp">
+          <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp 900w" sizes="(max-width:760px) 92vw, 900px">
+          <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
+        </picture>
       </div>
-      <div class="cs-pair">
-        <div class="cs-card" style="--ar:0.7745">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
-          </picture>
-        </div>
-        <div class="cs-card" style="--ar:0.5625">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-480.webp 480w, /assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-opt.jpg" alt="Volkswagen Arteon u Laker Detailing studiju">
-          </picture>
-        </div>
-      </div>
-      <div class="cs-pair">
-        <div class="cs-card" style="--ar:1.2605">
-          <picture>
-            <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp 900w" sizes="(max-width:768px) 50vw, 25vw">
-            <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
-          </picture>
-        </div>
-      </div>
+      <button type="button" class="izl-open" aria-label="Otvori sliku preko celog ekrana"></button>
+      <span class="izl-zoom" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></span>
+      <button type="button" class="izl-nav izl-prev" aria-label="Prethodna slika">‹</button>
+      <button type="button" class="izl-nav izl-next" aria-label="Sledeća slika">›</button>
+      <div class="izl-cap"><b class="izl-cap-t"></b><span class="izl-num"></span></div>
     </div>
+    <div class="izl-strip">
+      <button type="button" class="izl-thumb on" aria-current="true" aria-label="Mercedes A-Class u Laker Detailing studiju">
+        <img loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-480.webp" alt="">
+      </button>
+      <button type="button" class="izl-thumb" aria-current="false" aria-label="Alfa Romeo Giulietta detailing eksterijera">
+        <img loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-480.webp" alt="">
+      </button>
+      <button type="button" class="izl-thumb" aria-current="false" aria-label="Alfa Romeo Giulietta felna detailing">
+        <img loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-480.webp" alt="">
+      </button>
+      <button type="button" class="izl-thumb" aria-current="false" aria-label="Volkswagen Arteon u Laker Detailing studiju">
+        <img loading="lazy" decoding="async" src="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-480.webp" alt="">
+      </button>
+      <button type="button" class="izl-thumb" aria-current="false" aria-label="Mercedes S-Class AMG detailing eksterijera">
+        <img loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-480.webp" alt="">
+      </button>
+    </div>
+  </div>
   <!-- GALERIJA:KRAJ -->
   </div>
 </section>
@@ -3063,7 +3134,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>51</b> · 2026-08-21</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>55</b> · 2026-08-21</span>
   </div>
 </footer>
 
@@ -3337,7 +3408,16 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 </a>
 
 
-<script src="/main.min.js?v=20260821a" defer></script>
+<!-- Pregled slike iz galerije preko celog ekrana. Ponasanje: main.js, blok "GALERIJA — IZLOG". -->
+<div class="gv" id="galView" role="dialog" aria-modal="true" aria-label="Pregled slike iz galerije">
+  <button type="button" class="gv-x" aria-label="Zatvori pregled">✕</button>
+  <button type="button" class="gv-nav gv-prev" aria-label="Prethodna slika">‹</button>
+  <button type="button" class="gv-nav gv-next" aria-label="Sledeća slika">›</button>
+  <img class="gv-img" src="" alt="">
+  <div class="gv-bar"><span class="gv-cap"></span><span class="gv-num"></span></div>
+</div>
+
+<script src="/main.min.js?v=20260821c" defer></script>
 <script src="/init.js?v=20260813a" defer></script>
 
 <!-- Vercel Web Analytics se učitava iz init.js (blok ANALYTICS) da bi poštovao

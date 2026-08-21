@@ -131,7 +131,7 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 | Deo | Detalj |
 |---|---|
 | Ulaz | `galerija/` — ime fajla je `<broj> - <opis>.jpg`; broj = redosled, opis = `alt` tekst. Eventualni stari `@NN` na kraju imena se odbacuje |
-| Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-opt.jpg` (900px / 480px, WebP q82 + JPG fallback) |
+| Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-blur.webp` + `-opt.jpg` (900px / 480px / 64px zamućena / JPG fallback) |
 | Alat | **ffmpeg + ffprobe** (`winget install Gyan.FFmpeg`) — nema npm zavisnosti, `package.json` ostaje prazan |
 | Markeri | `<!-- GALERIJA:POCETAK ... -->` / `<!-- GALERIJA:KRAJ -->` u [index.html](index.html) — **između njih ne pisati rukom**, skripta pregazi |
 | Undo | `.galerija-backup/` — `SLIKE.bat` opcija 3 vraća index.html, service-worker.js i obrisane slike |
@@ -144,70 +144,41 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 - **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
 - Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
 
-### Raspored galerije — poravnati redovi (justified)
+### Raspored galerije — izlog (2026-08-21)
 
-Vlasnik je 2026-08-13 odbio i fiksne visine (sekle su mu uspravnu fotku sa telefona) i masonry (ragava donja ivica). Traženo i urađeno: **u redu sve slike iste visine, širine srazmerne obliku, red popuni tačno celu širinu, ništa se ne seče.**
+Vlasnik je odbio i poravnate redove: sa mešanim oblicima („jedna šira, jedna duža") red mu je delovao neuredno. Izabrao je **izlog**: jedna velika slika u okviru koji se nikad ne menja, sličice ispod, klik otvara sliku preko celog ekrana.
 
-Kako radi — svaka kartica nosi `style="--ar:0.5625"` (odnos stranica iz stvarnih dimenzija):
+| Deo | Kako radi |
+|---|---|
+| Okvir | `.izl-frame`, **4:3 na kompjuteru** (900×675), **3:4 na telefonu**. Fiksan odnos — zato raspored ne može da ispadne neujednačen, ma koje slike vlasnik ubacio |
+| Slika | `object-fit:contain` — stoji **cela**, ništa se ne seče. Sve slike su u DOM-u (`.izl-slide`), menja se samo klasa `.on`, pa je prelaz trenutan |
+| Pozadina | `.izl-bg` — **unapred zamućena kopija od 64px** (`-blur.webp`, ~500 B) koju browser razvuče. Popunjava prazninu pored uspravnih fotki |
+| Sličice | `.izl-thumb`, kvadratne, aktivna ima crvenu ivicu. Centrirane dok staju u red; kad ih bude previše, traka se skroluje |
+| Pregled | `.gv` / `#galView` u [index.html](index.html) — strelice i tastatura na kompjuteru, prevlačenje prstom na telefonu, `×` i Escape za izlaz |
+| Ponašanje | [main.js](main.js), blok „GALERIJA — IZLOG". Markup piše `tools-galerija.js`, stilovi su u [index.html](index.html) |
 
-```css
-.cs-card{flex:calc(var(--ar) * 100) 1 0;aspect-ratio:var(--ar)}
-```
+**Zašto je zamućenje pečeno u sliku, a ne `filter:blur()`:** CSS blur preko te površine browser računa **iznova pri svakom iscrtavanju** — čim se miš pomeri preko galerije. Mereno na živom računaru (144 Hz, 1920×855):
 
-`flex-basis:0` + `flex-grow ∝ --ar` daje širine tačno srazmerne odnosu stranica → sve visine u redu su jednake, a red popuni širinu do piksela. `aspect-ratio` daje visinu.
+| | fps | p95 | preskočeni frejmovi |
+|---|---|---|---|
+| `filter:blur(34px)` | 118.4 | **13.8 ms** | 5 |
+| bez zamućenja (ružno) | 130.3 | 7.1 ms | 2 |
+| **pečeno u sliku od 64px** | **131.6** | **7.1 ms** | **2** |
 
-**Tri zamke — ne dirati bez razumevanja:**
-- **`* 100` u `flex-grow` je obavezno.** Ako je zbir `flex-grow` u redu manji od 1 (npr. jedna uspravna slika, `--ar:0.77`), flexbox razdeli **samo taj deo** slobodnog prostora i red ostane kraći od širine. Množenje sa 100 ne menja srazmere, samo diže zbir preko 1.
-- **Dva rasporeda, ne jedan.** `tools-galerija.js` upisuje i redove (`.cs-row`, za kompjuter) i parove (`.cs-pair`, za telefon). CSS bira koji važi preko `display:contents`: iznad 768px `.cs-pair{display:contents}` (kartice postaju deca reda), ispod `.cs-row{display:contents}` + `.cs-pair{display:flex}`. Prelamanje sa `flex-wrap` je probano i **ne valja** — pravi redove sa jednom slikom razvučenom preko cele širine.
-- **Broj slika u redu računa `podeliURedove()`** iz zbira odnosa stranica, ciljajući visinu reda ~400px pri širini ~1126px, uz pravilo „bar 2 slike u redu". Provereno za 2–12 slika: visine redova ostaju u opsegu 325–530px (osim kad ima svega 2–3 uspravne slike, tad je red neizbežno visok).
+Pečena varijanta izgleda isto, a košta koliko i da zamućenja nema. Kontrola (deo stranice bez galerije) je u istim uslovima dala 124.6 fps — dakle galerija **više nije skuplja od ostatka sajta**.
 
-> `.cs-card` više nema `cs-1`…`cs-4` klase ni `object-position` — ništa se ne seče, pa kadar nema šta da pomera. Ista `.cs-1`–`.cs-4` pravila u `assets/css/laker-base.css` su ostala jer ih koriste demo strane.
+> `brightness(.32) saturate(1.2)` na `.izl-bg` **sme** da ostane u CSS-u — to su operacije po pikselu i praktično su besplatne. Skupa je samo `blur()`, jer je konvolucija. Ista razlika objašnjava zašto hero `filter:brightness().saturate()` nikad nije bio problem.
 
-### Neparan broj slika — najšira ide POSLEDNJA (2026-08-21)
+**Ne vraćati `filter:blur()` u `.izl-bg`** i ne brisati `-blur.webp` iz `tools-galerija.js` — time se vraća seckanje.
 
-Na telefonu se slike slažu u parove. Kad je broj neparan, **poslednja ostaje sama i razvuče se preko cele širine**. Ako je tu uspravna fotka (9:16), dobije ~800px visine i proguta ceo ekran.
+### Šta je nestalo sa izlogom
 
-Zato redosled u `galerija/` bira **koja** slika ostaje sama: stavi najširu (pejzažnu) pod najveći broj.
+- `podeliURedove()`, `SIRINA_TRAKE`, `CILJNA_VISINA` u `tools-galerija.js` — nema više računanja redova
+- `.cs-row`, `.cs-pair`, `.cs-card` i `--ar` u [index.html](index.html). Ista imena **ostaju** u `assets/css/laker-base.css` i na demo stranama — njih ne dirati
+- Pravilo „najšira slika ide poslednja" (važilo je samo za parove na telefonu)
+- Redosled slika u `galerija/` sada je **slobodan** — bira samo koja se prva prikazuje
 
-Trenutnih 5 slika (redosled je namerno takav):
-
-| # | Slika | Odnos |
-|---|---|---|
-| 1 | Mercedes A-Class | 0.5625 |
-| 2 | Alfa Romeo Giulietta | 0.8687 |
-| 3 | Alfa Romeo Giulietta felna | 0.7745 |
-| 4 | Volkswagen Arteon | 0.5625 |
-| 5 | Mercedes S-Class AMG | **1.2605** ← najšira, ostaje sama |
-
-Rezultat: telefon 315 / 337 / 359 px (sa uspravnom poslednjom bilo bi 315 / 222 / **805**), kompjuter jedan red 1769×437.
-
-> **Provera pri svakoj izmeni:** ako broj slika postane neparan, uveri se da je najšira pod najvećim brojem. Ako je paran, redosled je slobodan.
-
-> ⚠️ **Opis u imenu fajla je jedini izvor `alt` teksta — proveri da opis odgovara slici.** Do 2026-08-21 su dva opisa bila zamenjena (fajl „Alfa Romeo felna" je sadržao Mercedes S-Class i obrnuto), pa su `alt` tekstovi bili pogrešni na živom sajtu.
-
----
-
-## Performanse — zamućeni overlay i animacije (2026-08-21)
-
-Modali preko celog ekrana (`#loyOverlay`, `#reviewModal`, `#care-modal-overlay`, `#pwaIosModal`) imaju `backdrop-filter: blur(...)`. **Zamućenje je skupo samo dok se pozadina menja** — tada Chrome mora da ga preračuna preko celog ekrana u svakom frejmu.
-
-Vlasnik je prijavio da mu „ceo tab secka dok koristi miš" kad otvori **Prijava**. Merenje na njegovom računaru (144 Hz, budžet po frejmu 6.9 ms) je potvrdilo uzrok — krivac su bile ukrasne animacije **iza** modala (`.mq-t`, `.hs-line`, `.loc-pin::after`), ne sam modal:
-
-| Stanje | fps | p95 | najduži frejm | preskočeni |
-|---|---|---|---|---|
-| modal zatvoren | 139.4 | 7.0 ms | 20.8 ms | 1 |
-| modal otvoren (pre popravke) | 135.0 | **13.8 ms** | **34.8 ms** | 1–3 |
-| modal otvoren (posle popravke) | 142.6 | 7.0 ms | 13.9 ms | **0** |
-
-**Rešenje — dva pravila, oba u `main.js` (blok „MIROVANJE UKRASNIH ANIMACIJA") + CSS u `index.html`:**
-- `body.bg-freeze` — dok je otvoren bilo koji modal preko celog ekrana, ukrasne animacije u pozadini stoje. Klasu postavlja MutationObserver nad ta 4 elementa, pa hvata **svaki** način otvaranja (inline `display`, klasa `.open`) — ne treba dirati pojedinačne open/close funkcije.
-- `.anim-pauza` — IntersectionObserver pauzira ukras koji nije na ekranu. Isti obrazac koji `.mq-t` već koristi preko `.paused`.
-
-**Ne brisati te pauze da bi se „očistio kod" — vraća seckanje.** `blur(22px)` na `#loyOverlay` **ostaje**; probano je i uklanjanje i jeste brzo, ali se tada kroz overlay čitaju nav, logo i WhatsApp dugme.
-
-> **Hero nije bio kriv.** `filter: brightness(.45) saturate(.8)` na hero slici je mereno na 140+ fps čak i kad se slika prerisava svaki frejm — `brightness`/`saturate` su operacije po pikselu (jeftine na grafičkoj), za razliku od `blur` koji je konvolucija. Ne dirati hero filter zbog brzine.
-
-> **Kako meriti ponovo:** tab u pozadini ne crta frejmove, pa obično merenje ne radi. Postupak koji radi: pokreni rAF petlju koja skuplja razmake između frejmova, pa je „budi" nizom sitnih snimaka ekrana; na kraju filtriraj razmake < 200 ms. Gledaj **p95 i broj preskočenih frejmova**, ne najduži frejm — najduži je artefakt buđenja taba.
+> `.cs-card` je namerno ostao u listi selektora u inline skripti `scroll-reveal-init` u [index.html](index.html). Ne poklapa se ni sa čim i ne smeta, a menjanje inline skripte bi tražilo i novi CSP hash u [vercel.json](vercel.json).
 
 ---
 
