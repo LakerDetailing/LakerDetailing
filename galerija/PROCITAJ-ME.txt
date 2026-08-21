@@ -50,16 +50,20 @@
 
 
 ----------------------------------------------------------
-  OBLIK SLIKE — nista se ne isece
+  KAKO GALERIJA IZGLEDA — nista se ne isece
 ----------------------------------------------------------
 
-  Slike se slazu u redove. U jednom redu sve imaju ISTU
-  VISINU, a sirine se prilagode obliku slike: uspravna je
-  uza, polozena sira. Red popuni celu sirinu, ivice su
-  prave, i nijedna slika se ne isece.
+  Galerija je IZLOG: jedna velika slika, a ispod nje
+  slicice svih ostalih. Klik na slicicu prebacuje na tu
+  sliku, strelice listaju, a klik na veliku sliku otvara
+  je preko celog ekrana (izlaz: x ili Escape).
 
-  Sve se racuna samo. Ubaci sliku bilo kog oblika i ona
-  se uklopi — ne moras nista da podesavas.
+  Okvir velike slike je uvek iste velicine, a slika stoji
+  CELA u njemu — nista se ne isece. Prazninu pored
+  uspravnih fotki popuni zamucena kopija te iste slike.
+
+  Ubaci sliku bilo kog oblika i uklopice se — ne moras
+  nista da podesavas.
 
 
 ----------------------------------------------------------

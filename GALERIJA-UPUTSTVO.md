@@ -76,20 +76,24 @@ Onda otvori sajt i pritisni **Ctrl+F5** (osvežava i briše keš).
 
 ---
 
-## Kako galerija slaže slike
+## Kako galerija izgleda
 
-Slike se slažu u redove. **U jednom redu sve slike imaju istu visinu**, a širine se prilagode obliku slike — uspravna je uža, položena šira. Red uvek popuni celu širinu, ivice su prave, i **nijedna slika se ne seče**.
+Galerija je **izlog**: jedna velika slika, a ispod nje sličice svih ostalih.
 
-Sve to se računa samo, iz stvarnih dimenzija tvojih slika. Ne moraš ništa da podešavaš — ubaci sliku bilo kog oblika i ona se uklopi.
+- Klik na sličicu prebacuje na tu sliku
+- Strelice levo/desno listaju
+- **Klik na veliku sliku otvara je preko celog ekrana** — tu se lista strelicama, a na telefonu prevlačenjem prsta. Izlaz je **×** ili taster Escape
 
-Na telefonu idu po dve slike u redu, na kompjuteru obično četiri — zavisi od toga koliko ih ima i kakvog su oblika.
+Okvir velike slike je **uvek iste veličine**, a slika stoji cela u njemu — **ništa se ne seče**. Prazan prostor pored uspravnih fotki popunjava zamućena kopija te iste slike, pa uspravna i položena fotografija izgledaju podjednako dobro.
+
+Zato ne moraš ništa da podešavaš: ubaci sliku bilo kog oblika i uklopiće se.
 
 ---
 
 ## Koliko slika
 
-- **4 ili 8** — najlepše
-- Radi sa bilo kojim brojem
+- **5 do 10** — taman
+- Radi sa bilo kojim brojem; sličice se same skupe u traku kad ih bude puno
 - Manje od 3 — galerija izgleda prazno
 - Više od 12 — sajt se sporije učitava
 
