@@ -411,17 +411,18 @@ function lakerFallbackImage(label, sublabel) {
       try { localStorage.setItem('laker-push-dismissed', '1'); } catch (e) {}
     }
   });
-  if (('Notification' in window) && ('PushManager' in window)) {
-    try {
-      const dismissed = localStorage.getItem('laker-push-dismissed');
-      const enabled = localStorage.getItem('laker-push-enabled');
-      if (Notification.permission === 'default' && !dismissed && !enabled) {
-        setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-      }
-    } catch (e) {
-      if (Notification.permission === 'default') setTimeout(showPushBanner, isStandalone ? 1500 : 2200);
-    }
-  }
+  // ── BANER ZA OBAVESTENJA — UGASEN (2026-08-22, odluka vlasnika) ──────
+  // Ranije se posetiocu posle ~2 s sam pojavio baner "Dozvoli / Kasnije" i,
+  // na klik, trazio dozvolu za push obavestenja. Vlasnik ga ne zeli, pa se
+  // vise NE PRIKAZUJE nikome i Notification.requestPermission() se ne poziva.
+  //
+  // Ostalo je netaknuto namerno: markup banera (#pwaPushBanner u index.html,
+  // ima `hidden`), showPushBanner(), subscribeForPush() i dugmad. Ko je vec
+  // ranije ukljucio obavestenja i dalje ih dobija, a paljenje je jedan poziv:
+  //   if (Notification.permission === 'default') setTimeout(showPushBanner, 2200);
+  //
+  // NE zameniti ovo sa banerom "Nova verzija spremna" (#pwaUpdateBanner) —
+  // to je druga stvar i ona ostaje ukljucena.
 
   // CONTENT_UPDATED: SW detektovao svež HTML (stale-while-revalidate + ETag poređenje).
   // Odmah po otvaranju → tihi reload (deluje kao deo učitavanja). Kasnije → baner,

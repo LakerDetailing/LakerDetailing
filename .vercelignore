@@ -32,3 +32,7 @@ SLIKE.bat
 GALERIJA-UPUTSTVO.md
 galerija/
 .galerija-backup/
+
+# Proba nedeljnog izvestaja - ne deployuje se
+tools-izvestaj-proba.js
+proba-izvestaj.html

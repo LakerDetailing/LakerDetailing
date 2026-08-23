@@ -96,7 +96,6 @@ if(_hasHover){
 
   var slicice = [].slice.call(izl.querySelectorAll('.izl-thumb'));
   var traka   = izl.querySelector('.izl-strip');
-  var poz     = izl.querySelector('.izl-bg');
   var natpis  = izl.querySelector('.izl-cap-t');
   var brojac  = izl.querySelector('.izl-num');
   var okvir   = izl.querySelector('.izl-frame');
@@ -142,8 +141,15 @@ if(_hasHover){
       t.classList.toggle('on', j === i);
       t.setAttribute('aria-current', j === i ? 'true' : 'false');
     });
-    var mini = slajdovi[i].getAttribute('data-mini');
-    if(poz && mini) poz.style.backgroundImage = 'url("' + mini + '")';
+    // Okvir uzima odnos SAME slike (--arn = sirina/visina) — zato oko slike
+    // nema praznine. Visinu drzi CSS, pa se menja samo sirina i raspored ispod
+    // se ne pomera. Citaju se ATRIBUTI width/height, ne naturalWidth: slajdovi
+    // su loading="lazy", pa slika u tom trenutku jos ne mora biti ucitana.
+    if(okvir){
+      var sirW = parseFloat(aktivnaImg().getAttribute('width')),
+          sirH = parseFloat(aktivnaImg().getAttribute('height'));
+      if(sirW > 0 && sirH > 0) okvir.style.setProperty('--arn', (sirW / sirH).toFixed(4));
+    }
     if(natpis) natpis.textContent = aktivniOpis();
     if(brojac) brojac.textContent = (i + 1) + ' / ' + slajdovi.length;
     centrirajSlicicu();

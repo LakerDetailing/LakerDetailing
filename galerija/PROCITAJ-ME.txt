@@ -58,9 +58,10 @@
   sliku, strelice listaju, a klik na veliku sliku otvara
   je preko celog ekrana (izlaz: x ili Escape).
 
-  Okvir velike slike je uvek iste velicine, a slika stoji
-  CELA u njemu — nista se ne isece. Prazninu pored
-  uspravnih fotki popuni zamucena kopija te iste slike.
+  Velika slika stoji CELA — nista se ne isece i nema
+  okvira oko nje, vidi se obicna pozadina sajta. Na
+  kompjuteru su sve slike iste visine, menja se samo
+  sirina; na telefonu je slika preko cele sirine.
 
   Ubaci sliku bilo kog oblika i uklopice se — ne moras
   nista da podesavas.

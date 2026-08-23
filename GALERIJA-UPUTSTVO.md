@@ -84,7 +84,7 @@ Galerija je **izlog**: jedna velika slika, a ispod nje sličice svih ostalih.
 - Strelice levo/desno listaju
 - **Klik na veliku sliku otvara je preko celog ekrana** — tu se lista strelicama, a na telefonu prevlačenjem prsta. Izlaz je **×** ili taster Escape
 
-Okvir velike slike je **uvek iste veličine**, a slika stoji cela u njemu — **ništa se ne seče**. Prazan prostor pored uspravnih fotki popunjava zamućena kopija te iste slike, pa uspravna i položena fotografija izgledaju podjednako dobro.
+Velika slika stoji **cela** — ništa se ne seče i **nema nikakvog okvira oko nje**: pored slike se vidi obična pozadina sajta. Na kompjuteru je svaka slika iste visine, a menja se samo širina — uspravna fotka ispadne uža, položena šira, ali gornja i donja ivica su uvek na istom mestu, pa ti se stranica ne pomera dok listaš. Na telefonu je slika preko cele širine, pa se tamo menja visina.
 
 Zato ne moraš ništa da podešavaš: ubaci sliku bilo kog oblika i uklopiće se.
 

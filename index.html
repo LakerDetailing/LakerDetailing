@@ -521,22 +521,29 @@ body.light .pv:first-child{border-top-color:rgba(0,0,0,.06)}
 #cs{background:var(--d1)}
 .cs-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px}
 /* ── GALERIJA — IZLOG ─────────────────────────────────────────────
-   Jedna velika slika u okviru koji se NIKAD ne menja + slicice ispod. Slika
-   stoji CELA u okviru (object-fit:contain, nista se ne isece), a prazan prostor
-   pored uspravnih fotki popunjava zamucena kopija te iste slike. Zato uspravna
-   i polozena fotografija izgledaju podjednako dobro i galerija ne moze da
-   ispadne neujednacena, bez obzira koje slike vlasnik ubaci.
+   Jedna velika slika + slicice ispod. Okvir NEMA svoju podlogu ni ivicu:
+   njegov odnos JESTE odnos same slike, pa oko slike nema nimalo praznine —
+   vidi se cista pozadina sajta.
+
+   --arn = sirina/visina slike, kao BROJ. Za prvu sliku ga upisuje
+   tools-galerija.js pravo u markup (da okvir ima tacnu visinu i pre nego sto
+   se JS ucita, bez poskakivanja rasporeda), dalje ga menja main.js pri svakoj
+   promeni slike.
+
+   VISINA je ista za sve slike, menja se samo SIRINA — zato se slicice ispod
+   i ostatak stranice NE pomeraju kad se prelazi kroz slike. Visina je manje od:
+   78vh, 700px i visine koju bi slika imala na punoj raspolozivoj sirini
+   (900px okvir, ili sirina ekrana minus padding sekcije + rezerva za skrolbar).
+   Na telefonu je to nemoguce — slika je vec preko cele sirine, pa tamo visina
+   prati sliku (vidi @media max-width:768px).
+
    Markup izmedju markera galerije pise tools-galerija.js.
    Ponasanje je u main.js, blok "GALERIJA — IZLOG". */
 .cs-grid{display:block}
 .izl{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
-.izl-frame{position:relative;aspect-ratio:4/3;overflow:hidden;background:#050505;border:1px solid rgba(255,255,255,.07)}
-body.light .izl-frame{border-color:rgba(0,0,0,.09)}
-/* Pozadina je vec ZAMUCENA SLIKA (64px kopija koju browser razvuce), pa ovde
-   NEMA filter:blur(). Blur preko ove povrsine se ponovo racuna pri svakom
-   iscrtavanju — mereno je obarao p95 sa 7.1 na 13.8 ms cim se mis pomeri preko
-   galerije. brightness/saturate ostaju: to su operacije po pikselu i besplatne su. */
-.izl-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.32) saturate(1.2);transform:scale(1.08)}
+.izl-frame{position:relative;overflow:hidden;margin:0 auto;width:auto;max-width:100%;
+  aspect-ratio:var(--arn,1.3333);
+  height:min(78vh, 700px, calc(min(900px, 100vw - 160px) / var(--arn,1.3333)))}
 .izl-slides{position:absolute;inset:0}
 /* visibility, ne display:none — tako se i neaktivne slike ucitaju unapred,
    pa je prelaz izmedju njih trenutan */
@@ -1252,6 +1259,8 @@ html.js-ready .rr.in{opacity:1;transform:translateX(0)}
 @media(max-width:1100px){
   nav{padding:0 30px}
   section{padding:90px 30px}
+  /* padding sekcije je ovde 30px, ne 70px — pa okvir galerije sme da bude siri */
+  .izl-frame{height:min(78vh, 700px, calc(min(900px, 100vw - 80px) / var(--arn,1.3333)))}
   .phi-grid,.srv-layout,.prc-top,.faq-layout{grid-template-columns:1fr;gap:50px}
   .pkg-grid{grid-template-columns:1fr;gap:2px}
   .care-grid{grid-template-columns:1fr;gap:2px}
@@ -1347,9 +1356,12 @@ body.menu-open{
   .tst-grid{grid-template-columns:1fr}
   .cs-head{flex-direction:column;align-items:flex-start;gap:18px;margin-bottom:36px}
   .cs-head p{text-align:left!important;max-width:100%!important}
-  /* telefon: vazi raspored po parovima (racuna ga tools-galerija.js), ne po redovima */
   .izl{gap:12px}
-  .izl-frame{aspect-ratio:3/4}
+  /* Telefon: slika je vec preko cele sirine, pa se ista visina za sve slike ne
+     moze imati bez praznine oko slike. Biramo da praznine nema — visina prati
+     sliku. max-height je samo kocnica za ekstremno uspravnu fotku; ako se
+     ukljuci, oko slike ostane pozadina sajta (nikad siva kutija). */
+  .izl-frame{width:100%;height:auto;max-height:82vh}
   .izl-nav{width:38px;height:38px;font-size:15px}
   .izl-prev{left:10px}
   .izl-next{right:10px}
@@ -2292,26 +2304,25 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   <div class="cs-grid rv">
   <!-- GALERIJA:POCETAK — generisano skriptom tools-galerija.js, NE MENJATI RUCNO -->
   <div class="izl" id="izl">
-    <div class="izl-frame">
-      <div class="izl-bg"></div>
+    <div class="izl-frame" style="--arn:0.5625">
       <div class="izl-slides">
-        <picture class="izl-slide on" data-mini="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-blur.webp" data-veliko="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp">
+        <picture class="izl-slide on" data-veliko="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp">
           <source type="image/webp" srcset="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-480.webp 480w, /assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970.webp 900w" sizes="(max-width:760px) 92vw, 900px">
           <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-a-class-u-laker-detailing-studiju-0d828970-opt.jpg" alt="Mercedes A-Class u Laker Detailing studiju">
         </picture>
-        <picture class="izl-slide" data-mini="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-blur.webp" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp">
+        <picture class="izl-slide" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp">
           <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2.webp 900w" sizes="(max-width:760px) 92vw, 900px">
           <img width="900" height="1036" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-detailing-eksterijera-5ef22ee2-opt.jpg" alt="Alfa Romeo Giulietta detailing eksterijera">
         </picture>
-        <picture class="izl-slide" data-mini="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-blur.webp" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp">
+        <picture class="izl-slide" data-veliko="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp">
           <source type="image/webp" srcset="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-480.webp 480w, /assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22.webp 900w" sizes="(max-width:760px) 92vw, 900px">
           <img width="900" height="1162" loading="lazy" decoding="async" src="/assets/gallery/g-alfa-romeo-giulietta-felna-detailing-1f224f22-opt.jpg" alt="Alfa Romeo Giulietta felna detailing">
         </picture>
-        <picture class="izl-slide" data-mini="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-blur.webp" data-veliko="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp">
+        <picture class="izl-slide" data-veliko="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp">
           <source type="image/webp" srcset="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-480.webp 480w, /assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9.webp 900w" sizes="(max-width:760px) 92vw, 900px">
           <img width="900" height="1600" loading="lazy" decoding="async" src="/assets/gallery/g-volkswagen-arteon-u-laker-detailing-studiju-70ddabd9-opt.jpg" alt="Volkswagen Arteon u Laker Detailing studiju">
         </picture>
-        <picture class="izl-slide" data-mini="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-blur.webp" data-veliko="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp">
+        <picture class="izl-slide" data-veliko="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp">
           <source type="image/webp" srcset="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-480.webp 480w, /assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c.webp 900w" sizes="(max-width:760px) 92vw, 900px">
           <img width="900" height="714" loading="lazy" decoding="async" src="/assets/gallery/g-mercedes-s-class-amg-detailing-eksterijera-aa269b6c-opt.jpg" alt="Mercedes S-Class AMG detailing eksterijera">
         </picture>
@@ -3134,7 +3145,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>55</b> · 2026-08-21</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>57</b> · 2026-08-23</span>
   </div>
 </footer>
 
@@ -3362,6 +3373,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   </div>
 </div>
 
+<!-- Baner za obavestenja je UGASEN (init.js, blok "BANER ZA OBAVESTENJA"). Markup ostaje, ali se nikad ne prikazuje. -->
 <div class="pwa-push" id="pwaPushBanner" role="status" aria-live="polite" hidden>
   <span class="dot"></span>
   <div class="pwa-push-text">
@@ -3417,8 +3429,9 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
   <div class="gv-bar"><span class="gv-cap"></span><span class="gv-num"></span></div>
 </div>
 
-<script src="/main.min.js?v=20260821c" defer></script>
-<script src="/init.js?v=20260813a" defer></script>
+<script src="/main.min.js?v=20260822a" defer></script>
+<script src="/init.js?v=20260822a" defer></script>
+<script src="/assets/js/mera.js?v=1" defer></script>
 
 <!-- Vercel Web Analytics se učitava iz init.js (blok ANALYTICS) da bi poštovao
      ?analitika=off — statički tag ovde bi se učitao pre nego što se flag proveri. -->

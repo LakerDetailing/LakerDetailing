@@ -34,6 +34,9 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `api/_push.js` | Supabase helper za push API |
 | `api/_security.js` | Rate limiting, audit log |
 | `api/health.js` | Health check endpoint |
+| `api/mera.js` + `assets/js/mera.js` | Sopstveno merenje poseta (bez kolačića). Vidi **Sopstveno merenje** |
+| `api/izvestaj.js` | Nedeljni mejl sa statistikom sajta, ponedeljkom oko 12h |
+| `tools-izvestaj-proba.js` | Proba izgleda tog mejla bez slanja (ne deployuje se) |
 | `service-worker.js` | PWA offline + push |
 | `vercel.json` | CSP headers, cache pravila, rute |
 | `og-image.jpg` | OG slika za deljenje (1200×630) |
@@ -131,7 +134,7 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 | Deo | Detalj |
 |---|---|
 | Ulaz | `galerija/` — ime fajla je `<broj> - <opis>.jpg`; broj = redosled, opis = `alt` tekst. Eventualni stari `@NN` na kraju imena se odbacuje |
-| Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-blur.webp` + `-opt.jpg` (900px / 480px / 64px zamućena / JPG fallback) |
+| Izlaz | `assets/gallery/g-<slug>-<hash8>.webp` + `-480.webp` + `-opt.jpg` (900px / 480px / JPG fallback) |
 | Alat | **ffmpeg + ffprobe** (`winget install Gyan.FFmpeg`) — nema npm zavisnosti, `package.json` ostaje prazan |
 | Markeri | `<!-- GALERIJA:POCETAK ... -->` / `<!-- GALERIJA:KRAJ -->` u [index.html](index.html) — **između njih ne pisati rukom**, skripta pregazi |
 | Undo | `.galerija-backup/` — `SLIKE.bat` opcija 3 vraća index.html, service-worker.js i obrisane slike |
@@ -144,35 +147,30 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 - **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
 - Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
 
-### Raspored galerije — izlog (2026-08-21)
+### Raspored galerije — izlog (2026-08-21), bez okvira (2026-08-22)
 
-Vlasnik je odbio i poravnate redove: sa mešanim oblicima („jedna šira, jedna duža") red mu je delovao neuredno. Izabrao je **izlog**: jedna velika slika u okviru koji se nikad ne menja, sličice ispod, klik otvara sliku preko celog ekrana.
+Vlasnik je odbio i poravnate redove: sa mešanim oblicima („jedna šira, jedna duža") red mu je delovao neuredno. Izabrao je **izlog**: jedna velika slika, sličice ispod, klik otvara sliku preko celog ekrana.
+
+**2026-08-22 — okvir je ukinut.** Vlasniku je smetalo sivo/crno „kolo" oko slike: podloga `#050505` (tamnija od pozadine sajta), zamućena kopija slike i tanka bela ivica. Kod uspravnih fotki je to bilo **58% površine okvira**. Video je demo sa tri varijante i izabrao onu bez ijedne praznine, ali sa istom visinom za sve slike (u demou „C"). **Senku pod slikom je izričito odbio** — ne dodavati je.
 
 | Deo | Kako radi |
 |---|---|
-| Okvir | `.izl-frame`, **4:3 na kompjuteru** (900×675), **3:4 na telefonu**. Fiksan odnos — zato raspored ne može da ispadne neujednačen, ma koje slike vlasnik ubacio |
+| Okvir | `.izl-frame` — **nema podlogu ni ivicu**. Odnos mu je odnos SAME slike: `--arn` = širina/visina kao broj. Oko slike se vidi pozadina sajta i ničeg drugog |
+| Visina | Ista za sve slike (`min(78vh, 700px, puna_širina/--arn)`) — menja se samo **širina**, pa se sličice i ostatak stranice ne pomeraju pri prelasku kroz slike |
+| `--arn` | Za prvu sliku ga upisuje `tools-galerija.js` pravo u markup (da visina bude tačna i pre nego što se učita JS), dalje ga menja [main.js](main.js) pri svakoj promeni |
+| Telefon | Tamo je slika već preko cele širine, pa ista visina bez praznine **nije moguća** — visina prati sliku (`@media max-width:768px`). `max-height:82vh` je kočnica za ekstremno uspravnu fotku |
 | Slika | `object-fit:contain` — stoji **cela**, ništa se ne seče. Sve slike su u DOM-u (`.izl-slide`), menja se samo klasa `.on`, pa je prelaz trenutan |
-| Pozadina | `.izl-bg` — **unapred zamućena kopija od 64px** (`-blur.webp`, ~500 B) koju browser razvuče. Popunjava prazninu pored uspravnih fotki |
 | Sličice | `.izl-thumb`, kvadratne, aktivna ima crvenu ivicu. Centrirane dok staju u red; kad ih bude previše, traka se skroluje |
 | Pregled | `.gv` / `#galView` u [index.html](index.html) — strelice i tastatura na kompjuteru, prevlačenje prstom na telefonu, `×` i Escape za izlaz |
 | Ponašanje | [main.js](main.js), blok „GALERIJA — IZLOG". Markup piše `tools-galerija.js`, stilovi su u [index.html](index.html) |
 
-**Zašto je zamućenje pečeno u sliku, a ne `filter:blur()`:** CSS blur preko te površine browser računa **iznova pri svakom iscrtavanju** — čim se miš pomeri preko galerije. Mereno na živom računaru (144 Hz, 1920×855):
+**Zašto uopšte NE vraćati zamućenu pozadinu:** ranije je prazninu pored uspravnih fotki punila zamućena kopija slike. Zamućenje je moralo da bude **pečeno u sliku** (kopija od 64px), jer `filter:blur()` preko te površine browser računa iznova pri svakom iscrtavanju — mereno na 144 Hz je obarao p95 sa 7.1 na 13.8 ms čim se miš pomeri preko galerije. Sada praznine nema, pa ni pozadina ne treba: `.izl-bg`, `data-mini` i `-blur.webp` su uklonjeni. Ako se ikad vraća neka pozadina, **nikad `filter:blur()`** — samo pečena kopija.
 
-| | fps | p95 | preskočeni frejmovi |
-|---|---|---|---|
-| `filter:blur(34px)` | 118.4 | **13.8 ms** | 5 |
-| bez zamućenja (ružno) | 130.3 | 7.1 ms | 2 |
-| **pečeno u sliku od 64px** | **131.6** | **7.1 ms** | **2** |
-
-Pečena varijanta izgleda isto, a košta koliko i da zamućenja nema. Kontrola (deo stranice bez galerije) je u istim uslovima dala 124.6 fps — dakle galerija **više nije skuplja od ostatka sajta**.
-
-> `brightness(.32) saturate(1.2)` na `.izl-bg` **sme** da ostane u CSS-u — to su operacije po pikselu i praktično su besplatne. Skupa je samo `blur()`, jer je konvolucija. Ista razlika objašnjava zašto hero `filter:brightness().saturate()` nikad nije bio problem.
-
-**Ne vraćati `filter:blur()` u `.izl-bg`** i ne brisati `-blur.webp` iz `tools-galerija.js` — time se vraća seckanje.
+> `brightness()`/`saturate()` nisu bili problem — to su operacije po pikselu. Skupa je samo `blur()`, jer je konvolucija. Ista razlika objašnjava zašto hero `filter:brightness().saturate()` nikad nije smetao.
 
 ### Šta je nestalo sa izlogom
 
+- `.izl-bg`, `data-mini`, `SIRINA_MUTNA` i pravljenje `-blur.webp` (2026-08-22). Stare `-blur.webp` datoteke briše samo čišćenje u `tools-galerija.js` pri prvom sledećem pokretanju
 - `podeliURedove()`, `SIRINA_TRAKE`, `CILJNA_VISINA` u `tools-galerija.js` — nema više računanja redova
 - `.cs-row`, `.cs-pair`, `.cs-card` i `--ar` u [index.html](index.html). Ista imena **ostaju** u `assets/css/laker-base.css` i na demo stranama — njih ne dirati
 - Pravilo „najšira slika ide poslednja" (važilo je samo za parove na telefonu)
@@ -301,6 +299,52 @@ loyLogin() / loyRegister()
 
 ---
 
+## Sopstveno merenje + nedeljni mejl (2026-08-23)
+
+Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Merenje je sopstveno — GA4 i Vercel Analytics za to NE mogu da posluže.
+
+**Zašto sopstveno:**
+- GA4 radi sa Consent Mode `denied` dok posetilac ne klikne „Prihvati sve"; do tada Google dobija samo cookieless ping koji **ne prikazuje** u izveštajima. Većina ljudi ne klikne → GA4 brojevi su prazni.
+- Vercel Web Analytics ima tačne brojeve, ali na **Hobby planu nema API** (`/v1/web-analytics` vraća `404 Web Analytics not found`), nema zakazane mejlove ni custom evente. Samo ručno gledanje dashboarda.
+- Zakazani GA4 mejl koji je postojao bio je **mesečni**, i prvi je tek trebalo da krene 3.9.2026 — zato mesec dana nije stiglo ništa.
+
+| Deo | Fajl | Šta radi |
+|---|---|---|
+| Sakupljanje | `assets/js/mera.js` | Učitan na `index.html`, `loyalty-join.html` i 6 stranica usluga. Šalje `pregled`, `klik`, `sekcija`, `kraj` na `/api/mera` |
+| Prijem | [api/mera.js](api/mera.js) | Filtrira robote, izvodi anonimni otisak, upisuje u `stat_dogadjaji` |
+| Računanje | SQL `stat_izvestaj(od, do)` + `stat_nedelje(kraj, koliko)` | Sve agregacije u bazi, `security invoker`, `execute` samo za `service_role` |
+| Mejl | [api/izvestaj.js](api/izvestaj.js) | Sastavi HTML i pošalje preko Brevo na detailinglaker@gmail.com |
+| Raspored | `crons` u [vercel.json](vercel.json) | `/api/izvestaj` **svaki dan** u 10:00 UTC; kod šalje samo ponedeljkom |
+
+**Zašto dnevni cron a ne nedeljni:** Hobby plan dozvoljava 2 crona i pravila oko učestalosti su labava, pa se dan bira u kodu (`danBeograda() === 1`). Vercel ume da zakasni do sat vremena. 10:00 UTC = **12h leti, 11h zimi** u Srbiji — tačniji sat nije moguć jer cron ide po UTC-u, a ne prati letnje računanje vremena.
+
+**Nikad ne šalje dva mejla:** `vecPoslat()` gleda `security_audit_logs` (scope `izvestaj`) za poslednjih 20h.
+
+### Privatnost — zašto ne treba pristanak
+- **Nijedan kolačić i ništa se ne upisuje na uređaj** (jedini izuzetak je ručni prekidač „ne meri me").
+- Sirov IP se **nigde ne čuva**. Od njega se na serveru pravi `poseta_id = sha256(dan + servisni_ključ + ip + user-agent)` — menja se svakog ponoća, pa isti čovek sutra više nije prepoznatljiv.
+- Zato baner za kolačiće nije potreban i merenje radi za **100% posetilaca**, ne samo za one koji kliknu „Prihvati sve".
+
+### Vlasnikovi uređaji se ne broje
+`https://www.lakerdetailing.rs/?nemeri=on` — **jednom po uređaju** (telefon + računar, svaki brauzer posebno). Gašenje: `?nemeri=off`. Upisuje `localStorage['laker_nemeri']`. Isti obrazac kao `?analitika=off` i `?pregled=on`.
+
+> Ovo važi samo za **sajt**. Statistika Google Business Profila (koliko puta je profil viđen, klikovi na Mape) je Googleova i tamo se vlasnikovi pregledi ne mogu isključiti.
+
+### Ručno pokretanje
+```
+/api/izvestaj?kljuc=<ADMIN_PASSWORD>&sada=1          → pošalji odmah
+/api/izvestaj?kljuc=<ADMIN_PASSWORD>&sada=1&suvo=1   → samo prikaži brojke, bez mejla
+```
+Cron poziv prolazi i bez ključa (zaglavlje `x-vercel-cron`) **samo** kad `CRON_SECRET` nije podešen i **samo** za redovno ponedeljno slanje — `sada=1` uvek traži lozinku. Ako se ikad podesi `CRON_SECRET` u Vercel-u, koristi se `Authorization: Bearer`.
+
+### Održavanje
+- Sirovi događaji stariji od **120 dana** se brišu posle svakog uspešnog mejla (`ocisti()`).
+- Proba izgleda mejla bez slanja: `node tools-izvestaj-proba.js` → `proba-izvestaj.html`. Ne deployuje se.
+- Nove sekcije na sajtu se mere same (`section[id]`), ali im treba **ime na srpskom** u `IME_SEKCIJE` u [api/izvestaj.js](api/izvestaj.js), inače se u mejlu vidi goli id.
+- Novo dugme se meri ako mu se doda `data-click` iz spiska `VAZNI_DATA` u `assets/js/mera.js`; kontakt linkovi (`tel:`, `wa.me`, `mailto:`, Instagram) se hvataju sami.
+
+---
+
 ## Analitika (GA4 + Facebook Pixel)
 
 Sve je u [init.js](init.js) — blok `ANALYTICS` + blok `PRAĆENJE INTERAKCIJA`.
@@ -357,6 +401,7 @@ Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analyti
 - Fontovi su self-hostovani (`assets/fonts/`) — Google Fonts domeni uklonjeni iz HTML-a i CSP-a
 - Custom cursor isključen na touch uređajima (`@media (hover:none)`)
 - PWA push notifikacije rade — setup u `PWA_PUSH_SETUP.md` (lokalno, ne u repo)
+- **Baner „Dozvoli obaveštenja“ je UGAŠEN (2026-08-22, odluka vlasnika)** — posetiocu se više ne pojavljuje ništa i `Notification.requestPermission()` se ne poziva. Ugašen je uklanjanjem JEDINOG poziva `showPushBanner()` u [init.js](init.js) (blok „BANER ZA OBAVESTENJA“); markup `#pwaPushBanner`, `subscribeForPush()` i `api/push-*.js` ostaju netaknuti, pa ko je ranije uključio obaveštenja i dalje ih dobija, a paljenje je jedan red koda. Ne mešati sa banerom „Nova verzija spremna“ (`#pwaUpdateBanner`) — on ostaje uključen
 - `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u
 - Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
 - Google Search Console: sajt dodat, sitemap submitan

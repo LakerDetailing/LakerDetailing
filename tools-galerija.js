@@ -38,11 +38,6 @@ const SITE   = 'https://www.lakerdetailing.rs';
 
 const SIRINA_VELIKA = 900;
 const SIRINA_MALA   = 480;
-// Sicusna, unapred zamucena kopija — sluzi kao pozadina izloga iza uspravnih
-// fotki. Zamucenje se PECE u sliku, ne racuna se u browseru: CSS filter:blur()
-// preko cele te povrsine se ponovo racuna pri svakom iscrtavanju i mereno je
-// obarao p95 sa 7.1 na 13.8 ms. Ovako je ~700 bajtova i kosta nista.
-const SIRINA_MUTNA  = 64;
 const KVALITET_WEBP = 82;
 
 const EXT_OK  = new Set(['.jpg', '.jpeg', '.png', '.webp']);
@@ -212,11 +207,10 @@ function ucitajUlaz() {
 function obradi(s, proba) {
   const w900  = path.join(OUT, `${s.osnova}.webp`);
   const w480  = path.join(OUT, `${s.osnova}-${SIRINA_MALA}.webp`);
-  const wMut  = path.join(OUT, `${s.osnova}-blur.webp`);
   const j900  = path.join(OUT, `${s.osnova}-opt.jpg`);
-  s.fajlovi = { w900, w480, wMut, j900 };
+  s.fajlovi = { w900, w480, j900 };
 
-  const postoje = fs.existsSync(w900) && fs.existsSync(w480) && fs.existsSync(wMut) && fs.existsSync(j900);
+  const postoje = fs.existsSync(w900) && fs.existsSync(w480) && fs.existsSync(j900);
   if (postoje) {
     s.status = 'ista';
     const d = dimenzije(j900);
@@ -245,11 +239,6 @@ function obradi(s, proba) {
     '-c:v', 'libwebp', '-quality', String(KVALITET_WEBP), '-preset', 'photo', '-compression_level', '6', w480]);
   ffmpeg(['-i', s.pun, '-map_metadata', '-1', '-vf', skala(SIRINA_VELIKA),
     '-c:v', 'mjpeg', '-q:v', '4', '-pix_fmt', 'yuvj420p', j900]);
-  // mutna kopija: smanji na 64px pa blago zamuti — browser je razvuce na punu
-  // sirinu okvira i to izgleda kao zamucenje, a nista se ne racuna u hodu
-  ffmpeg(['-i', s.pun, '-map_metadata', '-1', '-vf', `scale=${SIRINA_MUTNA}:-2:flags=lanczos,gblur=sigma=2`,
-    '-c:v', 'libwebp', '-quality', '60', '-preset', 'photo', wMut]);
-
   // dimenzije se citaju sa GOTOVE slike — tako su tacne i kad je slika sa telefona okrenuta (EXIF rotacija)
   const d = dimenzije(j900);
   s.w = d.w; s.h = d.h; s.ar = d.w / d.h;
@@ -257,20 +246,23 @@ function obradi(s, proba) {
 }
 
 /* ─────────────── HTML ─────────────── */
-/* Izlog: jedna velika slika u okviru koji se NE MENJA + slicice ispod.
-   Slika stoji CELA u okviru (CSS: object-fit:contain), a prazan prostor pored
-   uspravnih fotki popunjava zamucena kopija te iste slike (data-mini).
+/* Izlog: jedna velika slika + slicice ispod.
+   Okvir nema svoju podlogu ni ivicu — uzima odnos SAME slike, pa oko slike
+   stoji cista pozadina sajta. Odnos se prenosi kao --arn (sirina/visina, broj):
+   ovde se upisuje za PRVU sliku, da okvir ima tacnu visinu i pre nego sto se
+   ucita main.js; dalje ga menja main.js pri svakoj promeni slike.
 
-   Zato ovde nema nikakvog racunanja rasporeda: okvir je uvek isti, pa je
-   svejedno koliko slika ima i kakvog su oblika. Raniji racun redova
-   (podeliURedove, SIRINA_TRAKE, CILJNA_VISINA) je zato uklonjen.
+   Zato ovde nema nikakvog racunanja rasporeda: visinu okvira drzi CSS i ista
+   je za sve slike, menja se samo sirina. Svejedno je koliko slika ima i kakvog
+   su oblika. Raniji racun redova (podeliURedove, SIRINA_TRAKE, CILJNA_VISINA)
+   je zato uklonjen.
 
    Stilovi: index.html, blok "GALERIJA — IZLOG".
    Ponasanje: main.js, blok "GALERIJA — IZLOG". */
 
 function napraviHtml(stavke, eol) {
   const slajdovi = stavke.map((s, i) => [
-    `        <picture class="izl-slide${i === 0 ? ' on' : ''}" data-mini="/assets/gallery/${s.osnova}-blur.webp" data-veliko="/assets/gallery/${s.osnova}.webp">`,
+    `        <picture class="izl-slide${i === 0 ? ' on' : ''}" data-veliko="/assets/gallery/${s.osnova}.webp">`,
     `          <source type="image/webp" srcset="/assets/gallery/${s.osnova}-${SIRINA_MALA}.webp ${SIRINA_MALA}w, /assets/gallery/${s.osnova}.webp ${SIRINA_VELIKA}w" sizes="(max-width:760px) 92vw, 900px">`,
     `          <img width="${s.w}" height="${s.h}" loading="lazy" decoding="async" src="/assets/gallery/${s.osnova}-opt.jpg" alt="${escHtml(s.opis)}">`,
     '        </picture>'
@@ -284,8 +276,7 @@ function napraviHtml(stavke, eol) {
 
   const telo = [
     '  <div class="izl" id="izl">',
-    '    <div class="izl-frame">',
-    '      <div class="izl-bg"></div>',
+    `    <div class="izl-frame" style="--arn:${(stavke[0].w / stavke[0].h).toFixed(4)}">`,
     '      <div class="izl-slides">',
     slajdovi,
     '      </div>',
@@ -377,7 +368,6 @@ function nadjiZaBrisanje(stavke, noviIndex) {
   stavke.forEach(s => {
     zadrzi.add(`${s.osnova}.webp`);
     zadrzi.add(`${s.osnova}-${SIRINA_MALA}.webp`);
-    zadrzi.add(`${s.osnova}-blur.webp`);
     zadrzi.add(`${s.osnova}-opt.jpg`);
   });
 
