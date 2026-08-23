@@ -25,6 +25,7 @@ tools-csp-hashes.js
 tools-dev-server.js
 tools-demo-build.js
 SETUP-OAUTH.md
+SETUP-GOOGLE-RECENZIJE.md
 
 # Galerija: alat + originalne slike + rezervna kopija - ne deployuju se
 tools-galerija.js

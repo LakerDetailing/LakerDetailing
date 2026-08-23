@@ -24,6 +24,8 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `loyalty-join.html` + `loyalty-join.js` | QR Loyalty prijava (`/loyalty-join`) — Google/Apple/ručna prijava, mobile-first. JS je eksterni fajl (bez inline skripti → ne dira CSP hash-eve) |
 | `api/loyalty-join.js` | QR prijava backend — GET vraća javni config (Google/Apple ID iz env), POST verifikuje OAuth tokene SERVER-SIDE, rate limit, honeypot, upis u `contacts` + Brevo emailovi |
 | `SETUP-OAUTH.md` | Uputstvo: GOOGLE_CLIENT_ID / APPLE_SERVICE_ID env varijable za /loyalty-join dugmad |
+| `api/_google.js` | Povlačenje recenzija sa Google Mapa — dva izvora iza istog izlaza (Places / Business Profile). Vidi **Google recenzije** |
+| `SETUP-GOOGLE-RECENZIJE.md` | Uputstvo za vlasnika: Google Cloud ključ + zahtev za Business Profile pristup (ne deployuje se) |
 | `tools-csp-hashes.js` | Helper (ne deployuje se): `node tools-csp-hashes.js` izračuna CSP sha256 hash-eve inline skripti — OBAVEZNO pokrenuti posle izmene inline `<script>` u index/admin/offline.html i ažurirati vercel.json |
 | `tools-dev-server.js` | Lokalni dev server (ne deployuje se): `node tools-dev-server.js` → http://127.0.0.1:4173, mock /api/loyalty-join config |
 | `tools-galerija.js` + `SLIKE.bat` | Sistem za slike u galeriji — vlasnik sam menja slike. Vidi sekciju **Galerija** niže. Ne deployuje se |
@@ -346,6 +348,65 @@ Cron poziv prolazi i bez ključa (zaglavlje `x-vercel-cron`) **samo** kad `CRON_
 - Proba izgleda mejla bez slanja: `node tools-izvestaj-proba.js` → `proba-izvestaj.html`. Ne deployuje se.
 - Nove sekcije na sajtu se mere same (`section[id]`), ali im treba **ime na srpskom** u `IME_SEKCIJE` u [api/izvestaj.js](api/izvestaj.js), inače se u mejlu vidi goli id.
 - Novo dugme se meri ako mu se doda `data-click` iz spiska `VAZNI_DATA` u `assets/js/mera.js`; kontakt linkovi (`tel:`, `wa.me`, `mailto:`, Instagram) se hvataju sami.
+
+---
+
+## Google recenzije — vlasnik bira šta ide na sajt (2026-08-23)
+
+Recenzije sa Google Mapa stižu u admin panel; vlasnik klikom bira koje se prikazuju
+u sekciji `#tst`. Izbor može da menja koliko god puta — ništa se ne briše.
+
+| Deo | Fajl | Šta radi |
+|---|---|---|
+| Povlačenje | [api/_google.js](api/_google.js) | Dva izvora, isti oblik podataka na izlazu |
+| Akcije | [api/admin.js](api/admin.js) | `google_lista`, `google_sync`, `google_na_sajt`, `google_sakrij`, `google_redosled` |
+| Admin UI | [laker-admin-9x3k.html](laker-admin-9x3k.html) | Sekcija „Sa Google Mapa" u tabu Recenzije, blok „GOOGLE RECENZIJE" |
+| Sajt | [main.js](main.js) | `loadReviews()` spaja `google_recenzije` + `testimonials` u jednu sekciju |
+| Baza | `google_recenzije` | RLS: anon SELECT **samo** `na_sajtu = true`, nikakav upis sa klijenta |
+
+### Dva izvora — `places` sad, `business` kad Google odobri
+
+| Izvor | Koliko recenzija | Šta traži |
+|---|---|---|
+| `places` (Places API New) | **najviše 5**, tvrdo Googleovo ograničenje od 2015, nema paginacije | samo `GOOGLE_PLACES_KEY` |
+| `business` (Business Profile API v4) | **sve** | ručno odobrenje Googlea (7–10 radnih dana zvanično, u praksi do 6 nedelja) + OAuth |
+
+`povuciGoogleRecenzije()` sam bira: čim je pet `GBP_*` varijabli podešeno, prelazi na
+`business`. **Ništa drugo se ne menja** — ni tabela, ni admin panel, ni sajt.
+
+> **Zašto je `id` heš autora, a ne Googleov id.** Places i Business Profile daju
+> RAZLIČITE identifikatore za istu recenziju, pa bi se pri prelasku sve udvojilo.
+> Zato je `id = sha1(autor)` (Google dozvoljava jednu recenziju po korisniku po firmi),
+> a sirovi Googleov id stoji u `google_id` samo kao referenca. Uzgredna korist: ako
+> klijent izmeni tekst ili ocenu, to ostaje ISTA recenzija — ne iskoči duplikat i ne
+> ispadne sa sajta. Bezimene („A Google user") se heširaju po tekstu da se ne sliju u jedan red.
+
+### Pravila koja se ne smeju pokvariti
+
+- **`google_sync` NIKAD ne gazi vlasnikov izbor.** Prvo pročita `na_sajtu`, `redosled`,
+  `sakrivena`, `prvi_put` iz baze pa ih vrati u red koji upisuje. PostgREST upsert sa
+  `resolution=merge-duplicates` menja **ceo red** — kolona koju ne pošalješ pada na DEFAULT,
+  pa bi svaki sync obrisao sve što je vlasnik izabrao.
+- **Poziv Googleu ide samo na vlasnikov klik i pri prijavi** (`loadAll()` → `loadGoogle(true)`,
+  i dugme ↻ Osveži → `osveziRecenzije()`). Auto-refresh na 90s dira samo `loadCare()` — ne vezivati
+  Google za njega, potrošio bi besplatnu kvotu.
+- **Na sajtu se ne vidi da je recenzija sa Googlea** — odluka vlasnika (2026-08-23).
+  Ne dodavati Google logo, „Powered by Google" ni link na Mape u `#tst`.
+- **Ocena bez teksta se ne može pustiti na sajt** — nema dugme „+ Na sajt", a `loadReviews()`
+  je filtrira i drugi put u JS-u.
+
+### Env varijable
+
+`GOOGLE_PLACES_KEY` (obavezno), `GOOGLE_PLACE_ID` (opciono — podrazumevano
+`ChIJUbhOjVRzV0cRQpiB_thOjDg`, isti Place ID koji stoji u linkovima ka Mapama u index.html).
+Za `business` fazu: `GBP_CLIENT_ID`, `GBP_CLIENT_SECRET`, `GBP_REFRESH_TOKEN`,
+`GBP_ACCOUNT_ID`, `GBP_LOCATION_ID`.
+
+> API ključ **ne sme** da ima Application restriction po IP-u — Vercel funkcije menjaju
+> IP adresu. Isti razlog zbog kog je Brevo „Authorised IPs" morao da se ugasi.
+> Ograničiti ga po API-ju (`Places API (New)`), ne po adresi.
+
+Ceo postupak podešavanja je u `SETUP-GOOGLE-RECENZIJE.md` (za vlasnika, ne deployuje se).
 
 ---
 

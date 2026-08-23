@@ -6,6 +6,7 @@
 
 const crypto = require('node:crypto');
 const { getClientIp, checkPersistentRateLimit, isBlockedByPersistentRateLimit, clearPersistentRateLimit, auditSecurityEvent } = require('./_security');
+const { povuciGoogleRecenzije, businessPodesen } = require('./_google');
 const ALLOWED_ORIGINS = new Set([
   'https://lakerdetailing.rs',
   'https://www.lakerdetailing.rs',
@@ -97,6 +98,10 @@ function safeId(value) {
   return /^[A-Za-z0-9-]{1,64}$/.test(s) ? s : null;
 }
 
+// Redosled u admin listi: prvo one koje su na sajtu (po ručnom redosledu),
+// pa ostale od najnovije ka najstarijoj.
+const GOOGLE_UPIT = '/rest/v1/google_recenzije?select=*&order=na_sajtu.desc,redosled.asc,objavljeno.desc';
+
 // ── Route map ─────────────────────────────────────────────
 const ACTIONS = {
 
@@ -122,6 +127,101 @@ const ACTIONS = {
     const rid = safeId(id);
     if (!rid) return { error: 'Neispravan ID' };
     return await sb(`/rest/v1/testimonials?id=eq.${rid}`, { method: 'DELETE' });
+  },
+
+  // GOOGLE RECENZIJE
+  // Sve što stoji na Google Mapama sleti ovde; vlasnik bira šta ide na sajt.
+  async google_lista() {
+    return {
+      recenzije: (await sb(GOOGLE_UPIT)) || [],
+      izvor: businessPodesen() ? 'business' : 'places'
+    };
+  },
+
+  // Povuče trenutno stanje sa Googlea i spoji ga sa bazom.
+  // Vlasnikov izbor (na_sajtu / redosled / sakrivena) se NIKAD ne gazi —
+  // osvežava se samo ono što dolazi sa Googleove strane.
+  async google_sync() {
+    let sGooglea;
+    try {
+      sGooglea = await povuciGoogleRecenzije();
+    } catch (err) {
+      return {
+        greska: String(err?.message || err),
+        kod: err?.kod || 'google_greska',
+        recenzije: (await sb(GOOGLE_UPIT)) || []
+      };
+    }
+
+    const stare = (await sb('/rest/v1/google_recenzije?select=id,na_sajtu,redosled,sakrivena,prvi_put')) || [];
+    const poId  = new Map(stare.map(r => [r.id, r]));
+    const sada  = new Date().toISOString();
+
+    const redovi = sGooglea.recenzije.map(r => {
+      const stara = poId.get(r.id);
+      return {
+        ...r,
+        na_sajtu:  stara ? stara.na_sajtu  : false,
+        redosled:  stara ? stara.redosled  : 0,
+        sakrivena: stara ? stara.sakrivena : false,
+        prvi_put:  stara ? stara.prvi_put  : sada,
+        osvezeno:  sada
+      };
+    });
+
+    if (redovi.length) {
+      await sb('/rest/v1/google_recenzije', {
+        method: 'POST',
+        prefer: 'resolution=merge-duplicates,return=minimal',
+        body: redovi
+      });
+    }
+
+    const novih = redovi.filter(r => !poId.has(r.id)).length;
+    return {
+      recenzije: (await sb(GOOGLE_UPIT)) || [],
+      izvor:     sGooglea.izvor,
+      prosek:    sGooglea.prosek,
+      ukupno:    sGooglea.ukupno,
+      nepotpuno: sGooglea.nepotpuno,
+      novih
+    };
+  },
+
+  // Klik na „+ Na sajt" / „− Skloni sa sajta"
+  async google_na_sajt({ id, na_sajtu }) {
+    const rid = safeId(id);
+    if (!rid) return { error: 'Neispravan ID' };
+    await sb(`/rest/v1/google_recenzije?id=eq.${rid}`, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: { na_sajtu: na_sajtu === true }
+    });
+    return { recenzije: (await sb(GOOGLE_UPIT)) || [] };
+  },
+
+  // Sakrivena recenzija se ne briše — samo se skloni iz admin liste,
+  // da sledeći sync ne bi vraćao nešto što vlasnik ne želi da gleda.
+  async google_sakrij({ id, sakrivena }) {
+    const rid = safeId(id);
+    if (!rid) return { error: 'Neispravan ID' };
+    const skloni = sakrivena === true;
+    await sb(`/rest/v1/google_recenzije?id=eq.${rid}`, {
+      method: 'PATCH', prefer: 'return=minimal',
+      body: skloni ? { sakrivena: true, na_sajtu: false } : { sakrivena: false }
+    });
+    return { recenzije: (await sb(GOOGLE_UPIT)) || [] };
+  },
+
+  // Redosled na sajtu — niz ID-jeva u željenom poretku.
+  async google_redosled({ ids }) {
+    if (!Array.isArray(ids) || !ids.length) return { error: 'Nema ID-jeva' };
+    const cisti = ids.map(safeId).filter(Boolean).slice(0, 200);
+    for (let i = 0; i < cisti.length; i++) {
+      await sb(`/rest/v1/google_recenzije?id=eq.${cisti[i]}`, {
+        method: 'PATCH', prefer: 'return=minimal', body: { redosled: i + 1 }
+      });
+    }
+    return { recenzije: (await sb(GOOGLE_UPIT)) || [] };
   },
 
   // LOYALTY — REQUESTS

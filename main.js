@@ -455,13 +455,31 @@ const SB_URL  = 'https://raxdsanycyycroucxtmy.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJheGRzYW55Y3l5Y3JvdWN4dG15Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTE0MjIsImV4cCI6MjA5NDkyNzQyMn0.DpXoeu6QKPBCm93Fuexmojkhqs-YwDOQUQp5bx6aMXc';
 
 // ── UČITAJ ODOBRENE RECENZIJE ──
+// Dva izvora, jedna sekcija: recenzije sa Google Mapa koje je vlasnik
+// pustio u admin panelu (na_sajtu=true) + utisci poslati preko forme na
+// sajtu. Prikazuju se identično — posetilac ne vidi odakle je koja.
+// Google recenzije idu prve, po redosledu koji je vlasnik postavio.
 async function loadReviews(){
   if(SB_URL.includes('POSTAVI')) return;
+  const zag={'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON};
+  const uzmi=async u=>{
+    try{
+      const r=await fetch(SB_URL+u,{headers:zag});
+      const d=await r.json();
+      return Array.isArray(d)?d:[];
+    }catch(e){return []}
+  };
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/testimonials?approved=eq.true&order=created_at.desc&limit=9`,{
-      headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON}
-    });
-    const data=await r.json();
+    const [google,utisci]=await Promise.all([
+      uzmi('/rest/v1/google_recenzije?na_sajtu=eq.true&tekst=neq.&order=redosled.asc,objavljeno.desc&limit=12'),
+      uzmi('/rest/v1/testimonials?approved=eq.true&order=created_at.desc&limit=9')
+    ]);
+    const data=[
+      // Ocena bez teksta („5 zvezdica" i ništa više) nema šta da radi na kartici
+      ...google.filter(g=>g&&g.tekst&&String(g.tekst).trim())
+               .map(g=>({name:g.autor,car:'',city:'',text:g.tekst,rating:g.ocena})),
+      ...utisci
+    ].slice(0,12);
     const grid=document.getElementById('tst-dynamic');
     if(!Array.isArray(data)||data.length===0){
       grid.innerHTML='<div class="tst-empty">Budi prvi koji ostavlja utisak ↓</div>';

@@ -145,6 +145,17 @@ html{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}
 .act-reject:hover{background:var(--red);color:#fff}
 .act-hide{background:rgba(255,255,255,.04);color:var(--gray);border:1px solid rgba(255,255,255,.08)}
 .act-hide:hover{background:rgba(192,57,43,.15);color:var(--red)}
+/* ── Google recenzije ── */
+.review-card.gm{border-left:2px solid rgba(255,255,255,.12)}
+.review-card.gm.na-sajtu{border-left-color:#2ECC71}
+.review-card.gm.sakrivena{opacity:.45}
+.rv-status.g{background:rgba(255,255,255,.06);color:var(--gray)}
+.act-plus{background:rgba(39,174,96,.15);color:#2ECC71;border:1px solid rgba(39,174,96,.3)}
+.act-plus:hover{background:#27AE60;color:#fff}
+.act-minus{background:rgba(255,255,255,.04);color:var(--gray);border:1px solid rgba(255,255,255,.08)}
+.act-minus:hover{background:rgba(192,57,43,.15);color:var(--red)}
+.gm-note{background:rgba(192,57,43,.08);border-left:2px solid var(--red);padding:12px 16px;margin-bottom:14px;font-size:12px;line-height:1.6;color:#e0b4ae}
+.gm-note.info{background:rgba(255,255,255,.04);border-left-color:rgba(255,255,255,.18);color:var(--gray)}
 
 /* LOYALTY PANEL */
 .loy-req-card{background:var(--d2);border-left:3px solid var(--red);padding:22px 28px;margin-bottom:3px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;transition:background .2s}
@@ -916,6 +927,20 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
         <div class="stat-box"><div class="stat-n" id="stTotal">—</div><div class="stat-l">Ukupno</div></div>
         <div class="stat-box"><div class="stat-n" id="stAvg">—</div><div class="stat-l">Prosečna ocena</div></div>
       </div>
+      <div class="section-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <span>Sa Google Mapa</span>
+        <button class="tool-btn primary" id="gmSyncBtn" data-action="google-sync" style="border-radius:8px;font-size:11px;padding:6px 12px;letter-spacing:0">↻ Povuci sa Googlea</button>
+        <span id="gmInfo" style="font-size:11px;color:var(--gray);font-weight:400;letter-spacing:0;text-transform:none"></span>
+      </div>
+      <div id="gmUpozorenje" class="gm-note" style="display:none"></div>
+      <div class="filter-pills">
+        <button class="fpill on" data-action="gm-filter" data-filter="sve">● Sve</button>
+        <button class="fpill"    data-action="gm-filter" data-filter="na-sajtu">✓ Na sajtu</button>
+        <button class="fpill"    data-action="gm-filter" data-filter="van">＋ Nisu na sajtu</button>
+        <button class="fpill"    data-action="gm-filter" data-filter="sakrivene">🚫 Sakrivene</button>
+      </div>
+      <div class="reviews-grid" id="gmList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
+
       <div class="section-title">Čekaju odobrenje</div>
       <div class="reviews-grid" id="pendingList"><div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div></div>
       <div class="section-title">Odobrene recenzije</div>
@@ -1186,6 +1211,13 @@ const DEMO_DATA = {
       { id:'rv5', rating:5, text:'Stvarno premium utisak od početka do kraja.', name:'Stefan', car:'Range Rover', city:'Kraljevo', created_at:'2026-05-14T10:25:00Z', approved:true }
     ]
   },
+  google: [
+    { id:'gm1', autor:'Dragan T.',      ocena:5, tekst:'Vratio mi je auto kao iz salona. Poliranje bez ijedne greške.', objavljeno:'2026-08-12T09:20:00Z', na_sajtu:true,  sakrivena:false, redosled:1 },
+    { id:'gm2', autor:'Marija Ostojić', ocena:5, tekst:'Keramika stoji odlično i posle par nedelja, voda samo sklizne.', objavljeno:'2026-08-05T16:40:00Z', na_sajtu:true,  sakrivena:false, redosled:2 },
+    { id:'gm3', autor:'Vladimir',       ocena:5, tekst:'Dubinsko čišćenje enterijera — miris i izgled kao nov.',       objavljeno:'2026-07-28T11:05:00Z', na_sajtu:false, sakrivena:false, redosled:0 },
+    { id:'gm4', autor:'Sanja P.',       ocena:4, tekst:'Sve pohvale, jedino se malo čekalo na termin.',                objavljeno:'2026-07-19T13:15:00Z', na_sajtu:false, sakrivena:false, redosled:0 },
+    { id:'gm5', autor:'Bojan',          ocena:5, tekst:'',                                                             objavljeno:'2026-07-02T18:00:00Z', na_sajtu:false, sakrivena:false, redosled:0 }
+  ],
   loyalty: {
     requests: [
       { id:'rq1', customer_id:'c1', customer_name:'Marko Petrović', customer_phone:'060 123 4567', customer_email:'marko@mail.com', note:'Premium pranje', status:'pending', created_at:'2026-05-25T10:20:00Z' },
@@ -1280,6 +1312,18 @@ function demoApiResult(action, params = {}) {
       DEMO_STATE.reviews.pending = DEMO_STATE.reviews.pending.filter(r => r.id !== params.id);
       DEMO_STATE.reviews.approved = DEMO_STATE.reviews.approved.filter(r => r.id !== params.id);
       return { ok: true };
+    case 'google_lista':
+    case 'google_sync':
+      return { recenzije: demoClone(DEMO_STATE.google || []), izvor: 'places', nepotpuno: true, ukupno: (DEMO_STATE.google || []).length, prosek: 5 };
+    case 'google_na_sajt':
+    case 'google_sakrij': {
+      const r = (DEMO_STATE.google || []).find(x => x.id === params.id);
+      if (r) {
+        if (action === 'google_na_sajt') r.na_sajtu = params.na_sajtu === true;
+        else { r.sakrivena = params.sakrivena === true; if (r.sakrivena) r.na_sajtu = false; }
+      }
+      return { recenzije: demoClone(DEMO_STATE.google || []) };
+    }
     case 'get_loyalty':
       return demoClone(DEMO_STATE.loyalty);
     case 'get_loyalty_customers':
@@ -1764,9 +1808,16 @@ function setTabAccentColor(name) {
 
 function loadAll() {
   loadReviews();
+  loadGoogle(true);   // jednom po prijavi povuci sveže stanje sa Google Mapa
   loadLoyalty();
   loadCare();
   loadDashboard();
+}
+
+// ↻ Osveži u tabu Recenzije — i sajt i Google, oba u jednom kliku
+function osveziRecenzije() {
+  loadReviews();
+  loadGoogle(true);
 }
 
 async function copyToClipboard(text, doneLabel = 'Kopirano!') {
@@ -1963,6 +2014,131 @@ async function rejectRev(id) {
     alert('Greška pri brisanju: ' + (e?.message || 'nepoznata greška'));
   }
 }
+
+// ═══════════════════════════════════════════
+// GOOGLE RECENZIJE
+// Sve sa Google Mapa stoji ovde; „+ Na sajt" je pušta u sekciju
+// utisaka na sajtu, „− Skloni" je vraća nazad. Ništa se ne briše,
+// pa izbor može da se menja koliko god puta.
+// ═══════════════════════════════════════════
+let gmSve = [];
+let gmFilter = 'sve';
+
+async function loadGoogle(sync) {
+  const lista = document.getElementById('gmList');
+  const btn   = document.getElementById('gmSyncBtn');
+  if (sync && btn) { btn.disabled = true; btn.textContent = '↻ Povlačim...'; }
+  if (sync && lista) lista.innerHTML = '<div class="loading"><span class="dot">●</span><span class="dot">●</span><span class="dot">●</span></div>';
+
+  const d = await api(sync ? 'google_sync' : 'google_lista').catch(e => ({ greska: e?.message || 'Greška u vezi sa serverom' }));
+
+  if (btn) { btn.disabled = false; btn.textContent = '↻ Povuci sa Googlea'; }
+  if (!d) return;
+
+  gmSve = Array.isArray(d.recenzije) ? d.recenzije : [];
+  gmPoruka(d);
+  renderGm();
+}
+
+function gmPoruka(d) {
+  const el = document.getElementById('gmUpozorenje');
+  const info = document.getElementById('gmInfo');
+  if (!el) return;
+
+  if (d.greska) {
+    el.className = 'gm-note';
+    el.style.display = '';
+    el.innerHTML = d.kod === 'nema_kljuca'
+      ? 'Google ključ još nije podešen. Dodaj <b>GOOGLE_PLACES_KEY</b> u Vercel → Settings → Environment Variables, pa klikni „Povuci sa Googlea".'
+      : 'Google je odbio zahtev: ' + esc(d.greska);
+  } else if (d.nepotpuno) {
+    el.className = 'gm-note info';
+    el.style.display = '';
+    el.innerHTML = 'Preko Places API-ja Google daje <b>najviše 5</b> recenzija. Kad odobri pristup Business Profile API-ju, ovde se pojave sve.';
+  } else {
+    el.style.display = 'none';
+  }
+
+  if (info) {
+    const naSajtu = gmSve.filter(r => r.na_sajtu).length;
+    const delovi = [gmSve.length + ' povučeno', naSajtu + ' na sajtu'];
+    if (typeof d.ukupno === 'number') delovi.push(d.ukupno + ' ukupno na Mapama');
+    if (typeof d.prosek === 'number') delovi.push('prosek ' + d.prosek.toFixed(1));
+    if (d.novih)  delovi.push(d.novih + ' novih');
+    info.textContent = delovi.join(' · ');
+  }
+}
+
+function gmSetFilter(f) {
+  gmFilter = f;
+  document.querySelectorAll('[data-action="gm-filter"]').forEach(b => {
+    b.classList.toggle('on', b.dataset.filter === f);
+  });
+  renderGm();
+}
+
+function renderGm() {
+  const el = document.getElementById('gmList');
+  if (!el) return;
+
+  const vidljive = gmSve.filter(r => {
+    if (gmFilter === 'sakrivene') return r.sakrivena;
+    if (r.sakrivena) return false;
+    if (gmFilter === 'na-sajtu')  return r.na_sajtu;
+    if (gmFilter === 'van')       return !r.na_sajtu;
+    return true;
+  });
+
+  if (!vidljive.length) {
+    el.innerHTML = '<div class="empty"><em>Nema recenzija</em>'
+      + (gmSve.length ? 'Promeni filter iznad.' : 'Klikni „Povuci sa Googlea".') + '</div>';
+    return;
+  }
+
+  el.innerHTML = vidljive.map(r => {
+    const klase = 'review-card gm' + (r.na_sajtu ? ' na-sajtu' : '') + (r.sakrivena ? ' sakrivena' : '');
+    return `
+    <div class="${klase}" id="gm-${r.id}" data-admin-search="${esc([r.autor, r.tekst].filter(Boolean).join(' '))}">
+      <div>
+        <div class="rv-header">
+          <span class="rv-stars">${'★'.repeat(Math.min(5, Math.max(1, r.ocena || 5)))}</span>
+          <span class="rv-name">${esc(r.autor || 'Bez imena')}</span>
+          <span class="rv-status ${r.na_sajtu ? 'a' : 'g'}">${r.na_sajtu ? 'Na sajtu' : (r.sakrivena ? 'Sakrivena' : 'Nije na sajtu')}</span>
+        </div>
+        <p class="rv-text">${r.tekst ? '„' + esc(r.tekst) + '"' : '<em style="color:var(--gray)">Samo ocena, bez teksta</em>'}</p>
+        <div class="rv-date">${r.objavljeno ? fmtDate(r.objavljeno) : '—'}</div>
+      </div>
+      <div class="rv-actions">
+        ${r.tekst
+          ? (r.na_sajtu
+              ? `<button class="act-btn act-minus" data-action="gm-off" data-id="${r.id}">− Skloni sa sajta</button>`
+              : `<button class="act-btn act-plus"  data-action="gm-on"  data-id="${r.id}">+ Na sajt</button>`)
+          : ''}
+        ${r.sakrivena
+          ? `<button class="act-btn act-hide" data-action="gm-vrati" data-id="${r.id}">↩ Vrati u listu</button>`
+          : `<button class="act-btn act-hide" data-action="gm-sakrij" data-id="${r.id}">🚫 Sakrij</button>`}
+      </div>
+    </div>`;
+  }).join('');
+  applyAdminSearch();
+}
+
+async function gmPromeni(akcija, params, id) {
+  const card = document.getElementById('gm-' + id);
+  if (card) { card.style.opacity = '.3'; card.style.pointerEvents = 'none'; }
+  try {
+    const d = await api(akcija, params);
+    gmSve = Array.isArray(d?.recenzije) ? d.recenzije : gmSve;
+    gmPoruka({});
+    renderGm();
+  } catch (e) {
+    if (card) { card.style.opacity = ''; card.style.pointerEvents = ''; }
+    alert('Greška: ' + (e?.message || 'nepoznata greška'));
+  }
+}
+
+const gmNaSajt = (id, on) => gmPromeni('google_na_sajt', { id, na_sajtu: on }, id);
+const gmSakrij = (id, on) => gmPromeni('google_sakrij', { id, sakrivena: on }, id);
 
 // ═══════════════════════════════════════════
 // LOYALTY ADMIN
@@ -2636,7 +2812,7 @@ setInterval(function () {
 
     switch (action) {
       case 'load-dashboard':   loadDashboard(); break;
-      case 'load-reviews':     loadReviews();   break;
+      case 'load-reviews':     osveziRecenzije(); break;
       case 'load-loyalty':     loadLoyalty();   break;
       case 'load-care':        loadCare();      break;
       case 'clear-search':
@@ -2661,6 +2837,12 @@ setInterval(function () {
       case 'close-push':       closePushModal();       break;
       case 'approve-rev':      approveRev(btn.dataset.id);  break;
       case 'reject-rev':       rejectRev(btn.dataset.id);   break;
+      case 'google-sync':      loadGoogle(true);            break;
+      case 'gm-filter':        gmSetFilter(btn.dataset.filter); break;
+      case 'gm-on':            gmNaSajt(btn.dataset.id, true);  break;
+      case 'gm-off':           gmNaSajt(btn.dataset.id, false); break;
+      case 'gm-sakrij':        gmSakrij(btn.dataset.id, true);  break;
+      case 'gm-vrati':         gmSakrij(btn.dataset.id, false); break;
       case 'open-add-svc':     openAddServiceModal(btn.dataset.cid, btn.dataset.name); break;
       case 'toggle-hist':      toggleWashHistory(btn.dataset.cid); break;
       case 'open-note':        openNoteModal(btn.dataset.cid, btn.dataset.name, btn.dataset.note); break;
