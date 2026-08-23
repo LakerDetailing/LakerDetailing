@@ -262,6 +262,3 @@ module.exports = async function handler(req, res) {
     json(res, 500, { ok: false, greska: String(e && e.message || e).slice(0, 300) });
   }
 };
-
-// Otvoreno samo radi probe izgleda mejla bez slanja (tools-izvestaj-proba.js).
-module.exports._sastavi = sastavi;

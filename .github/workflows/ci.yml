@@ -20,9 +20,27 @@ jobs:
       - name: Check JS syntax
         run: |
           FAILED=0
-          for f in main.js service-worker.js loyalty-join.js api/admin.js api/send-email.js api/loyalty-join.js api/health.js api/_security.js api/_push.js api/push-subscribe.js api/push-send.js api/push-latest.js api/push-public-key.js; do
+          for f in main.js service-worker.js loyalty-join.js assets/js/mera.js api/*.js; do
             if [ -f "$f" ]; then
               node --check "$f" && echo "✓ $f" || { echo "✗ GREŠKA: $f"; FAILED=1; }
+            fi
+          done
+          exit $FAILED
+
+      # `node --check` gleda samo sintaksu. Fajl koji poziva funkciju koja vise
+      # ne postoji prolazi tu proveru, a na Vercelu pukne pri ucitavanju modula
+      # i endpoint vraca 500 umesto da uopste odgovori. Zato se svaki api modul
+      # stvarno ucita. (Desilo se 2026-08-23 sa api/izvestaj.js.)
+      - name: Svaki api modul mora da se ucita
+        run: |
+          FAILED=0
+          for f in api/*.js; do
+            if node -e "require('./$f')" 2>/tmp/greska; then
+              echo "✓ $f"
+            else
+              echo "✗ GREŠKA pri učitavanju: $f"
+              head -5 /tmp/greska
+              FAILED=1
             fi
           done
           exit $FAILED
