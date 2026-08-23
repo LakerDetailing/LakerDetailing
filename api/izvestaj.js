@@ -486,9 +486,12 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // ── Period: poslednjih 7 punih dana po Beogradu ─────────
+  // ── Period: poslednjih 7 dana ───────────────────────────
+  // Redovan ponedeljni mejl se seče na ponoć, pa pokriva tačno prošlu
+  // nedelju. Ručno pokretanje (`sada=1`) ide do OVOG trenutka, da bi
+  // proba pokazala i ono što se desilo danas.
   const dan  = 24 * 60 * 60 * 1000;
-  const doo  = ponocBeograda(sadaVreme);
+  const doo  = sada ? sadaVreme : ponocBeograda(sadaVreme);
   const od   = new Date(doo.getTime() - 7 * dan);
   const odP  = new Date(doo.getTime() - 14 * dan);
 
