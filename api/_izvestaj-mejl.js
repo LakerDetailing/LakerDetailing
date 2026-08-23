@@ -85,6 +85,15 @@ function puta(n) {
   return (zadnja === 1 && dve !== 11) ? x + ' put' : x + ' puta';
 }
 
+// „1 kontakt", „4 kontakta", „11 kontakata"
+function kontakata(n) {
+  const x = Number(n) || 0;
+  const zadnja = x % 10, dve = x % 100;
+  if (zadnja === 1 && dve !== 11) return x + ' kontakt';
+  if (zadnja >= 2 && zadnja <= 4 && (dve < 12 || dve > 14)) return x + ' kontakta';
+  return x + ' kontakata';
+}
+
 function vreme(sec) {
   const n = Number(sec) || 0;
   if (!n) return '—';
@@ -94,10 +103,14 @@ function vreme(sec) {
   return m + ' min ' + s + ' sek';
 }
 
+// Meseci u genitivu — „16. avgusta", ne „16. avgust".
+// Intl vraca nominativ, pa se ne moze koristiti za ovu recenicu.
+const MESECI = ['januara', 'februara', 'marta', 'aprila', 'maja', 'juna',
+                'jula', 'avgusta', 'septembra', 'oktobra', 'novembra', 'decembra'];
+
 function datum(d) {
-  return new Intl.DateTimeFormat('sr-Latn-RS', {
-    day: 'numeric', month: 'long', timeZone: 'Europe/Belgrade'
-  }).format(d);
+  const bg = new Date(d.toLocaleString('en-US', { timeZone: 'Europe/Belgrade' }));
+  return bg.getDate() + '. ' + MESECI[bg.getMonth()];
 }
 
 function procenat(sada, ranije) {
@@ -358,6 +371,19 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
     h += trakeBloka(r);
   } else h += nemaPodataka('Još nema podataka.');
 
+  // ── Strane ─────────────────────────────────────────────
+  // Ima smisla tek kad postoji vise od naslovne (stranice usluga).
+  if ((sada.strane || []).length > 1) {
+    h += sekcija('Koje strane gledaju', 'Ako neka stranica usluge vuče više od ostalih, tu vredi dodati slike i detalje.');
+    const naj = Math.max.apply(null, sada.strane.map(x => x.pregledi));
+    let r = '';
+    for (const x of sada.strane) {
+      r += traka(x.putanja === '/' ? 'Naslovna strana' : x.putanja,
+                 puta(x.pregledi), naj, '', '#8E6E5E', x.pregledi);
+    }
+    h += trakeBloka(r);
+  }
+
   // ── Istorija ───────────────────────────────────────────
   const nedelje = (dodatno.nedelje || []).filter(n => Number(n.posetioci) > 0);
   if (nedelje.length > 1) {
@@ -371,7 +397,7 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
                      b.getUTCDate() + '.' + (b.getUTCMonth() + 1) + '.';
       r += traka(raspon, ljudi(n.posetioci), naj,
                  ' <span style="font-weight:400;color:' + C.siva + '">· ' +
-                 (n.kontakti || 0) + ' kontakata</span>', C.crvena, n.posetioci);
+                 kontakata(n.kontakti || 0) + '</span>', C.crvena, n.posetioci);
     }
     h += trakeBloka(r);
   }

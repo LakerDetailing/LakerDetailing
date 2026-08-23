@@ -320,7 +320,7 @@ Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Mer
 
 **Nikad ne šalje dva mejla, ali ne preskače nedelju:** `poslednjiUspeh()` gleda `security_audit_logs` (scope `izvestaj`, status `ok`). Ako je uspešno slanje bilo pre manje od 6 dana — ćuti. Ako je bilo pre više od 8 dana ili nikad — šalje i van ponedeljka, dok jednom ne prođe. Tako pad Brevo-a u ponedeljak ne pojede celu nedelju.
 
-> ⚠️ **Brevo „Authorised IPs" mora biti UGAŠEN.** Vercel funkcije nemaju stalnu IP adresu; kad Brevo naiđe na novu, odbija poziv sa `unrecognised IP address` i umesto mejla stigne „Security Alert: Verify a new IP". Dodavanje jedne adrese ne pomaže jer se sutra promeni — gasi se cela provera: Brevo → Settings → Security → Authorised IPs. Ovo pogađa **sve** mejlove sa sajta (loyalty, recenzije, booking), ne samo izveštaj. Prvi put viđeno 2026-08-23.
+> ⚠️ **Brevo „Authorised IPs" mora biti UGAŠEN.** Vercel funkcije nemaju stalnu IP adresu; kad Brevo naiđe na novu, odbija poziv sa `unrecognised IP address` i umesto mejla stigne „Security Alert: Verify a new IP". Dodavanje jedne adrese ne pomaže jer se sutra promeni — gasi se cela provera: Brevo → Settings → Security → Authorised IPs. Ovo pogađa **sve** mejlove sa sajta (loyalty, recenzije, booking), ne samo izveštaj. Prvi put viđeno 2026-08-23 i **tada ugašeno** (Settings → Security → Authorized IPs → „Blocking unauthorized IP addresses" → API keys: `Deactivated`). Na spisku je do tada bila 41 automatski odobrena Amazon adresa — dokaz koliko Vercel menja IP. Ako se ikad ponovo uključi, mejlovi počnu tiho da padaju.
 
 ### Privatnost — zašto ne treba pristanak
 - **Nijedan kolačić i ništa se ne upisuje na uređaj** (jedini izuzetak je ručni prekidač „ne meri me").
