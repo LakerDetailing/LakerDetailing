@@ -408,15 +408,16 @@ async function ocisti() {
   } catch { /* nije kritično */ }
 }
 
-// ── Osigurač: najviše jedan mejl u 20 sati ────────────────
-async function vecPoslat() {
-  const od = new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString();
+// Kada je poslednji put mejl STVARNO otisao. null = nikad.
+async function poslednjiUspeh() {
   const res = await supabaseFetch(
-    '/rest/v1/security_audit_logs?select=id&scope=eq.izvestaj&action=eq.nedeljni_mejl&status=eq.ok' +
-    '&created_at=gte.' + od + '&limit=1', { method: 'GET' });
-  if (!res.ok) return false;
+    '/rest/v1/security_audit_logs?select=created_at&scope=eq.izvestaj&action=eq.nedeljni_mejl' +
+    '&status=eq.ok&order=created_at.desc&limit=1', { method: 'GET' });
+  if (!res.ok) return null;
   const r = await res.json().catch(() => []);
-  return Array.isArray(r) && r.length > 0;
+  if (!Array.isArray(r) || !r.length) return null;
+  const d = new Date(r[0].created_at);
+  return isNaN(d.getTime()) ? null : d;
 }
 
 async function upisiTrag(status, detalji) {
@@ -468,29 +469,42 @@ module.exports = async function handler(req, res) {
 
   if (!smem) { json(res, 401, { ok: false, greska: 'Nema pristupa' }); return; }
 
-  // ── Mejl ide ponedeljkom oko podne po Beogradu ──────────
-  // Cron je podešen na 10:00 UTC (leti 12h, zimi 11h u Srbiji).
+  // ── Kada se šalje ───────────────────────────────────────
+  // Redovno: ponedeljkom, cron je na 10:00 UTC (leti 12h, zimi 11h).
+  // Nadoknada: ako slanje padne (npr. Brevo odbije poziv), cron sutradan
+  // pokuša ponovo umesto da se cela nedelja izgubi.
   const sadaVreme = new Date();
-  if (!sada && danBeograda(sadaVreme) !== 1) {
-    json(res, 200, { ok: true, poslato: false, razlog: 'nije ponedeljak' });
-    return;
-  }
-  if (!sada && satBeograda(sadaVreme) < 10) {
-    json(res, 200, { ok: true, poslato: false, razlog: 'prerano u danu' });
-    return;
-  }
+  const dan = 24 * 60 * 60 * 1000;
 
-  // Bez ovoga bi ponovljeni cron poslao dva ista mejla.
-  if (!rucno && await vecPoslat()) {
-    json(res, 200, { ok: true, poslato: false, razlog: 'vec poslat u poslednjih 20h' });
-    return;
+  if (!sada) {
+    const zadnji  = await poslednjiUspeh();
+    const proslo  = zadnji ? (sadaVreme.getTime() - zadnji.getTime()) : Infinity;
+
+    // Vec poslato ove nedelje — ne salji drugi put.
+    if (proslo < 6 * dan) {
+      json(res, 200, { ok: true, poslato: false, razlog: 'vec poslat pre manje od 6 dana' });
+      return;
+    }
+    // Nadoknada vazi i kad mejl NIKAD nije uspeo (proslo = Infinity) —
+    // inace bi prvi neuspeo ponedeljak odlozio izvestaj za celu nedelju.
+    // Cim jedno slanje prodje, gornja provera od 6 dana zaustavlja ponavljanje.
+    const ponedeljak = danBeograda(sadaVreme) === 1;
+    const nadoknada  = proslo > 8 * dan;
+
+    if (!ponedeljak && !nadoknada) {
+      json(res, 200, { ok: true, poslato: false, razlog: 'nije ponedeljak' });
+      return;
+    }
+    if (satBeograda(sadaVreme) < 10) {
+      json(res, 200, { ok: true, poslato: false, razlog: 'prerano u danu' });
+      return;
+    }
   }
 
   // ── Period: poslednjih 7 dana ───────────────────────────
   // Redovan ponedeljni mejl se seče na ponoć, pa pokriva tačno prošlu
   // nedelju. Ručno pokretanje (`sada=1`) ide do OVOG trenutka, da bi
   // proba pokazala i ono što se desilo danas.
-  const dan  = 24 * 60 * 60 * 1000;
   const doo  = sada ? sadaVreme : ponocBeograda(sadaVreme);
   const od   = new Date(doo.getTime() - 7 * dan);
   const odP  = new Date(doo.getTime() - 14 * dan);
@@ -537,8 +551,17 @@ module.exports = async function handler(req, res) {
 
     if (posalji.ok) await ocisti();
 
+    // Brevo ume da odbije poziv sa nepoznate IP adrese („authorised IPs").
+    // Vercel funkcije nemaju stalnu IP, pa je to podesavanje treba ugasiti
+    // na Brevo nalogu: Settings → Security → Authorised IPs.
+    const nepoznataIp = !posalji.ok &&
+      String(odgovor && odgovor.message || '').indexOf('unrecognised IP') > -1;
+
     json(res, posalji.ok ? 200 : 502, {
       ok: posalji.ok, poslato: posalji.ok, naslov,
+      savet: nepoznataIp
+        ? 'Brevo blokira poziv sa nepoznate IP adrese. Ugasi „Authorised IPs" na Brevo nalogu — Vercel nema stalnu IP pa dodavanje jedne adrese ne resava trajno.'
+        : undefined,
       brevo: posalji.ok ? (odgovor.messageId || 'ok') : odgovor
     });
   } catch (e) {

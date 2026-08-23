@@ -318,7 +318,9 @@ Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Mer
 
 **Zašto dnevni cron a ne nedeljni:** Hobby plan dozvoljava 2 crona i pravila oko učestalosti su labava, pa se dan bira u kodu (`danBeograda() === 1`). Vercel ume da zakasni do sat vremena. 10:00 UTC = **12h leti, 11h zimi** u Srbiji — tačniji sat nije moguć jer cron ide po UTC-u, a ne prati letnje računanje vremena.
 
-**Nikad ne šalje dva mejla:** `vecPoslat()` gleda `security_audit_logs` (scope `izvestaj`) za poslednjih 20h.
+**Nikad ne šalje dva mejla, ali ne preskače nedelju:** `poslednjiUspeh()` gleda `security_audit_logs` (scope `izvestaj`, status `ok`). Ako je uspešno slanje bilo pre manje od 6 dana — ćuti. Ako je bilo pre više od 8 dana ili nikad — šalje i van ponedeljka, dok jednom ne prođe. Tako pad Brevo-a u ponedeljak ne pojede celu nedelju.
+
+> ⚠️ **Brevo „Authorised IPs" mora biti UGAŠEN.** Vercel funkcije nemaju stalnu IP adresu; kad Brevo naiđe na novu, odbija poziv sa `unrecognised IP address` i umesto mejla stigne „Security Alert: Verify a new IP". Dodavanje jedne adrese ne pomaže jer se sutra promeni — gasi se cela provera: Brevo → Settings → Security → Authorised IPs. Ovo pogađa **sve** mejlove sa sajta (loyalty, recenzije, booking), ne samo izveštaj. Prvi put viđeno 2026-08-23.
 
 ### Privatnost — zašto ne treba pristanak
 - **Nijedan kolačić i ništa se ne upisuje na uređaj** (jedini izuzetak je ručni prekidač „ne meri me").
