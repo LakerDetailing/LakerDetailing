@@ -3,7 +3,7 @@
    Sopstveno merenje poseta. Bez ijednog kolačića.
 
    Ne čuva NIŠTA na uređaju posetioca (jedini izuzetak je ručni
-   prekidač „ne meri me", koji vlasnik sam upali sa ?nemeri=on).
+   prekidač kojim vlasnik isključi svoje uređaje: ?analitika=off).
    Zato ne traži pristanak i radi za sve posetioce, ne samo za one
    koji kliknu na baner.
 
@@ -15,14 +15,23 @@
   var PUT = '/api/mera';
 
   // ── 1. Kada se NE meri ──────────────────────────────────
-  // ?nemeri=on isključuje merenje na ovom uređaju zauvek (vlasnik),
-  // ?nemeri=off ga vraća. Isti obrazac kao ?analitika=off.
+  // Isti prekidač kao za GA4/Pixel/Vercel: ?analitika=off gasi SVE,
+  // uključujući ovo merenje. Ključ `laker_no_analytics` piše init.js;
+  // ovde se čita i sam parametar, jer loyalty-join.html nema init.js.
+  // ?nemeri=on / ?nemeri=off gasi i pali samo ovo merenje.
   try {
     var q = location.search;
-    if (q.indexOf('nemeri=on') > -1)  localStorage.setItem('laker_nemeri', '1');
-    if (q.indexOf('nemeri=off') > -1) localStorage.removeItem('laker_nemeri');
-    if (localStorage.getItem('laker_nemeri') === '1') return;
+    if (q.indexOf('analitika=off') > -1) localStorage.setItem('laker_no_analytics', '1');
+    if (q.indexOf('analitika=on')  > -1) localStorage.removeItem('laker_no_analytics');
+    if (q.indexOf('nemeri=on')     > -1) localStorage.setItem('laker_nemeri', '1');
+    if (q.indexOf('nemeri=off')    > -1) localStorage.removeItem('laker_nemeri');
+
+    if (localStorage.getItem('laker_no_analytics') === '1') return;
+    if (localStorage.getItem('laker_nemeri')       === '1') return;
   } catch (e) { /* privatni režim — nastavi normalno */ }
+
+  // init.js je već mogao da postavi ovu zastavicu pre nego što smo mi na redu.
+  if (window._lakerNoAnalytics) return;
 
   // Lokalni razvoj se ne broji.
   var h = location.hostname;

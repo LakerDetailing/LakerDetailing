@@ -326,7 +326,9 @@ Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Mer
 - Zato baner za kolačiće nije potreban i merenje radi za **100% posetilaca**, ne samo za one koji kliknu „Prihvati sve".
 
 ### Vlasnikovi uređaji se ne broje
-`https://www.lakerdetailing.rs/?nemeri=on` — **jednom po uređaju** (telefon + računar, svaki brauzer posebno). Gašenje: `?nemeri=off`. Upisuje `localStorage['laker_nemeri']`. Isti obrazac kao `?analitika=off` i `?pregled=on`.
+Koristi se **isti prekidač kao za GA4/Pixel/Vercel**: `https://www.lakerdetailing.rs/?analitika=off` gasi i ovo merenje (`mera.js` čita `localStorage['laker_no_analytics']` i `window._lakerNoAnalytics`). Ko je ranije upalio `?analitika=off` ne mora ništa da radi.
+
+Postoji i `?nemeri=on` / `?nemeri=off` ako ikad zatreba da se ugasi **samo** ovo merenje a GA4 ostane. Jednom po uređaju i po brauzeru; poništi se čišćenjem podataka pregledača.
 
 > Ovo važi samo za **sajt**. Statistika Google Business Profila (koliko puta je profil viđen, klikovi na Mape) je Googleova i tamo se vlasnikovi pregledi ne mogu isključiti.
 
