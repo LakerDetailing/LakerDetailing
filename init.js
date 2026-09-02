@@ -210,7 +210,7 @@ function lakerFallbackImage(label, sublabel) {
   return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
 
-// ── SCROLL REVEAL ── prebačen u inline #scroll-reveal-init u index.html
+// ── SCROLL REVEAL ── prebačen u assets/js/laker-ui.js
 // (duplikat je ovde pravio drugi IntersectionObserver nad istim elementima).
 
 // ── PWA REGISTRATION ──
