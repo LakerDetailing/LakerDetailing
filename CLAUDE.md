@@ -548,8 +548,16 @@ izbačen iz JSON-LD-a; opisi Vorreiniger B / Plast Star / Protector Wax svedeni 
 
 **Baza (Supabase, migracije 2026-09-02):** triger `loyalty_customers_lock_on_client_update` — klijent (rola authenticated) pri
 povezivanju naloga ne može sebi da upiše `care_plan`, `plan_type`, `plan_paid_until`, `wash_count`, `admin_note` itd.;
-EXECUTE na trigerskim funkcijama oduzet od `public/anon/authenticated`. Ostaje vlasniku: uključiti **Confirm email** u
-Supabase Auth (bez toga neko ko zna tuđ email vidi ime/telefon sa nepreuzete kartice — plan više ne može da ukrade).
+EXECUTE na trigerskim funkcijama oduzet od `public/anon/authenticated`. **Confirm email je UKLJUČEN u Supabase Auth
+(2026-09-02, popodne).** Posledica u kodu: `/auth/v1/signup` više ne vraća sesiju, pa registracija u [main.js](main.js)
+šalje ime/prezime/telefon/plan/veličinu kao `data` (user_metadata), a `loadAndShowDash()` pravi profil iz `_regMeta`
+pri **prvoj prijavi posle potvrde** i tek tada šalje `loyalty_registration` mejl i GA event. Ne vraćati stari tok koji
+je pravio profil odmah posle signup-a — bez sesije bi tiho propao i član bi ostao bez imena, telefona i plana.
+
+**Donja traka „WhatsApp / Pozovi" (`.dock`) na telefonu stoji SAMO na 5 strana pojedinačnih usluga** — sa `/usluge` i
+`/cenovnik` je skinuta 2026-09-02 na zahtev vlasnika (smetala mu je dok skroluje). Početna ima `.wa-stick`.
+
+**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 65.
 
 **Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
 D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,
