@@ -103,6 +103,11 @@ body.light .svc li:last-child{border-bottom-color:rgba(0,0,0,.08)}
 .svc li .p{font-variant-numeric:tabular-nums;color:var(--mgray);white-space:nowrap}
 .svc li.on .p{color:var(--gold);font-weight:500}
 .svc .g{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);padding:24px 0 8px;display:block}
+/* stavka koja se ne kombinuje sa već izabranom — posivi i ne klikće se */
+.svc li.off{opacity:.45;cursor:not-allowed}
+.svc li.off .bx{border-style:dashed}
+.svc li.off .p{text-decoration:line-through}
+.svc .zas{display:block;font-size:11px;line-height:1.5;color:var(--gray);margin-top:4px;font-style:italic}
 .svc .g:first-child{padding-top:0}
 
 .sum{list-style:none;display:flex;flex-direction:column}

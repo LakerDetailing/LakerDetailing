@@ -76,12 +76,12 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 | Ruta | Fajl | Sadržaj |
 |---|---|---|
 | `/` | `index.html` | hero · traka · O nama · Galerija · FAQ · Lokacija |
-| `/usluge` | `usluge.html` | pregled sa 5 kartica + „Kako izgleda tretman" |
+| `/usluge` | `usluge.html` | samo 5 kartica usluga — uvodni tekst i „Kako izgleda tretman" izbačeni 2026-09-02 na zahtev vlasnika (`h1` je sada „Izaberite uslugu"); `.proc-*` CSS i sekcija obrisani |
 | `/premium-pranje` | | 8 koraka pranja, Protector Wax, 20–35 € |
 | `/detailing-auta` | | enterijer + eksterijer, 99–145 € |
 | `/poliranje-laka` | | 4 nivoa, 100–290 € |
 | `/keramicka-zastita` | | keramika 140–235 €, uz `#1k-nano`, `#karnauba`, `#nano-glass` |
-| `/poliranje-farova` | | 25 € za sve kategorije |
+| `/poliranje-farova` | | 25 € za sve kategorije, UV premaz do 36 meseci |
 | `/cenovnik` | `cenovnik.html` | paketi → Loyalty → pojedinačne → „Sastavi sam" |
 
 **`/dubinsko-ciscenje` je obrisan** — 301 na `/detailing-auta` (redirect u [vercel.json](vercel.json)).
@@ -110,6 +110,14 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   `hidden` atribut, pa se u kalkulatoru videla prazna kutija auta i ručni izbor karoserije.
 - **`ot()` skida `.on` samo u istoj grupi tabova** — i birač veličine koristi `.tb`, pa bi globalni reset ugasio izabranu veličinu.
 - **Dugme „Prijava" na samom cenovniku je `#prijava`** — modal se otvara i na `hashchange`, ne samo pri učitavanju (cenovnik.js).
+- **Kalkulator ne dozvoljava besmislene kombinacije** (2026-09-02). `GRUPE` i `SADRZI` u
+  [assets/js/cenovnik.js](assets/js/cenovnik.js): od četiri nivoa poliranja sme jedan, od tri
+  zaštite laka (keramika / 1K-Nano / karnauba) sme jedna, od dva Nano-Glass-a sme jedan, a
+  „Detailing auta" gasi „Premium pranje" jer ga već sadrži. Sivi red se ne klikće; `dodajUslugu()`
+  izbacuje manju uslugu kad se izabere veća, a `uskladi()` čisti staro stanje iz localStorage-a.
+  Nova usluga koja se sa nečim ne slaže — dodaj je u `GRUPE`, ne piši novu granu koda.
+- **„Detailing potkrila" nije zasebna cena** (izbačeno 2026-09-02, odluka vlasnika) — nema ga ni
+  u tabeli `#pojedinacne` ni u kalkulatoru. U opisu paketa Clean, Boost i Laker **ostaje**.
 
 ### Proizvodi i trajnost — POTVRĐENO (2026-08-13)
 
@@ -122,8 +130,14 @@ Vlasnik je potvrdio koje proizvode koristi; brojevi su sa **zvaničnog koch-chem
 | Ručno karnauba voskiranje (45–65 €) | **Hand Wax W0.01** (karnauba) | do 3 meseca | vlasnik |
 | Vosak u pranju / Clean paketu | **Protector Wax** | 4–6 nedelja | vlasnik |
 | Nano-Glass (30–80 €) | Nano-Glasversiegelung | do 1 godine ili 20.000 km | zvanični KC |
+| Zaštita farova (25 €) | **GYEON Q² Trim** — ime se NE piše na sajtu | do 36 meseci / 50.000 km | zvanični gyeon.co |
 
 > **Dva voska, ne jedan.** „4–6 nedelja" i „do 3 meseca" NISU protivrečnost — to su različiti proizvodi: Protector Wax ide uz pranje, Hand Wax W0.01 se nanosi ručno kao zasebna, skuplja usluga (najčešće posle poliranja). Ne „ujednačavati" ta dva broja.
+
+**Farovi (2026-09-02):** vlasnik je potvrdio da posle brušenja ide **GYEON Q² Trim** i tražio da se
+**ime proizvoda ne piše na sajtu**. Na `/poliranje-farova` sme da stoji samo „keramički premaz, do 36
+meseci po deklaraciji proizvođača" — što je i tačno: gyeon.co za Q² Trim EVO navodi „up to 36 months /
+50k km" i izričito ga dozvoljava na staklima farova posle renovacije.
 
 **Tri odluke vlasnika od 2026-08-13 — ne menjati bez njega:**
 - **Keramika se radi samo u 1 sloju.** Koch-Chemie dozvoljava 2, ali vlasnik ne nudi — ne pominjati drugi sloj na sajtu.
@@ -220,7 +234,7 @@ Gašenje: obriši taj unos i push.
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
 - **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#loc` (`#tst` i `#soc` izbačeni 2026-09-02)
 - **Sekcije na cenovniku:** `#paketi` `#loyalty` `#pojedinacne` `#sastavi`
-- `#proc` je preseljen na `/usluge`; `#pkg`, `#care`, `#prc` i `#book` više ne postoje
+- `#proc` više ne postoji nigde (sekcija „Kako izgleda tretman" obrisana 2026-09-02); `#pkg`, `#care`, `#prc` i `#book` takođe ne postoje
 
 ---
 
@@ -537,9 +551,15 @@ povezivanju naloga ne može sebi da upiše `care_plan`, `plan_type`, `plan_paid_
 EXECUTE na trigerskim funkcijama oduzet od `public/anon/authenticated`. Ostaje vlasniku: uključiti **Confirm email** u
 Supabase Auth (bez toga neko ko zna tuđ email vidi ime/telefon sa nepreuzete kartice — plan više ne može da ukrade).
 
-**Otvoreno, ne blokira puštanje:** (1) koliko traje UV zaštita farova — na strani ne piše rok; (2) kategorije za modele „između"
-(Passat/Superb/Insignia/Mondeo → Veliki, Octavia Combi/Golf Variant → Srednji, Caddy/Doblo → SUV/Van) — vlasnik potvrđuje ili
-menja u `assets/js/auti.js`; (3) slike auta za kalkulator (do tada silueta).
+**Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
+D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,
+T-Cross, 2008, Duster, Mokka), 4,35–4,65 m → Veliki (Tiguan, Qashqai, Sportage, RAV4, Karoq, Kuga, 3008), preko 4,65 m →
+Ekstra (Kodiaq, X5, Touareg, Santa Fe, Range Rover). Kombi, putnički van i pikap su uvek Ekstra. Time je 104 modela promenilo
+kategoriju — pre toga je SVAKI SUV bio Ekstra, pa su Juke i GLS plaćali isto. Pravilo stoji i u zaglavlju
+[assets/js/auti.js](assets/js/auti.js). **Oznake kategorija na svih 6 strana prate to pravilo** („Ekstra (veliki SUV, kombi)",
+ne više „Ekstra (SUV / Van)") — ako se pravilo menja, menjaju se i one, i `KAT_PUN`/`HINT` u cenovnik.js.
+
+**Otvoreno, ne blokira puštanje:** slike auta za kalkulator (do tada silueta).
 
 Puštanje: `git checkout main && git merge renoviranje && git push origin main` → `curl -s https://www.lakerdetailing.rs/api/health`
 → IndexNow ping → Search Console „Request indexing" za 8 URL-ova.

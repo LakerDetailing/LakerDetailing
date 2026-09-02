@@ -2,14 +2,24 @@
 // LAKER DETAILING — SPISAK AUTA ZA „SASTAVI SAM"
 // Format: "Marka": [ [model, kategorija, karoserija, slug slike ili null], ... ]
 //
-//   kategorija  0 Mali (A)  ·  1 Srednji (C)  ·  2 Veliki (E+)  ·  3 SUV / Van
+//   kategorija  0 Mali (A)  ·  1 Srednji (C)  ·  2 Veliki (D/E)  ·  3 Ekstra
 //   karoserija  h hečbek · l limuzina · k karavan · s SUV/krosover · v kombi/van
 //   slug slike  ime fajla u /assets/auti/<slug>.webp; null = crta se silueta
 //
-// Pravilo dok vlasnik ne kaže drugačije: A i B segment → 0, C → 1, D/E/F → 2,
-// SUV, krosover, kombi i pikap → 3. Karavan C klase ostaje 1 (Octavia Combi,
-// Golf Variant). Caddy i Doblo su 3 jer su kombi. Vidi crvenu oznaku na
-// /cenovnik#sastavi — ta pravila čekaju potvrdu.
+// PRAVILO (potvrdio vlasnik 2026-09-02) — dva različita merila:
+//
+//   Obična vozila idu po evropskom segmentu:
+//     A i B segment → 0 · C segment → 1 · D, E i F segment → 2
+//     Kompaktni MPV sa 5 sedišta ostaje 1 (Scenic, C-Max, Meriva, B klasa),
+//     MPV sa 7 sedišta je 3 (Zafira, Touran, Sharan, Galaxy, Grand Scenic).
+//
+//   SUV i krosover idu po DUŽINI, jer ih evropska podela i sama deli na
+//   JA–JF (Nissan Juke i Mercedes GLS nisu isti posao):
+//     do 4,35 m → 1 (Juke, Captur, T-Cross, 2008, Duster, Mokka, Puma)
+//     4,35–4,65 m → 2 (Tiguan, Qashqai, Sportage, RAV4, Karoq, Kuga, 3008)
+//     preko 4,65 m → 3 (Kodiaq, X5, Touareg, Santa Fe, Range Rover)
+//
+//   Svaki kombi, putnički van i pikap je 3 bez obzira na dužinu.
 //
 // Modela u spisku: 583
 // ══════════════════════════════════════════════════════════════════════════
@@ -89,7 +99,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Tonale",
-   3,
+   2,
    "s",
    null
   ]
@@ -235,19 +245,19 @@ window.LAKER_AUTI = {
   ],
   [
    "TT",
-   2,
+   1,
    "h",
    null
   ],
   [
    "Q2",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Q3",
-   3,
+   2,
    "s",
    null
   ],
@@ -417,19 +427,19 @@ window.LAKER_AUTI = {
   ],
   [
    "Z4",
-   2,
+   1,
    "l",
    null
   ],
   [
    "X1",
-   3,
+   2,
    "s",
    null
   ],
   [
    "X2",
-   3,
+   2,
    "s",
    null
   ],
@@ -491,7 +501,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Atto 3",
-   3,
+   2,
    "s",
    null
   ],
@@ -505,19 +515,19 @@ window.LAKER_AUTI = {
  "Chery": [
   [
    "Tiggo 2",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Tiggo 4",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Tiggo 7",
-   3,
+   2,
    "s",
    null
   ],
@@ -579,7 +589,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Trax",
-   3,
+   1,
    "s",
    null
   ]
@@ -605,7 +615,7 @@ window.LAKER_AUTI = {
   ],
   [
    "C3 Aircross",
-   3,
+   1,
    "s",
    null
   ],
@@ -665,7 +675,7 @@ window.LAKER_AUTI = {
   ],
   [
    "C5 Aircross",
-   3,
+   2,
    "s",
    null
   ],
@@ -715,13 +725,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Formentor",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Ateca",
-   3,
+   2,
    "s",
    null
   ],
@@ -733,7 +743,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Terramar",
-   3,
+   2,
    "s",
    null
   ]
@@ -759,7 +769,7 @@ window.LAKER_AUTI = {
   ],
   [
    "DS 7 Crossback",
-   3,
+   2,
    "s",
    null
   ]
@@ -779,7 +789,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Logan",
-   1,
+   0,
    "l",
    null
   ],
@@ -791,13 +801,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Duster",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Duster 2",
-   3,
+   1,
    "s",
    null
   ],
@@ -827,7 +837,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Bigster",
-   3,
+   2,
    "s",
    null
   ]
@@ -847,7 +857,7 @@ window.LAKER_AUTI = {
   ],
   [
    "500X",
-   3,
+   1,
    "s",
    null
   ],
@@ -981,13 +991,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Puma",
-   3,
+   1,
    "s",
    null
   ],
   [
    "EcoSport",
-   3,
+   1,
    "s",
    null
   ],
@@ -1071,7 +1081,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Kuga",
-   3,
+   2,
    "s",
    null
   ],
@@ -1157,19 +1167,19 @@ window.LAKER_AUTI = {
   ],
   [
    "CR-V",
-   3,
+   2,
    "s",
    null
   ],
   [
    "HR-V",
-   3,
+   1,
    "s",
    null
   ],
   [
    "ZR-V",
-   3,
+   2,
    "s",
    null
   ]
@@ -1213,7 +1223,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Accent",
-   1,
+   0,
    "l",
    null
   ],
@@ -1243,25 +1253,25 @@ window.LAKER_AUTI = {
   ],
   [
    "Bayon",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Kona",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Tucson",
-   3,
+   2,
    "s",
    null
   ],
   [
    "ix35",
-   3,
+   2,
    "s",
    null
   ],
@@ -1311,7 +1321,7 @@ window.LAKER_AUTI = {
   ],
   [
    "E-Pace",
-   3,
+   2,
    "s",
    null
   ],
@@ -1325,19 +1335,19 @@ window.LAKER_AUTI = {
  "Jeep": [
   [
    "Renegade",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Compass",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Cherokee",
-   3,
+   2,
    "s",
    null
   ],
@@ -1355,7 +1365,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Avenger",
-   3,
+   1,
    "s",
    null
   ]
@@ -1375,7 +1385,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Stonic",
-   3,
+   1,
    "s",
    null
   ],
@@ -1399,7 +1409,7 @@ window.LAKER_AUTI = {
   ],
   [
    "XCeed",
-   3,
+   2,
    "s",
    null
   ],
@@ -1423,19 +1433,19 @@ window.LAKER_AUTI = {
   ],
   [
    "Niro",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Soul",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Sportage",
-   3,
+   2,
    "s",
    null
   ],
@@ -1455,19 +1465,19 @@ window.LAKER_AUTI = {
  "Lada": [
   [
    "Niva",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Niva Travel",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Granta",
-   1,
+   0,
    "l",
    null
   ],
@@ -1485,7 +1495,7 @@ window.LAKER_AUTI = {
   ],
   [
    "110",
-   1,
+   0,
    "l",
    null
   ]
@@ -1493,7 +1503,7 @@ window.LAKER_AUTI = {
  "Land Rover": [
   [
    "Freelander",
-   3,
+   2,
    "s",
    null
   ],
@@ -1505,7 +1515,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Discovery Sport",
-   3,
+   2,
    "s",
    null
   ],
@@ -1523,7 +1533,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Range Rover Evoque",
-   3,
+   2,
    "s",
    null
   ],
@@ -1573,7 +1583,7 @@ window.LAKER_AUTI = {
   ],
   [
    "UX",
-   3,
+   2,
    "s",
    null
   ],
@@ -1605,13 +1615,13 @@ window.LAKER_AUTI = {
   ],
   [
    "ZS",
-   3,
+   1,
    "s",
    null
   ],
   [
    "HS",
-   3,
+   2,
    "s",
    null
   ],
@@ -1661,19 +1671,19 @@ window.LAKER_AUTI = {
   ],
   [
    "CX-3",
-   3,
+   1,
    "s",
    null
   ],
   [
    "CX-30",
-   3,
+   2,
    "s",
    null
   ],
   [
    "CX-5",
-   3,
+   2,
    "s",
    null
   ],
@@ -1685,7 +1695,7 @@ window.LAKER_AUTI = {
   ],
   [
    "MX-5",
-   1,
+   0,
    "l",
    null
   ]
@@ -1837,19 +1847,19 @@ window.LAKER_AUTI = {
   ],
   [
    "SLK",
-   2,
+   1,
    "l",
    null
   ],
   [
    "GLA",
-   3,
+   2,
    "s",
    null
   ],
   [
    "GLB",
-   3,
+   2,
    "s",
    null
   ],
@@ -1941,13 +1951,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Countryman",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Paceman",
-   3,
+   1,
    "s",
    null
   ]
@@ -1973,7 +1983,7 @@ window.LAKER_AUTI = {
   ],
   [
    "ASX",
-   3,
+   2,
    "s",
    null
   ],
@@ -1997,7 +2007,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Eclipse Cross",
-   3,
+   2,
    "s",
    null
   ]
@@ -2041,13 +2051,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Qashqai",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Juke",
-   3,
+   1,
    "s",
    null
   ],
@@ -2229,31 +2239,31 @@ window.LAKER_AUTI = {
   ],
   [
    "Mokka",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Crossland",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Grandland",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Antara",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Frontera",
-   3,
+   2,
    "s",
    null
   ]
@@ -2297,7 +2307,7 @@ window.LAKER_AUTI = {
   ],
   [
    "2008",
-   3,
+   1,
    "s",
    null
   ],
@@ -2327,7 +2337,7 @@ window.LAKER_AUTI = {
   ],
   [
    "3008",
-   3,
+   2,
    "s",
    null
   ],
@@ -2357,7 +2367,7 @@ window.LAKER_AUTI = {
   ],
   [
    "5008",
-   3,
+   2,
    "s",
    null
   ],
@@ -2577,13 +2587,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Captur",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Kadjar",
-   3,
+   2,
    "s",
    null
   ],
@@ -2595,13 +2605,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Arkana",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Austral",
-   3,
+   2,
    "s",
    null
   ]
@@ -2621,7 +2631,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Arona",
-   3,
+   1,
    "s",
    null
   ],
@@ -2657,7 +2667,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Ateca",
-   3,
+   2,
    "s",
    null
   ],
@@ -2715,13 +2725,13 @@ window.LAKER_AUTI = {
   ],
   [
    "Forester",
-   3,
+   2,
    "s",
    null
   ],
   [
    "XV",
-   3,
+   2,
    "s",
    null
   ]
@@ -2759,31 +2769,31 @@ window.LAKER_AUTI = {
   ],
   [
    "SX4",
-   3,
+   1,
    "s",
    null
   ],
   [
    "S-Cross",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Vitara",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Grand Vitara",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Jimny",
-   3,
+   1,
    "s",
    null
   ]
@@ -2829,7 +2839,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Yaris Cross",
-   3,
+   1,
    "s",
    null
   ],
@@ -2883,13 +2893,13 @@ window.LAKER_AUTI = {
   ],
   [
    "C-HR",
-   3,
+   2,
    "s",
    null
   ],
   [
    "RAV4",
-   3,
+   2,
    "s",
    null
   ],
@@ -3179,19 +3189,19 @@ window.LAKER_AUTI = {
   ],
   [
    "T-Cross",
-   3,
+   1,
    "s",
    null
   ],
   [
    "T-Roc",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Tiguan",
-   3,
+   2,
    "s",
    null
   ],
@@ -3209,7 +3219,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Taigo",
-   3,
+   1,
    "s",
    null
   ],
@@ -3221,7 +3231,7 @@ window.LAKER_AUTI = {
   ],
   [
    "ID.4",
-   3,
+   2,
    "s",
    null
   ]
@@ -3283,7 +3293,7 @@ window.LAKER_AUTI = {
   ],
   [
    "XC40",
-   3,
+   2,
    "s",
    null
   ],
@@ -3345,7 +3355,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Florida",
-   1,
+   0,
    "h",
    null
   ]
@@ -3473,19 +3483,19 @@ window.LAKER_AUTI = {
   ],
   [
    "Kamiq",
-   3,
+   1,
    "s",
    null
   ],
   [
    "Karoq",
-   3,
+   2,
    "s",
    null
   ],
   [
    "Yeti",
-   3,
+   1,
    "s",
    null
   ],
@@ -3547,7 +3557,7 @@ window.LAKER_AUTI = {
   ],
   [
    "SsangYong Korando",
-   3,
+   2,
    "s",
    null
   ],
@@ -3571,7 +3581,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Daihatsu Terios",
-   3,
+   1,
    "s",
    null
   ],
@@ -3583,7 +3593,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Daewoo Lanos",
-   1,
+   0,
    "l",
    null
   ],

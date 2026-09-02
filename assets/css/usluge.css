@@ -2,21 +2,8 @@
    LAKER DETAILING — /usluge i pet strana usluga
    Učitava se posle laker.css. Ovde je samo ono što druge strane nemaju:
    dvokolonski raspored strane usluge, lepljiva kartica sa cenama,
-   traka sa skok-linkovima (keramika) i mreža koraka tretmana.
+   traka sa skok-linkovima (keramika) i kartice usluga.
    ══════════════════════════════════════════════════════════════════════════ */
-
-/* „Kako izgleda tretman" — ista kartica kao .proc-step na početnoj */
-.proc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:56px}
-.proc-card{background:var(--d2);padding:52px 44px;position:relative;overflow:hidden;transition:transform .4s,background .3s}
-.proc-card:hover{transform:translateY(-6px);background:var(--d3)}
-.proc-card .n{font-family:var(--serif);font-size:120px;font-weight:300;color:rgba(255,42,42,.05);position:absolute;top:-10px;right:20px;line-height:1;pointer-events:none;letter-spacing:-5px}
-body.light .proc-card .n{color:rgba(0,0,0,.05)}
-.proc-card .ic{width:52px;height:52px;border:1px solid rgba(255,42,42,.3);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:28px;position:relative;z-index:1;transition:border-color .3s,background .3s}
-.proc-card:hover .ic{border-color:var(--gold);background:rgba(255,42,42,.08)}
-.proc-card .lbl{font-size:9px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px;display:block}
-.proc-card h3{font-family:var(--serif);font-size:32px;font-weight:300;letter-spacing:-.5px;margin-bottom:14px;line-height:1.1}
-.proc-card h3 em{font-style:italic;color:var(--gold)}
-.proc-card p{font-size:13.5px;color:#A8A6A2;line-height:1.75;font-weight:300}
 
 /* strana jedne usluge — dve kolone */
 .usl-body{display:grid;grid-template-columns:1.45fr 1fr;gap:80px;align-items:start;padding:clamp(50px,6vw,80px) 0 0}
@@ -57,7 +44,6 @@ body.light .usl-sub{border-top-color:rgba(0,0,0,.08)}
 .usl-sub .cena strong{font-family:var(--serif);font-size:24px;font-weight:300;color:var(--gold);letter-spacing:-.5px}
 
 @media(max-width:1100px){
-  .proc-grid{grid-template-columns:1fr}
   .usl-body{grid-template-columns:1fr;gap:56px}
   .usl-aside{position:static}
 }
@@ -67,12 +53,11 @@ body.light .usl-sub{border-top-color:rgba(0,0,0,.08)}
   .usl-block h3{font-size:28px;margin-bottom:18px}
   .usl-aside .bx{padding:30px 24px}
   .usl-aside .big{font-size:46px}
-  .proc-card{padding:36px 26px}
   .jump a{padding:11px 16px;letter-spacing:2px}
 }
 
 /* skrivanje pri otkrivanju sekcija — isto pravilo kao na početnoj */
-html:where(.js-ready) :where(.proc-card,.us-card){
+html:where(.js-ready) :where(.us-card){
   opacity:0;
   transform:translateY(24px);
   transition:
@@ -81,7 +66,7 @@ html:where(.js-ready) :where(.proc-card,.us-card){
   transition-delay:var(--reveal-delay,0ms);
 }
 @media (prefers-reduced-motion: reduce){
-  html:where(.js-ready) :where(.proc-card,.us-card){
+  html:where(.js-ready) :where(.us-card){
     opacity:1 !important;transform:none !important;transition:none !important;
   }
 }

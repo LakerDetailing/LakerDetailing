@@ -10,18 +10,18 @@
   'use strict';
 
   var KAT = ['Mali', 'Srednji', 'Veliki', 'Ekstra'];
-  var KAT_PUN = ['Mali · A klasa', 'Srednji · C klasa', 'Veliki · E klasa i više', 'Ekstra · SUV / Van'];
+  var KAT_PUN = ['Mali · A i B klasa', 'Srednji · C klasa i mali krosover',
+                 'Veliki · D i E klasa i SUV', 'Ekstra · veliki SUV, kombi i pikap'];
   var HINT = [
-    'A klasa · Polo, Fabia, Clio, Fiesta',
-    'C klasa · Golf, Octavia, Astra, Focus',
-    'E klasa i više · Passat, A6, Serija 5',
-    'SUV, Van, kombi · Tiguan, Kodiaq, Transporter'
+    'A i B klasa · Polo, Fabia, Clio, Fiesta',
+    'C klasa i mali krosover · Golf, Octavia, Juke, Captur',
+    'D i E klasa i SUV · Passat, A6, Tiguan, RAV4',
+    'Veliki SUV, kombi i pikap · Kodiaq, X5, Transporter'
   ];
 
   // ── USLUGE — iste cene kao u tabelama iznad (vidi CLAUDE.md, sekcija cene) ──
   var USLUGE = [
     { g: 'Eksterijer', id: 'pranje',    n: 'Premium ručno pranje u 3 faze',        c: [20, 25, 30, 35] },
-    { g: 'Eksterijer', id: 'potkrilje', n: 'Detailing potkrilja',                  c: [25, 30, 30, 40] },
     { g: 'Eksterijer', id: 'motor',     n: 'Detailing motornog prostora',          c: [30, 40, 45, 50] },
     { g: 'Eksterijer', id: 'ngfr',      n: 'Nano-Glass Front / Rear',              c: [30, 30, 40, 55] },
     { g: 'Eksterijer', id: 'ngall',     n: 'Nano-Glass All — sva stakla',          c: [50, 55, 65, 80] },
@@ -37,6 +37,56 @@
     { g: 'Poliranje i zaštita', id: 'vosak', n: 'Ručno karnauba voskiranje',       c: [45, 55, 60, 65] },
     { g: 'Poliranje i zaštita', id: 'farovi', n: 'Poliranje i zaštita farova',     c: [25, 25, 25, 25] }
   ];
+
+  // ── ŠTA SE NE KOMBINUJE ─────────────────────────────────────────────────
+  // U jednoj grupi sme da stoji samo JEDNA stavka. Čim je jedna izabrana,
+  // ostale u grupi posive i ne mogu da se kliknu: nema smisla naručiti i
+  // jednoslojno i dvoslojno poliranje, dva premaza preko istog laka, ni
+  // Nano-Glass na prednje i zadnje staklo pa još jednom na sva stakla.
+  // Da bi se izabrala druga stavka iz grupe, prvo se skida kvačica sa prve.
+  var GRUPE = [
+    { clanovi: ['pol1', 'p6', 'pol2', 'pol3'], zasto: 'već je izabran nivo poliranja' },
+    { clanovi: ['keramika', 'nano', 'vosak'],  zasto: 'već je izabrana zaštita laka' },
+    { clanovi: ['ngfr', 'ngall'],              zasto: 'već je izabran Nano-Glass' }
+  ];
+
+  // Veća usluga u sebi već sadrži manju — manja se gasi da se ne plati dvaput.
+  var SADRZI = [
+    { veca: 'detailing', manje: ['pranje'], zasto: 'već ulazi u Detailing auta' }
+  ];
+
+  // Vraća { id: razlog } za sve usluge koje trenutno ne mogu da se izaberu.
+  function zakljucane() {
+    var mapa = {}, i, j;
+    for (var g = 0; g < GRUPE.length; g++) {
+      var izabran = '';
+      for (i = 0; i < GRUPE[g].clanovi.length; i++) {
+        if (stanje.usluge.indexOf(GRUPE[g].clanovi[i]) > -1) { izabran = GRUPE[g].clanovi[i]; break; }
+      }
+      if (!izabran) continue;
+      for (j = 0; j < GRUPE[g].clanovi.length; j++) {
+        if (GRUPE[g].clanovi[j] !== izabran) mapa[GRUPE[g].clanovi[j]] = GRUPE[g].zasto;
+      }
+    }
+    for (var v = 0; v < SADRZI.length; v++) {
+      if (stanje.usluge.indexOf(SADRZI[v].veca) === -1) continue;
+      for (i = 0; i < SADRZI[v].manje.length; i++) mapa[SADRZI[v].manje[i]] = SADRZI[v].zasto;
+    }
+    return mapa;
+  }
+
+  // Dodaje uslugu i izbacuje sve što ona zaključava. Bitno za par
+  // „Detailing auta" / „Premium pranje": pranje se sme kliknuti prvo, pa
+  // tek onda detailing — tada pranje ispada da se ne plati dvaput.
+  // Kod grupa do sudara ne dolazi jer se sivi red uopšte ne klikće.
+  function dodajUslugu(id) {
+    if (stanje.usluge.indexOf(id) > -1) return;
+    stanje.usluge.push(id);
+    var zak = zakljucane();
+    for (var j = stanje.usluge.length - 2; j >= 0; j--) {
+      if (zak[stanje.usluge[j]]) stanje.usluge.splice(j, 1);
+    }
+  }
 
   var BOJE = [
     ['crna', '#141414'], ['bela', '#EDEDED'], ['siva', '#6E6E6E'], ['srebrna', '#B9BCC0'],
@@ -85,6 +135,22 @@
         stanje.usluge = Array.isArray(p.usluge) ? p.usluge : [];
       }
     } catch (x) {}
+  }
+
+  // Stanje iz localStorage-a ume da bude staro: usluga koje više nema u
+  // cenovniku ili kombinacija koja se od sada ne dozvoljava. Zadržava se
+  // prva izabrana iz svake grupe, ostalo ispada.
+  function uskladi() {
+    var poznate = {}, i;
+    for (i = 0; i < USLUGE.length; i++) poznate[USLUGE[i].id] = true;
+    var trazene = stanje.usluge;
+    stanje.usluge = [];
+    for (i = 0; i < trazene.length; i++) {
+      var id = trazene[i];
+      if (!poznate[id] || stanje.usluge.indexOf(id) > -1) continue;
+      if (zakljucane()[id]) continue;
+      dodajUslugu(id);
+    }
   }
 
   // ═══════════════════════════════════════════════ 1) birač veličine
@@ -376,7 +442,9 @@
 
   // ── spisak usluga sa čekboksom ──
   function crtajUsluge() {
+    if (!cfgL) return;
     cfgL.innerHTML = '';
+    var zak = zakljucane();
     var grupa = '';
     for (var i = 0; i < USLUGE.length; i++) {
       var u = USLUGE[i];
@@ -388,17 +456,25 @@
         cfgL.appendChild(g);
       }
       (function (u) {
-        var li = e('li', stanje.usluge.indexOf(u.id) > -1 ? 'on' : '');
+        var izabrana = stanje.usluge.indexOf(u.id) > -1;
+        var razlog = izabrana ? '' : (zak[u.id] || '');
+        var li = e('li', izabrana ? 'on' : (razlog ? 'off' : ''));
         li.setAttribute('role', 'checkbox');
-        li.setAttribute('tabindex', '0');
-        li.setAttribute('aria-checked', stanje.usluge.indexOf(u.id) > -1 ? 'true' : 'false');
-        var bx = e('span', 'bx', stanje.usluge.indexOf(u.id) > -1 ? '✓' : '');
+        li.setAttribute('tabindex', razlog ? '-1' : '0');
+        li.setAttribute('aria-checked', izabrana ? 'true' : 'false');
+        if (razlog) {
+          li.setAttribute('aria-disabled', 'true');
+          li.title = 'Ne ide zajedno — ' + razlog;
+        }
+        var bx = e('span', 'bx', izabrana ? '✓' : '');
         var im = e('span', null, u.n);
+        if (razlog) im.appendChild(e('small', 'zas', razlog));
         var ce = e('span', 'p', u.c[stanje.sz] + ' €');
         li.appendChild(bx); li.appendChild(im); li.appendChild(ce);
         var prebaci = function () {
+          if (razlog) return;
           var k = stanje.usluge.indexOf(u.id);
-          if (k > -1) stanje.usluge.splice(k, 1); else stanje.usluge.push(u.id);
+          if (k > -1) stanje.usluge.splice(k, 1); else dodajUslugu(u.id);
           crtajUsluge(); crtajPonudu(); sacuvaj();
         };
         li.addEventListener('click', prebaci);
@@ -462,6 +538,7 @@
 
   // ═══════════════════════════════════════════════ start
   ucitaj();
+  uskladi();
   crtajBoje();
   if (stanje.marka) { napuniModele(stanje.marka); selMarka.value = stanje.marka; }
   if (stanje.marka && stanje.model && nadjiModel(stanje.marka, stanje.model)) {
