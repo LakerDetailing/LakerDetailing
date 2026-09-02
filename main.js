@@ -1063,7 +1063,9 @@ window.loyRegister = async function(){
   const signupRes = await fetch(SB + '/auth/v1/signup', {
     method: 'POST',
     headers: { 'apikey': ANON, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password: pass })
+    // `data` = user_metadata: kad je Confirm email ukljucen nema sesije odmah, pa se profil
+    // (ime, telefon, plan, velicina) pravi tek pri prvoj prijavi posle potvrde — vidi profilIzMeta()
+    body: JSON.stringify({ email, password: pass, data: { ime: firstName, prezime: surname, telefon: phone, plan_type: planType, car_size: carSize } })
   });
   const signupData = await signupRes.json();
 
@@ -1087,7 +1089,7 @@ window.loyRegister = async function(){
   const loginData = await loginRes.json();
 
   if (!loginData.access_token) {
-    setMsg('lreg-msg', '✅ Nalog kreiran! Proverite email za potvrdu, pa se prijavite.', true);
+    setMsg('lreg-msg', '✅ Nalog kreiran! Poslali smo Vam email — kliknite na link u njemu, pa se prijavite. Vaši podaci su sačuvani.', true);
     btn.textContent = 'Napravi nalog →'; btn.disabled = false;
     $('llog-email').value = email;
     setTimeout(() => window.loyTab('login'), 1500); return;
@@ -1195,6 +1197,7 @@ window.loyLogin = async function(){
     }
 
     _user = { id: d.user.id, email: d.user.email, access_token: d.access_token };
+    _regMeta = d.user.user_metadata || null;
     saveSession(_user);
     updateNavBtn(_user.email);
     btn.textContent = 'Prijavi se →';
@@ -1257,12 +1260,24 @@ async function loadAndShowDash(){
 
   // Ako i dalje nema profila — kreiraj novi (novi loyalty clan)
   if(!_profile){
-    const newName = _googleName || _user.email.split('@')[0];
+    const m = _regMeta && _regMeta.telefon ? _regMeta : null;
+    _regMeta = null;
+    const newName = m ? ((m.ime || '') + ' ' + (m.prezime || '')).trim() : (_googleName || _user.email.split('@')[0]);
     _googleName = null;
     await api('/rest/v1/loyalty_customers', {
       method: 'POST',
       prefer: 'return=minimal',
-      body: {
+      body: m ? {
+        // prva prijava posle potvrde mejla — podaci iz registracione forme (user_metadata)
+        auth_user_id: _user.id,
+        name:         newName,
+        surname:      m.prezime || null,
+        email:        _user.email,
+        phone:        m.telefon,
+        plan_type:    m.plan_type || null,
+        car_size:     m.car_size  || null,
+        wash_count:   0
+      } : {
         auth_user_id: _user.id,
         name:         newName,
         email:        _user.email,
@@ -1270,6 +1285,15 @@ async function loadAndShowDash(){
         wash_count:   0
       }
     });
+    if(m){
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'loyalty_registration', ime: m.ime || '', email: _user.email, telefon: m.telefon, plan_type: m.plan_type, car_size: m.car_size })
+      }).catch(() => {});
+      if(typeof window.gtag === 'function') window.gtag('event','loyalty_prijava',{plan:m.plan_type, velicina:m.car_size, izvor:'sajt'});
+      if(typeof window.fbq  === 'function') window.fbq('track','Lead',{content_name:'loyalty '+m.plan_type});
+    }
     profiles = await api('/rest/v1/loyalty_customers?auth_user_id=eq.' + _user.id + '&select=*&limit=1');
     _profile = Array.isArray(profiles) ? profiles[0] : null;
   }
@@ -1572,6 +1596,7 @@ function updateNavBtn(email, washCount){
 
 // ── GOOGLE OAUTH (Loyalty Modal) ──────────
 let _googleName = null;
+let _regMeta = null; // user_metadata sa prve prijave posle potvrde mejla (vidi loyLogin)
 let _gsiRendered = false;
 let _gsiInitStarted = false;
 
