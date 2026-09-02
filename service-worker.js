@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v60';
+const CACHE_VERSION = 'laker-pwa-v61';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
@@ -13,10 +13,26 @@ const SHELL_ASSETS = [
   '/assets/icons/web-app-manifest-512x512.png'
 ];
 
+// Nove strane i zajednicki stil/skripta — greju se pri instalaciji, ali
+// NE preko addAll: taj poziv pada u celini ako makar jedan fajl vrati 404,
+// pa bi jedna preimenovana ruta ostavila korisnika bez ijednog kesa.
+const TOPLO = [
+  '/', '/usluge', '/cenovnik',
+  '/premium-pranje', '/detailing-auta', '/poliranje-laka',
+  '/keramicka-zastita', '/poliranje-farova'
+];
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL_CACHE);
     await cache.addAll(SHELL_ASSETS);
+    const runtime = await caches.open(RUNTIME_CACHE);
+    await Promise.all(TOPLO.map(async (u) => {
+      try {
+        const res = await fetch(u, { cache: 'no-store' });
+        if (res && res.ok) await runtime.put(u, res.clone());
+      } catch (e) { /* nema veze — strana ce se kesirati pri prvoj poseti */ }
+    }));
     await self.skipWaiting();
   })());
 });

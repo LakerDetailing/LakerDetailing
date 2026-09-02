@@ -25,10 +25,19 @@ const FONT = 'Arial,Helvetica,sans-serif';
 
 // ── Nazivi na srpskom ─────────────────────────────────────
 const IME_SEKCIJE = {
+  // početna
   hero: 'Naslovna slika',   phi: 'Priča o studiju',  cs: 'Slike radova',
-  proc: 'Kako se radi',     pkg: 'Paketi',           care: 'Loyalty članstvo',
-  prc: 'Cenovnik',          faq: 'Pitanja i odgovori', book: 'Zakazivanje',
-  tst: 'Recenzije',         soc: 'Instagram i mreže', loc: 'Gde se nalazimo'
+  faq: 'Pitanja i odgovori', tst: 'Recenzije',       soc: 'Instagram i mreže',
+  loc: 'Gde se nalazimo',
+  // cenovnik (od renoviranja 2026-09; paketi i Loyalty su preseljeni sa početne)
+  paketi: 'Paketi',         loyalty: 'Loyalty članstvo',
+  pojedinacne: 'Cene po usluzi', sastavi: 'Sastavi svoju ponudu',
+  // strane usluga
+  koraci: 'Kako radimo',    kome: 'Kome je namenjeno', cena: 'Cena usluge',
+  // sekcije koje više ne postoje — ostaju da stari podaci u izveštaju imaju ime
+  proc: 'Kako se radi',     pkg: 'Paketi (stara početna)',
+  care: 'Loyalty (stara početna)', prc: 'Cenovnik (stara početna)',
+  book: 'Zakazivanje'
 };
 
 const IME_KLIKA = {
@@ -44,7 +53,8 @@ const IME_KLIKA = {
   'loyalty-ulogovan':    'Ulogovali se u loyalty',
   'loyalty-aktivacija':  'Aktivirali loyalty',
   'recenzija-otvorena':  'Otvorili pisanje recenzije',
-  'recenzija-poslata':   'Napisali recenziju'
+  'recenzija-poslata':   'Napisali recenziju',
+  'ponuda-whatsapp':     'Poslali ponudu iz kalkulatora'
 };
 
 const IME_KANALA = {

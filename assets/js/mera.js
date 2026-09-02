@@ -101,7 +101,8 @@
     loyLogin:        'loyalty-ulogovan',
     activateLoyalty: 'loyalty-aktivacija',
     openReviewModal: 'recenzija-otvorena',
-    submitReview:    'recenzija-poslata'
+    submitReview:    'recenzija-poslata',
+    ponuda_wa:       'ponuda-whatsapp'
   };
 
   function sekcijaOd(el) {

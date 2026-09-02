@@ -296,6 +296,9 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 // sajtu. Prikazuju se identično — posetilac ne vidi odakle je koja.
 // Google recenzije idu prve, po redosledu koji je vlasnik postavio.
 async function loadReviews(){
+  // Recenzije postoje samo na pocetnoj. Na /cenovnik ovog elementa nema,
+  // pa se ni ne pita Supabase.
+  if(!document.getElementById('tst-dynamic')) return;
   if(SB_URL.includes('POSTAVI')) return;
   const zag={'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON};
   const uzmi=async u=>{

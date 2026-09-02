@@ -200,7 +200,10 @@ function toggleFaq(btn){
 // se ne vidi treptaj dok se ovaj fajl skida sa mreže. Ovde ostaje samo
 // stepenasto kašnjenje po elementu i posmatrač koji dodaje klasu `.in`.
 (function(){
-  var s=['#phi .sl','#phi .sh','#phi .sd','#phi .pv','#cs .sl','#cs .sh','.cs-card','#srv .sl','#srv .sh','.si','#proc .sl','#proc .sh','.proc-step','#pkg .sl','#pkg .sh','.pk','#care .sl','#care .sh','.care-card','.care-wash','.faq-item'];
+  // Spisak pokriva sve strane; svaka strana ima samo svoje elemente, pa se
+  // ostalo prosto ne poklopi. Isti spisak stoji u CSS-u te strane
+  // (pravilo html:where(.js-ready)) — tamo je skrivanje, ovde otkrivanje.
+  var s=['#phi .sl','#phi .sh','#phi .sd','#phi .pv','#cs .sl','#cs .sh','.faq-item','.proc-card','.us-card','.pk','.loy-single-card','.loy-wash'];
   var seen=new Set();var t=[];
   s.forEach(function(sel){document.querySelectorAll(sel).forEach(function(el){if(seen.has(el))return;seen.add(el);t.push(el);});});
   t.forEach(function(el,i){el.classList.add('reveal');el.style.setProperty('--reveal-delay',(Math.min(i%8,7)*70)+'ms');});

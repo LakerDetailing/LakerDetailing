@@ -9,8 +9,9 @@ const crypto = require('crypto');
 // radovi.html, 404.html i loyalty-join.html namerno nemaju inline skripte.
 const files = [
   'index.html', 'laker-admin-9x3k.html', 'offline.html',
-  'usluge.html', 'premium-pranje.html', 'poliranje-laka.html',
-  'keramicka-zastita.html', 'dubinsko-ciscenje.html', 'poliranje-farova.html'
+  'usluge.html', 'cenovnik.html',
+  'premium-pranje.html', 'detailing-auta.html', 'poliranje-laka.html',
+  'keramicka-zastita.html', 'poliranje-farova.html'
 ];
 const all = [];
 for (const f of files) {

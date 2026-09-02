@@ -113,20 +113,6 @@
         {"@type": "City", "name": "Preljina"},
         {"@type": "AdministrativeArea", "name": "Moravički okrug"}
       ],
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "Auto Detailing Usluge",
-        "itemListElement": [
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Pranje auta — Clean paket", "description": "Ručno premium pranje automobila po Koch-Chemie protokolu"}, "price": "99", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poliranje laka — Boost paket", "description": "Korekcija laka i poliranje sa zaštitom"}, "price": "249", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita — Laker paket", "description": "Kompletna keramička nano-zaštita laka"}, "price": "499", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Ručno pranje auta", "description": "Ručno premium pranje automobila u 3 faze sa voskiranjem"}, "price": "30", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Keramička zaštita laka (1 sloj)", "description": "Koch-Chemie keramički premaz — dugotrajna zaštita i sjaj"}, "price": "140", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Poliranje i zaštita farova", "description": "Restauracija i poliranje zamućenih farova"}, "price": "25", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Nano-Glass zaštita stakala", "description": "Anti-kiša nano premaz za vetrobransko staklo"}, "price": "30", "priceCurrency": "EUR"},
-          {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Dubinsko čišćenje enterijera", "description": "Usisavanje, vlažno dubinsko čišćenje i impregnacija enterijera"}}
-        ]
-      },
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+381607260302",
@@ -262,8 +248,8 @@
 <!-- ══ STIL ══ zajednički (laker.css) + samo za početnu (pocetna.css).
      Ranije je sve bilo u jednom <style> bloku ovde; izvučeno u fazi 1
      renoviranja da bi ga i ostale strane koristile. -->
-<link rel="stylesheet" href="/assets/css/laker.css?v=20260902a">
-<link rel="stylesheet" href="/assets/css/pocetna.css?v=20260902a">
+<link rel="stylesheet" href="/assets/css/laker.css?v=20260902b">
+<link rel="stylesheet" href="/assets/css/pocetna.css?v=20260902b">
 </head>
 <body>
 <script>try{if(localStorage.getItem('laker-theme')==='light')document.body.className='light';}catch(e){}</script>
@@ -273,6 +259,8 @@
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
   .skip-link:focus{left:0}
+  a.nl{text-decoration:none}
+  .nm a.tekuca{color:var(--gold)}
 </style>
 <a class="skip-link" href="#hero">Preskoči na sadržaj</a>
 
@@ -281,7 +269,7 @@
 
 <!-- ══ NAV ══ -->
 <nav id="nav">
-  <div class="nl">
+  <a class="nl" href="/" aria-label="Laker Detailing Studio — početna">
     <div class="nl-text">
       <span class="nl-m">Laker</span>
       <span class="nl-s">Detailing Studio</span>
@@ -291,19 +279,15 @@
       <source type="image/webp" srcset="/assets/icons/laker-logo-2.webp?v=2">
       <img class="nl-logo" src="/assets/icons/laker-logo-2-opt.jpg?v=2" alt="Laker Auto Detailing Studio logo" width="219" height="120" loading="eager" decoding="async">
     </picture>
-  </div>
+  </a>
   <ul class="nm" id="nm">
-    <li><a href="#phi">O nama</a></li>
+    <li><a href="/" class="tekuca">Početna</a></li>
+    <li><a href="/usluge">Usluge</a></li>
+    <li><a href="/cenovnik">Cenovnik</a></li>
     <li><a href="#cs">Galerija</a></li>
-    <!-- data-href: u režimu pregleda (?pregled=on) init.js prebaci ovaj link na
-         /usluge. Za sve ostale posetioce ostaje #pkg, tačno kao i do sada. -->
-    <li><a href="#pkg" data-href="/usluge" aria-label="Naše usluge">Usluge</a></li>
-    <li><a href="#pkg" aria-label="Paketi i cene">Paketi</a></li>
-    <li><a href="#care">Loyalty</a></li>
-    <li><a href="#prc">Cenovnik</a></li>
-    <li><a href="#faq">FAQ</a></li>
-
-  <li><a href="#" class="nb nb-loy" id="loyNavBtn" data-click="openLoyalty">PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span></a></li></ul>
+    <li><a href="#loc">Kontakt</a></li>
+    <li><a href="/cenovnik#prijava" class="nb nb-loy" id="loyNavBtn">PRIJAVA <span class="loy-nav-email" id="loyNavEmail" style="display:none"></span></a></li>
+  </ul>
   <div class="nav-right">
     <button class="theme-btn" id="themeBtn" type="button" aria-label="Promeni temu" title="Tamni / svetli režim"></button>
     <button class="hbg" id="hbg" type="button" aria-label="Meni">
@@ -315,14 +299,13 @@
 <!-- ══ MOBILE MENU OVERLAY (body-level, bez stacking context problema) ══ -->
 <div id="mobileOverlay" role="dialog" aria-modal="true" aria-label="Navigacija">
   <button id="mobileOverlay-close" type="button" aria-label="Zatvori meni" data-click="closeMobileMenu">✕</button>
-  <a href="#phi" data-click="closeMobileMenu">O nama</a>
+  <a href="/">Početna</a>
+  <a href="/usluge">Usluge</a>
+  <a href="/cenovnik">Cenovnik</a>
   <a href="#cs" data-click="closeMobileMenu">Galerija</a>
-  <a href="#pkg" data-href="/usluge" data-click="closeMobileMenu" aria-label="Naše usluge">Usluge</a>
-  <a href="#pkg" data-click="closeMobileMenu" aria-label="Paketi i cene">Paketi</a>
-  <a href="#care" data-click="closeMobileMenu">Loyalty</a>
-  <a href="#prc" data-click="closeMobileMenu">Cenovnik</a>
   <a href="#faq" data-click="closeMobileMenu">FAQ</a>
-  <a href="#" class="nb" data-click="openLoyaltyMenu">PRIJAVA</a>
+  <a href="#loc" data-click="closeMobileMenu">Kontakt</a>
+  <a href="/cenovnik#prijava" class="nb">PRIJAVA</a>
 </div>
 
 <main id="content">
@@ -500,410 +483,9 @@
   </div>
 </section>
 
-<!-- ══ PROCESS ══ -->
-<section id="proc">
-  <div class="ctn">
-    <div class="proc-header rv">
-      <div class="sl">Naš proces</div>
-      <h2 class="sh">Kako izgleda<br><em>tretman?</em></h2>
-      <p style="font-size:14px;color:var(--mgray);max-width:500px;margin:18px auto 0;font-weight:300;line-height:1.8;text-align:center">Jednostavan proces od prijema do preuzimanja vozila.</p>
-    </div>
-    <div class="proc-steps rv">
 
-      <div class="proc-step rd">
-        <div class="ps-num">01</div>
-        <div class="ps-icon">🔍</div>
-        <span class="ps-step-label">Korak prvi</span>
-        <h3 class="ps-title">Procena<br><em>vozila</em></h3>
-        <p class="ps-desc">Pošaljite fotografije ili dovezite vozilo na pregled. Procenićemo stanje enterijera, eksterijera i laka, a zatim preporučiti tretman koji odgovara vašem automobilu.</p>
-      </div>
 
-      <div class="proc-step rd2">
-        <div class="ps-num">02</div>
-        <div class="ps-icon">✦</div>
-        <span class="ps-step-label">Korak drugi</span>
-        <h3 class="ps-title">Profesionalni<br><em>tretman</em></h3>
-        <p class="ps-desc">Vozilo prolazi kroz detaljan tretman uz korišćenje profesionalne opreme i Koch-Chemie proizvoda. Svaka površina obrađuje se pažljivo i bez preskakanja detalja.</p>
-      </div>
 
-      <div class="proc-step rd3">
-        <div class="ps-num">03</div>
-        <div class="ps-icon">✅</div>
-        <span class="ps-step-label">Korak treći</span>
-        <h3 class="ps-title">Finalna<br><em>kontrola</em></h3>
-        <p class="ps-desc">Pre preuzimanja vozila proveravamo kompletan rezultat tretmana i završne detalje kako bi automobil bio spreman za isporuku u najboljem mogućem stanju.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══ PACKAGES ══ -->
-<section id="pkg">
-  <div class="ctn">
-    <div class="rv" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:30px;margin-bottom:0">
-      <div>
-        <div class="sl">Izaberite paket</div>
-        <h2 class="sh">Tri nivoa<br><em>savršenstva</em></h2>
-      </div>
-      <p style="font-size:13px;color:var(--gray);max-width:340px;text-align:right;font-weight:300;line-height:1.75">Cene su u evrima, plaćanje u dinarima po kursu Narodne banke Srbije.</p>
-    </div>
-    <div class="pkg-grid rv">
-
-      <!-- CLEAN -->
-      <div class="pk">
-        <div class="pk-num">01</div>
-        <div class="pk-name">Cle<em>an</em></div>
-        <div class="pk-sub">Osnovna nega</div>
-        <div class="pk-price-box">
-          <div class="pk-from">od</div>
-          <div class="pk-p"><sup>€</sup>99</div>
-          <div class="pk-size-grid">
-            <div class="pk-sz"><span>Mali</span><strong>€99</strong></div>
-            <div class="pk-sz"><span>Srednji</span><strong>€110</strong></div>
-            <div class="pk-sz"><span>Veliki</span><strong>€130</strong></div>
-            <div class="pk-sz"><span>Ekstra</span><strong>€145</strong></div>
-          </div>
-        </div>
-        <ul class="pk-ul">
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Voskiranje premium voskom</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Koch Chemie Protector Wax</span><span>Dubok sjaj površine</span><span>Zaštita 4–6 nedelja</span><span>Hidrofobni efekat</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Čišćenje felni</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje kočione prašine</span><span>Dubinsko čišćenje felni</span><span>Blistav rezultat</span></div>
-          </li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;3 radna dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
-      </div>
-
-      <!-- BOOST -->
-      <div class="pk pk-feat">
-        <div class="pk-glow"></div>
-        <span class="pk-badge">Najpopularnije</span>
-        <div class="pk-num">02</div>
-        <div class="pk-name">Boo<em>st</em></div>
-        <div class="pk-sub">Premium transformacija</div>
-        <div class="pk-price-box">
-          <div class="pk-from">od</div>
-          <div class="pk-p"><sup>€</sup>249</div>
-          <div class="pk-size-grid">
-            <div class="pk-sz"><span>Mali</span><strong>€249</strong></div>
-            <div class="pk-sz"><span>Srednji</span><strong>€260</strong></div>
-            <div class="pk-sz"><span>Veliki</span><strong>€280</strong></div>
-            <div class="pk-sz"><span>Ekstra</span><strong>€295</strong></div>
-          </div>
-        </div>
-        <ul class="pk-ul">
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dvoslojno poliranje laka</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje sitnih ogrebotina</span><span>Eliminacija holograma</span><span>Vraćanje originalnog sjaja</span><span>2 prolaza mašinom</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno karnauba voskiranje</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Koch Chemie Hand Wax W0.01</span><span>Karnauba, dubok sjaj</span><span>Zaštita do 3 meseca</span><span>Ručna aplikacija</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila (bez skidanja felni)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Čišćenje potkrilja</span><span>Uklanjanje soli i blata</span><span>Čišćenje felni spolja</span><span>Sjajenje guma</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje žutila i zamagljenja</span><span>Poliranje do providnosti</span><span>UV zaštitni premaz</span><span>Traje mesecima</span></div>
-          </li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;do 5 dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
-      </div>
-
-      <!-- LAKER -->
-      <div class="pk">
-        <div class="pk-num">03</div>
-        <div class="pk-name">Lak<em>er</em></div>
-        <div class="pk-sub">Ultimate paket</div>
-        <div class="pk-price-box">
-          <div class="pk-from">od</div>
-          <div class="pk-p"><sup>€</sup>499</div>
-          <div class="pk-size-grid">
-            <div class="pk-sz"><span>Mali</span><strong>€499</strong></div>
-            <div class="pk-sz"><span>Srednji</span><strong>€510</strong></div>
-            <div class="pk-sz"><span>Veliki</span><strong>€530</strong></div>
-            <div class="pk-sz"><span>Ekstra</span><strong>€545</strong></div>
-          </div>
-        </div>
-        <ul class="pk-ul">
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Ručno premium pranje eksterijera (3 faze)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Blistava karoserija</span><span>Zaštićen lak</span><span>Čiste felne i gume</span><span>Čist enterijer i stakla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Troslojno poliranje laka</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje dubokih ogrebotina</span><span>Hologrami i oksidacija</span><span>3 prolaza mašinom</span><span>Vraćanje originalnog sjaja</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Keramička zaštita Koch-Chemie (1 sloj)</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Hemijski se vezuje za lak</span><span>UV zaštita od sunca</span><span>Voda se odbija — lako pranje</span><span>Zaštita do 3 godine</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Nano-Glass All — anti-kiša sva stakla</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Nano premaz na sva stakla</span><span>Voda se odbija od ~80 km/h</span><span>Čista vidljivost u kiši</span><span>Traje do 12 meseci / 20.000 km</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Dubinsko pranje enterijera</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Sedišta i nasloni</span><span>Patosnice i prtljažnik</span><span>Plafon i vrata</span><span>Plastike i kontrolna tabla</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing motornog prostora</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Dubinsko čišćenje motora</span><span>Degreaser i ispiranje</span><span>Zaštita plastike i guma</span><span>Suvo i čisto</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Detailing potkrila</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Kompletno čišćenje potkrilja</span><span>Uklanjanje soli i blata i hrđe</span><span>Felne skinute i očišćene</span><span>Sve površine pokrivene</span></div>
-          </li>
-          <li class="pk-li">
-            <div class="pk-li-row"><span class="pk-ch">◆</span><span class="pk-li-txt">Poliranje i zaštita farova</span><button class="pk-plus" data-click="togglePkInfo" aria-label="Detalji">+</button></div>
-            <div class="pk-info"><span>Uklanjanje žutila i zamagljenja</span><span>Poliranje do providnosti</span><span>UV zaštitni premaz</span><span>Traje mesecima</span></div>
-          </li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;6 – 7 dana</div>
-        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="pk-btn">Kontaktirajte nas →</a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ══ LAKER LOYALTY ══ -->
-<section id="care">
-  <div class="ctn">
-    <div class="care-top rv">
-      <div>
-        <div class="sl">LAKER LOYALTY</div>
-        <h2 class="sh">Uvek sređen.<br><em>Uvek na prvom mestu.</em></h2>
-      </div>
-      <p class="care-note">24 pranja godišnje — 2 puta mesečno. Prioritetan termin, bez čekanja. Plaćate manje, dobijate više.</p>
-    </div>
-
-    <!-- ── Toggle 1: plaćanje  |  Toggle 2: veličina vozila ── -->
-    <div class="loy-controls rv">
-      <div class="loy-toggle-group">
-        <span class="loy-toggle-label">Plaćanje</span>
-        <div class="loy-bill-toggle">
-          <button class="loy-bill-btn on" id="bill-god" data-click="selectLoyBill:god">Godišnje <span class="loy-bill-save-tag" id="bill-god-tag">−29%</span></button>
-          <button class="loy-bill-btn" id="bill-mes" data-click="selectLoyBill:mes">Mesečno</button>
-        </div>
-      </div>
-      <div class="loy-toggle-group">
-        <span class="loy-toggle-label">Veličina vozila</span>
-        <div class="loy-bill-toggle">
-          <button class="loy-bill-btn on" id="size-ms" data-click="selectLoyVeh:ms">Mali / Srednji</button>
-          <button class="loy-bill-btn" id="size-vs" data-click="selectLoyVeh:vs">Veliki / SUV</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Jedan paket — cena se menja po izboru ── -->
-    <div class="loy-single rv">
-      <div class="loy-single-card">
-        <div class="loy-card-glow"></div>
-        <span class="loy-rec-badge">Laker Loyalty</span>
-        <div class="loy-card-name">Uvek <em>sređen</em></div>
-        <div class="loy-card-sub" id="loy-veh-sub">A klasa · C klasa · Hatchback · Sedan</div>
-        <div class="loy-price-box">
-          <div class="loy-price-big"><sup>€</sup><span id="loy-price-num">299</span><small id="loy-price-per"> /god</small></div>
-          <div class="loy-price-note" id="loy-price-note">= €24.92 mesečno</div>
-          <div class="loy-save-pill" id="loy-save-pill">✦ Uštedi 29% vs mesečno</div>
-        </div>
-        <ul class="loy-includes">
-          <li class="loy-step-exp pk-li">
-            <div class="pk-li-row">
-              <i>◆</i>
-              <span class="pk-li-txt">24 premium pranja godišnje (2× mesečno)</span>
-              <button class="pk-plus" data-click="togglePkInfo" aria-label="8 koraka pranja">+</button>
-            </div>
-            <div class="pk-info">
-              <span>01 · Čišćenje felni i ratkapni</span>
-              <span>02 · Beskontaktno pretpranje</span>
-              <span>03 · Ručno pranje šamponom</span>
-              <span>04 · Konzervacija ProtectorWax</span>
-              <span>05 · Vraćanje boje guma</span>
-              <span>06 · Usisavanje enterijera</span>
-              <span>07 · Vlažno čišćenje enterijera</span>
-              <span>08 · Čišćenje stakala</span>
-            </div>
-          </li>
-          <li><i>◆</i>Prioritetan termin — uvek na prvom mestu</li>
-          <li><i>◆</i>Bez ugovora — otkažite kad hoćete</li>
-        </ul>
-        <button class="loy-join-btn" data-click="activateLoyalty">Aktiviraj loyalty →</button>
-      </div>
-    </div>
-
-    <div class="care-wash rv" style="display:none">
-      <div class="care-wash-head">
-        <div></div>
-      </div>
-      <div class="care-steps">
-        <div class="care-step">
-          <span>01</span>
-          <div>
-            <h3>Čišćenje felni i ratkapni</h3>
-            <p>Specijalizovana sredstva za uklanjanje tvrdokornih naslaga nečistoće i kočione prašine — <strong>Felgenblitz säurefrei</strong> ili <strong>Alkali Wheel Cleaner</strong>.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>02</span>
-          <div>
-            <h3>Beskontaktno pretpranje</h3>
-            <p>Obrada karoserije primarnim sredstvom <strong>Vorreiniger B</strong> — jako penušavo sredstvo koje efikasno uklanja putnu prljavštinu i bezbedno je za lak, hrom, aluminijum i gumene elemente.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>03</span>
-          <div>
-            <h3>Ručno pranje šamponom Gentle Snow Foam</h3>
-            <p>Ručno čišćenje karoserije poroznim sunđerima uz upotrebu profesionalnog šampona. Bezbedno uklanjanje preostalih statičkih nečistoća bez uticaja na lakirano-farbanu površinu.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>04</span>
-          <div>
-            <h3>Konzervacija LFP sredstvom ProtectorWax</h3>
-            <p>Visokokvalitetni vosak brzog sušenja obezbeđuje dodatni sjaj i zaštitu površine od spoljašnjih uticaja. Lak zadržava svež izgled tokom dužeg perioda.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>05</span>
-          <div>
-            <h3>Vraćanje originalne boje guma — Plast Star Siliconölfrei</h3>
-            <p>Nega i zaštita guma tokom nekoliko meseci, visoka otpornost na UV zračenje. Ostavlja prijatan <strong>mat finiš</strong> bez masnog izgleda.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>06</span>
-          <div>
-            <h3>Usisavanje enterijera</h3>
-            <p>Temeljno usisavanje unutrašnjosti vozila — sedišta, patosnice, prtljažnik i svi uglovi bez izuzetka.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>07</span>
-          <div>
-            <h3>Vlažno čišćenje enterijera</h3>
-            <p>Čišćenje svih površina u enterijeru uz primenu <strong>Allround Surface Cleaner</strong> — kontrolna tabla, vrata, plastike i sve kontaktne tačke.</p>
-          </div>
-        </div>
-        <div class="care-step">
-          <span>08</span>
-          <div>
-            <h3>Čišćenje stakala — Glass Cleaner</h3>
-            <p>Premium sredstvo za stakla — potpuno čista i bez mrlja, iznutra i spolja. Vidljivost i estetika na najvišem nivou.</p>
-          </div>
-        </div>
-      </div>
-      <div class="care-results">
-        <span>◆ 100% čista karoserija</span>
-        <span>◆ Besprekoran izgled</span>
-        <span>◆ Dubok sjaj</span>
-        <span>◆ Zaštita od prljavštine</span>
-        <span>◆ Savršena stakla</span>
-        <span>◆ Čist enterijer</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ PRICING ══ -->
-<section id="prc">
-  <div class="ctn">
-    <div class="prc-top rv">
-      <div>
-        <div class="sl">Cenovnik</div>
-        <h2 class="sh">Sve usluge<br><em>&amp; cene</em></h2>
-      </div>
-      <div class="prc-note">
-        <p>
-          <strong>Kategorije vozila</strong><br>
-          Mali — A klasa &nbsp;|&nbsp; Srednji — C klasa<br>
-          Veliki — E klasa i više &nbsp;|&nbsp; Ekstra — SUV / Van<br><br>
-          Konačna cena zavisi od stanja vozila. Slobodni ste da pošaljete fotografije pre dogovora — procena je besplatna i bez obaveze.
-        </p>
-      </div>
-    </div>
-    <div class="rv">
-      <div class="tabs">
-        <button type="button" class="tb on" data-click="ot:te">Eksterijer</button>
-        <button type="button" class="tb" data-click="ot:ti">Enterijer</button>
-        <button type="button" class="tb" data-click="ot:tp">Poliranje &amp; zaštita</button>
-      </div>
-      <div class="tp on" id="te">
-        <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
-          <tbody>
-            <tr><td><a class="prc-more" data-href="/premium-pranje">Ručno premium pranje u 3 faze, voskiranje</a></td><td class="pv2" data-l="Mali">20€</td><td class="pv2" data-l="Srednji">25€</td><td class="pv2" data-l="Veliki">30€</td><td class="pv2" data-l="Ekstra">35€</td></tr>
-            <tr><td><a class="prc-more" data-href="/premium-pranje">Detailing potkrila (bez skidanja felni)</a></td><td class="pv2" data-l="Mali">25€</td><td class="pv2" data-l="Srednji">30€</td><td class="pv2" data-l="Veliki">30€</td><td class="pv2" data-l="Ekstra">40€</td></tr>
-            <tr><td><a class="prc-more" data-href="/premium-pranje">Detailing motornog prostora</a></td><td class="pv2" data-l="Mali">30€</td><td class="pv2" data-l="Srednji">40€</td><td class="pv2" data-l="Veliki">45€</td><td class="pv2" data-l="Ekstra">50€</td></tr>
-            <tr><td><a class="prc-more" data-href="/keramicka-zastita">Nano-Glass Front / Rear (anti-kiša)</a></td><td class="pv2" data-l="Mali">30€</td><td class="pv2" data-l="Srednji">30€</td><td class="pv2" data-l="Veliki">40€</td><td class="pv2" data-l="Ekstra">55€</td></tr>
-            <tr><td><a class="prc-more" data-href="/keramicka-zastita">Nano-Glass All — sva stakla</a></td><td class="pv2" data-l="Mali">50€</td><td class="pv2" data-l="Srednji">55€</td><td class="pv2" data-l="Veliki">65€</td><td class="pv2" data-l="Ekstra">80€</td></tr>
-          </tbody>
-        </table>
-        </div>
-      </div>
-      <div class="tp" id="ti">
-        <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
-          <tbody>
-            <tr><td><a class="prc-more" data-href="/dubinsko-ciscenje">Standardni paket (enterijer + eksterijer)</a></td><td class="pv2" data-l="Mali">99€</td><td class="pv2" data-l="Srednji">110€</td><td class="pv2" data-l="Veliki">130€</td><td class="pv2" data-l="Ekstra">145€</td></tr>
-            <tr><td><a class="prc-more" data-href="/dubinsko-ciscenje">Impregnacija kožnih površina</a></td><td class="pv2" data-l="Mali">25€</td><td class="pv2" data-l="Srednji">40€</td><td class="pv2" data-l="Veliki">45€</td><td class="pv2" data-l="Ekstra">50€</td></tr>
-            <tr><td><a class="prc-more" data-href="/dubinsko-ciscenje">Impregnacija plastičnih površina</a></td><td class="pv2" data-l="Mali">25€</td><td class="pv2" data-l="Srednji">40€</td><td class="pv2" data-l="Veliki">45€</td><td class="pv2" data-l="Ekstra">50€</td></tr>
-          </tbody>
-        </table>
-        </div>
-      </div>
-      <div class="tp" id="tp">
-        <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Usluga</th><th>Mali</th><th>Srednji</th><th>Veliki</th><th>Ekstra</th></tr></thead>
-          <tbody>
-            <tr><td><a class="prc-more" data-href="/poliranje-laka">Jednoslojno poliranje</a></td><td class="pv2" data-l="Mali">100€</td><td class="pv2" data-l="Srednji">110€</td><td class="pv2" data-l="Veliki">135€</td><td class="pv2" data-l="Ekstra">150€</td></tr>
-            <tr><td><a class="prc-more" data-href="/poliranje-laka">One Cut &amp; Finish P6</a></td><td class="pv2" data-l="Mali">110€</td><td class="pv2" data-l="Srednji">130€</td><td class="pv2" data-l="Veliki">145€</td><td class="pv2" data-l="Ekstra">155€</td></tr>
-            <tr><td><a class="prc-more" data-href="/poliranje-laka">Dvoslojno poliranje</a></td><td class="pv2" data-l="Mali">140€</td><td class="pv2" data-l="Srednji">150€</td><td class="pv2" data-l="Veliki">170€</td><td class="pv2" data-l="Ekstra">195€</td></tr>
-            <tr><td><a class="prc-more" data-href="/poliranje-laka">Troslojno / višeslojno poliranje</a></td><td class="pv2" data-l="Mali">235€</td><td class="pv2" data-l="Srednji">250€</td><td class="pv2" data-l="Veliki">260€</td><td class="pv2" data-l="Ekstra">290€</td></tr>
-            <tr><td><a class="prc-more" data-href="/keramicka-zastita">Keramička zaštita Koch-Chemie (1 sloj)</a></td><td class="pv2" data-l="Mali">140€</td><td class="pv2" data-l="Srednji">140€</td><td class="pv2" data-l="Veliki">205€</td><td class="pv2" data-l="Ekstra">235€</td></tr>
-            <tr><td><a class="prc-more" data-href="/keramicka-zastita">1K-Nano premaz</a></td><td class="pv2" data-l="Mali">80€</td><td class="pv2" data-l="Srednji">105€</td><td class="pv2" data-l="Veliki">115€</td><td class="pv2" data-l="Ekstra">135€</td></tr>
-            <tr><td><a class="prc-more" data-href="/poliranje-farova">Poliranje i zaštita farova</a></td><td class="pv2" data-l="Mali">25€</td><td class="pv2" data-l="Srednji">25€</td><td class="pv2" data-l="Veliki">25€</td><td class="pv2" data-l="Ekstra">25€</td></tr>
-            <tr><td><a class="prc-more" data-href="/keramicka-zastita">Ručno karnauba voskiranje</a></td><td class="pv2" data-l="Mali">45€</td><td class="pv2" data-l="Srednji">55€</td><td class="pv2" data-l="Veliki">60€</td><td class="pv2" data-l="Ekstra">65€</td></tr>
-          </tbody>
-        </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ══ FAQ ══ -->
 <section id="faq">
@@ -1012,123 +594,6 @@
   </div>
 </section>
 
-<!-- ══ BOOKING REMOVED ══ -->
-<section id="book" style="display:none">
-  <div class="bk-wrap">
-    <div class="bk-l rl">
-      <div>
-        <div class="sl">Zakažite posetu</div>
-        <div class="bk-hl">Vaš auto<br><em>zaslužuje</em><br>najbolje.</div>
-        <div class="bk-hs">Laker Detailing Studio · Čačak</div>
-      </div>
-      <div class="bk-contacts">
-        <div class="bkc">
-          <div class="bkc-ic">📞</div>
-          <div class="bkc-txt">
-            <h3>Telefon</h3>
-            <a href="tel:+381607260302">060 726 0302</a>
-          </div>
-        </div>
-        <div class="bkc">
-          <div class="bkc-ic">✉️</div>
-          <div class="bkc-txt">
-            <h3>Email</h3>
-            <a href="mailto:detailinglaker@gmail.com">detailinglaker&#64;gmail.com</a>
-          </div>
-        </div>
-        <div class="bkc">
-          <div class="bkc-ic">📍</div>
-          <div class="bkc-txt">
-            <h3>Lokacija</h3>
-            <p>Čačak, Srbija<br>Tačna adresa pri potvrdi termina</p>
-          </div>
-        </div>
-        <div class="bkc">
-          <div class="bkc-ic">📸</div>
-          <div class="bkc-txt">
-            <h3>Pošaljite fotografije</h3>
-            <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp: 060 726 0302</a>
-            <p style="margin-top:3px">Brža procena uz fotografije vozila</p>
-          </div>
-        </div>
-      </div>
-      <div class="bk-soc">
-        <a href="https://www.instagram.com/laker_detailing/" target="_blank" rel="noopener noreferrer" class="bks"><span>📸</span> Instagram</a>
-        <a href="https://www.tiktok.com/@laker_detailing" target="_blank" rel="noopener noreferrer" class="bks"><span>🎵</span> TikTok</a>
-        <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" class="bks"><span>💬</span> WhatsApp</a>
-      </div>
-    </div>
-    <div class="bk-r rr">
-      <div id="fCont">
-        <div class="f-title">Rezervišite termin</div>
-        <p class="f-sub">Odgovaramo u roku od nekoliko sati</p>
-        <form action="#" method="POST">
-          <div class="fw">
-            <div class="fg"><label for="ime_field">Ime i prezime *</label><input type="text" id="ime_field" name="ime" placeholder="Marko Marković" required></div>
-            <div class="fg"><label for="telefon_field">Telefon *</label><input type="tel" name="telefon" id="telefon_field" placeholder="06X XXX XXXX" required><span class="field-hint" id="phone_hint"></span></div>
-          </div>
-          <div class="fg"><label for="email_field">Email adresa *</label><input type="email" name="email" id="email_field" placeholder="vas@email.com" required><span class="field-hint" id="email_hint"></span></div>
-          <div class="fw">
-            <div class="fg"><label for="auto_field">Marka i model *</label><input type="text" id="auto_field" name="auto" placeholder="BMW M3, 2021" required></div>
-            <fieldset class="fg">
-              <legend>Veličina vozila *</legend>
-              <div class="size-selector">
-                <input class="sz-opt" type="radio" name="velicina" id="sz1" value="Mali — A klasa" required>
-                <label class="sz-lbl" for="sz1">Mali<span class="sz-sub">A klasa</span></label>
-                <input class="sz-opt" type="radio" name="velicina" id="sz2" value="Srednji — C klasa">
-                <label class="sz-lbl" for="sz2">Srednji<span class="sz-sub">C klasa</span></label>
-                <input class="sz-opt" type="radio" name="velicina" id="sz3" value="Veliki — E klasa i više">
-                <label class="sz-lbl" for="sz3">Veliki<span class="sz-sub">E klasa+</span></label>
-                <input class="sz-opt" type="radio" name="velicina" id="sz4" value="Ekstra — SUV / Van">
-                <label class="sz-lbl" for="sz4">Ekstra<span class="sz-sub">SUV / Van</span></label>
-              </div>
-            </fieldset>
-          </div>
-          <div class="fg">
-            <label for="usluga_field">Usluga ili paket *</label>
-            <select name="usluga" id="usluga_field" required>
-              <option value="">Izaberite...</option>
-              <optgroup label="Paketi">
-                <option>Clean paket (od 115 €)</option>
-                <option>Boost paket (od 265 €)</option>
-                <option>Laker paket (od 540 €)</option>
-              </optgroup>
-              <optgroup label="Posebne usluge">
-                <option>Detailing enterijera</option>
-                <option>Detailing eksterijera</option>
-                <option>Korekcija laka — jednoslojno</option>
-                <option>Korekcija laka — dvoslojno</option>
-                <option>Korekcija laka — troslojno</option>
-                <option>Keramička zaštita</option>
-                <option>Nano-Glass zaštita stakala</option>
-                <option>Restauracija farova</option>
-                <option>Detailing motornog prostora</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="fg"><label for="di">Željeni datum</label><input type="date" name="datum" id="di"></div>
-          <div class="fg"><label for="napomena_field">Napomena / stanje vozila</label><textarea name="napomena" id="napomena_field" placeholder="Opišite stanje vozila ili posebne zahteve."></textarea></div>
-          <div class="hp-field" aria-hidden="true"><label>Website</label><input type="text" name="website" tabindex="-1" autocomplete="off" value=""></div>
-          <input type="hidden" name="_t" id="_booking_t" value="">
-          <p class="f-hint">Za bržu procenu pošaljite fotografije vozila na WhatsApp: <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:none">060 726 0302</a> — odgovaramo odmah.</p>
-          <button type="submit" class="f-btn">Pošaljite zahtev za termin &nbsp;→</button>
-        </form>
-      </div>
-      <div class="f-ok" id="fOk">
-        <div class="f-ok-ic">✅</div>
-        <h3 class="f-ok-t">Zahtev primljen.</h3>
-        <p class="f-ok-p">
-          Potvrda je poslata na vašu email adresu.<br>
-          WhatsApp poruka je na putu na vaš broj.<br><br>
-          Javićemo se što pre radi potvrde termina.<br><br>
-          Za hitne upite:<br>
-          <a href="tel:+381607260302">060 726 0302</a> &nbsp;|&nbsp;
-          <a href="https://wa.me/381607260302" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ══ TESTIMONIALS ══ -->
 <section id="tst" style="background:var(--d1)">
@@ -1254,24 +719,22 @@
     <div class="ft-col">
       <p class="ft-col-title">Navigacija</p>
       <ul>
-        <li><a href="#phi">O nama</a></li>
+        <li><a href="/">Početna</a></li>
+        <li><a href="/usluge">Usluge</a></li>
+        <li><a href="/cenovnik">Cenovnik</a></li>
         <li><a href="#cs">Galerija</a></li>
-        <li><a href="#pkg">Usluge</a></li>
-        <li><a href="#pkg">Paketi</a></li>
-        <li><a href="#prc">Cenovnik</a></li>
         <li><a href="#faq">FAQ</a></li>
+        <li><a href="#loc">Kontakt</a></li>
       </ul>
     </div>
     <div class="ft-col">
       <p class="ft-col-title">Usluge</p>
       <ul>
-        <!-- data-href: vidi komentar u navu. Bez režima pregleda svi vode na #pkg. -->
-        <li><a href="#pkg" data-href="/dubinsko-ciscenje">Detailing enterijera</a></li>
-        <li><a href="#pkg" data-href="/premium-pranje">Detailing eksterijera</a></li>
-        <li><a href="#pkg" data-href="/poliranje-laka">Korekcija laka</a></li>
-        <li><a href="#pkg" data-href="/keramicka-zastita">Keramička zaštita</a></li>
-        <li><a href="#pkg" data-href="/keramicka-zastita">Nano-Glass zaštita</a></li>
-        <li><a href="#pkg" data-href="/poliranje-farova">Restauracija farova</a></li>
+        <li><a href="/premium-pranje">Premium ručno pranje</a></li>
+        <li><a href="/detailing-auta">Detailing auta</a></li>
+        <li><a href="/poliranje-laka">Poliranje laka</a></li>
+        <li><a href="/keramicka-zastita">Keramička zaštita</a></li>
+        <li><a href="/poliranje-farova">Poliranje farova</a></li>
       </ul>
     </div>
     <div class="ft-col">
@@ -1290,214 +753,11 @@
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
     <!-- VERZIJA: podigni broj + datum pri SVAKOM deployu (isti broj kao CACHE_VERSION u service-worker.js). Tako na sajtu vidiš da li je updejt uhvatio. -->
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>60</b> · 2026-09-02</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>61</b> · 2026-09-02</span>
   </div>
 </footer>
 
 
-<!-- ══ LOYALTY MODAL ══ -->
-<div id="loyOverlay" style="display:none;position:fixed;inset:0;z-index:9999;align-items:center;justify-content:center;padding:16px">
-  <div data-sp class="loy-modal-box">
-    <button type="button" data-click="closeLoyalty" class="loy-x-btn" aria-label="Zatvori">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
-    </button>
-
-    <!-- ── HERO ── -->
-    <div class="loy-mhero">
-      <!-- floating loyalty card preview -->
-      <div class="loy-card-vis" aria-hidden="true">
-        <div class="loy-card-vis-logo">LAKER</div>
-        <div class="loy-card-vis-chip"></div>
-        <div class="loy-card-vis-type">Loyalty Member</div>
-        <div class="loy-card-vis-dots"><div class="loy-card-vis-dot"></div><div class="loy-card-vis-dot"></div></div>
-      </div>
-      <div class="loy-mlogo">LAKER</div>
-      <div id="loy-program-title" class="loy-mtitle">LOYALTY PROGRAM</div>
-      <div class="loy-mdesc">24 pranja godišnje &middot; prioritetan termin &middot; uvek na prvom mestu.</div>
-      <div class="loy-chip-row" id="loy-chip-row-loyalty">
-        <span class="loy-chip"><b>24×</b> pranja/god</span>
-        <span class="loy-chip"><b>Prioritet</b> termin</span>
-        <span class="loy-chip"><b>Mali/Sred.</b> od €35/mes</span>
-        <span class="loy-chip"><b>Veliki/SUV</b> od €40/mes</span>
-      </div>
-    </div>
-
-    <div id="loy-program-areas">
-    <!-- ── AUTH AREA ── -->
-    <div id="loy-auth-area">
-
-      <!-- GOOGLE ZONE (prikazan samo kad je GOOGLE_CLIENT_ID podešen) -->
-      <div id="loy-google-zone" style="display:none" class="loy-oauth-zone">
-        <div class="loy-google-header">
-          <div class="loy-google-header-line"></div>
-          <span class="loy-google-header-text">Brzi pristup</span>
-          <div class="loy-google-header-line"></div>
-        </div>
-        <div class="loy-google-outer">
-          <div class="loy-google-btn-overlay" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#1a1a1a"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#333"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#555"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#222"/></svg><span>Nastavi sa Google-om</span></div>
-          <div class="loy-google-inner">
-            <div id="loy-google-wrap" class="loy-google-wrap"></div>
-          </div>
-        </div>
-        <div id="loy-google-err" class="loy-google-err" role="alert"></div>
-        <div class="loy-or-divider"><span>ili</span></div>
-      </div>
-
-      <!-- TAB SWITCHER -->
-      <div class="loy-tab-bar">
-        <div class="loy-tab-track">
-          <button type="button" id="tab-login" data-click="loyTab:login" class="loy-tab-btn active">Prijava</button>
-          <button type="button" id="tab-reg"   data-click="loyTab:reg"   class="loy-tab-btn">Registracija</button>
-          <div class="loy-tab-slider" id="loy-tab-slider"></div>
-        </div>
-      </div>
-
-      <!-- REMEMBER ME -->
-      <div class="loy-remember">
-        <label for="loyRememberMe" class="loy-remember-label">
-          <span class="loy-remember-left">
-            <input id="loyRememberMe" type="checkbox" checked class="loy-remember-check">
-            Ostani prijavljen 30 dana
-          </span>
-          <span class="loy-remember-right">Na ovom uređaju</span>
-        </label>
-      </div>
-
-      <div class="loy-forms-wrap">
-
-        <!-- ── LOGIN FORMA ── -->
-        <div id="loy-form-login">
-          <div class="loy-fld">
-            <label for="llog-email" class="loy-lbl">Email</label>
-            <input id="llog-email" type="email" placeholder="vas@email.com" class="loy-inp">
-          </div>
-          <div class="loy-fld">
-            <label for="llog-pass" class="loy-lbl">Lozinka</label>
-            <div class="pw-wrap">
-              <input id="llog-pass" type="password" placeholder="••••••••" autocomplete="current-password" spellcheck="false" autocapitalize="none" data-pw-meter="llog-pass-meter" class="loy-inp">
-              <button type="button" class="pw-toggle" data-pw-toggle="llog-pass" aria-label="Prikaži lozinku">👁</button>
-            </div>
-            <div class="pw-meter m0" id="llog-pass-meter">
-              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-            </div>
-          </div>
-          <div id="llog-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="llog-btn" data-click="loyLogin" class="loy-submit-btn">Prijavi se →</button>
-          <div style="text-align:center;margin-top:11px">
-            <button type="button" data-click="loyForgotPassword" class="loy-link-btn">Zaboravili ste lozinku?</button>
-          </div>
-          <div id="forgot-area" style="display:none" class="loy-forgot-box">
-            <div class="loy-forgot-title">Reset lozinke</div>
-            <input id="forgot-email" type="email" placeholder="vas@email.com" aria-label="Email za reset lozinke" class="loy-inp" style="margin-bottom:10px">
-            <button type="button" data-click="sendPasswordReset" class="loy-secondary-btn">Pošalji reset link →</button>
-            <div id="forgot-msg" style="display:none;font-size:12px;margin-top:10px;padding:9px 12px;font-weight:300"></div>
-          </div>
-          <div style="text-align:center;margin-top:14px">
-            <span style="font-size:11px;color:#555;font-weight:300">Nemate nalog?&nbsp;</span>
-            <button type="button" data-click="loyTab:reg" class="loy-inline-link">Registrujte se</button>
-          </div>
-        </div>
-
-        <!-- ── REGISTRACIJA FORMA ── -->
-        <div id="loy-form-reg" style="display:none">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="loy-fld">
-              <label for="lreg-name" class="loy-lbl">Ime *</label>
-              <input id="lreg-name" type="text" placeholder="Marko" class="loy-inp">
-            </div>
-            <div class="loy-fld">
-              <label for="lreg-surname" class="loy-lbl">Prezime *</label>
-              <input id="lreg-surname" type="text" placeholder="Marković" class="loy-inp">
-            </div>
-          </div>
-          <div class="loy-fld">
-            <label for="lreg-email" class="loy-lbl">Email * <span class="loy-lbl-note">(ne može se menjati)</span></label>
-            <input id="lreg-email" type="email" placeholder="vas@email.com" class="loy-inp">
-          </div>
-          <div class="loy-fld">
-            <label for="lreg-phone" class="loy-lbl">Telefon * <span class="loy-lbl-note">(ne može se menjati)</span></label>
-            <input id="lreg-phone" type="tel" placeholder="060 726 0302" class="loy-inp">
-            <span id="lreg-phone-hint" style="display:block;font-size:11px;margin-top:4px;min-height:14px"></span>
-          </div>
-          <div class="loy-fld">
-            <p class="loy-lbl" style="margin-bottom:10px">Veličina vozila *</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Veličina vozila">
-              <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms" class="loy-pick-btn active">
-                Mali / Srednji<span class="loy-pick-sub">A klasa · C klasa</span>
-              </button>
-              <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs" class="loy-pick-btn">
-                Veliki / SUV<span class="loy-pick-sub">E klasa · SUV · Van</span>
-              </button>
-            </div>
-            <input type="hidden" id="lreg-size" value="ms">
-          </div>
-          <div class="loy-fld">
-            <p class="loy-lbl" style="margin-bottom:10px">Plan *</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Plan pretplate">
-              <button type="button" id="lreg-pl-god" data-click="selectLoyPlan:god" class="loy-pick-btn active">
-                Godišnje<span id="lreg-pl-god-price" class="loy-pick-price">od €299 · uštedi 29%</span>
-              </button>
-              <button type="button" id="lreg-pl-mes" data-click="selectLoyPlan:mes" class="loy-pick-btn">
-                Mesečno<span id="lreg-pl-mes-price" class="loy-pick-price-dim">od €35/mes</span>
-              </button>
-            </div>
-            <input type="hidden" id="lreg-plan" value="god">
-          </div>
-          <div class="loy-fld">
-            <label for="lreg-pass" class="loy-lbl">Lozinka * <span class="loy-lbl-note">(min. 10 karaktera)</span></label>
-            <div class="pw-wrap">
-              <input id="lreg-pass" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="lreg-pass-hint" data-pw-meter="lreg-pass-meter" class="loy-inp">
-              <button type="button" class="pw-toggle" data-pw-toggle="lreg-pass" aria-label="Prikaži lozinku">👁</button>
-            </div>
-            <span id="lreg-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
-            <div class="pw-meter m0" id="lreg-pass-meter">
-              <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-              <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-            </div>
-          </div>
-          <div id="lreg-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-          <button type="button" id="lreg-btn" data-click="loyRegister" class="loy-submit-btn">Napravi nalog →</button>
-          <div style="text-align:center;margin-top:14px">
-            <span style="font-size:11px;color:#555;font-weight:300">Već imate nalog?&nbsp;</span>
-            <button type="button" data-click="loyTab:login" class="loy-inline-link">Prijavite se</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-    </div>
-
-    <!-- RESET LOZINKE — NOVA LOZINKA FORMA -->
-    <div id="loy-form-new-pass" class="loy-body" style="display:none">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FF2A2A;margin-bottom:16px">Postavite novu lozinku</div>
-      <div class="loy-fld">
-        <label for="new-pass-1" class="loy-lbl">Nova lozinka <span class="loy-lbl-note">(min. 10 karaktera)</span></label>
-        <div class="pw-wrap">
-          <input id="new-pass-1" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" data-pw-hint="new-pass-hint" data-pw-meter="new-pass-1-meter" class="loy-inp">
-          <button type="button" class="pw-toggle" data-pw-toggle="new-pass-1" aria-label="Prikaži lozinku">👁</button>
-        </div>
-        <span id="new-pass-hint" class="pw-hint">Koristi veliko i malo slovo, broj i simbol. To je mnogo sigurnije.</span>
-        <div class="pw-meter m0" id="new-pass-1-meter">
-          <div class="pw-meter-bar"><div class="pw-meter-fill"></div></div>
-          <div class="pw-meter-txt"><span data-meter-label>Slaba</span><strong data-meter-desc>Kucaj lozinku da vidiš jačinu</strong></div>
-        </div>
-      </div>
-      <div class="loy-fld">
-        <label for="new-pass-2" class="loy-lbl">Potvrdi lozinku</label>
-        <div class="pw-wrap">
-          <input id="new-pass-2" type="password" placeholder="••••••••" autocomplete="new-password" spellcheck="false" autocapitalize="none" class="loy-inp">
-          <button type="button" class="pw-toggle" data-pw-toggle="new-pass-2" aria-label="Prikaži lozinku">👁</button>
-        </div>
-      </div>
-      <div id="new-pass-msg" style="display:none;font-size:12px;margin-bottom:12px;padding:10px 14px;font-weight:300"></div>
-      <button type="button" data-click="submitNewPassword" class="loy-submit-btn">Sačuvaj novu lozinku →</button>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="loy-dash" class="loy-dash" style="display:none"></div>
-  </div>
-</div>
 <!-- Otkrivanje sekcija pri skrolu je u assets/js/laker-ui.js (faza 1 renoviranja);
      skrivanje je u pocetna.css, pa nema treptaja dok se skripta učitava. -->
 
@@ -1557,7 +817,7 @@
 <nav class="mobile-app-dock" id="mobileAppDock" aria-label="Brze akcije aplikacije">
   <a href="tel:+381607260302" aria-label="Pozovi studio">Poziv</a>
   <a class="primary" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji WhatsApp poruku">WhatsApp</a>
-  <a href="#prc" aria-label="Pogledaj cenovnik i rezerviši termin" data-click="closeMobileMenu">Rezerviši</a>
+  <a href="/cenovnik" aria-label="Pogledaj cenovnik i rezerviši termin">Cenovnik</a>
 </nav>
 
 <a class="wa-stick" href="https://wa.me/381607260302?text=Zdravo%2C%20voleo%20bih%20da%20zaka%C5%BEem%20termin%20ili%20po%C5%A1aljem%20fotografije%20auta." target="_blank" rel="noopener noreferrer" aria-label="Pošalji poruku putem WhatsApp-a">
@@ -1575,10 +835,10 @@
   <div class="gv-bar"><span class="gv-cap"></span><span class="gv-num"></span></div>
 </div>
 
-<script src="/assets/js/laker-ui.js?v=20260902a" defer></script>
-<script src="/main.min.js?v=20260902a" defer></script>
-<script src="/init.js?v=20260822a" defer></script>
-<script src="/assets/js/mera.js?v=2" defer></script>
+<script src="/assets/js/laker-ui.js?v=20260902b" defer></script>
+<script src="/main.min.js?v=20260902b" defer></script>
+<script src="/init.js?v=20260902b" defer></script>
+<script src="/assets/js/mera.js?v=3" defer></script>
 
 <!-- Vercel Web Analytics se učitava iz init.js (blok ANALYTICS) da bi poštovao
      ?analitika=off — statički tag ovde bi se učitao pre nego što se flag proveri. -->

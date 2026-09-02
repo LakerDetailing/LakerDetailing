@@ -76,44 +76,6 @@
   }catch(e){ window._lakerNoAnalytics = false; }
 })();
 
-// ── REŽIM PREGLEDA (nove stranice usluga) ──────────────────────────────
-// Stranice /usluge, /premium-pranje, /poliranje-laka itd. su već na sajtu,
-// ali klijenti ne treba da ih vide dok vlasnik ne kaže da su gotove.
-//
-// Vlasnik otvori https://www.lakerdetailing.rs/?pregled=on jednom po uređaju
-// → od tada mu se u meniju, footeru i cenovniku prikazuju linkovi ka njima.
-// Gašenje: ?pregled=off. Radi po uređaju, isto kao ?analitika=off iznad.
-//
-// ZAŠTO data-href a ne href: da Googlebot nema šta da prati kad indeksira
-// početnu. Linkovi u index.html stoje kao data-href i tek ovde, i to samo
-// vlasniku, postaju pravi linkovi. Uz to sve nove rute nose
-// X-Robots-Tag: noindex, nofollow (vercel.json) i nisu u sitemap.xml.
-//
-// PUŠTANJE U ŽIVO: data-href → href u index.html, pa se ceo ovaj blok briše
-// zajedno sa .pregled-only pravilima u <style> bloku index.html.
-(function(){
-  var on = false;
-  try{
-    var q = new URLSearchParams(location.search).get('pregled');
-    if(q === 'on')       localStorage.setItem('laker_pregled','1');
-    else if(q === 'off') localStorage.removeItem('laker_pregled');
-    on = localStorage.getItem('laker_pregled') === '1';
-    if(q){
-      console.log('%cLaker režim pregleda: ' + (on ? 'UKLJUČEN — vidiš nove stranice usluga' : 'isključen'),
-                  'color:#FF2A2A;font-weight:700;font-size:13px');
-    }
-  }catch(e){ on = false; }
-
-  window._lakerPregled = on;
-  if(!on) return;
-
-  document.documentElement.classList.add('pregled');
-  document.querySelectorAll('a[data-href]').forEach(function(a){
-    a.setAttribute('href', a.getAttribute('data-href'));
-    a.removeAttribute('data-href');
-  });
-})();
-
 // ── ANALYTICS (Google Consent Mode v2) ──
 // GA4 se učitava SVIM posetiocima, ali dok nema pristanka radi bez kolačića
 // (analytics_storage:'denied' → cookieless ping): posetu izbroji, ali ne prati osobu.
