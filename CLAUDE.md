@@ -14,8 +14,17 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 
 | Fajl/Folder | Opis |
 |---|---|
-| `index.html` | Ceo sajt (~200KB) — sav HTML, CSS i JS u jednom fajlu |
-| `main.js` | Izvorni JS — Supabase recenzije + kompletni Loyalty sistem (IIFE). **Ne učitava se direktno** |
+| `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ, Recenzije, Mreže i Lokaciju — stil i skripte su u zasebnim fajlovima |
+| `usluge.html` + 5 strana usluga | `/usluge` pregled → `/premium-pranje`, `/detailing-auta`, `/poliranje-laka`, `/keramicka-zastita`, `/poliranje-farova` |
+| `cenovnik.html` | `/cenovnik` — paketi, Loyalty, pojedinačne cene i kalkulator „Sastavi sam" (`#paketi #loyalty #pojedinacne #sastavi #prijava`) |
+| `assets/css/laker.css` | **Zajednički stil svih strana** — nav, mobilni meni, dugmad, kostur sekcije, tabele, futer, PWA trake, kolačići |
+| `assets/css/pocetna.css` | samo početna | 
+| `assets/css/usluge.css` | `/usluge` + 5 strana usluga |
+| `assets/css/cenovnik.css` | `/cenovnik`, uključujući preseljene pakete, Loyalty i modal za prijavu |
+| `assets/js/laker-ui.js` | **Zajedničko ponašanje svih strana** — kursor, tema, nav, mobilni meni, tabovi, FAQ, otkrivanje sekcija, `data-click` |
+| `assets/js/cenovnik.js` | birač veličine vozila + kalkulator „Sastavi sam" |
+| `assets/js/auti.js` | spisak marki i modela (41 marka, 583 modela) za kalkulator |
+| `main.js` | Izvorni JS — Supabase recenzije, galerija i kompletni Loyalty sistem (IIFE). **Ne učitava se direktno** |
 | `main.min.js` | Minifikovana verzija koju sajt učitava. Posle izmene main.js regeneriši: `npx terser main.js --compress --mangle -o main.min.js` + bump `?v=` u index.html |
 | `assets/fonts/` | Self-hostovani woff2 fontovi (Cormorant Garamond + Inter, latin/latin-ext) + `fonts.css` (koristi ga admin panel; index.html ima isti @font-face inline) |
 | `laker-admin-9x3k.html` | Admin panel (URL je namerno obscure, noindex) |
@@ -45,7 +54,6 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `sitemap.xml` | Sitemap za Google |
 | `robots.txt` | Blokira admin i api, linkuje sitemap |
 | `offline.html` | PWA offline fallback |
-| `usluge.html` + 5 stranica usluga | Vidi sekciju **Stranice usluga** niže. Dele `assets/css/laker-base.css`, `assets/css/laker-usluga.css` i `assets/js/usluga.js` |
 | `radovi.html` | „Sajt u radovima" — spremna, prekidač UGAŠEN. Vidi sekciju **Prekidač „u radovima"** |
 | `assets/` | Slike: hero (900/1100/1600 .jpg+.webp), gallery (work1-3, path2, wheel), icons |
 | `supabase/*.sql` | SQL migracije (samo referenca, ne deployuju se) |
@@ -61,44 +69,42 @@ Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.)
 
 ---
 
-## Stranice usluga — U REŽIMU PREGLEDA, NISU JAVNE
+## Struktura sajta — posle renoviranja (2026-09-02)
 
-Šest stranica je na sajtu ali **klijenti ih ne vide** dok vlasnik ne kaže da su gotove (dodato 2026-08-13).
+Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 
-| Ruta | Sadržaj | Cene |
+| Ruta | Fajl | Sadržaj |
 |---|---|---|
-| `/usluge` | Hub — kartice svih usluga, „kako izabrati", kategorije vozila | — |
-| `/premium-pranje` | Ručno pranje u 3 faze, potkrila, motorni prostor | 20–35 €, 25–40 €, 30–50 € |
-| `/poliranje-laka` | 4 nivoa korekcije laka | 100–290 € |
-| `/keramicka-zastita` | **Svi premazi**: keramika, 1K-Nano, karnauba vosak, Nano-Glass | 140–235 €, 80–135 €, 45–65 €, 30–80 € |
-| `/dubinsko-ciscenje` | Enterijer + impregnacija kože i plastike | 99–145 €, 25–50 € |
-| `/poliranje-farova` | Poliranje i UV zaštita farova | 25 € (sve kategorije) |
+| `/` | `index.html` | hero · traka · O nama · Galerija · FAQ · Recenzije · Mreže · Lokacija |
+| `/usluge` | `usluge.html` | pregled sa 5 kartica + „Kako izgleda tretman" |
+| `/premium-pranje` | | 8 koraka pranja, Protector Wax, 20–35 € |
+| `/detailing-auta` | | enterijer + eksterijer, 99–145 € |
+| `/poliranje-laka` | | 4 nivoa, 100–290 € |
+| `/keramicka-zastita` | | keramika 140–235 €, uz `#1k-nano`, `#karnauba`, `#nano-glass` |
+| `/poliranje-farova` | | 25 € za sve kategorije |
+| `/cenovnik` | `cenovnik.html` | paketi → Loyalty → pojedinačne → „Sastavi sam" |
 
-**Bez ijedne slike — namerno.** Nema praznih okvira koji čekaju fotografiju; ritam nose brojevi koraka, tabele i razmak. Kad fotografije stignu, dodaje se nova komponenta, postojeće se ne prepravlja.
+**`/dubinsko-ciscenje` je obrisan** — 301 na `/detailing-auta` (redirect u [vercel.json](vercel.json)).
 
-### Kako se ulazi u režim pregleda
+### Pravila koja se ne smeju pokvariti
 
-1. Otvori `https://www.lakerdetailing.rs/?pregled=on` — jednom po uređaju
-2. Upisuje se `localStorage['laker_pregled']`, kôd je u [init.js](init.js) (blok „REŽIM PREGLEDA")
-3. Tek tada se u navu, footeru i cenovniku pojave linkovi ka novim stranicama
-4. Gašenje: `?pregled=off`
-
-Isti obrazac kao `?analitika=off`. Radi po uređaju, ne po nalogu.
-
-### Tri sloja koji drže stranice van očiju klijenata
-
-- **`data-href` umesto `href`** u [index.html](index.html) — nav, footer i 16 naziva u cenovniku. Bez režima pregleda Googlebot nema šta da prati. U navu/footeru `href` ostaje `#pkg`, pa za klijenta ništa nije promenjeno.
-- **`X-Robots-Tag: noindex, nofollow`** na svih 6 ruta u [vercel.json](vercel.json)
-- **Nisu u `sitemap.xml`**
-
-### PUŠTANJE U ŽIVO — tačno 6 koraka
-
-1. `assets/css/laker-usluga.css` — proveri da nema više nijednog `.us-todo`: `grep -rn "us-todo" *.html`
-2. [index.html](index.html) — `data-href` → `href` (nav, footer, 16 redova cenovnika), skloni `html.pregled ` sa 5 `.prc-more` pravila u `<style>`
-3. [init.js](init.js) — obriši ceo blok „REŽIM PREGLEDA"
-4. [vercel.json](vercel.json) — obriši headers blok sa `X-Robots-Tag` za tih 6 ruta (blok sa `usluge|premium-pranje|...`)
-5. `sitemap.xml` — dodaj 6 unosa, `priority 0.8`, `changefreq monthly`
-6. Bump `CACHE_VERSION` + verzija u footeru, `git push origin main`, pa `curl /api/health`
+- **Stil se ne piše u HTML.** `laker.css` je zajednički; ono što koristi jedna strana ide u
+  `pocetna.css`, `usluge.css` ili `cenovnik.css`. Pri premeštanju pravila između fajlova pazi na
+  redosled: fajl koji se učitava kasnije pobeđuje kod iste specifičnosti. Tri mesta gde je to
+  već ugrizlo nose komentar u kodu (`.rd` kašnjenje, mobilna polja `.fg`, `#nav`).
+- **`#nav`, ne `nav`.** Strane imaju i druge `<nav>` oznake (putanja, donja traka na telefonu);
+  fiksni gornji meni sme da pogodi samo `#nav`.
+- **Nove strane nemaju inline `<script>`** osim tri: JSON-LD, prekidač teme i `js-ready`.
+  Poslednja dva moraju da rade PRE iscrtavanja (inače treperi svetla tema), pa ostaju inline i
+  imaju svoj CSP hash. Posle svake izmene: `node tools-csp-hashes.js` → `vercel.json`.
+- **Cene stoje na dva mesta** i moraju da se poklapaju: u tabelama `cenovnik.html` i u nizu
+  `USLUGE` u [assets/js/cenovnik.js](assets/js/cenovnik.js). Kartice sa cenom na stranama usluga
+  su treće mesto.
+- **Birač veličine vozila** (`.szbar` na cenovniku) menja sve odjednom: pakete, Loyalty
+  (Mali/Srednji → 35 €/299 €, Veliki/SUV → 40 €/349 €), istaknutu kolonu u tabelama i kalkulator.
+  Izbor auta u kalkulatoru sam postavlja tu veličinu.
+- **`.todo` je samo za preview granu.** Crvena isprekidana oznaka „VLASNIK POTVRĐUJE" ne sme da
+  ostane na javnom sajtu: `grep -rn 'class="todo"' *.html` mora biti prazno pre puštanja.
 
 ### Proizvodi i trajnost — POTVRĐENO (2026-08-13)
 
@@ -119,7 +125,8 @@ Vlasnik je potvrdio koje proizvode koristi; brojevi su sa **zvaničnog koch-chem
 - **Bez ikakve garancije.** Na stranicama sme da stoji samo trajnost koju deklariše proizvođač, nikad obećanje studija. Provera: `grep -in garanc *.html` mora biti prazno.
 - **Premium pranje traje 1–2 h** (njegovo merenje: 1:30–2:00 na dva auta). Broj uvek ide sa ogradom „zavisi od stanja vozila" jer ume da potraje duže.
 
-**Keramika — pravilo koje mora da stoji na sajtu:** Koch-Chemie traži da se auto **ne pere prvih 9 dana** (posle 24 h je otporan na kišu, ali potpuno očvrsne tek deveti dan; ispod 15 °C i duže).
+**Koliko traje ostalo — NE PISATI.** Vlasnik je 2026-08 izričito tražio da se sklone svi rokovi
+koje nije izmerio (poliranje, keramika, detailing, farovi). Jedini dozvoljeni broj je 1–2 h za pranje.
 
 ### Radno vreme — jedan izvor istine
 
@@ -206,7 +213,9 @@ Gašenje: obriši taj unos i push.
 
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
-- **Sekcije:** `#hero` `#phi` `#cs` `#proc` `#pkg` `#care` `#prc` `#faq` `#tst` `#soc` (sekcije `#srv` i `#rvw` NE postoje — svi "Usluge" linkovi vode na `#pkg`)
+- **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#tst` `#soc` `#loc`
+- **Sekcije na cenovniku:** `#paketi` `#loyalty` `#pojedinacne` `#sastavi`
+- `#proc` je preseljen na `/usluge`; `#pkg`, `#care`, `#prc` i `#book` više ne postoje
 
 ---
 
@@ -284,15 +293,23 @@ Login: email + lozinka (Supabase auth). 4 taba (prečice 1–4):
 
 ## Ključne JS funkcije
 
-### index.html (inline)
+### laker-ui.js (sve strane)
 ```
-togglePkInfo(btn)             // paketi — expandable stavke
-setLoyBilling('mes'|'god')    // loyalty cenovnik toggle
-selectLoySize('ms'|'vs')      // registracija — veličina vozila
-selectLoyPlan('mes'|'god')    // registracija — plan
+ot(btn, id)                   // tabovi
+toggleFaq(btn)                // FAQ harmonika
+openMobileMenu() / closeMobileMenu()
+```
+Sve se poziva preko `data-click="ime"` atributa, ne preko `onclick`.
+
+### main.js (početna i /cenovnik)
+```
+togglePkInfo(btn)             // paketi — stavka koja se širi
+selectLoyBill('mes'|'god')    // Loyalty — način plaćanja
+selectLoyVeh('ms'|'vs')       // Loyalty — veličina vozila (poziva ga cenovnik.js)
+activateLoyalty()             // otvara modal sa pretpopunjenim izborom
+selectLoySize / selectLoyPlan // registracija u modalu
 openLoyalty() / closeLoyalty()
-loyTab('login'|'reg')
-loyLogin() / loyRegister()
+loyTab('login'|'reg') · loyLogin() / loyRegister()
 ```
 
 ### main.js
@@ -496,6 +513,23 @@ Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analyti
 | Availability & Recovery | ✅ | Vercel/Supabase HA + UptimeRobot gađa `/api/health` na 5 min (monitor 803242939) |
 
 **Score: 13/13 ✅ — sve implementirano**
+
+---
+
+## Renoviranje — šta je ostalo pre puštanja u živo
+
+Faze 1–5 su gotove na grani `renoviranje`. **`main` nije diran.** Pre spajanja:
+
+1. Vlasnik odgovara na dva pitanja koja drže crvene `.todo` oznake: koliko traje UV zaštita
+   farova, i kategorije za modele „između" (Passat, Octavia Combi, Caddy).
+2. Vlasnik šalje slike auta za kalkulator (prompt je u planu, §7). Do tada se crta silueta.
+3. Tek onda: obriši `.todo` oznake, obriši `X-Robots-Tag: noindex` blok za nove rute u
+   [vercel.json](vercel.json), dodaj 8 unosa u `sitemap.xml`, podigni `CACHE_VERSION` i verziju
+   u footeru, pa `git checkout main && git merge renoviranje && git push origin main`.
+4. Posle spajanja: `curl -s https://www.lakerdetailing.rs/api/health` → `"db":"ok"`,
+   IndexNow ping, pa „Request indexing" za 8 URL-ova u Search Console.
+
+Ceo plan stoji u `.claude/plans/okej-cao-brate-danas-jazzy-tiger.md` (korisnički folder, ne u repo-u).
 
 ---
 
