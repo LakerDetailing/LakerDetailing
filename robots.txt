@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
 
-Disallow: /laker-admin-9x3k.html
 Disallow: /api/
 Disallow: /rest/
 

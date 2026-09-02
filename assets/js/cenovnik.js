@@ -475,9 +475,13 @@
 
   // „Prijava" sa drugih strana vodi na /cenovnik#prijava — tu se modal otvara sam.
   // setTimeout: main.min.js se učitava paralelno, openLoyalty postoji tek posle njega.
-  if (location.hash === '#prijava') {
-    setTimeout(function () {
-      if (typeof window.openLoyalty === 'function') window.openLoyalty();
-    }, 60);
+  function otvoriPrijavu() {
+    if (typeof window.openLoyalty === 'function') window.openLoyalty();
   }
+  if (location.hash === '#prijava') setTimeout(otvoriPrijavu, 60);
+  // Na samom cenovniku je dugme „Prijava" u meniju #prijava — strana se ne učitava
+  // ponovo, pa se modal otvara na promenu sidra.
+  window.addEventListener('hashchange', function () {
+    if (location.hash === '#prijava') otvoriPrijavu();
+  });
 })();

@@ -14,7 +14,7 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 
 | Fajl/Folder | Opis |
 |---|---|
-| `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ, Recenzije, Mreže i Lokaciju — stil i skripte su u zasebnim fajlovima |
+| `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ i Lokaciju — stil i skripte su u zasebnim fajlovima. **Sekcije Recenzije (`#tst`) i Mreže (`#soc`) izbačene 2026-09-02 na zahtev vlasnika** (Instagram/TikTok već stoje u futeru); `loadReviews()` i review modal u main.js ostaju i sami se gase kad nema `#tst-dynamic` |
 | `usluge.html` + 5 strana usluga | `/usluge` pregled → `/premium-pranje`, `/detailing-auta`, `/poliranje-laka`, `/keramicka-zastita`, `/poliranje-farova` |
 | `cenovnik.html` | `/cenovnik` — paketi, Loyalty, pojedinačne cene i kalkulator „Sastavi sam" (`#paketi #loyalty #pojedinacne #sastavi #prijava`) |
 | `assets/css/laker.css` | **Zajednički stil svih strana** — nav, mobilni meni, dugmad, kostur sekcije, tabele, futer, PWA trake, kolačići |
@@ -75,7 +75,7 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 
 | Ruta | Fajl | Sadržaj |
 |---|---|---|
-| `/` | `index.html` | hero · traka · O nama · Galerija · FAQ · Recenzije · Mreže · Lokacija |
+| `/` | `index.html` | hero · traka · O nama · Galerija · FAQ · Lokacija |
 | `/usluge` | `usluge.html` | pregled sa 5 kartica + „Kako izgleda tretman" |
 | `/premium-pranje` | | 8 koraka pranja, Protector Wax, 20–35 € |
 | `/detailing-auta` | | enterijer + eksterijer, 99–145 € |
@@ -103,8 +103,13 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Birač veličine vozila** (`.szbar` na cenovniku) menja sve odjednom: pakete, Loyalty
   (Mali/Srednji → 35 €/299 €, Veliki/SUV → 40 €/349 €), istaknutu kolonu u tabelama i kalkulator.
   Izbor auta u kalkulatoru sam postavlja tu veličinu.
-- **`.todo` je samo za preview granu.** Crvena isprekidana oznaka „VLASNIK POTVRĐUJE" ne sme da
-  ostane na javnom sajtu: `grep -rn 'class="todo"' *.html` mora biti prazno pre puštanja.
+- **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
+- **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
+  (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
+- **`[hidden]{display:none!important}` stoji u laker.css.** Bez toga `.row2{display:grid}` i `.carbox{display:grid}` gaze
+  `hidden` atribut, pa se u kalkulatoru videla prazna kutija auta i ručni izbor karoserije.
+- **`ot()` skida `.on` samo u istoj grupi tabova** — i birač veličine koristi `.tb`, pa bi globalni reset ugasio izabranu veličinu.
+- **Dugme „Prijava" na samom cenovniku je `#prijava`** — modal se otvara i na `hashchange`, ne samo pri učitavanju (cenovnik.js).
 
 ### Proizvodi i trajnost — POTVRĐENO (2026-08-13)
 
@@ -213,7 +218,7 @@ Gašenje: obriši taj unos i push.
 
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
-- **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#tst` `#soc` `#loc`
+- **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#loc` (`#tst` i `#soc` izbačeni 2026-09-02)
 - **Sekcije na cenovniku:** `#paketi` `#loyalty` `#pojedinacne` `#sastavi`
 - `#proc` je preseljen na `/usluge`; `#pkg`, `#care`, `#prc` i `#book` više ne postoje
 
@@ -516,22 +521,28 @@ Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analyti
 
 ---
 
-## Renoviranje — šta je ostalo pre puštanja u živo
+## Renoviranje — stanje 2026-09-02 (posle dorade)
 
-Faze 1–5 su gotove na grani `renoviranje`. **`main` nije diran.** Pre spajanja:
+Faze 1–5 uradio Opus, doradu i pripremu za puštanje Fable 5.1 istog dana, sve na grani `renoviranje`. **`main` nije diran.**
 
-1. Vlasnik odgovara na dva pitanja koja drže crvene `.todo` oznake: koliko traje UV zaštita
-   farova, i kategorije za modele „između" (Passat, Octavia Combi, Caddy).
-2. Vlasnik šalje slike auta za kalkulator (prompt je u planu, §7). Do tada se crta silueta.
-3. Tek onda: obriši `.todo` oznake, obriši `X-Robots-Tag: noindex` blok za nove rute u
-   [vercel.json](vercel.json), dodaj 8 unosa u `sitemap.xml`, podigni `CACHE_VERSION` i verziju
-   u footeru, pa `git checkout main && git merge renoviranje && git push origin main`.
-4. Posle spajanja: `curl -s https://www.lakerdetailing.rs/api/health` → `"db":"ok"`,
-   IndexNow ping, pa „Request indexing" za 8 URL-ova u Search Console.
+Urađeno u doradi: obrisane `.todo` oznake i njihov CSS; skinut `X-Robots-Tag: noindex` sa 8 novih ruta u [vercel.json](vercel.json);
+`sitemap.xml` ima 8 unosa; verzija 62 + `CACHE_VERSION` v62 + `?v=20260902c`; CSP hash-evi preračunati (JSON-LD u index.html
+se promenio); `robots.txt` više ne objavljuje admin URL (admin i dalje ima meta + header noindex); FAQ „od 20 €" i trajanja paketa
+usklađeni sa cenovnikom (Clean do 3 radna dana, Boost do 5 dana, Laker 6–7 dana); izmišljen `aggregateRating` (47 recenzija)
+izbačen iz JSON-LD-a; opisi Vorreiniger B / Plast Star / Protector Wax svedeni na ono što piše na koch-chemie.com
+(**Protector Wax 4–6 nedelja je vlasnikov broj, NE deklaracija proizvođača** — ne pisati „deklariše proizvođač" uz njega).
 
-Ceo plan stoji u `.claude/plans/okej-cao-brate-danas-jazzy-tiger.md` (korisnički folder, ne u repo-u).
+**Baza (Supabase, migracije 2026-09-02):** triger `loyalty_customers_lock_on_client_update` — klijent (rola authenticated) pri
+povezivanju naloga ne može sebi da upiše `care_plan`, `plan_type`, `plan_paid_until`, `wash_count`, `admin_note` itd.;
+EXECUTE na trigerskim funkcijama oduzet od `public/anon/authenticated`. Ostaje vlasniku: uključiti **Confirm email** u
+Supabase Auth (bez toga neko ko zna tuđ email vidi ime/telefon sa nepreuzete kartice — plan više ne može da ukrade).
 
----
+**Otvoreno, ne blokira puštanje:** (1) koliko traje UV zaštita farova — na strani ne piše rok; (2) kategorije za modele „između"
+(Passat/Superb/Insignia/Mondeo → Veliki, Octavia Combi/Golf Variant → Srednji, Caddy/Doblo → SUV/Van) — vlasnik potvrđuje ili
+menja u `assets/js/auti.js`; (3) slike auta za kalkulator (do tada silueta).
+
+Puštanje: `git checkout main && git merge renoviranje && git push origin main` → `curl -s https://www.lakerdetailing.rs/api/health`
+→ IndexNow ping → Search Console „Request indexing" za 8 URL-ova.
 
 ## Deploy — OBAVEZNA provera posle pusha
 

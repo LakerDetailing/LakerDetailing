@@ -163,7 +163,9 @@ if(hbg&&mobileOverlay){
   hbg.addEventListener('click',()=>{
     mobileOverlay.classList.contains('open')?closeMobileMenu():openMobileMenu();
   });
-  mobileOverlay.addEventListener('click',function(e){if(e.target===this)closeMobileMenu();});
+  // Klik na prazan deo ILI na bilo koji link zatvara meni. Link ka sidru na istoj
+  // strani (npr. #prijava na cenovniku) bi inače ostavio meni otvoren preko sadržaja.
+  mobileOverlay.addEventListener('click',function(e){if(e.target===this||e.target.closest('a'))closeMobileMenu();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMobileMenu();});
 }
 
@@ -179,8 +181,10 @@ if(hbg&&mobileOverlay){
 function ot(btn,id){
   const panel=document.getElementById(id);
   if(!btn||!panel) return;
-  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
+  // Samo dugmad iz ISTE grupe tabova: na cenovniku i birač veličine (.szbar)
+  // koristi .tb, pa bi globalno skidanje klase ugasilo izabranu veličinu vozila.
+  (btn.parentElement||document).querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  (panel.parentElement||document).querySelectorAll('.tp').forEach(p=>p.classList.remove('on'));
   btn.classList.add('on');panel.classList.add('on');
 }
 

@@ -3,24 +3,54 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.lakerdetailing.rs/</loc>
-    <lastmod>2026-08-02</lastmod>
+    <lastmod>2026-09-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://www.lakerdetailing.rs/assets/hero-1600.jpg</image:loc>
+      <image:loc>https://www.lakerdetailing.rs/assets/hero-1600.webp</image:loc>
       <image:title>Profesionalni auto detailing u Čačku — Laker Detailing Studio</image:title>
     </image:image>
-    <image:image>
-      <image:loc>https://www.lakerdetailing.rs/assets/gallery/work1-opt.jpg</image:loc>
-      <image:title>Mercedes AMG S-Class enterijer detailing — Laker Detailing Čačak</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.lakerdetailing.rs/assets/gallery/work2-opt.jpg</image:loc>
-      <image:title>Alfa Romeo Giulietta detailing eksterijera — Laker Detailing Čačak</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.lakerdetailing.rs/assets/gallery/gallery-wheel-opt.jpg</image:loc>
-      <image:title>Detailing felni — Laker Detailing Čačak</image:title>
-    </image:image>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/usluge</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/cenovnik</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/premium-pranje</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/detailing-auta</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/poliranje-laka</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/keramicka-zastita</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.lakerdetailing.rs/poliranje-farova</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
