@@ -4,7 +4,8 @@
 //
 //   kategorija  0 Mali (A)  ·  1 Srednji (C)  ·  2 Veliki (D/E)  ·  3 Ekstra
 //   karoserija  h hečbek · l limuzina · k karavan · s SUV/krosover · v kombi/van
-//   slug slike  ime fajla u /assets/auti/<slug>.webp; null = crta se silueta
+//   slug slike  rezervisano za kasnije — slika auta se trenutno NIGDE ne prikazuje
+//               (odluka vlasnika 2026-09-02), pa je kod svih modela null
 //
 // PRAVILO (potvrdio vlasnik 2026-09-02) — dva različita merila:
 //

@@ -94,15 +94,8 @@
     ['bež', '#C8B491'], ['narandžasta', '#C2580E']
   ];
 
-  // Siluete po tipu karoserije. Namerno grube — dok vlasnik ne pošalje prave
-  // slike, ovo samo pokazuje oblik i izabranu boju.
-  var SILUETE = {
-    h: 'M12 62 L20 44 Q24 36 34 34 L64 31 Q76 30 86 36 L104 47 L124 50 Q134 52 134 60 L134 66 Q134 70 128 70 L18 70 Q12 70 12 66 Z',
-    l: 'M10 62 L18 45 Q22 37 33 35 L62 31 Q74 30 84 36 L106 48 L128 51 Q138 53 138 61 L138 66 Q138 70 132 70 L16 70 Q10 70 10 66 Z',
-    k: 'M10 62 L17 42 Q21 34 32 32 L96 30 Q108 30 114 36 L128 49 Q138 52 138 61 L138 66 Q138 70 132 70 L16 70 Q10 70 10 66 Z',
-    s: 'M12 60 L18 38 Q22 29 34 27 L92 25 Q104 25 111 32 L127 46 Q136 49 136 58 L136 66 Q136 71 129 71 L19 71 Q12 71 12 66 Z',
-    v: 'M12 62 L14 32 Q16 24 28 23 L104 22 Q116 22 121 29 L132 46 Q138 50 138 60 L138 66 Q138 71 131 71 L18 71 Q12 71 12 66 Z'
-  };
+  // Slika auta se u kalkulatoru NE prikazuje (odluka vlasnika 2026-09-02) —
+  // ostaje samo prepoznata kategorija, tip karoserije i izabrana boja u tekstu.
   var IME_KAROSERIJE = { h: 'hečbek', l: 'limuzina', k: 'karavan', s: 'SUV / krosover', v: 'kombi / van' };
 
   var KLJUC = 'laker_ponuda';
@@ -396,46 +389,22 @@
     }
   }
 
-  function bojaHex() {
-    for (var i = 0; i < BOJE.length; i++) if (BOJE[i][0] === stanje.boja) return BOJE[i][1];
-    return '#141414';
-  }
-
   // ── prikaz auta ──
   function crtajAuto() {
-    var kutija = $('cfgAuto'), slika = $('cfgSlika'), kat = $('cfgKat'), sub = $('cfgKatSub');
+    var kutija = $('cfgAuto'), kat = $('cfgKat'), sub = $('cfgKatSub');
     var m = nadjiModel(stanje.marka, stanje.model);
-    var karoserija, kategorija, naziv;
+    var karoserija, kategorija;
 
     if (m) {
       karoserija = m[2]; kategorija = m[1];
-      naziv = stanje.marka + ' ' + stanje.model;
     } else if (rucnoPolja && !rucnoPolja.hidden) {
       karoserija = selKaros.value; kategorija = +selVel.value;
-      naziv = 'Vaše vozilo';
     } else {
       kutija.hidden = true;
       return;
     }
 
     kutija.hidden = false;
-    var slug = m && m[3];
-    if (slug) {
-      slika.innerHTML = '';
-      var img = new Image();
-      img.src = '/assets/auti/' + slug + '.webp';
-      img.alt = naziv;
-      img.width = 480; img.height = 270;
-      img.loading = 'lazy'; img.decoding = 'async';
-      slika.appendChild(img);
-    } else {
-      slika.innerHTML = '<svg viewBox="0 0 150 80" role="img" aria-label="Silueta: ' +
-        IME_KAROSERIJE[karoserija] + '">' +
-        '<path d="' + SILUETE[karoserija] + '" fill="' + bojaHex() + '" stroke="rgba(255,255,255,.18)" stroke-width="1"/>' +
-        '<circle cx="40" cy="70" r="9" fill="#0A0A0A" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>' +
-        '<circle cx="112" cy="70" r="9" fill="#0A0A0A" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>' +
-        '</svg>';
-    }
     kat.childNodes[0].nodeValue = KAT[kategorija];
     sub.textContent = KAT_PUN[kategorija].split(' · ')[1] + ' · ' + IME_KAROSERIJE[karoserija] + ' · ' + stanje.boja;
   }

@@ -559,7 +559,11 @@ kategoriju — pre toga je SVAKI SUV bio Ekstra, pa su Juke i GLS plaćali isto.
 [assets/js/auti.js](assets/js/auti.js). **Oznake kategorija na svih 6 strana prate to pravilo** („Ekstra (veliki SUV, kombi)",
 ne više „Ekstra (SUV / Van)") — ako se pravilo menja, menjaju se i one, i `KAT_PUN`/`HINT` u cenovnik.js.
 
-**Otvoreno, ne blokira puštanje:** slike auta za kalkulator (do tada silueta).
+**Slike auta u kalkulatoru — NEMA IH** (odluka vlasnika 2026-09-02). Kutija `.carbox` posle izbora modela
+prikazuje samo prepoznatu kategoriju i ispod nje „segment · tip karoserije · boja"; `#cfgSlika`, `SILUETE` i
+`bojaHex()` su obrisani, `.carbox` više nije dvokolonski grid. Izbor boje **ostaje** (ulazi u WhatsApp upit).
+Četvrto polje u [assets/js/auti.js](assets/js/auti.js) (slug slike) stoji rezervisano i svuda je `null` —
+kad vlasnik pošalje slike, vraća se prikaz slike, ne silueta.
 
 Puštanje: `git checkout main && git merge renoviranje && git push origin main` → `curl -s https://www.lakerdetailing.rs/api/health`
 → IndexNow ping → Search Console „Request indexing" za 8 URL-ova.
