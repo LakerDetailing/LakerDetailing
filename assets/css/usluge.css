@@ -8,8 +8,8 @@
 /* strana jedne usluge — dve kolone */
 .usl-body{display:grid;grid-template-columns:1.45fr 1fr;gap:80px;align-items:start;padding:clamp(50px,6vw,80px) 0 0}
 .usl-col{display:flex;flex-direction:column;gap:60px;min-width:0}
-.usl-block h3{font-family:var(--serif);font-size:34px;font-weight:300;margin-bottom:24px;letter-spacing:-.5px;line-height:1.1}
-.usl-block h3 em{font-style:italic;color:var(--gold)}
+.usl-block h2{font-family:var(--serif);font-size:34px;font-weight:300;margin-bottom:24px;letter-spacing:-.5px;line-height:1.1}
+.usl-block h2 em{font-style:italic;color:var(--gold)}
 .usl-block > p{font-size:14px;line-height:1.85;color:var(--mgray);font-weight:300;max-width:62ch}
 
 /* lepljiva kartica sa cenama */
@@ -50,7 +50,7 @@ body.light .usl-sub{border-top-color:rgba(0,0,0,.08)}
 @media(max-width:768px){
   .usl-body{gap:44px;padding-top:40px}
   .usl-col{gap:44px}
-  .usl-block h3{font-size:28px;margin-bottom:18px}
+  .usl-block h2{font-size:28px;margin-bottom:18px}
   .usl-aside .bx{padding:30px 24px}
   .usl-aside .big{font-size:46px}
   .jump a{padding:11px 16px;letter-spacing:2px}

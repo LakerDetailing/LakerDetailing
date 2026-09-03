@@ -233,7 +233,8 @@ body.light footer{border-top-color:rgba(0,0,0,.06)}
 .ft-logo{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:6px;text-transform:uppercase;color:var(--white);margin-bottom:4px}
 .ft-sub{font-size:8.5px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
 .ft-desc{font-size:13px;color:var(--gray);line-height:1.85;max-width:260px;font-weight:300}
-.ft-slogan{font-family:var(--serif);font-size:16px;font-style:italic;color:rgba(255,42,42,.8);margin-top:20px}
+.ft-slogan{font-family:var(--serif);font-size:16px;font-style:italic;color:var(--gold);margin-top:20px} /* puna boja, ne .8 — 3,7:1 je padalo na kontrastu */
+body.light .ft-slogan{color:var(--gold3)}
 .ft-col .ft-col-title{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:24px}
 .ft-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
 .ft-col ul a{font-size:13px;color:var(--gray);text-decoration:none;transition:color .3s;font-weight:300}
@@ -243,9 +244,10 @@ body.light footer{border-top-color:rgba(0,0,0,.06)}
 .fb{padding:22px 70px;border-top:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
 body.light .fb{border-top-color:rgba(0,0,0,.06)}
 .fb-c{font-size:11.5px;color:var(--gray);font-weight:300}
-.fb-v{font-size:10px;color:var(--gray);opacity:.55;font-weight:500;letter-spacing:.6px;font-variant-numeric:tabular-nums;white-space:nowrap;transition:opacity .25s}
-.fb-v:hover{opacity:.9}
+.fb-v{font-size:10px;color:var(--gray);font-weight:500;letter-spacing:.6px;font-variant-numeric:tabular-nums;white-space:nowrap;transition:opacity .25s}
+/* bez opacity: .55 je davalo 2,5:1 na broju verzije */
 .fb-v b{color:var(--gold);font-weight:700}
+body.light .fb-v b{color:var(--gold3)}
 .fb-c span{color:var(--gold)}
 
 /* VISUAL POLISH */
@@ -638,7 +640,7 @@ body.light .ph{border-bottom-color:rgba(0,0,0,.08)}
 .us-card{background:var(--d2);padding:52px 44px;position:relative;display:flex;flex-direction:column;gap:16px;min-height:330px;text-decoration:none;color:inherit;transition:background .3s,transform .4s;cursor:none}
 .us-card:hover{background:var(--d3);transform:translateY(-4px)}
 .us-card .k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-weight:600}
-.us-card h3{font-family:var(--serif);font-size:34px;font-weight:300;line-height:1;letter-spacing:-.5px}
+.us-card h2,.us-card h3{font-family:var(--serif);font-size:34px;font-weight:300;line-height:1;letter-spacing:-.5px}
 .us-card p{font-size:13.5px;line-height:1.8;color:var(--mgray);flex:1;font-weight:300}
 .us-card .pr{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;border-top:1px solid rgba(255,255,255,.08);padding-top:18px}
 body.light .us-card .pr{border-top-color:rgba(0,0,0,.08)}
@@ -693,7 +695,7 @@ body.light .tbl td{border-top-color:rgba(0,0,0,.08)}
 
   .us-grid{grid-template-columns:1fr}
   .us-card{padding:36px 26px;min-height:0}
-  .us-card h3{font-size:30px}
+  .us-card h2,.us-card h3{font-size:30px}
   .uvuceno{padding-left:16px;padding-right:16px}
   .ph{padding:calc(110px + env(safe-area-inset-top)) 16px 40px}
   .crumbs{margin-bottom:22px;gap:10px;font-size:9px;letter-spacing:2px}

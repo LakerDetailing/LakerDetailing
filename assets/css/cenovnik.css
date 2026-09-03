@@ -101,8 +101,8 @@ body.light td.prc-on,body.light th.prc-on{background:rgba(255,42,42,.07)}
 .cfg{display:grid;grid-template-columns:1.2fr 1fr;gap:2px;margin-top:50px;align-items:start}
 .cfg-l{background:var(--d2);padding:52px 44px;display:flex;flex-direction:column;gap:40px;min-width:0}
 .cfg-r{background:var(--d3);padding:52px 44px;position:sticky;top:170px;align-self:start;display:flex;flex-direction:column;gap:20px;min-width:0}
-.cfg h4{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:16px;display:flex;gap:12px;align-items:center}
-.cfg h4 i{font-style:normal;font-family:var(--serif);font-size:22px;color:var(--gold)}
+.cfg h3{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.cfg h3 i{font-style:normal;font-family:var(--serif);font-size:22px;color:var(--gold)}
 .cfg .pom{font-size:12px;color:var(--gray);font-weight:300;line-height:1.6;margin-top:10px}
 
 .sel,.pretraga{width:100%;background:var(--d1);border:1px solid rgba(255,255,255,.12);color:var(--white);
