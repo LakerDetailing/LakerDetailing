@@ -634,8 +634,7 @@ nove strane dugo nisu stigle do Binga — pingovan je samo koren sajta. Za svaku
 dira više strana ide bulk POST:
 
 ```bash
-curl -s -o /dev/null -w "HTTP %{http_code}
-" -X POST https://api.indexnow.org/indexnow -H "Content-Type: application/json; charset=utf-8" -d '{"host":"www.lakerdetailing.rs","key":"2e68d4c0350193ca6d78089e4129f608","keyLocation":"https://www.lakerdetailing.rs/2e68d4c0350193ca6d78089e4129f608.txt","urlList":["https://www.lakerdetailing.rs/","https://www.lakerdetailing.rs/usluge","https://www.lakerdetailing.rs/cenovnik","https://www.lakerdetailing.rs/premium-pranje","https://www.lakerdetailing.rs/detailing-auta","https://www.lakerdetailing.rs/poliranje-laka","https://www.lakerdetailing.rs/keramicka-zastita","https://www.lakerdetailing.rs/poliranje-farova"]}'
+curl -s -o /dev/null -w "HTTP %{http_code}\n" -X POST https://api.indexnow.org/indexnow -H "Content-Type: application/json; charset=utf-8" -d '{"host":"www.lakerdetailing.rs","key":"2e68d4c0350193ca6d78089e4129f608","keyLocation":"https://www.lakerdetailing.rs/2e68d4c0350193ca6d78089e4129f608.txt","urlList":["https://www.lakerdetailing.rs/","https://www.lakerdetailing.rs/usluge","https://www.lakerdetailing.rs/cenovnik","https://www.lakerdetailing.rs/premium-pranje","https://www.lakerdetailing.rs/detailing-auta","https://www.lakerdetailing.rs/poliranje-laka","https://www.lakerdetailing.rs/keramicka-zastita","https://www.lakerdetailing.rs/poliranje-farova"]}'
 ```
 
 `HTTP 200` = primljeno (odgovor je prazan, to je normalno). Provera da je stiglo:
@@ -665,7 +664,17 @@ Broji **znakove, ne bajtove** — `wc -m` u Git Bash-u naša slova (č, ć, š, 
 kao dva i daje naduvan rezultat. Meri Python-om:
 
 ```bash
-PYTHONIOENCODING=utf-8 python -c "import re,io,glob;[print('%-24s t=%3d d=%3d'%(f,len(re.search('<title>(.*?)</title>',io.open(f,encoding='utf-8').read(),re.S).group(1)),len(re.search('<meta name=\"description\" content=\"(.*?)\">',io.open(f,encoding='utf-8').read(),re.S).group(1)))) for f in sorted(glob.glob('*.html')) if '<title>' in io.open(f,encoding='utf-8').read()]"
+PYTHONIOENCODING=utf-8 python - <<'EOF'
+import re, io, glob
+for f in sorted(glob.glob('*.html')):
+    s = io.open(f, encoding='utf-8').read()
+    t = re.search(r'<title>(.*?)</title>', s, re.S)
+    d = re.search(r'<meta name="description" content="(.*?)">', s, re.S)
+    if not t or not d: continue          # offline/radovi/admin nemaju description
+    tl, dl = len(t.group(1)), len(d.group(1))
+    flag = ('  <-- TITLE' if tl > 65 else '') + ('  <-- DESC' if dl > 160 else '')
+    print('%-24s title=%3d desc=%3d%s' % (f, tl, dl, flag))
+EOF
 ```
 
 Stanje od 2026-09-03 (verzija 69): svih 8 strana je ispod oba limita. Sa naslova strana
