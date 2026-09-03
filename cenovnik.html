@@ -35,9 +35,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300i-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
-<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903b">
-<link rel="stylesheet" href="/assets/css/laker.css?v=20260903b">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903b">
+<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903c">
+<link rel="stylesheet" href="/assets/css/laker.css?v=20260903c">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903c">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -196,8 +196,9 @@
 
 <!-- ══ BIRAČ VELIČINE — menja SVE cene na strani ══
      Dugmad su .tb (JS i ot() ih traže po toj klasi) + .szp za izgled ovog birača.
-     Vlasnik 2026-09-03: bilo je presitno i nejasno — sada su četiri jednake
-     kartice sa imenom i dva poznata modela, a ispod stoji puni opis izabrane. -->
+     Vlasnik 2026-09-03: nigde se više ne pišu segmenti ni metri — ispod imena
+     kategorije stoje tri poznata auta u čipovima (.szm). Isti primeri moraju da
+     stoje i na 5 strana usluga, u napomeni ispod tabela i u ručnom biraču. -->
 <div class="szbar">
   <div class="ctn">
     <div class="sz-head">
@@ -205,12 +206,11 @@
       <span class="sz-note">Cene na celoj strani se menjaju</span>
     </div>
     <div class="tabs szpick" id="szTabs" role="tablist" aria-label="Veličina vozila">
-      <button type="button" class="tb szp on" data-sz="0" role="tab" aria-selected="true"><b>Mali</b><i>Polo, Clio</i></button>
-      <button type="button" class="tb szp" data-sz="1" role="tab" aria-selected="false"><b>Srednji</b><i>Golf, Juke</i></button>
-      <button type="button" class="tb szp" data-sz="2" role="tab" aria-selected="false"><b>Veliki</b><i>Passat, RAV4</i></button>
-      <button type="button" class="tb szp" data-sz="3" role="tab" aria-selected="false"><b>Ekstra</b><i>X5, kombi</i></button>
+      <button type="button" class="tb szp on" data-sz="0" role="tab" aria-selected="true"><b>Mali</b><span class="szm"><span>Polo</span><span>Clio</span><span>Punto</span></span></button>
+      <button type="button" class="tb szp" data-sz="1" role="tab" aria-selected="false"><b>Srednji</b><span class="szm"><span>Golf</span><span>Astra</span><span>Juke</span></span></button>
+      <button type="button" class="tb szp" data-sz="2" role="tab" aria-selected="false"><b>Veliki</b><span class="szm"><span>Passat</span><span>C klasa</span><span>Tiguan</span></span></button>
+      <button type="button" class="tb szp" data-sz="3" role="tab" aria-selected="false"><b>Ekstra</b><span class="szm"><span>X5</span><span>Touareg</span><span>kombi</span></span></button>
     </div>
-    <span class="szhint" id="szHint">A i B klasa · Polo, Fabia, Clio, Fiesta</span>
   </div>
 </div>
 
@@ -380,7 +380,7 @@
         <div class="loy-card-glow"></div>
         <span class="loy-rec-badge">Laker Loyalty</span>
         <div class="loy-card-name">Uvek <em>sređen</em></div>
-        <div class="loy-card-sub" id="loy-veh-sub">A klasa · C klasa · Hatchback · Sedan</div>
+        <div class="loy-card-sub" id="loy-veh-sub">Polo · Clio · Golf · Astra</div>
         <div class="loy-bill-toggle" style="margin-bottom:24px;width:fit-content">
           <button class="loy-bill-btn on" type="button" id="bill-god" data-click="selectLoyBill:god">Godišnje <span class="loy-bill-save-tag" id="bill-god-tag">−29%</span></button>
           <button class="loy-bill-btn" type="button" id="bill-mes" data-click="selectLoyBill:mes">Mesečno</button>
@@ -436,8 +436,8 @@
       <div class="prc-note">
         <p>
           <strong>Kategorije vozila</strong><br>
-          Mali — A i B klasa &nbsp;|&nbsp; Srednji — C klasa i krosover do 4,35 m<br>
-          Veliki — D i E klasa, SUV od 4,35 do 4,65 m &nbsp;|&nbsp; Ekstra — SUV preko 4,65 m, kombi i pikap<br><br>
+          Mali — Polo, Clio, Punto &nbsp;|&nbsp; Srednji — Golf, Astra, Juke<br>
+          Veliki — Passat, C klasa, Tiguan &nbsp;|&nbsp; Ekstra — X5, Touareg, kombi i pikap<br><br>
           Sve četiri kolone su vidljive, istaknuta je ona koju ste izabrali gore.
         </p>
       </div>
@@ -530,10 +530,10 @@
               <option value="v">Kombi / van</option>
             </select>
             <select class="sel" id="cfgVelicina" aria-label="Veličina vozila">
-              <option value="0">Mali (A i B klasa)</option>
-              <option value="1">Srednji (C klasa, mali krosover)</option>
-              <option value="2">Veliki (D/E klasa, SUV)</option>
-              <option value="3">Ekstra (veliki SUV, kombi)</option>
+              <option value="0">Mali (Polo, Clio, Punto)</option>
+              <option value="1">Srednji (Golf, Astra, Juke)</option>
+              <option value="2">Veliki (Passat, C klasa, Tiguan)</option>
+              <option value="3">Ekstra (X5, Touareg, kombi)</option>
             </select>
           </div>
         </div>
@@ -620,7 +620,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>69</b> · 2026-09-03</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>70</b> · 2026-09-03</span>
   </div>
 </footer>
 
@@ -757,10 +757,10 @@
             <p class="loy-lbl" style="margin-bottom:10px">Veličina vozila *</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Veličina vozila">
               <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms" class="loy-pick-btn active">
-                Mali / Srednji<span class="loy-pick-sub">A, B i C klasa · mali krosover</span>
+                Mali / Srednji<span class="loy-pick-sub">Polo, Clio, Golf, Astra, Juke</span>
               </button>
               <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs" class="loy-pick-btn">
-                Veliki / SUV<span class="loy-pick-sub">D i E klasa · SUV · kombi</span>
+                Veliki / SUV<span class="loy-pick-sub">Passat, C klasa, Tiguan, X5, kombi</span>
               </button>
             </div>
             <input type="hidden" id="lreg-size" value="ms">
@@ -832,11 +832,11 @@
   </div>
 </div>
 
-<script src="/assets/js/laker-ui.js?v=20260903b" defer></script>
-<script src="/main.min.js?v=20260903b" defer></script>
-<script src="/assets/js/auti.js?v=20260903b" defer></script>
-<script src="/assets/js/cenovnik.js?v=20260903b" defer></script>
-<script src="/init.js?v=20260903b" defer></script>
+<script src="/assets/js/laker-ui.js?v=20260903c" defer></script>
+<script src="/main.min.js?v=20260903c" defer></script>
+<script src="/assets/js/auti.js?v=20260903c" defer></script>
+<script src="/assets/js/cenovnik.js?v=20260903c" defer></script>
+<script src="/init.js?v=20260903c" defer></script>
 <script src="/assets/js/mera.js?v=4" defer></script>
 </body>
 </html>

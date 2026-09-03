@@ -11,6 +11,10 @@
 //
 //   Obična vozila idu po evropskom segmentu:
 //     A i B segment → 0 · C segment → 1 · D, E i F segment → 2
+//     IZUZETAK (vlasnik 2026-09-03): limuzina duža od 5 m ide u 3, jer je to
+//     posao kao veliki džip. Pogađa samo S klasu, A8, BMW Seriju 7, Phaeton,
+//     Jaguar XJ, Panameru i Lexus LS. E klasa, A6, Serija 5, Insignia, Superb
+//     i Passat su ispod 5 m i OSTAJU 2 — ne dirati.
 //     Kompaktni MPV sa 5 sedišta ostaje 1 (Scenic, C-Max, Meriva, B klasa),
 //     MPV sa 7 sedišta je 3 (Zafira, Touran, Sharan, Galaxy, Grand Scenic).
 //
@@ -240,7 +244,7 @@ window.LAKER_AUTI = {
   ],
   [
    "A8",
-   2,
+   3,
    "l",
    null
   ],
@@ -416,7 +420,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Serija 7",
-   2,
+   3,
    "l",
    null
   ],
@@ -1316,7 +1320,7 @@ window.LAKER_AUTI = {
   ],
   [
    "XJ",
-   2,
+   3,
    "l",
    null
   ],
@@ -1578,7 +1582,7 @@ window.LAKER_AUTI = {
   ],
   [
    "LS",
-   2,
+   3,
    "l",
    null
   ],
@@ -1812,25 +1816,25 @@ window.LAKER_AUTI = {
   ],
   [
    "S klasa W220",
-   2,
+   3,
    "l",
    null
   ],
   [
    "S klasa W221",
-   2,
+   3,
    "l",
    null
   ],
   [
    "S klasa W222",
-   2,
+   3,
    "l",
    null
   ],
   [
    "S klasa W223",
-   2,
+   3,
    "l",
    null
   ],
@@ -2412,7 +2416,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Panamera",
-   2,
+   3,
    "l",
    null
   ],
@@ -3124,7 +3128,7 @@ window.LAKER_AUTI = {
   ],
   [
    "Phaeton",
-   2,
+   3,
    "l",
    null
   ],

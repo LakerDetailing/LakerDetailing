@@ -467,8 +467,8 @@ function _updateRegPrices(){
 var _loyBill = 'god';   // 'god' | 'mes'
 var _loyVeh  = 'ms';    // 'ms'  | 'vs'
 var LOY_TABLE = {
-  ms: { mes:35, god:299, save:29, sub:'A klasa · C klasa · Hatchback · Sedan' },
-  vs: { mes:40, god:349, save:27, sub:'E klasa · SUV · Van · Karavan' }
+  ms: { mes:35, god:299, save:29, sub:'Polo · Clio · Golf · Astra' },
+  vs: { mes:40, god:349, save:27, sub:'Passat · Tiguan · X5 · kombi' }
 };
 function selectLoyBill(b){ _loyBill = b; renderLoySection(); }
 function selectLoyVeh(v){ _loyVeh = v; renderLoySection(); }

@@ -10,18 +10,13 @@
   'use strict';
 
   var KAT = ['Mali', 'Srednji', 'Veliki', 'Ekstra'];
-  var KAT_PUN = ['Mali · A i B klasa', 'Srednji · C klasa i mali krosover',
-                 'Veliki · D i E klasa i SUV', 'Ekstra · veliki SUV, kombi i pikap'];
-  // Red ispod dugmadi (#szHint). SUV i krosover idu po DUŽINI — pravilo je u
-  // zaglavlju assets/js/auti.js; ovde stoji skraćeno da čovek odmah vidi gde
-  // mu pada auto. Držati kratko: red se prelama najviše u dva reda na telefonu,
-  // inače lepljiva traka poskakuje pri promeni veličine.
-  var HINT = [
-    'A i B klasa · Polo, Fabia, Clio, Fiesta',
-    'C klasa i krosover do 4,35 m · Golf, Octavia, Juke',
-    'D i E klasa i SUV 4,35–4,65 m · Passat, Tiguan, RAV4',
-    'SUV preko 4,65 m, kombi i pikap · Kodiaq, X5'
-  ];
+  // Opis kategorije — ide ispod prepoznatog auta i u WhatsApp poruku.
+  // Segmenti i metri se NIGDE ne pišu (odluka vlasnika 2026-09-03): kupcu se
+  // kaže poznat auto, a pravilo po kome se razvrstava stoji u auti.js.
+  // Opis mora da ima smisla uz SVAKU karoseriju — ispod auta stoji kao
+  // „opis · limuzina · crna", pa „veliki džip" uz limuzinu ispada besmisleno.
+  var KAT_PUN = ['Mali · kao Polo ili Clio', 'Srednji · kao Golf ili Astra',
+                 'Veliki · kao Passat ili Tiguan', 'Ekstra · najveća vozila'];
 
   // ── USLUGE — iste cene kao u tabelama iznad (vidi CLAUDE.md, sekcija cene) ──
   var USLUGE = [
@@ -167,9 +162,6 @@
         dugmad[d].setAttribute('aria-selected', on ? 'true' : 'false');
       }
     }
-    var hint = $('szHint');
-    if (hint) hint.textContent = HINT[i];
-
     // paketi
     var paketi = document.querySelectorAll('.pk[data-cene]');
     for (var p = 0; p < paketi.length; p++) {

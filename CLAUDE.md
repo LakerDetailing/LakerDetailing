@@ -106,13 +106,22 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Izgled birača preuređen 2026-09-03** (vlasnik: „baš je sitno, ne vidi se lepo"). Naslov je u
   svom redu, dugmad su mreža od četiri jednake kolone preko cele širine, tekst je normalnim slovima
   (bez `text-transform:uppercase` i `letter-spacing`, koji su reč širili trostruko i terali font na
-  7,3–8 px), u svakom dugmetu stoje i dva poznata modela (`<b>` ime, `<i>` primeri), a ispod je
-  `#szHint` sa punim opisom izabrane veličine. Pravila su `.szbar .szp*` u
+  7,3–8 px). **Doradjeno istog dana: u dugmetu su tri poznata auta u čipovima (`.szm`), a red
+  `#szHint` je obrisan** — segmenti i metri se NE pišu nigde na sajtu (vlasnik: „ne mogu da mešam
+  C klasu, to niko ne razume"). Na telefonu (`≤768px`) čipovi gube okvir i idu jedan ispod drugog,
+  a na `≤480px` se **drugi po redu krije** (`nth-child(2)`), pa ostaju parovi Polo/Punto,
+  Golf/Juke, Passat/Tiguan, X5/kombi — zato redosled u HTML-u nije proizvoljan. Pravila su `.szbar .szp*` u
   [assets/css/cenovnik.css](assets/css/cenovnik.css). **Dugme mora zadržati klasu `.tb`** — po njoj
   ga traže `cenovnik.js` i `ot()`; `.szp` je samo za izgled. Tekstovi u `HINT` moraju stati u JEDAN
   red na 320 px (~52 znaka), inače lepljiva traka poskoči pri promeni veličine. Boja teksta na
   izabranom dugmetu je tvrdo `#0B0B0B`, ne `var(--black)` — u svetloj temi je `--black` svetlo bež,
   pa bi na crvenom ispao na 3,3:1 kontrasta.
+- **Primeri auta stoje na 6 mesta i moraju biti IDENTIČNI**: čipovi u biraču, napomena ispod
+  tabela (`.prc-note`), `#cfgVelicina` u kalkulatoru, Loyalty kartica (`#loy-veh-sub` u
+  [main.js](main.js) i `.loy-pick-sub`) i spisak cena na svih 5 strana usluga. Tekst je:
+  **Mali (Polo, Clio, Punto) · Srednji (Golf, Astra, Juke) · Veliki (Passat, C klasa, Tiguan) ·
+  Ekstra (X5, Touareg, kombi)**. `KAT_PUN` u cenovnik.js nosi opis („kao Golf ili Astra"), koji
+  mora imati smisla uz svaku karoseriju — stoji kao „opis · limuzina · crna".
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
@@ -592,7 +601,10 @@ to je druga stvar i ostaje.
 **Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
 D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,
 T-Cross, 2008, Duster, Mokka), 4,35–4,65 m → Veliki (Tiguan, Qashqai, Sportage, RAV4, Karoq, Kuga, 3008), preko 4,65 m →
-Ekstra (Kodiaq, X5, Touareg, Santa Fe, Range Rover). Kombi, putnički van i pikap su uvek Ekstra. Time je 104 modela promenilo
+Ekstra (Kodiaq, X5, Touareg, Santa Fe, Range Rover). Kombi, putnički van i pikap su uvek Ekstra. **Limuzina duža od 5 m je Ekstra**
+(dodato 2026-09-03 na zahtev vlasnika — S klasa, A8, BMW Serija 7, Phaeton, Jaguar XJ, Panamera,
+Lexus LS; E klasa, A6, Serija 5, Insignia, Superb i Passat su ispod 5 m i OSTAJU Veliki, vlasnik je
+izričito odbio da ih diže). Time je 104 modela promenilo
 kategoriju — pre toga je SVAKI SUV bio Ekstra, pa su Juke i GLS plaćali isto. Pravilo stoji i u zaglavlju
 [assets/js/auti.js](assets/js/auti.js). **Oznake kategorija na svih 6 strana prate to pravilo** („Ekstra (veliki SUV, kombi)",
 ne više „Ekstra (SUV / Van)") — ako se pravilo menja, menjaju se i one, i `KAT_PUN`/`HINT` u cenovnik.js.

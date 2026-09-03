@@ -19,9 +19,10 @@
      · dugmad su mreža od četiri JEDNAKE kolone preko cele širine,
      · tekst je normalnim slovima (bez uppercase i letter-spacinga koji su
        trostruko širili reč i terali da se font smanjuje),
-     · u svakom dugmetu stoje i dva poznata modela, da čovek prepozna svoj auto
-       bez razmišljanja o klasama,
-     · ispod stoji puni opis izabrane veličine (#szHint puni cenovnik.js).
+     · u svakom dugmetu stoje TRI poznata auta u čipovima (.szm), da čovek
+       prepozna svoj bez razmišljanja o klasama; segmenti i metri se ne pišu
+       nigde na sajtu (odluka vlasnika 2026-09-03),
+     · reda sa opisom (#szHint) više nema — čipovi ga zamenjuju.
    Kad se menja: dugme mora zadržati klasu .tb (traže je cenovnik.js i ot()). */
 .szbar{position:sticky;top:calc(68px + env(safe-area-inset-top));z-index:900;
   background:rgba(8,8,8,.97);border-top:1px solid rgba(255,255,255,.06);
@@ -36,12 +37,17 @@ body.light .szbar{background:rgba(244,242,238,.97);border-top-color:rgba(0,0,0,.
 
 /* mreža dugmadi — uvek četiri jednake kolone */
 .szbar .tabs.szpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:0}
-.szbar .szp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  padding:10px 8px;background:var(--d2);border:1px solid rgba(255,255,255,.07);
+.szbar .szp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  padding:10px 6px 9px;background:var(--d2);border:1px solid rgba(255,255,255,.07);
   text-transform:none;letter-spacing:0;font-size:inherit;transition:background .25s,border-color .25s,color .25s}
 body.light .szbar .szp{border-color:rgba(0,0,0,.09)}
-.szbar .szp b{font-size:16px;font-weight:600;letter-spacing:.2px;color:var(--white);line-height:1.15}
-.szbar .szp i{font-size:11.5px;font-style:normal;font-weight:300;color:var(--gray);line-height:1.2;white-space:nowrap}
+.szbar .szp b{font-size:15.5px;font-weight:600;letter-spacing:.2px;color:var(--white);line-height:1}
+/* Čipovi sa poznatim autima. Na telefonu se okvir čipa gubi i imena idu jedno
+   ispod drugog — sa okvirima bi lepljiva traka pojela pola ekrana. */
+.szbar .szm{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.szbar .szm span{font-size:10px;font-weight:400;color:var(--gray);border:1px solid rgba(255,255,255,.09);
+  padding:3px 7px;border-radius:999px;line-height:1.1;white-space:nowrap;transition:color .25s,border-color .25s}
+body.light .szbar .szm span{border-color:rgba(0,0,0,.12)}
 .szbar .szp:hover{background:var(--d3);border-color:rgba(255,42,42,.35)}
 .szbar .szp:hover b{color:var(--white)}
 /* Izabrano dugme: tekst je namerno TVRDO taman, ne var(--black) — u svetloj
@@ -51,10 +57,7 @@ body.light .szbar .szp{border-color:rgba(0,0,0,.09)}
 .szbar .szp.on{background:var(--gold);border-color:var(--gold)}
 body.light .szbar .szp.on{border-color:var(--gold)}
 .szbar .szp.on b{color:#0B0B0B}
-.szbar .szp.on i{color:rgba(0,0,0,.72)}
-
-/* puni opis izabrane veličine */
-.szhint{display:block;margin-top:8px;font-size:12.5px;color:var(--gray);font-weight:300;line-height:1.5}
+.szbar .szp.on .szm span{color:rgba(0,0,0,.78);border-color:rgba(0,0,0,.25)}
 
 .pk-napomena{font-size:13px;color:var(--gray);max-width:340px;text-align:right;font-weight:300;line-height:1.75}
 
@@ -172,8 +175,8 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
   .szbar .ctn{padding:0 30px}
 }
 @media(max-width:860px){
-  .szbar .szp b{font-size:15px}
-  .szbar .szp i{font-size:10.5px}
+  .szbar .szp b{font-size:14.5px}
+  .szbar .szm span{font-size:9.5px;padding:2px 6px}
 }
 @media(max-width:768px){
   .pk-napomena{text-align:left;max-width:none}
@@ -185,10 +188,17 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
      pasusu iznad, a lepljiva traka bi dobila ceo red više visine. */
   .sz-note{display:none}
   .szbar .tabs.szpick{gap:5px}
-  .szbar .szp{padding:9px 3px;gap:2px}
+  .szbar .szp{padding:9px 3px 8px;gap:4px}
   .szbar .szp b{font-size:14px}
-  .szbar .szp i{font-size:9.5px}
-  .szhint{margin-top:8px;font-size:11.5px}
+  /* bez okvira i jedno ispod drugog — traka ostaje niska */
+  .szbar .szm{flex-direction:column;gap:1px}
+  .szbar .szm span{font-size:9.5px;padding:0;border:0;color:var(--gray)}
+  .szbar .szp.on .szm span{border:0}
+  /* Na telefonu se srednji auto krije — ostaju dva po kategoriji (Polo/Punto,
+     Golf/Juke, Passat/Tiguan, X5/kombi), pa lepljiva traka ne pojede ekran.
+     Zato redosled u HTML-u NIJE proizvoljan: drugi po redu je onaj koji sme
+     da otpadne. */
+  .szbar .szm span:nth-child(2){display:none}
   .cfg-l,.cfg-r{padding:36px 24px}
   .cfg{margin-top:34px}
   .row2{grid-template-columns:1fr}
@@ -205,7 +215,7 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
   .szbar{top:calc(60px + env(safe-area-inset-top))}
   .szbar .ctn{padding:0 12px}
   .szbar .szp b{font-size:13px}
-  .szbar .szp i{font-size:8.8px}
+  .szbar .szm span{font-size:9px}
 }
 @media(max-width:390px){
   .szbar{top:calc(58px + env(safe-area-inset-top))}
@@ -213,7 +223,7 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
      napomena ne prelama na pola reči. */
   .sz-head{flex-direction:column;gap:2px}
   .szbar .szp b{font-size:12.5px}
-  .szbar .szp i{font-size:8.3px}
+  .szbar .szm span{font-size:8.8px}
 }
 
 
