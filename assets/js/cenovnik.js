@@ -15,8 +15,8 @@
   // kaže poznat auto, a pravilo po kome se razvrstava stoji u auti.js.
   // Opis mora da ima smisla uz SVAKU karoseriju — ispod auta stoji kao
   // „opis · limuzina · crna", pa „veliki džip" uz limuzinu ispada besmisleno.
-  var KAT_PUN = ['Mali · kao Polo ili Clio', 'Srednji · kao Golf ili Astra',
-                 'Veliki · kao Passat ili Tiguan', 'Ekstra · najveća vozila'];
+  var KAT_PUN = ['Mali · kao Polo ili Up', 'Srednji · kao Golf ili Serija 1',
+                 'Veliki · kao Passat ili C klasa', 'Ekstra · najveća vozila'];
 
   // ── USLUGE — iste cene kao u tabelama iznad (vidi CLAUDE.md, sekcija cene) ──
   var USLUGE = [

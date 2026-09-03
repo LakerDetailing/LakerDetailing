@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'laker-pwa-v70';
+const CACHE_VERSION = 'laker-pwa-v71';
 const SHELL_CACHE = `shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `runtime-${CACHE_VERSION}`;
 
