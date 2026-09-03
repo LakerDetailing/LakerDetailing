@@ -409,7 +409,7 @@ Cron poziv prolazi i bez ključa (zaglavlje `x-vercel-cron`) **samo** kad `CRON_
 - Sirovi događaji stariji od **120 dana** se brišu posle svakog uspešnog mejla (`ocisti()`).
 - Proba izgleda mejla bez slanja: `node tools-izvestaj-proba.js` → `proba-izvestaj.html`. Ne deployuje se.
 - Nove sekcije na sajtu se mere same (`section[id]`, `.usl-block[id]`, `.usl-aside[id]`), ali im treba **ime na srpskom** u `IME_SEKCIJE` u [api/_izvestaj-mejl.js](api/_izvestaj-mejl.js), inače se u mejlu vidi goli id. Nova strana → `IME_STRANE` u istom fajlu + regex `STRANE` u `mera.js`.
-- Mejl sa primerom (`node tools-izvestaj-proba.js`) je ~87 KB; **Gmail seče preko ~102 KB** — ne dodavati sekcije bez ograničenja spiskova.
+- Mejl sa primerom (`node tools-izvestaj-proba.js`) je ~67 KB; **Gmail seče preko ~102 KB** — ne dodavati sekcije bez ograničenja spiskova.
 - Novo dugme se meri ako mu se doda `data-click` iz spiska `VAZNI_DATA` u `assets/js/mera.js`; kontakt linkovi (`tel:`, `wa.me`, `mailto:`, Instagram) se hvataju sami.
 
 ---
@@ -533,7 +533,7 @@ Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analyti
 - `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u
 - Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
 - Google Search Console: sajt dodat, sitemap submitan
-- IndexNow (Bing/Edge): ključ u fajlu `2e68d4c0350193ca6d78089e4129f608.txt` u root-u. Posle većih izmena pingovati: `https://api.indexnow.org/indexnow?url=https://www.lakerdetailing.rs/&key=2e68d4c0350193ca6d78089e4129f608`
+- IndexNow (pokriva Bing, Edge, Yahoo, DuckDuckGo i ChatGPT pretragu): ključ u fajlu `2e68d4c0350193ca6d78089e4129f608.txt` u root-u. ⚠️ **GET oblik `?url=...&key=...` šalje SAMO taj jedan URL** — za izmenu koja dira više strana koristi bulk POST, vidi sekciju **Pretraživači — posle izmene sadržaja** na kraju fajla.
 - SEO (2026-07-12): JSON-LD FAQ mora biti identičan vidljivim FAQ pitanjima (trenutno 9) — pri izmeni FAQ sekcije ažurirati i JSON-LD! Schema tipovi: LocalBusiness+AutoBodyShop+AutoRepair+CarWash; 12 areaServed lokacija; 8 offera u OfferCatalog
 - `assets/pwa/` folder ne postoji u repo-u — koristi se isključivo `assets/icons/`
 - **QR Loyalty prijava** (`/loyalty-join`, dodato 2026-06-12): potpuno odvojen flow od loyalty sistema u index.html. Ručna forma radi odmah; Google/Apple dugmad se same pojave kad se podese env varijable (vidi SETUP-OAUTH.md). `/loyalty-join` ruta ima SVOJ CSP header u vercel.json (accounts.google.com + appleid) i COOP `same-origin-allow-popups` (globalni `same-origin` bi blokirao Google popup). Token verifikacija je isključivo server-side u `api/loyalty-join.js`.
@@ -587,7 +587,7 @@ usluga, zajedno sa klasom `body.ima-dock` i celim `.dock` blokom u [assets/css/l
 Nijedna strana usluga više nema traku na dnu. **Ne vraćati.** Početna i dalje ima plutajuće `.wa-stick` dugme —
 to je druga stvar i ostaje.
 
-**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 67 (2026-09-03).
+**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 69 (2026-09-03).
 
 **Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
 D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,

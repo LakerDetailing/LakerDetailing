@@ -314,54 +314,84 @@ function tabela(zaglavlja, redovi, poravnanja) {
 function sivo(t) { return '<span style="color:' + C.siva + ';font-size:13px">' + t + '</span>'; }
 function jako(t, boja) { return '<b style="color:' + (boja || C.crna) + '">' + t + '</b>'; }
 
-// ── Tabela dan po dan ─────────────────────────────────────
-function tabelaDana(poDanima) {
-  const redovi = poDanima.map(x => {
-    const d = new Date(x.dan + 'T12:00:00Z');
-    const kont = Number(x.kontakti) || 0;
-    const vrh = (x.vrhunac === null || x.vrhunac === undefined) ? '–' : x.vrhunac + 'h';
-    return [
-      '<b>' + DANI[d.getUTCDay()].slice(0, 3) + '</b> ' + sivo(d.getUTCDate() + '.' + (d.getUTCMonth() + 1) + '.'),
-      jako(x.posetioci || 0),
-      sivo(x.pregledi || 0),
-      kont ? jako(kont, C.zelena) : '<span style="color:' + C.bleda + '">–</span>',
-      sivo(x.vreme_sec ? vreme(x.vreme_sec) : '–'),
-      sivo(vrh)
-    ];
-  });
-  return tabela(['DAN', 'LJUDI', 'OTVARANJA', 'KONTAKTI', 'PO STRANI', 'NAJJAČI SAT'],
-                redovi, ['left', 'center', 'center', 'center', 'center', 'center']);
+// ── Prosti gradivni delovi (verzija za vlasnika, 2026-09-03) ──
+// Svaka sekcija: PITANJE kao naslov → ODGOVOR u jednoj rečenici → spisak.
+// Nema tabela sa više od 3 kolone — na telefonu se ne čitaju.
+
+function pitanje(tekst) {
+  return '<tr><td style="padding:30px 0 6px;font-family:' + FONT + ';font-size:20px;' +
+         'font-weight:800;color:' + C.crna + '">' + bez(tekst) + '</td></tr>';
 }
 
-// ── Tabela po stranama ────────────────────────────────────
-function tabelaStrana(strane) {
-  const redovi = strane.map(x => {
-    const kont = Number(x.kontakt_ljudi) || 0;
-    return [
-      jako(imeStrane(x.putanja)),
-      jako(x.ljudi || 0),
-      sivo(x.pregledi || 0),
-      sivo(x.vreme_sec ? vreme(x.vreme_sec) : '–'),
-      sivo(x.dubina ? x.dubina + '%' : '–'),
-      kont ? jako(kont, C.zelena) : '<span style="color:' + C.bleda + '">–</span>'
-    ];
-  });
-  return tabela(['STRANA', 'LJUDI', 'OTVARANJA', 'ZADRŽE SE', 'PROČITAJU', 'KONTAKT'],
-                redovi, ['left', 'center', 'center', 'center', 'center', 'center']);
+// Odgovor u rečenici — sme HTML (<b>).
+function odgovor(html) {
+  return '<tr><td style="padding:0 0 12px;font-family:' + FONT + ';font-size:15px;' +
+         'line-height:1.6;color:' + C.crna + '">' + html + '</td></tr>';
+}
+
+function sitno(html) {
+  return '<tr><td style="padding:6px 0 0;font-family:' + FONT + ';font-size:13px;' +
+         'line-height:1.55;color:' + C.siva + '">' + html + '</td></tr>';
+}
+
+// Red sa trakom: ime levo, broj desno, ispod trake opis sitnim slovima (opciono).
+function red(ime, broj, najveci, vrednost, boja, opis) {
+  const v = Number(vrednost === undefined ? broj : vrednost) || 0;
+  const p = najveci > 0 ? Math.max(3, Math.round((v / najveci) * 100)) : 3;
+  return '' +
+  '<tr><td style="padding:10px 0 3px;font-family:' + FONT + ';font-size:15px;color:' + C.crna + '">' +
+    bez(ime) + '<span style="float:right;font-weight:800">' + bez(broj) + '</span></td></tr>' +
+  '<tr><td style="padding:0">' +
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" ' +
+      'style="background:' + C.svetla + ';border-radius:5px"><tr>' +
+      '<td width="' + p + '%" style="background:' + (boja || C.crvena) + ';height:9px;' +
+        'font-size:0;line-height:0;border-radius:5px">&nbsp;</td>' +
+      '<td style="font-size:0;line-height:0">&nbsp;</td>' +
+    '</tr></table></td></tr>' +
+  (opis ? '<tr><td style="padding:3px 0 2px;font-family:' + FONT + ';font-size:12px;color:' + C.siva + '">' +
+          bez(opis) + '</td></tr>' : '');
+}
+
+function blok(redovi) {
+  return '<tr><td style="padding:0"><table role="presentation" width="100%" ' +
+         'cellpadding="0" cellspacing="0">' + redovi + '</table></td></tr>';
+}
+
+function prazno(tekst) {
+  return '<tr><td style="padding:10px 14px;background:' + C.svetla + ';border-radius:8px;' +
+         'font-family:' + FONT + ';font-size:14px;color:' + C.siva + '">' + bez(tekst) + '</td></tr>';
+}
+
+// „7 od 10" — svima jasno, za razliku od 68%.
+function odDeset(deo, celo) {
+  const a = Number(deo) || 0, b = Number(celo) || 0;
+  if (!b) return '0 od 10';
+  return Math.round((a / b) * 10) + ' od 10';
+}
+
+function spoj(lista) {
+  if (!lista.length) return '';
+  if (lista.length === 1) return lista[0];
+  return lista.slice(0, -1).join(', ') + ' i ' + lista[lista.length - 1];
 }
 
 // ══════════════════════════════════════════════════════════
 //  Glavno
 // ══════════════════════════════════════════════════════════
 function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
-  const o        = opcije || {};
-  const kontakti = Number(sada.kontakt_ljudi) || 0;
-  const kontPre  = Number(pre.kontakt_ljudi) || 0;
-  const ima      = Number(sada.posetioci) > 0;
-  const posetioci = Number(sada.posetioci) || 0;
+  const o          = opcije || {};
+  const posetioci  = Number(sada.posetioci) || 0;
+  const posPre     = Number(pre.posetioci) || 0;
+  const kontakti   = Number(sada.kontakt_ljudi) || 0;
+  const kontPre    = Number(pre.kontakt_ljudi) || 0;
+  const pregledi   = Number(sada.pregledi) || 0;
+  const ima        = posetioci > 0;
   const vremePosete = Number(sada.vreme_posete) || Number(sada.vreme_sec) || 0;
   const vremePre    = Number(pre.vreme_posete)  || Number(pre.vreme_sec)  || 0;
-  const strane   = (sada.strane || []).slice();
+  const strane     = (sada.strane || []).slice().sort((a, b) => (b.ljudi || 0) - (a.ljudi || 0));
+  const kanali     = (sada.kanali || []);
+  const google     = (kanali.find(x => x.kanal === 'google') || {}).ljudi || 0;
+  const kraj       = new Date(doo.getTime() - 1);
 
   let h = '';
 
@@ -380,156 +410,187 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
 
   // ── Zaglavlje ──────────────────────────────────────────
   h += '<tr><td style="padding:0 0 2px;font-family:' + FONT + ';font-size:12px;' +
-       'letter-spacing:2px;color:' + C.crvena + ';font-weight:700">IZVEŠTAJ SA SAJTA</td></tr>' +
-       '<tr><td style="padding:0 0 4px;font-family:Georgia,serif;font-size:27px;color:' + C.crna + '">' +
-       'Kako je prošla nedelja</td></tr>' +
-       '<tr><td style="padding:0 0 20px;font-family:' + FONT + ';font-size:14px;color:' + C.siva + '">' +
-       'od ' + bez(datum(od)) + ' do ' + bez(datum(new Date(doo.getTime() - 1))) + '</td></tr>';
+       'letter-spacing:2px;color:' + C.crvena + ';font-weight:700">TVOJ SAJT OVE NEDELJE</td></tr>' +
+       '<tr><td style="padding:0 0 4px;font-family:Georgia,serif;font-size:28px;color:' + C.crna + '">' +
+       'Kako je prošlo</td></tr>' +
+       '<tr><td style="padding:0 0 18px;font-family:' + FONT + ';font-size:14px;color:' + C.siva + '">' +
+       'od ' + bez(datum(od)) + ' do ' + bez(datum(kraj)) +
+       (o.primer ? '' : ' · <b style="color:' + C.zelena + '">pravi brojevi, izmereni na sajtu</b>') + '</td></tr>';
 
-  // ── Rečenica na vrhu ───────────────────────────────────
-  let uvod;
+  // ── Priča u pet rečenica ───────────────────────────────
+  let prica;
   if (!ima) {
-    uvod = 'Ove nedelje sajt niko nije otvorio. Ako je merenje tek počelo, brojevi kreću da se skupljaju od sada.';
-  } else if (kontakti > 0) {
-    const p = procenat(kontakti, kontPre);
-    uvod = 'Sajt je videlo <b>' + ljudi(posetioci) + '</b>, a <b>' + ljudi(kontakti) +
-           '</b> je htelo da te kontaktira.' +
-           (p !== null && p > 0 ? ' To je bolje nego prošle nedelje.' :
-            p !== null && p < 0 ? ' To je slabije nego prošle nedelje.' : '');
+    prica = 'Ove nedelje sajt niko nije otvorio. Ako je merenje tek počelo, brojevi kreću da se skupljaju od sada.';
   } else {
-    uvod = 'Sajt je videlo <b>' + ljudi(posetioci) + '</b>, ali <b>niko</b> nije kliknuo ' +
-           'na WhatsApp, telefon ni mejl. Ljudi dolaze, ali se ne javljaju.';
+    const delovi = [];
+    delovi.push('Ove nedelje je tvoj sajt otvorilo <b>' + ljudi(posetioci) + '</b>' +
+      (posPre ? ' (prošle nedelje ' + posPre + ')' : '') + '.');
+    if (kontakti) {
+      delovi.push('Od njih je <b>' + ljudi(kontakti) + '</b> kliknulo na WhatsApp, telefon ili mejl — to su ljudi koji su hteli da te pitaju za auto.');
+    } else {
+      delovi.push('<b>Niko</b> od njih nije kliknuo na WhatsApp, telefon ni mejl.');
+    }
+    if (google && posetioci) delovi.push('<b>' + odDeset(google, posetioci) + '</b> je došlo tako što te je našlo na Googlu.');
+    const tel = (sada.uredjaji || []).find(x => x.uredjaj === 'telefon');
+    if (tel && posetioci) delovi.push('<b>' + odDeset(tel.ljudi, posetioci) + '</b> gleda sa telefona.');
+    if (vremePosete) delovi.push('Jedan čovek se u proseku zadrži <b>' + vreme(vremePosete) + '</b>.');
+    prica = delovi.join(' ');
   }
-
   h += '<tr><td style="padding:16px 18px;background:#FDF6F5;border-left:4px solid ' + C.crvena + ';' +
-       'border-radius:0 10px 10px 0;font-family:' + FONT + ';font-size:16px;line-height:1.65;' +
-       'color:' + C.crna + '">' + uvod + '</td></tr>';
+       'border-radius:0 10px 10px 0;font-family:' + FONT + ';font-size:16px;line-height:1.7;' +
+       'color:' + C.crna + '">' + prica + '</td></tr>';
 
   // ── Četiri glavna broja ────────────────────────────────
-  h += sekcija('Najvažnije', 'Četiri broja koja ti kažu kako sajt radi.');
-
-  h += karta(kontakti, 'Hteli su da te kontaktiraju',
-             'Toliko ljudi je kliknulo na WhatsApp, na tvoj broj telefona ili na mejl. Ovo je najvažniji broj — to su mogući poslovi.',
+  h += pitanje('Četiri najvažnija broja');
+  h += karta(kontakti, 'Hteli su da te pitaju za auto',
+             'Kliknuli su na WhatsApp, na broj telefona ili na mejl. Ovo je najvažniji broj — to su mogući poslovi.',
              poredjenje(kontakti, kontPre, ljudi(kontPre)), C.zelena);
-
-  h += karta(posetioci, 'Toliko ljudi je videlo sajt',
-             'Različiti ljudi, ne otvaranja. Ako isti čovek uđe tri puta istog dana, računa se kao jedan.',
-             poredjenje(posetioci, pre.posetioci, ljudi(pre.posetioci)));
-
-  h += karta(vremeKratko(vremePosete), 'Toliko minuta se zadrže na sajtu',
-             'Minuti i sekunde (' + vreme(vremePosete) + '). Prosek jedne posete kroz sve strane koje čovek otvori. Broji se samo dok je sajt zaista na ekranu.',
+  h += karta(posetioci, 'Ljudi je otvorilo sajt',
+             'Različiti ljudi. Ako isti čovek uđe tri puta istog dana, broji se jednom.',
+             poredjenje(posetioci, posPre, ljudi(posPre)));
+  h += karta(vremeKratko(vremePosete), 'Minuta se zadrže (min:sek)',
+             'Koliko jedan čovek u proseku gleda sajt, kroz sve strane koje otvori. Broji se samo dok mu je sajt na ekranu.',
              poredjenje(vremePosete, vremePre, vreme(vremePre)));
-
   const spp = Number(sada.strana_po_poseti) || 0;
-  h += karta(sada.pregledi || 0, 'Toliko puta je otvorena neka strana',
-             'Ukupan broj otvaranja svih strana.' + (spp ? ' U proseku jedan čovek pogleda ' +
-             String(spp).replace('.', ',') + ' strane po poseti.' : ''),
-             poredjenje(sada.pregledi, pre.pregledi, puta(pre.pregledi)));
+  h += karta(pregledi, 'Puta je otvorena neka strana',
+             'Sve strane zajedno.' + (spp ? ' Jedan čovek u proseku pogleda ' + String(spp).replace('.', ',') + ' strane.' : ''),
+             poredjenje(pregledi, pre.pregledi, puta(pre.pregledi)));
 
   // ── Dan po dan ─────────────────────────────────────────
-  h += sekcija('Svaki dan posebno',
-               '„Po strani" je koliko se prosečno zadrže na jednoj strani tog dana. „Najjači sat" je kad je bilo najviše otvaranja.');
-  h += (sada.po_danima || []).length ? tabelaDana(sada.po_danima) : nemaPodataka('Još nema podataka po danima.');
+  const dani = (sada.po_danima || []);
+  if (dani.length) {
+    const naj = dani.slice().sort((a, b) => b.posetioci - a.posetioci)[0];
+    const najD = new Date(naj.dan + 'T12:00:00Z');
+    h += pitanje('Koji dan je bio najjači?');
+    h += odgovor('Najviše ljudi je bilo u <b>' + DANI[najD.getUTCDay()] + ' ' + najD.getUTCDate() + '.' + (najD.getUTCMonth() + 1) +
+                 '.</b> — ' + ljudi(naj.posetioci) + (naj.kontakti ? ', od toga ' + kontakata(naj.kontakti) : '') + '.');
+    const max = Math.max.apply(null, dani.map(x => x.posetioci || 0));
+    let r = '';
+    for (const x of dani) {
+      const d = new Date(x.dan + 'T12:00:00Z');
+      const ime = DANI[d.getUTCDay()] + ' ' + d.getUTCDate() + '.' + (d.getUTCMonth() + 1) + '.';
+      const opis = [];
+      if (x.kontakti) opis.push(kontakata(x.kontakti));
+      if (x.vrhunac !== null && x.vrhunac !== undefined && x.posetioci > 1) opis.push('najviše oko ' + x.vrhunac + 'h');
+      r += red(ime, ljudi(x.posetioci || 0), max, x.posetioci, x.kontakti ? C.zelena : C.crvena, opis.join(' · '));
+    }
+    h += blok(r);
+    h += sitno('Zelena traka = tog dana je neko kliknuo na WhatsApp, telefon ili mejl.');
+  }
 
   // ── Strane ─────────────────────────────────────────────
-  h += sekcija('Koje strane gledaju',
-               '„Zadrže se" je prosečno vreme na toj strani. „Pročitaju" je dokle prosečno stignu niz stranu (100% = do dna). ' +
-               '„Kontakt" je koliko je ljudi baš sa te strane kliknulo WhatsApp, telefon ili mejl.');
   if (strane.length) {
-    h += tabelaStrana(strane);
-  } else h += nemaPodataka('Još nema podataka.');
+    h += pitanje('Koje strane su gledali?');
+    const top = strane[0];
+    const usluge = strane.filter(x => ['/', '/usluge', '/cenovnik', '/loyalty-join'].indexOf(x.putanja) < 0);
+    let odg = 'Najviše ih je gledalo <b>' + bez(imeStrane(top.putanja)) + '</b> (' + ljudi(top.ljudi) + ').';
+    const cen = strane.find(x => x.putanja === '/cenovnik');
+    if (cen) odg += ' Do <b>cenovnika</b> je stiglo ' + ljudi(cen.ljudi) + ' — ' + odDeset(cen.ljudi, posetioci) + '.';
+    if (usluge.length) {
+      const u = usluge[0];
+      odg += ' Od usluga ih najviše zanima <b>' + bez(imeStrane(u.putanja)) + '</b> (' + ljudi(u.ljudi) + ').';
+    }
+    h += odgovor(odg);
+    const max = Math.max.apply(null, strane.map(x => x.ljudi || 0));
+    let r = '';
+    for (const x of strane.slice(0, 10)) {
+      const opis = [];
+      if (x.vreme_sec) opis.push('zadrže se ' + vreme(x.vreme_sec));
+      if (x.dubina) opis.push('pročitaju ' + x.dubina + '% strane');
+      if (x.kontakt_ljudi) opis.push(ljudi(x.kontakt_ljudi) + ' kliknulo kontakt');
+      r += red(imeStrane(x.putanja), ljudi(x.ljudi || 0), max, x.ljudi, x.kontakt_ljudi ? C.zelena : C.braon, opis.join(' · '));
+    }
+    h += blok(r);
+    h += sitno('„Pročitaju 60% strane" znači da u proseku odskroluju do 60% dužine strane. 100% = stignu do dna.');
+  }
 
   // ── Ulazi i izlazi ─────────────────────────────────────
   const ulazi  = (sada.ulazi || []).filter(x => x.ljudi > 0);
   const izlazi = strane.filter(x => Number(x.izlazi) > 0).slice().sort((a, b) => b.izlazi - a.izlazi);
-  if (ulazi.length || izlazi.length) {
-    h += sekcija('Gde uđu, gde odu',
-                 'Prva strana koju čovek otvori (ulaz) i poslednja pre nego što zatvori sajt (izlaz). ' +
-                 'Ako mnogo ljudi izlazi sa neke strane usluge, tamo im nešto fali — cena, slika ili dugme.');
-    if (ulazi.length) {
-      h += podnaslov('Gde su ušli');
-      const naj = Math.max.apply(null, ulazi.map(x => x.ljudi));
-      let r = '';
-      for (const x of ulazi.slice(0, 8)) r += traka(imeStrane(x.putanja), ljudi(x.ljudi), naj, '', C.plava, x.ljudi);
-      h += trakeBloka(r);
-    }
+  if (ulazi.length) {
+    h += pitanje('Na koju stranu prvo uđu, a sa koje odu?');
+    const u = ulazi[0];
+    let odg = 'Skoro svi prvo uđu na <b>' + bez(imeStrane(u.putanja)) + '</b> (' + ljudi(u.ljudi) + ' od ' + posetioci + ').';
     if (izlazi.length) {
-      h += podnaslov('Odakle su otišli');
-      const naj = Math.max.apply(null, izlazi.map(x => x.izlazi));
-      let r = '';
-      for (const x of izlazi.slice(0, 8)) r += traka(imeStrane(x.putanja), ljudi(x.izlazi), naj, '', C.braon, x.izlazi);
-      h += trakeBloka(r);
+      const z = izlazi[0];
+      odg += ' Najčešće zatvore sajt dok gledaju <b>' + bez(imeStrane(z.putanja)) + '</b> (' + ljudi(z.izlazi) + ').';
     }
+    h += odgovor(odg);
+    const maxU = Math.max.apply(null, ulazi.map(x => x.ljudi));
+    let r = '';
+    for (const x of ulazi.slice(0, 6)) r += red('Ušli na: ' + imeStrane(x.putanja), ljudi(x.ljudi), maxU, x.ljudi, C.plava);
+    if (izlazi.length) {
+      const maxI = Math.max.apply(null, izlazi.map(x => x.izlazi));
+      for (const x of izlazi.slice(0, 6)) r += red('Otišli sa: ' + imeStrane(x.putanja), ljudi(x.izlazi), maxI, x.izlazi, C.bleda);
+    }
+    h += blok(r);
+    h += sitno('Ako mnogo ljudi odlazi sa neke strane usluge, tamo im nešto fali — cena, slika ili dugme za poziv.');
   }
 
   // ── Kuda idu dalje ─────────────────────────────────────
   const prelazi = (sada.prelazi || []);
   if (prelazi.length) {
-    h += sekcija('Kuda idu dalje',
-                 'Najčešći putevi kroz sajt — sa koje strane na koju su prelazili. Vidi se šta ih zanima posle prvog pogleda.');
-    const redovi = prelazi.slice(0, 12).map(x => [
-      bez(imeStrane(x.sa)) + ' <span style="color:' + C.crvena + '">→</span> ' + jako(imeStrane(x.na)),
-      jako(x.ljudi || 0),
-      sivo(x.puta || 0)
-    ]);
-    h += tabela(['SA STRANE → NA STRANU', 'LJUDI', 'PUTA'], redovi, ['left', 'center', 'center']);
+    h += pitanje('Kuda idu posle prve strane?');
+    const p = prelazi[0];
+    h += odgovor('Najčešći put je <b>' + bez(imeStrane(p.sa)) + ' → ' + bez(imeStrane(p.na)) + '</b> (' + ljudi(p.ljudi) + ').');
+    const max = Math.max.apply(null, prelazi.map(x => x.ljudi));
+    let r = '';
+    for (const x of prelazi.slice(0, 8)) {
+      r += red(imeStrane(x.sa) + ' → ' + imeStrane(x.na), ljudi(x.ljudi), max, x.ljudi, C.braon);
+    }
+    h += blok(r);
   }
 
   // ── Odakle dolaze ──────────────────────────────────────
-  h += sekcija('Odakle su došli',
-               'Kako su uopšte našli sajt. Gleda se samo prvo otvaranje — ko dođe sa Googla pa pređe na cenovnik, ostaje „sa Googla".');
-  if ((sada.kanali || []).length) {
-    const naj = Math.max.apply(null, sada.kanali.map(x => x.ljudi));
+  if (kanali.length) {
+    h += pitanje('Kako su našli sajt?');
+    const k = kanali[0];
+    let odg = 'Najviše ih dođe <b>' + bez((IME_KANALA[k.kanal] || k.kanal).toLowerCase()) + '</b> (' + ljudi(k.ljudi) + ').';
+    if (google && posetioci) odg += ' Google ti je doveo <b>' + odDeset(google, posetioci) + '</b> ljudi — to donosi tvoja pozicija na Googlu.';
+    h += odgovor(odg);
+    const max = Math.max.apply(null, kanali.map(x => x.ljudi));
     let r = '';
-    for (const x of sada.kanali) r += traka(IME_KANALA[x.kanal] || x.kanal, ljudi(x.ljudi), naj, '', C.crvena, x.ljudi);
-    h += trakeBloka(r);
-    const g = (sada.kanali.find(x => x.kanal === 'google') || {}).ljudi || 0;
-    if (posetioci) {
-      h += '<tr><td style="padding:8px 0 0;font-family:' + FONT + ';font-size:13px;color:' + C.siva + ';line-height:1.5">' +
-           'Sa Google pretrage je došlo <b>' + pct(g, posetioci) + '%</b> ljudi. To je ono što Google pozicija donosi.</td></tr>';
+    for (const x of kanali) r += red(IME_KANALA[x.kanal] || x.kanal, ljudi(x.ljudi), max, x.ljudi, C.crvena);
+    h += blok(r);
+    const izvori = (sada.izvori || []).filter(x => x.izvor && !/lakerdetailing/.test(x.izvor));
+    if (izvori.length) {
+      h += sitno('Tačno sa kojih sajtova: ' + bez(spoj(izvori.slice(0, 6).map(x => x.izvor + ' (' + x.ljudi + ')'))) + '.');
     }
-  } else h += nemaPodataka('Još nema podataka.');
-
-  const izvori = (sada.izvori || []).filter(x => x.izvor && !/lakerdetailing/.test(x.izvor));
-  if (izvori.length) {
-    h += podnaslov('Tačno sa kojih sajtova');
-    const redovi = izvori.slice(0, 8).map(x => [bez(x.izvor), jako(x.ljudi || 0)]);
-    h += tabela(['SAJT', 'LJUDI'], redovi, ['left', 'center']);
+    h += sitno('„Sami ukucali adresu" su i oni koji imaju sajt sačuvan, ili su kliknuli link iz poruke koja ne kaže odakle je.');
   }
 
   // ── Šta su kliktali ────────────────────────────────────
-  h += sekcija('Šta su kliktali',
-               'Zeleno su klikovi koji vode do posla — WhatsApp, telefon, mejl — i sa koje strane su ih kliknuli. Sivo je sve ostalo.');
+  h += pitanje('Na šta su kliktali?');
   const kps = (sada.kontakti_po_strani || []);
   if (kps.length) {
-    const naj = Math.max.apply(null, kps.map(x => x.klikova));
+    const ukupnoKlik = kps.reduce((s, x) => s + (x.klikova || 0), 0);
+    h += odgovor('Na WhatsApp, telefon ili mejl je kliknuto <b>' + puta(ukupnoKlik) + '</b>, ukupno ' + ljudi(kontakti) + '. Piše i sa koje strane su kliknuli.');
+    const max = Math.max.apply(null, kps.map(x => x.klikova));
     let r = '';
-    for (const x of kps.slice(0, 10)) {
-      // traka() escape-uje naziv i broj; HTML sme samo u sufiks.
-      r += traka(imeKlika(x.naziv) + ' — sa strane: ' + imeStrane(x.putanja), puta(x.klikova),
-                 naj, ' <span style="font-weight:400;color:' + C.siva + '">· ' + bez(ljudi(x.ljudi)) + '</span>',
-                 C.zelena, x.klikova);
+    for (const x of kps.slice(0, 8)) {
+      r += red(imeKlika(x.naziv), puta(x.klikova), max, x.klikova, C.zelena,
+               'sa strane: ' + imeStrane(x.putanja) + ' · ' + ljudi(x.ljudi));
     }
-    h += trakeBloka(r);
-  } else h += nemaPodataka('Niko nije kliknuo na WhatsApp, telefon ni mejl ove nedelje.');
-
+    h += blok(r);
+  } else {
+    h += odgovor('Ove nedelje <b>niko</b> nije kliknuo na WhatsApp, telefon ni mejl.');
+  }
   const ostali = (sada.ostali_klikovi || []);
   if (ostali.length) {
-    h += podnaslov('Ostali klikovi');
-    const naj = Math.max.apply(null, ostali.map(x => x.klikova));
+    h += sitno('<b>Ostalo što su kliktali:</b>');
+    const max = Math.max.apply(null, ostali.map(x => x.klikova));
     let r = '';
-    for (const x of ostali.slice(0, 14)) {
-      r += traka(imeKlika(x.naziv) + ' — sa strane: ' + imeStrane(x.putanja), puta(x.klikova), naj, '', C.bleda, x.klikova);
+    for (const x of ostali.slice(0, 10)) {
+      r += red(imeKlika(x.naziv), puta(x.klikova), max, x.klikova, C.bleda, 'sa strane: ' + imeStrane(x.putanja));
     }
-    h += trakeBloka(r);
+    h += blok(r);
   }
 
   // ── Dokle stižu — po strani ────────────────────────────
   const sekcije = (sada.sekcije || []).filter(x => x.od_ukupno > 0);
   if (sekcije.length) {
-    h += sekcija('Dokle su stigli niz svaku stranu',
-                 'Koliko od ljudi koji su otvorili tu stranu je stiglo do kog dela. Gde traka naglo padne — tu ih gubiš.');
-    // Grupiši po strani, redosled strana kao u tabeli strana (po broju otvaranja).
+    h += pitanje('Dokle stignu kad skroluju?');
+    h += odgovor('Za svaku stranu: od 10 ljudi koji je otvore, koliko ih stigne do kog dela. Gde broj naglo padne — tu prestanu da čitaju.');
     const redStrana = strane.map(x => x.putanja);
     const poStrani = {};
     for (const x of sekcije) (poStrani[x.putanja] = poStrani[x.putanja] || []).push(x);
@@ -537,106 +598,87 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
       const ia = redStrana.indexOf(a), ib = redStrana.indexOf(b);
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
     });
-    for (const p of putanje.slice(0, 9)) {
+    for (const p of putanje.slice(0, 8)) {
       const lista = poStrani[p].slice().sort((a, b) => b.sesija - a.sesija);
-      h += podnaslov(imeStrane(p) + ' — otvorena ' + puta(lista[0].od_ukupno));
+      h += '<tr><td style="padding:14px 0 2px;font-family:' + FONT + ';font-size:15px;font-weight:800;color:' + C.crna + '">' +
+           bez(imeStrane(p)) + ' <span style="font-weight:400;color:' + C.siva + '">— otvorena ' + puta(lista[0].od_ukupno) + '</span></td></tr>';
       let r = '';
-      for (const x of lista.slice(0, 12)) {
-        const procenat_ = pct(x.sesija, x.od_ukupno);
-        r += traka(IME_SEKCIJE[x.sekcija] || x.sekcija, procenat_,
-                   100, '<span style="font-weight:400;color:' + C.siva + '">%</span>', C.braon, procenat_);
+      for (const x of lista.slice(0, 10)) {
+        r += red(IME_SEKCIJE[x.sekcija] || x.sekcija, odDeset(x.sesija, x.od_ukupno), x.od_ukupno, x.sesija, C.braon);
       }
-      h += trakeBloka(r);
+      h += blok(r);
     }
   }
 
   // ── Uređaji, brauzeri ──────────────────────────────────
-  h += sekcija('Sa čega gledaju', 'Ako je skoro sve telefon, sajt mora prvo na telefonu da izgleda savršeno.');
-  if ((sada.uredjaji || []).length) {
-    const naj = Math.max.apply(null, sada.uredjaji.map(x => x.ljudi));
+  const uredjaji = (sada.uredjaji || []);
+  if (uredjaji.length) {
+    h += pitanje('Sa čega gledaju?');
+    const u = uredjaji[0];
+    h += odgovor('<b>' + odDeset(u.ljudi, posetioci) + '</b> gleda ' + bez((IME_UREDJAJA[u.uredjaj] || u.uredjaj).toLowerCase()) +
+                 '. Zato sajt prvo mora na telefonu da izgleda savršeno.');
+    const max = Math.max.apply(null, uredjaji.map(x => x.ljudi));
     let r = '';
-    for (const x of sada.uredjaji) r += traka(IME_UREDJAJA[x.uredjaj] || x.uredjaj, ljudi(x.ljudi), naj, '', C.siva2, x.ljudi);
-    h += trakeBloka(r);
-  } else h += nemaPodataka('Još nema podataka.');
-
-  if ((sada.brauzeri || []).length) {
-    h += podnaslov('Koji pregledač koriste');
-    const naj = Math.max.apply(null, sada.brauzeri.map(x => x.ljudi));
-    let r = '';
-    for (const x of sada.brauzeri) r += traka(x.brauzer === 'ostalo' ? 'Ostalo' : x.brauzer, ljudi(x.ljudi), naj, '', C.bleda, x.ljudi);
-    h += trakeBloka(r);
+    for (const x of uredjaji) r += red(IME_UREDJAJA[x.uredjaj] || x.uredjaj, ljudi(x.ljudi), max, x.ljudi, C.siva2);
+    h += blok(r);
+    const br = (sada.brauzeri || []);
+    if (br.length) h += sitno('Pregledač koji koriste: ' + bez(spoj(br.map(x => (x.brauzer === 'ostalo' ? 'ostalo' : x.brauzer) + ' (' + x.ljudi + ')'))) + '.');
   }
 
   // ── Gradovi i zemlje ───────────────────────────────────
-  h += sekcija('Iz kog su grada',
-               'Grad daje mreža preko koje su na internetu, pa mobilni internet često „vidi" kao Beograd i kad je čovek u Čačku. Uzmi sa rezervom.');
-  if ((sada.gradovi || []).length) {
-    const naj = Math.max.apply(null, sada.gradovi.map(x => x.ljudi));
+  const gradovi = (sada.gradovi || []);
+  if (gradovi.length) {
+    h += pitanje('Odakle su?');
+    const g = gradovi[0];
+    h += odgovor('Najviše ih „vidi" iz grada <b>' + bez(g.grad === 'nepoznato' ? 'Nepoznato' : g.grad) + '</b> (' + ljudi(g.ljudi) + ').');
+    const max = Math.max.apply(null, gradovi.map(x => x.ljudi));
     let r = '';
-    for (const x of sada.gradovi) {
-      r += traka(x.grad === 'nepoznato' ? 'Nepoznato' : x.grad, ljudi(x.ljudi), naj, '', C.siva2, x.ljudi);
-    }
-    h += trakeBloka(r);
-  } else h += nemaPodataka('Još nema podataka.');
-
-  const zemlje = (sada.zemlje || []).filter(x => x.zemlja && x.zemlja !== 'RS');
-  if (zemlje.length) {
-    const redovi = zemlje.map(x => [bez(IME_ZEMLJE[x.zemlja] || x.zemlja), jako(x.ljudi || 0)]);
-    h += podnaslov('Iz inostranstva');
-    h += tabela(['ZEMLJA', 'LJUDI'], redovi, ['left', 'center']);
+    for (const x of gradovi.slice(0, 8)) r += red(x.grad === 'nepoznato' ? 'Nepoznato' : x.grad, ljudi(x.ljudi), max, x.ljudi, C.siva2);
+    h += blok(r);
+    h += sitno('<b>Oprez:</b> grad daje mobilna mreža, ne čovek. Mobilni internet često prijavi Beograd i kad je čovek u Čačku. Zato ovo uzmi sa rezervom.');
+    const zemlje = (sada.zemlje || []).filter(x => x.zemlja && x.zemlja !== 'RS');
+    if (zemlje.length) h += sitno('Iz inostranstva: ' + bez(spoj(zemlje.map(x => (IME_ZEMLJE[x.zemlja] || x.zemlja) + ' (' + x.ljudi + ')'))) + '.');
   }
 
   // ── Istorija ───────────────────────────────────────────
   const nedelje = (dodatno.nedelje || []).filter(n => Number(n.posetioci) > 0);
   if (nedelje.length > 1) {
-    h += sekcija('Nedelja po nedelja', 'Da vidiš da li sajt raste ili stoji. Jedan red je jedna nedelja.');
-    const naj = Math.max.apply(null, nedelje.map(x => x.posetioci));
+    h += pitanje('Da li sajt raste?');
+    const a = nedelje[nedelje.length - 1], b = nedelje[nedelje.length - 2];
+    const p = procenat(a.posetioci, b.posetioci);
+    h += odgovor(p === null ? 'Još je rano da se kaže.' :
+                 p > 0 ? 'Da — ove nedelje je bilo <b>' + p + '% više</b> ljudi nego prošle.' :
+                 p < 0 ? 'Ove nedelje je bilo <b>' + Math.abs(p) + '% manje</b> ljudi nego prošle.' :
+                 'Isto kao prošle nedelje.');
+    const max = Math.max.apply(null, nedelje.map(x => x.posetioci));
     let r = '';
     for (const n of nedelje) {
-      const a = new Date(n.od + 'T12:00:00Z');
-      const b = new Date(a.getTime() + 6 * 24 * 60 * 60 * 1000);
-      const raspon = a.getUTCDate() + '.' + (a.getUTCMonth() + 1) + '. – ' +
-                     b.getUTCDate() + '.' + (b.getUTCMonth() + 1) + '.';
-      r += traka(raspon, ljudi(n.posetioci), naj,
-                 ' <span style="font-weight:400;color:' + C.siva + '">· ' +
-                 kontakata(n.kontakti || 0) + '</span>', C.crvena, n.posetioci);
+      const a1 = new Date(n.od + 'T12:00:00Z');
+      const b1 = new Date(a1.getTime() + 6 * 24 * 60 * 60 * 1000);
+      const raspon = a1.getUTCDate() + '.' + (a1.getUTCMonth() + 1) + '. – ' + b1.getUTCDate() + '.' + (b1.getUTCMonth() + 1) + '.';
+      r += red(raspon, ljudi(n.posetioci), max, n.posetioci, C.crvena, kontakata(n.kontakti || 0));
     }
-    h += trakeBloka(r);
+    h += blok(r);
   }
 
   // ── Šta ovo znači ──────────────────────────────────────
-  h += sekcija('Šta ti ovo govori', 'Kratko, na osnovu brojeva odozgo.');
-
+  h += pitanje('Šta da uradiš sa ovim?');
   const saveti = [];
   if (ima && kontakti === 0) {
-    saveti.push('Ljudi dolaze na sajt, ali niko se ne javlja. Vredi da dugme za WhatsApp bude vidljivije, više puta niz stranu.');
+    saveti.push('Ljudi dolaze, ali se niko ne javlja. Neka dugme za WhatsApp bude vidljivije, više puta niz stranu.');
   }
   if (ima) {
     const oo = Number(sada.odmah_otisli) || 0;
-    saveti.push('<b>' + oo + '%</b> ljudi ode za manje od 10 sekundi, bez ijednog klika i bez druge strane.' +
-      (oo > 70 ? ' To je visoko — znači da ih prvi ekran ne zadrži, tu je najveći dobitak ako se popravi.' : ''));
+    saveti.push('<b>' + odDeset(oo, 100) + '</b> ode za manje od 10 sekundi, bez ijednog klika.' +
+      (oo > 70 ? ' To je mnogo — prvi ekran ih ne zadrži. Tu je najveći dobitak.' : oo > 40 ? ' To je normalno za sajt sa Googla.' : ' To je dobro.'));
     const vs = Number(sada.vise_strana) || 0;
-    if (vs) saveti.push('<b>' + ljudi(vs) + '</b> je otvorilo više od jedne strane (' + pct(vs, posetioci) + '% svih). Toliko njih je stvarno razgledalo.');
+    if (vs) saveti.push('<b>' + ljudi(vs) + '</b> je otvorilo više od jedne strane — toliko ih je stvarno razgledalo.');
     const vr = Number(sada.vratili_se) || 0;
     if (vr) saveti.push('<b>' + ljudi(vr) + '</b> se istog dana vratilo na sajt bar još jednom.');
   }
-  // Najgledanija strana usluge
-  const usluge = strane.filter(x => x.putanja !== '/' && x.putanja !== '/usluge' && x.putanja !== '/cenovnik' && x.putanja !== '/loyalty-join');
-  if (usluge.length) {
-    const top = usluge.slice().sort((a, b) => b.ljudi - a.ljudi)[0];
-    saveti.push('Od usluga najviše ih zanima <b>' + bez(imeStrane(top.putanja)) + '</b> — ' + ljudi(top.ljudi) +
-                (top.vreme_sec ? ', zadrže se prosečno ' + vreme(top.vreme_sec) : '') + '.');
-  }
-  const cen = strane.find(x => x.putanja === '/cenovnik');
-  if (cen && posetioci) {
-    saveti.push('Do cenovnika je stiglo <b>' + pct(cen.ljudi, posetioci) + '%</b> ljudi (' + ljudi(cen.ljudi) + ').' +
-                (cen.kontakt_ljudi ? ' Sa cenovnika te je kontaktiralo ' + ljudi(cen.kontakt_ljudi) + '.' : ''));
-  }
   const najSat = (sada.po_satima || []).reduce((a, b) => (!a || b.posetioci > a.posetioci ? b : a), null);
-  if (najSat) {
-    saveti.push('Najviše ljudi otvara sajt oko <b>' + najSat.sat + ':00</b>. Ako objavljuješ nešto na Instagramu, to je najbolje vreme.');
-  }
-  saveti.push('Nove loyalty prijave preko sajta ove nedelje: <b>' + (dodatno.prijave || 0) + '</b>. Nove recenzije: <b>' + (dodatno.recenzije || 0) + '</b>.');
+  if (najSat) saveti.push('Najviše ljudi otvara sajt oko <b>' + najSat.sat + ':00</b>. Ako objavljuješ na Instagramu, to je najbolje vreme.');
+  saveti.push('Nove loyalty prijave preko sajta: <b>' + (dodatno.prijave || 0) + '</b>. Nove recenzije na sajtu: <b>' + (dodatno.recenzije || 0) + '</b>.');
 
   h += '<tr><td style="padding:4px 0 0"><table role="presentation" width="100%" cellpadding="0" cellspacing="0">';
   for (const s of saveti) {
@@ -650,11 +692,11 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
   // ── Podnožje ───────────────────────────────────────────
   h += '<tr><td style="padding:28px 0 0;border-top:1px solid ' + C.ivica + ';font-family:' + FONT + ';' +
        'font-size:12px;line-height:1.75;color:#A09A90">' +
-       '<b>Odakle ovi brojevi.</b> Sajt ih meri sam. Nema kolačića i ne zna se ko je ko — ' +
-       'samo koliko ih je bilo i šta su radili. Roboti (Google, skeneri) se ne broje.<br>' +
+       '<b>Odakle ovi brojevi.</b> Sajt ih meri sam, na svakoj strani. Nema kolačića i ne zna se ko je ko — ' +
+       'samo koliko ih je bilo i šta su radili. Google, roboti i skeneri se ne broje.<br>' +
        '<b>Tvoje posete se ne broje</b> na uređaju na kojem si jednom otvorio ' +
        'lakerdetailing.rs/?analitika=off<br>' +
-       'Ovaj mejl sajt šalje sam, svakog ponedeljka u podne. Niko ga ne kuca ručno.' +
+       'Ovaj mejl sajt šalje sam, svakog ponedeljka u podne, za prethodnih 7 dana. Niko ga ne kuca ručno.' +
        '</td></tr>';
 
   return '<!doctype html><html lang="sr"><head><meta charset="utf-8">' +
@@ -664,7 +706,7 @@ function sastaviMejl(sada, pre, dodatno, od, doo, opcije) {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" ' +
       'style="background:' + C.svetla + '"><tr><td align="center" style="padding:20px 10px 34px">' +
     '<table role="presentation" width="620" cellpadding="0" cellspacing="0" ' +
-      'style="max-width:620px;width:100%;background:' + C.bela + ';border-radius:16px;padding:28px 24px">' +
+      'style="max-width:620px;width:100%;background:' + C.bela + ';border-radius:16px;padding:28px 22px">' +
     h +
     '</table></td></tr></table></body></html>';
 }
