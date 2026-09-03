@@ -174,6 +174,12 @@
       }
     }
 
+    // tabovi paketa na telefonu — cena za izabranu veličinu
+    var tabCene = document.querySelectorAll('.pk-tab small[data-od]');
+    for (var t = 0; t < tabCene.length; t++) {
+      tabCene[t].textContent = tabCene[t].getAttribute('data-od').split(',')[i] + ' €';
+    }
+
     // tabele pojedinačnih usluga
     var celije = document.querySelectorAll('#pojedinacne [data-k]');
     for (var c = 0; c < celije.length; c++) {
@@ -519,6 +525,52 @@
   }
   crtajUsluge();
   crtajPonudu();
+
+
+  // ═══════════════════════════════════════════════ paketi na telefonu
+  // Na ≤768px je .pkg-grid horizontalni karusel (cenovnik.css), a .pk-nav tabovi
+  // Clean/Boost/Laker + brojač „Paket 1 od 3". Na računaru je blok sakriven i
+  // scrollLeft je uvek 0, pa ovaj kod tamo ništa ne menja.
+  var pkGrid = document.querySelector('.pkg-grid');
+  var pkNav = document.querySelector('.pk-nav');
+  if (pkGrid && pkNav) {
+    var pkKartice = pkGrid.querySelectorAll('.pk');
+    var pkTabovi = pkNav.querySelectorAll('.pk-tab');
+    var pkTacke = pkNav.querySelectorAll('.pk-dots i');
+    var pkBroj = pkNav.querySelector('.pk-cnt b');
+    var pkAktivan = 0;
+    function pkKorak() {
+      return pkKartice.length > 1 ? pkKartice[1].offsetLeft - pkKartice[0].offsetLeft : 1;
+    }
+    function pkOznaci(i) {
+      if (i === pkAktivan) return;
+      pkAktivan = i;
+      for (var t = 0; t < pkTabovi.length; t++) {
+        var on = t === i;
+        pkTabovi[t].classList.toggle('on', on);
+        pkTabovi[t].setAttribute('aria-selected', on ? 'true' : 'false');
+        if (pkTacke[t]) pkTacke[t].classList.toggle('on', on);
+      }
+      if (pkBroj) pkBroj.textContent = i + 1;
+    }
+    pkNav.addEventListener('click', function (e) {
+      var b = e.target.closest('.pk-tab');
+      if (!b) return;
+      var i = +b.getAttribute('data-pk');
+      pkOznaci(i);
+      try { pkGrid.scrollTo({ left: i * pkKorak(), behavior: 'smooth' }); }
+      catch (err) { pkGrid.scrollLeft = i * pkKorak(); }
+    });
+    var pkTajmer = null;
+    pkGrid.addEventListener('scroll', function () {
+      if (pkTajmer) return;
+      pkTajmer = setTimeout(function () {
+        pkTajmer = null;
+        var i = Math.round(pkGrid.scrollLeft / pkKorak());
+        pkOznaci(Math.max(0, Math.min(pkKartice.length - 1, i)));
+      }, 80);
+    }, { passive: true });
+  }
 
   // „Prijava" sa drugih strana vodi na /cenovnik#prijava — tu se modal otvara sam.
   // setTimeout: main.min.js se učitava paralelno, openLoyalty postoji tek posle njega.

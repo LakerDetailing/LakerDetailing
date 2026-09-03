@@ -35,9 +35,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300i-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
-<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903j">
-<link rel="stylesheet" href="/assets/css/laker.css?v=20260903j">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903j">
+<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903k">
+<link rel="stylesheet" href="/assets/css/laker.css?v=20260903k">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903k">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -190,7 +190,7 @@
 <div class="ph"><div class="ctn">
   <div class="crumbs"><a href="/">Početna</a><span>/</span><span>Cenovnik</span></div>
   <div class="sl">Cenovnik</div>
-  <h1 class="sh">Sve usluge<br><em>&amp; cene</em></h1>
+  <h1 class="sh">Sve usluge <br><em>&amp; cene</em></h1>
   <p class="sd">Cena zavisi samo od veličine vozila. Izaberite svoju kategoriju i sve cene na strani se prilagode. Na dnu sastavite svoju ponudu.</p>
 </div></div>
 
@@ -220,9 +220,19 @@
     <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:30px">
       <div>
         <div class="sl">Paketi</div>
-        <h2 class="sh">Tri nivoa<br><em>savršenstva</em></h2>
+        <h2 class="sh">Tri nivoa <br><em>savršenstva</em></h2>
       </div>
       <p class="pk-napomena">Cene su u evrima, plaćanje u dinarima po kursu Narodne banke Srbije.</p>
+    </div>
+    <!-- Telefon: paketi su tabovi + prevlačenje (karusel), da se vidi da ih ima tri.
+         Na računaru ovaj blok je sakriven (cenovnik.css), tri kolone ostaju. -->
+    <div class="pk-nav">
+      <div class="pk-tabs" role="tablist" aria-label="Paketi">
+        <button type="button" class="pk-tab on" role="tab" aria-selected="true" data-pk="0">Clean<small data-od="99,110,130,145">od 99 €</small></button>
+        <button type="button" class="pk-tab" role="tab" aria-selected="false" data-pk="1">Boost<small data-od="249,260,280,295">od 249 €</small></button>
+        <button type="button" class="pk-tab" role="tab" aria-selected="false" data-pk="2">Laker<small data-od="499,510,530,545">od 499 €</small></button>
+      </div>
+      <div class="pk-pos" aria-live="polite"><span class="pk-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span><span class="pk-cnt">Paket <b>1</b> od 3 · prevucite za sledeći</span></div>
     </div>
     <div class="pkg-grid" style="margin-top:56px">
       <div class="pk" data-cene="99,110,130,145">
@@ -369,7 +379,7 @@
     <div class="care-top">
       <div>
         <div class="sl">Laker Loyalty</div>
-        <h2 class="sh">Uvek sređen.<br><em>Uvek na prvom mestu.</em></h2>
+        <h2 class="sh">Uvek sređen. <br><em>Uvek na prvom mestu.</em></h2>
       </div>
       <p class="care-note">24 pranja godišnje — 2 puta mesečno. Prioritetan termin, bez čekanja. Plaćate manje, dobijate više.</p>
     </div>
@@ -431,7 +441,7 @@
     <div class="prc-top">
       <div>
         <div class="sl">Pojedinačne usluge</div>
-        <h2 class="sh">Cene po<br><em>usluzi</em></h2>
+        <h2 class="sh">Cene po <br><em>usluzi</em></h2>
       </div>
       <div class="prc-note">
         <p>
@@ -499,7 +509,7 @@
 <section id="sastavi" style="background:var(--d1)">
   <div class="ctn">
     <div class="sl">Sastavi sam</div>
-    <h2 class="sh">Vaš auto,<br><em>vaša ponuda</em></h2>
+    <h2 class="sh">Vaš auto, <br><em>vaša ponuda</em></h2>
     <p class="sd">Izaberite auto — kategorija se prepozna sama i cene se odmah preračunaju. Štiklirajte usluge koje želite i pošaljite nam gotov upit na WhatsApp.</p>
 
     <div class="cfg">
@@ -620,7 +630,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>80</b> · 2026-09-03</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>81</b> · 2026-09-03</span>
   </div>
 </footer>
 
@@ -832,11 +842,11 @@
   </div>
 </div>
 
-<script src="/assets/js/laker-ui.min.js?v=20260903j" defer></script>
-<script src="/main.min.js?v=20260903j" defer></script>
-<script src="/assets/js/auti.min.js?v=20260903j" defer></script>
-<script src="/assets/js/cenovnik.min.js?v=20260903j" defer></script>
-<script src="/init.min.js?v=20260903j" defer></script>
+<script src="/assets/js/laker-ui.min.js?v=20260903k" defer></script>
+<script src="/main.min.js?v=20260903k" defer></script>
+<script src="/assets/js/auti.min.js?v=20260903k" defer></script>
+<script src="/assets/js/cenovnik.min.js?v=20260903k" defer></script>
+<script src="/init.min.js?v=20260903k" defer></script>
 <script src="/assets/js/mera.js?v=7" defer></script>
 </body>
 </html>

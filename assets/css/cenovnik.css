@@ -1083,3 +1083,94 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 #loy-close-btn:hover{color:#fff!important}
 #forgot-pw-btn:hover{color:#FF2A2A!important}
 #forgot-submit-btn:hover{background:#FF2A2A!important;color:#fff!important}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TELEFON (≤768px) — izbor vlasnika 2026-09-03 (demo /demo-telefon, varijanta C):
+   paketi su tabovi + karusel sa prevlačenjem (ivica sledeće kartice viri da se
+   vidi da ih ima tri), kartica je kompaktna (cena pored imena, veličine u jednom
+   redu), a pojedinačne usluge su prava tabela sa 4 kolone kao na računaru,
+   ne kartice po usluzi. Računar se ne dira.
+   ══════════════════════════════════════════════════════════════════════════ */
+.pk-nav{display:none}
+@media(max-width:768px){
+  /* naslovi sekcija u jedan red — na 375px staju u ~38px */
+  h1.sh br,h2.sh br{display:none}
+
+  /* ── tabovi + brojač ── */
+  .pk-nav{display:block;margin-top:26px}
+  .pk-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+  .pk-tab{padding:12px 4px 10px;background:var(--d2);color:var(--gray);font-family:var(--serif);font-size:22px;font-weight:300;line-height:1;border:0;border-bottom:2px solid transparent;cursor:pointer;transition:background .25s,color .25s,border-color .25s;-webkit-tap-highlight-color:transparent}
+  .pk-tab small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.3px;color:var(--gray);margin-top:6px;font-variant-numeric:tabular-nums}
+  .pk-tab.on{color:var(--white);background:var(--d3);border-bottom-color:var(--gold)}
+  .pk-tab.on small{color:var(--gold)}
+  .pk-pos{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:10.5px;color:var(--gray);letter-spacing:.3px}
+  .pk-pos b{color:var(--white);font-weight:500}
+  .pk-dots{display:inline-flex;gap:5px}
+  .pk-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);transition:background .25s,transform .25s}
+  body.light .pk-dots i{background:rgba(0,0,0,.18)}
+  .pk-dots i.on{background:var(--gold);transform:scale(1.25)}
+
+  /* ── karusel: jedna kartica na ekranu, sledeća viri ~10% ── */
+  .pkg-grid{display:flex;grid-template-columns:none;gap:8px;margin-top:10px!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 0 4px;touch-action:pan-x pan-y}
+  .pkg-grid::-webkit-scrollbar{display:none}
+  .pkg-grid .pk{flex:0 0 88%;scroll-snap-align:start;scroll-snap-stop:always;padding:24px 18px 20px;transform:none}
+  .pkg-grid .pk:last-child{margin-right:12%}
+  .pk:hover{transform:none}
+
+  /* ── kompaktna kartica: cena pored imena, veličine u jednom redu, stavke zbijene ── */
+  /* minmax(0,1fr): bez toga dugačka stavka u listi razvuče mrežu šire od kartice
+     (overflow:hidden je onda seče sa desne strane — viđeno 2026-09-03) */
+  .pk{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:start;
+      grid-template-areas:"badge badge" "name price" "sub price" "sizes sizes" "ul ul" "dur dur" "btn btn"}
+  .pk-glow{position:absolute}               /* ostaje van mreže */
+  .pk-num{display:none}                     /* ukrasni „01" bi se preklopio sa cenom */
+  .pk-ul,.pk-size-grid,.pk-li-txt{min-width:0}
+  .pk-badge{grid-area:badge;margin-bottom:14px;justify-self:start}
+  .pk-name{grid-area:name;font-size:34px;margin-bottom:0}
+  .pk-sub{grid-area:sub;margin-bottom:0;margin-top:6px}
+  .pk-price-box{display:contents}           /* deca (.pk-from/.pk-p/.pk-size-grid) ulaze u mrežu */
+  .pk-from{display:none}
+  .pk-p{grid-area:price;font-size:38px;letter-spacing:-1px;text-align:right;align-self:start}
+  .pk-p sup{font-size:15px;margin-top:6px}
+  .pk-p.loy-price-active{align-items:flex-end}
+  .pk-p .loy-new-price{font-size:40px;letter-spacing:-1px}
+  .pk-p .loy-new-price sup{font-size:15px;margin-top:6px}
+  .pk-p .loy-old-price{font-size:15px}
+  .pk-size-grid{grid-area:sizes;margin-top:14px;gap:4px}
+  .pk-sz{padding:6px 2px}
+  .pk-sz span{font-size:9px;letter-spacing:.5px;text-transform:none;margin-bottom:1px}
+  .pk-sz strong{font-size:16px}
+  .pk-ul{grid-area:ul;margin:14px 0 0;border-top:1px solid rgba(255,255,255,.08)}
+  body.light .pk-ul{border-top-color:rgba(0,0,0,.08)}
+  .pk-li-row{padding:8px 0;gap:9px}
+  .pk-li-txt{font-size:13.5px;line-height:1.35}
+  .pk-ch{font-size:7px;margin-top:0}
+  .pk-info{padding:0 0 10px 18px}
+  /* dugme preko cele širine — u desnoj koloni bi širilo kolonu cene i gnječilo ime paketa */
+  .pk-dur{grid-area:dur;margin:14px 0 0;font-size:10px}
+  .pk-btn{grid-area:btn;margin-top:10px;padding:12px;font-size:9.5px;letter-spacing:2.5px}
+  .pk-feat{border-top-width:2px}
+
+  /* ── pojedinačne usluge: prava tabela sa 4 kolone (gazi kartice iz laker.css) ── */
+  #pojedinacne .prc-note p br{display:none}
+  #pojedinacne .tp thead{display:table-header-group}
+  #pojedinacne .tp table{display:table;width:100%;min-width:0;table-layout:fixed}
+  #pojedinacne .tp tbody{display:table-row-group}
+  #pojedinacne .tp tr{display:table-row;padding:0;border:0}
+  #pojedinacne .tp td,#pojedinacne .tp th{display:table-cell;padding:11px 3px;text-align:center;vertical-align:middle;border:0;border-top:1px solid rgba(255,255,255,.06);background:none;border-radius:0}
+  body.light #pojedinacne .tp td{border-top-color:rgba(0,0,0,.07)}
+  #pojedinacne .tp th{font-size:8.5px;letter-spacing:1.2px;padding:12px 3px 9px;border-top:0;white-space:normal}
+  #pojedinacne .tp th:first-child,#pojedinacne .tp td:first-child{text-align:left;padding-left:14px;width:44%}
+  #pojedinacne .tp td:first-child{font-size:12.5px;font-weight:400;line-height:1.3;color:var(--white)}
+  #pojedinacne .tp td:not(:first-child)::before{display:none}
+  #pojedinacne .tp td.pv2{font-size:17px!important;white-space:nowrap}
+  #pojedinacne .tp td.prc-on,#pojedinacne .tp th.prc-on{background:rgba(255,42,42,.09)}
+  body.light #pojedinacne .tp td.prc-on,body.light #pojedinacne .tp th.prc-on{background:rgba(255,42,42,.07)}
+  #pojedinacne .tbl-note{padding:0 14px}
+}
+@media(max-width:400px){
+  .pk-tab{font-size:20px}
+  .pk-cnt{font-size:10px}
+  #pojedinacne .tp td.pv2{font-size:15px!important}
+  #pojedinacne .tp td:first-child{font-size:12px;padding-left:10px}
+}

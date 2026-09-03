@@ -128,6 +128,15 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   U čipovima je REDOSLED bitan — drugi po redu se krije na telefonu, pa na drugom mestu stoji
   onaj koji sme da otpadne (Audi A2, Peugeot 307, CX-5, Tiggo 8), a ne najprepoznatljiviji. `KAT_PUN` u cenovnik.js nosi opis („kao Golf ili Astra"), koji
   mora imati smisla uz svaku karoseriju — stoji kao „opis · limuzina · crna".
+- **Telefon (≤768px) na /cenovnik i /usluge — izbor vlasnika 2026-09-03** (demo `/demo-telefon`,
+  varijanta C svuda): paketi su **tabovi Clean/Boost/Laker + horizontalni karusel** sa brojačem
+  „Paket 1 od 3" i ivicom sledeće kartice koja viri (vlasnik: „da ljudima ne promakne da ima tri");
+  markup `.pk-nav` u cenovnik.html, karusel i cene u tabovima u cenovnik.js, CSS na kraju
+  cenovnik.css. Kartica `.pk` je tamo CSS grid sa `minmax(0,1fr)` (bez toga dugačka stavka razvuče
+  mrežu preko ivice), `.pk-num` sakriven, dugme preko cele širine. **Pojedinačne usluge su prava
+  tabela sa 4 kolone** (`#pojedinacne .tp` gazi kartice iz laker.css), a `/usluge` je **spisak**
+  (naziv · kratak opis · cena · strelica). U `.sh` naslovima stoji razmak ispred `<br>` jer se na
+  telefonu `br` krije (`h1.sh br,h2.sh br{display:none}`) — bez razmaka se reči zalepe. Računar netaknut.
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
