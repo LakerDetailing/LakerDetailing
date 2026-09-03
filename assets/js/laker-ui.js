@@ -76,7 +76,11 @@ if(_hasHover){
     modali.forEach(function(el){
       mo.observe(el, { attributes:true, attributeFilter:['style','class'] });
     });
-    uskladi();
+    // Prva provera tek POSLE prvog iscrtavanja: getComputedStyle pre paint-a
+    // tera browser da izracuna layout cele strane (Lighthouse "forced reflow",
+    // ~80 ms na telefonu). Na ucitavanju nijedan modal nije otvoren, a #prijava
+    // ga otvara kasnije preko atributa, sto observer hvata sam.
+    requestAnimationFrame(function(){ setTimeout(uskladi, 0); });
   }
   // 2) ukrasi van ekrana
   var ukrasi = document.querySelectorAll('.hs-line,.care-glow,.loc-pin');
