@@ -48,18 +48,21 @@
   var sekundi = 0;        // aktivno vreme (samo dok je kartica vidljiva)
   var dubina  = 0;        // najdublje dokle se skrolovalo, u procentima
 
+  // BEZ window.innerWidth ovde: skripta se izvrsava pre prvog paint-a, a
+  // innerWidth tera browser da izracuna layout cele strane (PageSpeed "forced
+  // reflow", ~1 s na telefonu, 2026-09-03). Sirina se cita tek pri slanju,
+  // kad je layout vec gotov.
   var zajedno = {
     s: SESIJA,
     p: location.pathname.slice(0, 120),
-    r: document.referrer || '',
-    w: window.innerWidth || 0
+    r: document.referrer || ''
   };
 
   // ── 3. Slanje ───────────────────────────────────────────
   function posalji(zavrsno) {
     if (!red.length) return;
     var telo = JSON.stringify({
-      s: zajedno.s, p: zajedno.p, r: zajedno.r, w: zajedno.w, e: red
+      s: zajedno.s, p: zajedno.p, r: zajedno.r, w: window.innerWidth || 0, e: red
     });
     red = [];
 
@@ -198,7 +201,9 @@
     var p = Math.round(((window.pageYOffset || doc.scrollTop || 0) / ukupno) * 100);
     if (p > dubina) dubina = Math.min(100, Math.max(0, p));
   }
-  merenjeDubine();
+  // prvo merenje tek posle prvog paint-a — scrollHeight pre paint-a je isti
+  // prisilni layout kao innerWidth (vidi gore)
+  requestAnimationFrame(function () { setTimeout(merenjeDubine, 0); });
   window.addEventListener('scroll', merenjeDubine, { passive: true });
 
   // ── 8. Završni paket ────────────────────────────────────
