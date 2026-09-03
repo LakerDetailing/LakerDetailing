@@ -620,3 +620,75 @@ CI ovo radi automatski (job `production-smoke`), ali proveri i ručno kad menja�
 **Rešen kvar (2026-07-17):** deploy prolazi kao READY, ali runtime ne zakači env varijable — svih 5 `api/*` funkcija vraća `500 FUNCTION_INVOCATION_FAILED` (`EnvFileReadError`). Danas se desilo 3× od 5 deploya. **Pravi uzrok:** projekat nije imao `package.json` (bio u `.gitignore` I `.vercelignore`), pa je Vercel detektovao "čistu statiku" i povremeno radio skraćeni build koji preskoči env injekciju — u build logu tada **fali `Vercel CLI` linija** (poklapanje 4/4: sa linijom radi, bez nje puca). **Trajni lek (commit f6f605f):** `package.json` sada ide na Vercel → build radi `npm install` (nula zavisnosti) → pun build sa env injekcijom svaki put, bez obzira na build keš. **NE brisati `package.json` niti ga vraćati u ignore fajlove.** `package-lock.json` ostaje ignorisan (nema zavisnosti).
 
 > Prepoznavanje: `/api/health` vraća **500** umesto svog urednog **503**. 503 = baza pala. 500 = funkcija uopšte ne startuje (env/runtime). Ako se ipak ponovi: proveri build log (`Vercel CLI` + `Installing dependencies` moraju biti tu); ako fale, redeploy bez keša u Vercel dashboardu ili rollback na poslednji zeleni deploy.
+
+---
+
+## Pretraživači — posle izmene sadržaja
+
+**Zeleni deploy ne znači da Google i Bing znaju za izmenu.** Ovo se ne dešava samo od sebe.
+
+### 1. IndexNow — uvek bulk, nikad samo koren
+
+GET oblik (`?url=...&key=...`) šalje **jedan jedini URL**. Zato posle renoviranja 2026-09-02
+nove strane dugo nisu stigle do Binga — pingovan je samo koren sajta. Za svaku izmenu koja
+dira više strana ide bulk POST:
+
+```bash
+curl -s -o /dev/null -w "HTTP %{http_code}
+" -X POST https://api.indexnow.org/indexnow -H "Content-Type: application/json; charset=utf-8" -d '{"host":"www.lakerdetailing.rs","key":"2e68d4c0350193ca6d78089e4129f608","keyLocation":"https://www.lakerdetailing.rs/2e68d4c0350193ca6d78089e4129f608.txt","urlList":["https://www.lakerdetailing.rs/","https://www.lakerdetailing.rs/usluge","https://www.lakerdetailing.rs/cenovnik","https://www.lakerdetailing.rs/premium-pranje","https://www.lakerdetailing.rs/detailing-auta","https://www.lakerdetailing.rs/poliranje-laka","https://www.lakerdetailing.rs/keramicka-zastita","https://www.lakerdetailing.rs/poliranje-farova"]}'
+```
+
+`HTTP 200` = primljeno (odgovor je prazan, to je normalno). Provera da je stiglo:
+Bing WMT → IndexNow → „Submitted Urls list".
+
+### 2. Sitemap se NE osvežava sam
+
+**Nađeno 2026-09-03:** Bing je `sitemap.xml` poslednji put pročitao **12.07.2026, kada je
+imao 1 URL** — sajt je tada još bio jedna strana. Posle renoviranja na 8 ruta sam se nije
+vratio po njega, pa je dva meseca radio sa starom slikom sajta (u rezultatima je stajao
+zastareo opis početne).
+
+Posle svake izmene **strukture** sajta (nova ruta, obrisana ruta, promenjen `sitemap.xml`):
+Bing WMT → Sitemaps → **Submit sitemap** → `https://www.lakerdetailing.rs/sitemap.xml`.
+IndexNow ovo NE zamenjuje — to su dva odvojena signala.
+
+Google Search Console isto: Sitemaps → ponovo pošalji, pa „Request indexing" po URL-u.
+
+### 3. Limiti za naslov i opis
+
+| | Google seče prikaz | Bing prijavljuje grešku preko |
+|---|---|---|
+| `<title>` | ~60 znakova | 65 |
+| `<meta name="description">` | ~160 znakova | 160 (i ispod 25) |
+
+Broji **znakove, ne bajtove** — `wc -m` u Git Bash-u naša slova (č, ć, š, ž, đ, €, —) broji
+kao dva i daje naduvan rezultat. Meri Python-om:
+
+```bash
+PYTHONIOENCODING=utf-8 python -c "import re,io,glob;[print('%-24s t=%3d d=%3d'%(f,len(re.search('<title>(.*?)</title>',io.open(f,encoding='utf-8').read(),re.S).group(1)),len(re.search('<meta name=\"description\" content=\"(.*?)\">',io.open(f,encoding='utf-8').read(),re.S).group(1)))) for f in sorted(glob.glob('*.html')) if '<title>' in io.open(f,encoding='utf-8').read()]"
+```
+
+Stanje od 2026-09-03 (verzija 69): svih 8 strana je ispod oba limita. Sa naslova strana
+usluga izbačen je sufiks `| Laker Detailing` — Google iznad naslova ionako prikazuje
+`lakerdetailing.rs`, pa se brend ne ponavlja dva puta.
+
+> `og:title` i `og:description` su NAMERNO ostavljeni duži od `<title>`/`<meta description>`.
+> Njih pretraživači ne prikazuju — služe za WhatsApp i Facebook pregled, gde ima više mesta.
+> Ne „ujednačavati" ih sa naslovom.
+
+### 4. Bing SEO skener ume da laže
+
+Prijavljuje **„Alt attribute for images is missing"** za 5 sličica galerije koje imaju
+`alt=""`. To je NAMERNO i ispravno: roditeljski `<button class="izl-thumb">` već nosi
+`aria-label` sa opisom slike, pa bi alt tekst čitač ekrana pročitao dva puta.
+**Ne „popravljati".**
+
+### 5. Kako se proverava status indeksiranja
+
+**NIKAD preko `site:` pretrage.** Google na to baca CAPTCHA u automatizovanom brauzeru,
+a Bing i DuckDuckGo taj operator ne obrađuju pouzdano — DDG je 2026-09-03 pokazao samo
+početnu i naveo na pogrešan zaključak da Bing nema ostale strane, iako su sve bile
+indeksirane.
+
+Jedini pouzdan način: **Bing WMT → URL Inspection** (kvota za „Request indexing" je
+100 URL-ova dnevno) i **Search Console → URL Inspection**.
