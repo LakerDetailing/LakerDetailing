@@ -75,7 +75,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: telo,
-        keepalive: true,
+        // keepalive SAMO za zavrsni paket (kad nema sendBeacon). Za obicne
+        // pakete ga ne sme biti: Chrome keepalive zahtev vodi van strane i
+        // DevTools nikad ne javi "zavrseno", pa Lighthouse i PageSpeed cekaju
+        // 45 s i prijave "strana se ucitava presporo" (nadjeno 2026-09-03).
+        keepalive: !!zavrsno,
         credentials: 'omit'
       })['catch'](function () {});
     } catch (e) { /* merenje nikad ne sme da obori stranu */ }
