@@ -64,7 +64,11 @@ function escHtml(s){
     gvNum.textContent = (i + 1) + ' / ' + slajdovi.length;
   }
 
-  function prikazi(n){
+  // prvi = pocetni poziv pri ucitavanju: tada se sličice NE centriraju, jer
+  // citanje scrollWidth/offsetLeft pre prvog paint-a tera layout cele strane
+  // (Lighthouse "forced reflow", 1,3 s na telefonu). Prva slicica je ionako
+  // na levoj ivici trake, nema sta da se centrira.
+  function prikazi(n, prvi){
     i = (n + slajdovi.length) % slajdovi.length;
     slajdovi.forEach(function(sl, j){ sl.classList.toggle('on', j === i); });
     slicice.forEach(function(t, j){
@@ -82,7 +86,7 @@ function escHtml(s){
     }
     if(natpis) natpis.textContent = aktivniOpis();
     if(brojac) brojac.textContent = (i + 1) + ' / ' + slajdovi.length;
-    centrirajSlicicu();
+    if(!prvi) centrirajSlicicu();
     if(gvOtvoren()) gvOsvezi();
   }
 
@@ -160,7 +164,7 @@ function escHtml(s){
     }, {passive:true});
   }
 
-  prikazi(0);
+  prikazi(0, true);
 })();
 
 

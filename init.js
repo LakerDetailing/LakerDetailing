@@ -135,7 +135,11 @@
     v.src='/_vercel/insights/script.js';
     document.head.appendChild(v);
   }
-  function _boot(){ _loadGA(); _loadVercel(); if(accepted) _loadPixel(); }
+  // GA tek kad je glavna nit slobodna (isto kao Sentry): gtag.js jede ~1,2 s CPU
+  // na telefonu i bio je najveci deo Total Blocking Time na PageSpeed-u (2026-09-03).
+  // page_view i dalje ode — gtag() red ceka u dataLayer-u dok se skripta ne ucita.
+  function _bootGA(){ if('requestIdleCallback' in window){requestIdleCallback(_loadGA,{timeout:3000});} else {setTimeout(_loadGA,1500);} }
+  function _boot(){ _bootGA(); _loadVercel(); if(accepted) _loadPixel(); }
   if(document.readyState==='complete'){_boot();}
   else{window.addEventListener('load',_boot,{once:true});}
 })();
