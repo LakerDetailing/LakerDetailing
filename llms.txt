@@ -1,32 +1,37 @@
 # Laker Detailing Studio
 
-> Profesionalni auto detailing studio u Čačku, Srbija. Specijalizovani za keramičku zaštitu, poliranje laka, ručno pranje i dubinsko čišćenje vozila.
+> Auto detailing studio u Čačku (Srbija): ručno premium pranje, detailing enterijera i eksterijera, poliranje laka, keramička zaštita i poliranje farova. Cene zavise od veličine vozila (Mali · Srednji · Veliki · Ekstra).
 
 ## Kontakt
 
-- Telefon: +381 60 726 0302
-- Lokacija: Čačak, Srbija (32000)
-- Radno vreme: Pon–Pet 08:00–18:00, Sub 09:00–15:00
+- Telefon / WhatsApp: +381 60 726 0302 ([wa.me/381607260302](https://wa.me/381607260302))
+- Adresa: Ulica 600 br. 9, 32000 Čačak, Srbija
+- Radno vreme: ponedeljak–subota 09:00–20:00, nedeljom ne radi
+- Instagram: [instagram.com/laker_detailing](https://www.instagram.com/laker_detailing)
 
-## Usluge
+## Strane sajta
 
-- **Clean paket** – Ručno premium pranje automobila po Koch-Chemie protokolu (od €99)
-- **Boost paket** – Korekcija laka i poliranje sa zaštitom (od €249)
-- **Laker paket** – Kompletna keramička nano-zaštita laka (od €499)
+- [Početna](https://www.lakerdetailing.rs/): o studiju, galerija radova, česta pitanja, lokacija
+- [Usluge](https://www.lakerdetailing.rs/usluge): pregled svih pet usluga
+- [Premium pranje](https://www.lakerdetailing.rs/premium-pranje): ručno pranje u tri faze sa voskom, od 20 €, traje 1–2 h zavisno od stanja vozila
+- [Detailing auta](https://www.lakerdetailing.rs/detailing-auta): enterijer + eksterijer u jednom terminu, od 99 €
+- [Poliranje laka](https://www.lakerdetailing.rs/poliranje-laka): četiri nivoa korekcije laka, od 100 €
+- [Keramička zaštita](https://www.lakerdetailing.rs/keramicka-zastita): Koch-Chemie Ceramic Body Cb0.01 u jednom sloju, od 140 €; uz 1K-Nano premaz, karnauba vosak i Nano-Glass
+- [Poliranje farova](https://www.lakerdetailing.rs/poliranje-farova): 25 € za sve kategorije, sa keramičkim premazom
+- [Cenovnik](https://www.lakerdetailing.rs/cenovnik): paketi, Loyalty program, pojedinačne cene i kalkulator „Sastavi sam"
+
+## Paketi (Mali / Srednji / Veliki / Ekstra)
+
+- Clean: 99 / 110 / 130 / 145 €
+- Boost: 249 / 260 / 280 / 295 €
+- Laker: 499 / 510 / 530 / 545 €
 
 ## Loyalty program
 
-- Mali/Srednji automobil: €35/mes ili €299/god (24 pranja godišnje)
-- Veliki/SUV: €40/mes ili €349/god (24 pranja godišnje)
+- Mali i Srednji: 35 €/mesec ili 299 €/godina
+- Veliki i Ekstra: 40 €/mesec ili 349 €/godina
+- 24 pranja godišnje (dva mesečno) i prioritetan termin; prijava na [cenovniku](https://www.lakerdetailing.rs/cenovnik#prijava)
 
-## Oblast poslovanja
+## Oblast
 
-Čačak, Gornji Milanovac, Kraljevo, Kragujevac
-
-## URL sekcija
-
-- Početna: https://www.lakerdetailing.rs/
-- Usluge: https://www.lakerdetailing.rs/#srv
-- Cenovnik: https://www.lakerdetailing.rs/#prc
-- FAQ: https://www.lakerdetailing.rs/#faq
-- Recenzije: https://www.lakerdetailing.rs/#rvw
+Čačak i okolina: Gornji Milanovac, Kraljevo, Kragujevac, Lučani, Guča, Ivanjica, Arilje, Požega, Užice.

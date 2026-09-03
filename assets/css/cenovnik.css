@@ -134,21 +134,21 @@ body.light .sel,body.light .pretraga{border-color:rgba(0,0,0,.14)}
 .col.on{border-color:var(--white);transform:scale(1.12)}
 
 .svc{list-style:none;display:flex;flex-direction:column}
-.svc li{display:grid;grid-template-columns:22px 1fr auto;gap:16px;align-items:center;padding:14px 0;
+.svc .st{display:grid;grid-template-columns:22px 1fr auto;gap:16px;align-items:center;padding:14px 0;
   border-top:1px solid rgba(255,255,255,.08);cursor:pointer;font-size:14px;color:var(--lgray);font-weight:300}
-body.light .svc li{border-top-color:rgba(0,0,0,.08)}
-.svc li:last-child{border-bottom:1px solid rgba(255,255,255,.08)}
-body.light .svc li:last-child{border-bottom-color:rgba(0,0,0,.08)}
+body.light .svc .st{border-top-color:rgba(0,0,0,.08)}
+.svc .st:last-child{border-bottom:1px solid rgba(255,255,255,.08)}
+body.light .svc .st:last-child{border-bottom-color:rgba(0,0,0,.08)}
 .svc .bx{width:18px;height:18px;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:12px;color:var(--black);line-height:1}
-.svc li.on .bx{background:var(--gold);border-color:var(--gold)}
-.svc li.on{color:var(--white)}
-.svc li .p{font-variant-numeric:tabular-nums;color:var(--mgray);white-space:nowrap}
-.svc li.on .p{color:var(--gold);font-weight:500}
+.svc .st.on .bx{background:var(--gold);border-color:var(--gold)}
+.svc .st.on{color:var(--white)}
+.svc .st .p{font-variant-numeric:tabular-nums;color:var(--mgray);white-space:nowrap}
+.svc .st.on .p{color:var(--gold);font-weight:500}
 .svc .g{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);padding:24px 0 8px;display:block}
 /* stavka koja se ne kombinuje sa već izabranom — posivi i ne klikće se */
-.svc li.off{opacity:.45;cursor:not-allowed}
-.svc li.off .bx{border-style:dashed}
-.svc li.off .p{text-decoration:line-through}
+.svc .st.off{opacity:.45;cursor:not-allowed}
+.svc .st.off .bx{border-style:dashed}
+.svc .st.off .p{text-decoration:line-through}
 .svc .zas{display:block;font-size:11px;line-height:1.5;color:var(--gray);margin-top:4px;font-style:italic}
 .svc .g:first-child{padding-top:0}
 

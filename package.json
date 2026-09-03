@@ -2,5 +2,8 @@
   "name": "laker-detailing",
   "version": "1.0.0",
   "private": true,
-  "description": "Laker Detailing Studio — staticki sajt + Vercel serverless funkcije (api/)"
+  "description": "Laker Detailing Studio — staticki sajt + Vercel serverless funkcije (api/)",
+  "scripts": {
+    "build:js": "npx terser main.js --compress --mangle -o main.min.js && npx terser init.js --compress --mangle -o init.min.js && npx terser assets/js/laker-ui.js --compress --mangle -o assets/js/laker-ui.min.js && npx terser assets/js/auti.js --compress --mangle -o assets/js/auti.min.js && npx terser assets/js/cenovnik.js --compress --mangle -o assets/js/cenovnik.min.js"
+  }
 }

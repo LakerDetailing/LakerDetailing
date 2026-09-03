@@ -418,7 +418,7 @@
       var u = USLUGE[i];
       if (u.g !== grupa) {
         grupa = u.g;
-        var g = e('li', 'g', grupa); g.setAttribute('role', 'presentation'); // ul je role=group, pa goli li ne sme da bude listitem
+        var g = e('div', 'g', grupa); // naslov grupe; kontejner je div role=group, ne lista
         g.style.cursor = 'default';
         g.style.borderTop = '0';
         cfgL.appendChild(g);
@@ -426,7 +426,9 @@
       (function (u) {
         var izabrana = stanje.usluge.indexOf(u.id) > -1;
         var razlog = izabrana ? '' : (zak[u.id] || '');
-        var li = e('li', izabrana ? 'on' : (razlog ? 'off' : ''));
+        // div, ne li: <li role="checkbox"> Lighthouse (Agentic Browsing) prijavljuje kao
+        // neispravan ARIA — checkbox sme na div, ne na stavku liste.
+        var li = e('div', 'st' + (izabrana ? ' on' : (razlog ? ' off' : '')));
         li.setAttribute('role', 'checkbox');
         li.setAttribute('tabindex', razlog ? '-1' : '0');
         li.setAttribute('aria-checked', izabrana ? 'true' : 'false');

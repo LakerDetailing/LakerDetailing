@@ -22,10 +22,11 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `assets/css/usluge.css` | `/usluge` + 5 strana usluga |
 | `assets/css/cenovnik.css` | `/cenovnik`, uključujući preseljene pakete, Loyalty i modal za prijavu |
 | `assets/js/laker-ui.js` | **Zajedničko ponašanje svih strana** — kursor, tema, nav, mobilni meni, tabovi, FAQ, otkrivanje sekcija, `data-click` |
-| `assets/js/cenovnik.js` | birač veličine vozila + kalkulator „Sastavi sam" |
+| `assets/js/cenovnik.js` | birač veličine vozila + kalkulator „Sastavi sam". Spisak usluga je `div.svc[role=group] > div.st[role=checkbox]`, **ne `ul/li`** — `<li role="checkbox">` Lighthouse prijavljuje kao neispravan ARIA (2026-09-03) |
 | `assets/js/auti.js` | spisak marki i modela (41 marka, 583 modela) za kalkulator |
 | `main.js` | Izvorni JS — Supabase recenzije, galerija i kompletni Loyalty sistem (IIFE). **Ne učitava se direktno** |
 | `main.min.js` | Minifikovana verzija koju sajt učitava. Posle izmene main.js regeneriši: `npx terser main.js --compress --mangle -o main.min.js` + bump `?v=` u index.html |
+| `init.min.js`, `assets/js/laker-ui.min.js`, `assets/js/auti.min.js`, `assets/js/cenovnik.min.js` | **Od 2026-09-03 strane učitavaju SAMO `.min.js`** (PageSpeed: 10 KB uštede). Izvor se menja u `.js`, pa **obavezno** `npm run build:js` (regeneriše svih 5 minifikovanih) + bump `?v=`. Zaboravljen build = sajt vrti stari kod iako je izvor izmenjen |
 | `assets/fonts/` | Self-hostovani woff2 fontovi (Cormorant Garamond + Inter, latin/latin-ext) + `fonts.css` (koristi ga admin panel; index.html ima isti @font-face inline) |
 | `laker-admin-9x3k.html` | Admin panel (URL je namerno obscure, noindex) |
 | `api/admin.js` | Admin API — sve admin akcije |
@@ -52,6 +53,7 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `vercel.json` | CSP headers, cache pravila, rute |
 | `og-image.jpg` | OG slika za deljenje (1200×630) |
 | `sitemap.xml` | Sitemap za Google |
+| `llms.txt` | Sažetak sajta za AI pretraživače (Lighthouse „Agentic Browsing" ga proverava — traži Markdown sa H1 i linkovima). **Prepisan 2026-09-03**: stari je imao pogrešno radno vreme i linkove na sekcije koje ne postoje. Pri promeni cena, radnog vremena ili ruta ažurirati i njega |
 | `robots.txt` | Blokira admin i api, linkuje sitemap |
 | `offline.html` | PWA offline fallback |
 | `radovi.html` | „Sajt u radovima" — spremna, prekidač UGAŠEN. Vidi sekciju **Prekidač „u radovima"** |
