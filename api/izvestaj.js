@@ -134,12 +134,15 @@ module.exports = async function handler(req, res) {
   const tajna     = getEnv('CRON_SECRET');
   const lozinka   = getEnv('ADMIN_PASSWORD', 'ADMIN_PW', 'VERCEL_ADMIN_PASSWORD');
   const zaglavlje = String(req.headers.authorization || '');
-  const odCrona   = !!req.headers['x-vercel-cron'];
+  // Vercel cron NE šalje zaglavlje „x-vercel-cron" (to je bila greška zbog
+  // koje mejl nije stizao od 23.8. do 3.9.2026 — svaki poziv je dobijao 401).
+  // Šalje SAMO „x-vercel-cron-schedule" (raspored) i, kad je CRON_SECRET
+  // podešen, „Authorization: Bearer <CRON_SECRET>". CRON_SECRET JE podešen
+  // u Vercel-u od 2026-09-03; slabiji put ostaje samo kao rezerva ako neko
+  // obriše varijablu — i tada ume da pokrene jedino redovni ponedeljni mejl.
+  const odCrona   = !!req.headers['x-vercel-cron-schedule'] ||
+                    /^vercel-cron/i.test(String(req.headers['user-agent'] || ''));
 
-  // Zaglavlje x-vercel-cron može da izmisli bilo ko, pa se prihvata SAMO
-  // kad CRON_SECRET nije podešen i samo za redovno slanje. Time neko sa
-  // strane u najgorem slučaju pokrene isti onaj mejl koji bi tog ponedeljka
-  // ionako otišao — a osigurač od 20h ga svede na jedan.
   const rucno    = !!(lozinka && kljuc && jednako(kljuc, lozinka));
   const saTajnom = !!(tajna && jednako(zaglavlje, 'Bearer ' + tajna));
   const slabiCron = odCrona && !tajna && !sada;
@@ -158,14 +161,17 @@ module.exports = async function handler(req, res) {
     const zadnji  = await poslednjiUspeh();
     const proslo  = zadnji ? (sadaVreme.getTime() - zadnji.getTime()) : Infinity;
 
-    // Vec poslato ove nedelje — ne salji drugi put.
-    if (proslo < 6 * dan) {
-      json(res, 200, { ok: true, poslato: false, razlog: 'vec poslat pre manje od 6 dana' });
+    // Vec poslato danas (cron ume da okine vise puta) — ne salji drugi put.
+    if (proslo < 20 * 60 * 60 * 1000) {
+      json(res, 200, { ok: true, poslato: false, razlog: 'vec poslat pre manje od 20h' });
       return;
     }
     // Nadoknada vazi i kad mejl NIKAD nije uspeo (proslo = Infinity) —
     // inace bi prvi neuspeo ponedeljak odlozio izvestaj za celu nedelju.
     // Cim jedno slanje prodje, gornja provera od 6 dana zaustavlja ponavljanje.
+    // Ponedeljkom se salje UVEK (i kad je rucno slanje bilo pre 2 dana —
+    // rucna proba ne sme da pojede redovni izvestaj). Ostalim danima samo
+    // nadoknada, ako je od poslednjeg uspeha proslo vise od 8 dana.
     const ponedeljak = danBeograda(sadaVreme) === 1;
     const nadoknada  = proslo > 8 * dan;
 

@@ -365,11 +365,20 @@ Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Mer
 
 | Deo | Fajl | Šta radi |
 |---|---|---|
-| Sakupljanje | `assets/js/mera.js` | Učitan na `index.html`, `loyalty-join.html` i 6 stranica usluga. Šalje `pregled`, `klik`, `sekcija`, `kraj` na `/api/mera` |
+| Sakupljanje | `assets/js/mera.js` | Učitan na SVIH 9 strana (`?v=4`). Šalje `pregled`, `klik`, `sekcija`, `kraj` na `/api/mera`. Od 2026-09-03 beleži i interne prelaze (`klik` naziv `ka:/cenovnik#sastavi`), izbor veličine na cenovniku (`velicina:veliki`), `paket-detalji`, a kao „sekcije" meri i `.usl-block[id]` / `.usl-aside#cena` na stranama usluga |
 | Prijem | [api/mera.js](api/mera.js) | Filtrira robote, izvodi anonimni otisak, upisuje u `stat_dogadjaji` |
-| Računanje | SQL `stat_izvestaj(od, do)` + `stat_nedelje(kraj, koliko)` | Sve agregacije u bazi, `security invoker`, `execute` samo za `service_role` |
+| Računanje | SQL `stat_izvestaj(od, do)` **v2** + `stat_nedelje(kraj, koliko)` | Sve agregacije u bazi, `security invoker`, `execute` samo za `service_role`. v2 (migracija `stat_izvestaj_v2_po_stranama`, 2026-09-03) vraća i: `strane` (ljudi, otvaranja, vreme, dubina, ulazi, izlazi, kontakt_ljudi po strani), `ulazi`, `prelazi` (sa→na), `kanali` **po PRVOM otvaranju** (interni link više ne pravi „direktno"), `izvori`, `brauzeri`, `zemlje`, `sekcije` po strani sa `od_ukupno`, `kontakti_po_strani`, `ostali_klikovi`, `vreme_posete` (zbir kroz sve strane), `strana_po_poseti`, `vise_strana`, `vratili_se` |
 | Mejl | [api/izvestaj.js](api/izvestaj.js) | Sastavi HTML i pošalje preko Brevo na detailinglaker@gmail.com |
 | Raspored | `crons` u [vercel.json](vercel.json) | `/api/izvestaj` **svaki dan** u 10:00 UTC; kod šalje samo ponedeljkom |
+
+> ⚠️ **KVAR 2026-08-23 → 2026-09-03: mejl nije stizao jer je cron dobijao 401.** Kod je čekao zaglavlje
+> `x-vercel-cron`, koje **Vercel ne šalje** — šalje samo `x-vercel-cron-schedule` i, kad je podešen
+> `CRON_SECRET`, `Authorization: Bearer <CRON_SECRET>`. Odbijeni poziv ne ostavlja trag u
+> `security_audit_logs`, pa je izgledalo kao da cron ne radi. Lek: `CRON_SECRET` je **podešen u Vercel-u
+> 2026-09-03** (kopija u lokalnom `.env.local`, gitignored) i kod prihvata `x-vercel-cron-schedule` kao
+> rezervu. Ručno pokretanje sad može i sa `Authorization: Bearer <CRON_SECRET>` umesto `kljuc=`.
+> Pravilo ponavljanja: **ponedeljkom šalje uvek** (osim ako je uspešno slanje bilo pre <20h), ostalim
+> danima samo nadoknada ako je od poslednjeg uspeha prošlo >8 dana — ručna proba subotom ne pojede ponedeljak.
 
 **Zašto dnevni cron a ne nedeljni:** Hobby plan dozvoljava 2 crona i pravila oko učestalosti su labava, pa se dan bira u kodu (`danBeograda() === 1`). Vercel ume da zakasni do sat vremena. 10:00 UTC = **12h leti, 11h zimi** u Srbiji — tačniji sat nije moguć jer cron ide po UTC-u, a ne prati letnje računanje vremena.
 
@@ -399,7 +408,8 @@ Cron poziv prolazi i bez ključa (zaglavlje `x-vercel-cron`) **samo** kad `CRON_
 ### Održavanje
 - Sirovi događaji stariji od **120 dana** se brišu posle svakog uspešnog mejla (`ocisti()`).
 - Proba izgleda mejla bez slanja: `node tools-izvestaj-proba.js` → `proba-izvestaj.html`. Ne deployuje se.
-- Nove sekcije na sajtu se mere same (`section[id]`), ali im treba **ime na srpskom** u `IME_SEKCIJE` u [api/izvestaj.js](api/izvestaj.js), inače se u mejlu vidi goli id.
+- Nove sekcije na sajtu se mere same (`section[id]`, `.usl-block[id]`, `.usl-aside[id]`), ali im treba **ime na srpskom** u `IME_SEKCIJE` u [api/_izvestaj-mejl.js](api/_izvestaj-mejl.js), inače se u mejlu vidi goli id. Nova strana → `IME_STRANE` u istom fajlu + regex `STRANE` u `mera.js`.
+- Mejl sa primerom (`node tools-izvestaj-proba.js`) je ~87 KB; **Gmail seče preko ~102 KB** — ne dodavati sekcije bez ograničenja spiskova.
 - Novo dugme se meri ako mu se doda `data-click` iz spiska `VAZNI_DATA` u `assets/js/mera.js`; kontakt linkovi (`tel:`, `wa.me`, `mailto:`, Instagram) se hvataju sami.
 
 ---

@@ -102,11 +102,17 @@
     activateLoyalty: 'loyalty-aktivacija',
     openReviewModal: 'recenzija-otvorena',
     submitReview:    'recenzija-poslata',
-    ponuda_wa:       'ponuda-whatsapp'
+    ponuda_wa:       'ponuda-whatsapp',
+    togglePkInfo:    'paket-detalji'
   };
 
+  // Strane sajta (od renoviranja 2026-09). Klik na link ka nekoj od njih se
+  // beleži kao „ka:/putanja" — tako se vidi sa koje strane ljudi idu kuda.
+  var STRANE = /^\/(usluge|cenovnik|premium-pranje|detailing-auta|poliranje-laka|keramicka-zastita|poliranje-farova|loyalty-join)?(#|\?|$)/;
+  var VELICINE = ['mali', 'srednji', 'veliki', 'ekstra'];
+
   function sekcijaOd(el) {
-    var s = el && el.closest ? el.closest('section[id]') : null;
+    var s = el && el.closest ? el.closest('section[id], .usl-block[id], .usl-aside[id]') : null;
     return s ? s.id : 'ostalo';
   }
 
@@ -127,6 +133,17 @@
       else if (href.indexOf('tiktok.com') > -1)    ime = 'tiktok';
       else if (href.indexOf('maps.') > -1 || href.indexOf('goo.gl/maps') > -1 ||
                href.indexOf('maps.app') > -1)      ime = 'mapa';
+      else if (STRANE.test(href)) {
+        // Interni link: „ka:/cenovnik", „ka:/cenovnik#sastavi", „ka:/" (početna)
+        var cilj = href.split('?')[0].slice(0, 40);
+        if (cilj !== zajedno.p) ime = 'ka:' + cilj;
+      }
+    }
+
+    // Birač veličine vozila na cenovniku — koju kategoriju najviše biraju.
+    if (!ime) {
+      var sz = t.closest('.szbar .tb[data-sz]');
+      if (sz) ime = 'velicina:' + (VELICINE[Number(sz.getAttribute('data-sz'))] || sz.getAttribute('data-sz'));
     }
 
     if (!ime) {
@@ -154,7 +171,9 @@
       }
     }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
 
-    var sekcije = document.querySelectorAll('section[id]');
+    // Strane usluga nemaju <section id>, nego blokove .usl-block[id] i karticu
+    // cene .usl-aside[id] — mere se isto kao sekcije.
+    var sekcije = document.querySelectorAll('section[id], .usl-block[id], .usl-aside[id]');
     for (var i = 0; i < sekcije.length; i++) oko.observe(sekcije[i]);
   }
 
