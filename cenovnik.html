@@ -35,9 +35,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300i-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
-<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260902f">
-<link rel="stylesheet" href="/assets/css/laker.css?v=20260902f">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260902f">
+<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903a">
+<link rel="stylesheet" href="/assets/css/laker.css?v=20260903a">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903a">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -194,15 +194,21 @@
   <p class="sd">Cena zavisi samo od veličine vozila. Izaberite svoju kategoriju i sve cene na strani se prilagode. Na dnu sastavite svoju ponudu.</p>
 </div></div>
 
-<!-- ══ BIRAČ VELIČINE — menja SVE cene na strani ══ -->
+<!-- ══ BIRAČ VELIČINE — menja SVE cene na strani ══
+     Dugmad su .tb (JS i ot() ih traže po toj klasi) + .szp za izgled ovog birača.
+     Vlasnik 2026-09-03: bilo je presitno i nejasno — sada su četiri jednake
+     kartice sa imenom i dva poznata modela, a ispod stoji puni opis izabrane. -->
 <div class="szbar">
   <div class="ctn">
-    <span class="k">Veličina vozila</span>
-    <div class="tabs" id="szTabs" role="tablist" aria-label="Veličina vozila">
-      <button type="button" class="tb on" data-sz="0" role="tab" aria-selected="true">Mali</button>
-      <button type="button" class="tb" data-sz="1" role="tab" aria-selected="false">Srednji</button>
-      <button type="button" class="tb" data-sz="2" role="tab" aria-selected="false">Veliki</button>
-      <button type="button" class="tb" data-sz="3" role="tab" aria-selected="false">Ekstra</button>
+    <div class="sz-head">
+      <span class="k">Veličina vašeg vozila</span>
+      <span class="sz-note">Cene na celoj strani se menjaju</span>
+    </div>
+    <div class="tabs szpick" id="szTabs" role="tablist" aria-label="Veličina vozila">
+      <button type="button" class="tb szp on" data-sz="0" role="tab" aria-selected="true"><b>Mali</b><i>Polo, Clio</i></button>
+      <button type="button" class="tb szp" data-sz="1" role="tab" aria-selected="false"><b>Srednji</b><i>Golf, Juke</i></button>
+      <button type="button" class="tb szp" data-sz="2" role="tab" aria-selected="false"><b>Veliki</b><i>Passat, RAV4</i></button>
+      <button type="button" class="tb szp" data-sz="3" role="tab" aria-selected="false"><b>Ekstra</b><i>X5, kombi</i></button>
     </div>
     <span class="szhint" id="szHint">A i B klasa · Polo, Fabia, Clio, Fiesta</span>
   </div>
@@ -601,7 +607,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>65</b> · 2026-09-02</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>66</b> · 2026-09-03</span>
   </div>
 </footer>
 
@@ -813,11 +819,11 @@
   </div>
 </div>
 
-<script src="/assets/js/laker-ui.js?v=20260902f" defer></script>
-<script src="/main.min.js?v=20260902f" defer></script>
-<script src="/assets/js/auti.js?v=20260902f" defer></script>
-<script src="/assets/js/cenovnik.js?v=20260902f" defer></script>
-<script src="/init.js?v=20260902f" defer></script>
+<script src="/assets/js/laker-ui.js?v=20260903a" defer></script>
+<script src="/main.min.js?v=20260903a" defer></script>
+<script src="/assets/js/auti.js?v=20260903a" defer></script>
+<script src="/assets/js/cenovnik.js?v=20260903a" defer></script>
+<script src="/init.js?v=20260903a" defer></script>
 <script src="/assets/js/mera.js?v=3" defer></script>
 </body>
 </html>

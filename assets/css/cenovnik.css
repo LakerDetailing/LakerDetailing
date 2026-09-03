@@ -10,15 +10,51 @@
 
 /* ── LEPLJIVI BIRAČ VELIČINE VOZILA ─────────────────────────────────────────
    Menja SVE cene na strani odjednom. Stoji ispod fiksne navigacije, pa mu je
-   `top` visina nava; na telefonu je nav niži, pa se i ovo pomera. */
+   `top` visina nava; na telefonu je nav niži, pa se i ovo pomera.
+
+   Preuređen 2026-09-03 (vlasnik: „bas je sitno, ne vidi se lepo"). Ranije je
+   naslov jeo levu polovinu reda, pa su četiri dugmeta ostajala stisnuta desno
+   na 7,3–8 px sa razmaknutim VELIKIM slovima. Sada:
+     · naslov je u svom redu iznad,
+     · dugmad su mreža od četiri JEDNAKE kolone preko cele širine,
+     · tekst je normalnim slovima (bez uppercase i letter-spacinga koji su
+       trostruko širili reč i terali da se font smanjuje),
+     · u svakom dugmetu stoje i dva poznata modela, da čovek prepozna svoj auto
+       bez razmišljanja o klasama,
+     · ispod stoji puni opis izabrane veličine (#szHint puni cenovnik.js).
+   Kad se menja: dugme mora zadržati klasu .tb (traže je cenovnik.js i ot()). */
 .szbar{position:sticky;top:calc(68px + env(safe-area-inset-top));z-index:900;
-  background:rgba(8,8,8,.96);border-top:1px solid rgba(255,255,255,.06);
-  border-bottom:1px solid rgba(255,255,255,.06);padding:14px 0}
-body.light .szbar{background:rgba(244,242,238,.96);border-color:rgba(0,0,0,.08)}
-.szbar .ctn{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:0 70px}
-.szbar .k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);white-space:nowrap}
-.szbar .tabs{flex-wrap:wrap}
-.szhint{font-size:12px;color:var(--gray);font-weight:300}
+  background:rgba(8,8,8,.97);border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,42,42,.22);padding:13px 0 12px}
+body.light .szbar{background:rgba(244,242,238,.97);border-top-color:rgba(0,0,0,.08);border-bottom-color:rgba(255,42,42,.28)}
+.szbar .ctn{padding:0 70px}
+
+/* naslov birača — svoj red, da dugmad dobiju punu širinu */
+.sz-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.szbar .k{font-size:11px;letter-spacing:3.5px;text-transform:uppercase;color:var(--lgray);font-weight:600;white-space:nowrap}
+.sz-note{font-size:11.5px;color:var(--gray);font-weight:300;letter-spacing:.2px}
+
+/* mreža dugmadi — uvek četiri jednake kolone */
+.szbar .tabs.szpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:0}
+.szbar .szp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:10px 8px;background:var(--d2);border:1px solid rgba(255,255,255,.07);
+  text-transform:none;letter-spacing:0;font-size:inherit;transition:background .25s,border-color .25s,color .25s}
+body.light .szbar .szp{border-color:rgba(0,0,0,.09)}
+.szbar .szp b{font-size:16px;font-weight:600;letter-spacing:.2px;color:var(--white);line-height:1.15}
+.szbar .szp i{font-size:11.5px;font-style:normal;font-weight:300;color:var(--gray);line-height:1.2;white-space:nowrap}
+.szbar .szp:hover{background:var(--d3);border-color:rgba(255,42,42,.35)}
+.szbar .szp:hover b{color:var(--white)}
+/* Izabrano dugme: tekst je namerno TVRDO taman, ne var(--black) — u svetloj
+   temi je --black svetlo bež, pa bi na crvenoj podlozi ispao bledo (kontrast
+   3,3:1). Ovako je 5,6:1 u obe teme. Border je izdvojen i za svetlu temu jer
+   `body.light .szbar .szp` (0,3,1) inače pobedi `.szbar .szp.on` (0,3,0). */
+.szbar .szp.on{background:var(--gold);border-color:var(--gold)}
+body.light .szbar .szp.on{border-color:var(--gold)}
+.szbar .szp.on b{color:#0B0B0B}
+.szbar .szp.on i{color:rgba(0,0,0,.72)}
+
+/* puni opis izabrane veličine */
+.szhint{display:block;margin-top:8px;font-size:12.5px;color:var(--gray);font-weight:300;line-height:1.5}
 
 .pk-napomena{font-size:13px;color:var(--gray);max-width:340px;text-align:right;font-weight:300;line-height:1.75}
 
@@ -131,12 +167,24 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
   .cfg-r{position:static}
   .szbar .ctn{padding:0 30px}
 }
+@media(max-width:860px){
+  .szbar .szp b{font-size:15px}
+  .szbar .szp i{font-size:10.5px}
+}
 @media(max-width:768px){
   .pk-napomena{text-align:left;max-width:none}
-  .szbar{top:calc(64px + env(safe-area-inset-top));padding:11px 0}
-  .szbar .ctn{padding:0 16px;gap:12px}
-  .szbar .k{font-size:9px;letter-spacing:2.5px}
-  .szhint{width:100%;font-size:11px}
+  .szbar{top:calc(64px + env(safe-area-inset-top));padding:11px 0 10px}
+  .szbar .ctn{padding:0 16px}
+  .sz-head{margin-bottom:7px;gap:8px}
+  .szbar .k{font-size:10px;letter-spacing:2.2px}
+  /* Napomena se na telefonu ne prelama u svoj red — isto piše u uvodnom
+     pasusu iznad, a lepljiva traka bi dobila ceo red više visine. */
+  .sz-note{display:none}
+  .szbar .tabs.szpick{gap:5px}
+  .szbar .szp{padding:9px 3px;gap:2px}
+  .szbar .szp b{font-size:14px}
+  .szbar .szp i{font-size:9.5px}
+  .szhint{margin-top:8px;font-size:11.5px}
   .cfg-l,.cfg-r{padding:36px 24px}
   .cfg{margin-top:34px}
   .row2{grid-template-columns:1fr}
@@ -151,9 +199,17 @@ body.light .sum li{border-top-color:rgba(0,0,0,.08)}
 }
 @media(max-width:430px){
   .szbar{top:calc(60px + env(safe-area-inset-top))}
+  .szbar .ctn{padding:0 12px}
+  .szbar .szp b{font-size:13px}
+  .szbar .szp i{font-size:8.8px}
 }
 @media(max-width:390px){
   .szbar{top:calc(58px + env(safe-area-inset-top))}
+  /* Na najužim telefonima naslov i napomena jedno ispod drugog, da se
+     napomena ne prelama na pola reči. */
+  .sz-head{flex-direction:column;gap:2px}
+  .szbar .szp b{font-size:12.5px}
+  .szbar .szp i{font-size:8.3px}
 }
 
 

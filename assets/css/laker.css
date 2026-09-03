@@ -672,15 +672,8 @@ body.light .tbl td{border-top-color:rgba(0,0,0,.08)}
 .warn{border-left:2px solid var(--gold);padding:6px 0 6px 24px;font-size:14px;line-height:1.8;color:var(--mgray);font-weight:300}
 .warn b{color:var(--white);font-weight:500}
 
-/* donja traka na telefonu — samo 5 strana pojedinačnih usluga (početna ima .wa-stick; /usluge i /cenovnik je nemaju — odluka vlasnika 2026-09-02) */
-.dock{display:none}
-@media(max-width:768px){
-  .dock{display:grid;grid-template-columns:1fr 1fr;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:9996;padding-bottom:env(safe-area-inset-bottom)}
-  .dock a{padding:18px;text-align:center;font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;text-decoration:none}
-  .dock .wa{background:var(--gold);color:var(--black)}
-  .dock .tel{background:var(--d3);color:var(--white)}
-  body.ima-dock{padding-bottom:58px}
-}
+/* Donja traka „WhatsApp / Pozovi" (.dock) je UKLONJENA 2026-09-03 na zahtev vlasnika —
+   više je nema ni na jednoj strani usluga. Na početnoj ostaje .wa-stick. Ne vraćati. */
 
 @media(max-width:1100px){
   .us-grid{grid-template-columns:1fr 1fr}

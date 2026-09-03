@@ -103,6 +103,16 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Birač veličine vozila** (`.szbar` na cenovniku) menja sve odjednom: pakete, Loyalty
   (Mali/Srednji → 35 €/299 €, Veliki/SUV → 40 €/349 €), istaknutu kolonu u tabelama i kalkulator.
   Izbor auta u kalkulatoru sam postavlja tu veličinu.
+- **Izgled birača preuređen 2026-09-03** (vlasnik: „baš je sitno, ne vidi se lepo"). Naslov je u
+  svom redu, dugmad su mreža od četiri jednake kolone preko cele širine, tekst je normalnim slovima
+  (bez `text-transform:uppercase` i `letter-spacing`, koji su reč širili trostruko i terali font na
+  7,3–8 px), u svakom dugmetu stoje i dva poznata modela (`<b>` ime, `<i>` primeri), a ispod je
+  `#szHint` sa punim opisom izabrane veličine. Pravila su `.szbar .szp*` u
+  [assets/css/cenovnik.css](assets/css/cenovnik.css). **Dugme mora zadržati klasu `.tb`** — po njoj
+  ga traže `cenovnik.js` i `ot()`; `.szp` je samo za izgled. Tekstovi u `HINT` moraju stati u JEDAN
+  red na 320 px (~52 znaka), inače lepljiva traka poskoči pri promeni veličine. Boja teksta na
+  izabranom dugmetu je tvrdo `#0B0B0B`, ne `var(--black)` — u svetloj temi je `--black` svetlo bež,
+  pa bi na crvenom ispao na 3,3:1 kontrasta.
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
@@ -554,10 +564,13 @@ EXECUTE na trigerskim funkcijama oduzet od `public/anon/authenticated`. **Confir
 pri **prvoj prijavi posle potvrde** i tek tada šalje `loyalty_registration` mejl i GA event. Ne vraćati stari tok koji
 je pravio profil odmah posle signup-a — bez sesije bi tiho propao i član bi ostao bez imena, telefona i plana.
 
-**Donja traka „WhatsApp / Pozovi" (`.dock`) na telefonu stoji SAMO na 5 strana pojedinačnih usluga** — sa `/usluge` i
-`/cenovnik` je skinuta 2026-09-02 na zahtev vlasnika (smetala mu je dok skroluje). Početna ima `.wa-stick`.
+**Donja traka „WhatsApp / Pozovi" (`.dock`) je OBRISANA SA CELOG SAJTA 2026-09-03** — vlasnik: „ružna je i
+loše stoji". Prvo je 2026-09-02 skinuta sa `/usluge` i `/cenovnik`, a 2026-09-03 i sa svih 5 strana pojedinačnih
+usluga, zajedno sa klasom `body.ima-dock` i celim `.dock` blokom u [assets/css/laker.css](assets/css/laker.css).
+Nijedna strana usluga više nema traku na dnu. **Ne vraćati.** Početna i dalje ima plutajuće `.wa-stick` dugme —
+to je druga stvar i ostaje.
 
-**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 65.
+**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 66 (2026-09-03).
 
 **Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
 D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,
