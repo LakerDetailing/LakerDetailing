@@ -56,7 +56,10 @@
 
   // Veća usluga u sebi već sadrži manju — manja se gasi da se ne plati dvaput.
   var SADRZI = [
-    { veca: 'detailing', manje: ['pranje'], zasto: 'već ulazi u Detailing auta' }
+    // Impregnacija kože i plastike ulazi u Detailing auta (i u sva tri paketa),
+    // pa se ne može dodati još jednom — vlasnik 2026-09-03. Samostalno se i dalje
+    // naručuje, uz obično pranje, zato ostaje u USLUGE i u tabeli pojedinačnih cena.
+    { veca: 'detailing', manje: ['pranje', 'koza', 'plastika'], zasto: 'već ulazi u Detailing auta' }
   ];
 
   // Vraća { id: razlog } za sve usluge koje trenutno ne mogu da se izaberu.

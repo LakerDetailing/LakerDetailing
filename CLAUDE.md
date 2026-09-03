@@ -126,6 +126,13 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   „Detailing auta" gasi „Premium pranje" jer ga već sadrži. Sivi red se ne klikće; `dodajUslugu()`
   izbacuje manju uslugu kad se izabere veća, a `uskladi()` čisti staro stanje iz localStorage-a.
   Nova usluga koja se sa nečim ne slaže — dodaj je u `GRUPE`, ne piši novu granu koda.
+- **Impregnacija kože i plastike ULAZI u sva tri paketa i u „Detailing auta"** (vlasnik 2026-09-03:
+  „spada u clean paket, nemoj da navodiš onako da se doplaćuje"). Stoji kao stavka u Clean, Boost i
+  Laker paketu i u „Šta ulazi" na [detailing-auta.html](detailing-auta.html); blok „Impregnacija —
+  naplaćuje se posebno" je obrisan sa te strane. **Samostalno se i dalje naručuje** (25/40/45/50 €,
+  odluka vlasnika), pa ostaje u tabeli `#pojedinacne` — ali bez `prc-more` linka na /detailing-auta,
+  uz `.tbl-note` ispod tabele koji kaže da uz paket nema doplate. U kalkulatoru je `koza` i `plastika`
+  u `SADRZI` pod `detailing`, pa se posive kad se izabere „Detailing auta".
 - **„Detailing potkrila" nije zasebna cena** (izbačeno 2026-09-02, odluka vlasnika) — nema ga ni
   u tabeli `#pojedinacne` ni u kalkulatoru. U opisu paketa Clean, Boost i Laker **ostaje**.
 
@@ -570,7 +577,7 @@ usluga, zajedno sa klasom `body.ima-dock` i celim `.dock` blokom u [assets/css/l
 Nijedna strana usluga više nema traku na dnu. **Ne vraćati.** Početna i dalje ima plutajuće `.wa-stick` dugme —
 to je druga stvar i ostaje.
 
-**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 66 (2026-09-03).
+**Search Console:** „Request indexing" urađen 2026-09-02 za svih 8 URL-ova; IndexNow pingovan. Verzija 67 (2026-09-03).
 
 **Kategorije vozila — vlasnik potvrdio 2026-09-02.** Obična vozila idu po evropskom segmentu (A i B → Mali, C → Srednji,
 D/E/F → Veliki), a SUV i krosover po **dužini**, jer ih i evropska podela deli na JA–JF: do 4,35 m → Srednji (Juke, Captur,
