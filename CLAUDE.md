@@ -109,8 +109,8 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   7,3–8 px). **Doradjeno istog dana: u dugmetu su tri poznata auta u čipovima (`.szm`), a red
   `#szHint` je obrisan** — segmenti i metri se NE pišu nigde na sajtu (vlasnik: „ne mogu da mešam
   C klasu, to niko ne razume"). Na telefonu (`≤768px`) čipovi gube okvir i idu jedan ispod drugog,
-  a na `≤480px` se **drugi po redu krije** (`nth-child(2)`), pa ostaju parovi Polo,
-  Golf/B klasa, Passat/C klasa, X5/GLE — zato redosled u HTML-u nije proizvoljan. Pravila su `.szbar .szp*` u
+  a na `≤480px` se **drugi po redu krije** (`nth-child(2)`), pa ostaju parovi Polo/Corsa,
+  Golf/Rapid, Camry/Serija 5, X7/Macan — zato redosled u HTML-u nije proizvoljan. Pravila su `.szbar .szp*` u
   [assets/css/cenovnik.css](assets/css/cenovnik.css). **Dugme mora zadržati klasu `.tb`** — po njoj
   ga traže `cenovnik.js` i `ot()`; `.szp` je samo za izgled. Tekstovi u `HINT` moraju stati u JEDAN
   red na 320 px (~52 znaka), inače lepljiva traka poskoči pri promeni veličine. Boja teksta na
@@ -119,10 +119,12 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Primeri auta stoje na 6 mesta i moraju biti IDENTIČNI**: čipovi u biraču, napomena ispod
   tabela (`.prc-note`), `#cfgVelicina` u kalkulatoru, Loyalty kartica (`#loy-veh-sub` u
   [main.js](main.js) i `.loy-pick-sub`) i spisak cena na svih 5 strana usluga. Tekst je:
-  **Mali (Polo, Up) · Srednji (Golf, Serija 1, B klasa) · Veliki (Passat, Serija 3, C klasa) ·
-  Ekstra (X5, Touareg, GLE)**. Vlasnik 2026-09-03: primeri idu SAMO iz VW, BMW i Mercedes ponude.
-  Mali ima dva auta jer BMW i Mercedes tu nemaju model — BMW počinje od Serije 1 (Srednji), a
-  A klasa je od 2012 takođe Srednji; stavljati „A klasa" u Mali bi bilo netačno za novije. `KAT_PUN` u cenovnik.js nosi opis („kao Golf ili Astra"), koji
+  **Mali (Polo, Audi A2, Corsa) · Srednji (Golf, Peugeot 307, Rapid) · Veliki (Camry, CX-5,
+  Serija 5) · Ekstra (X7, Tiggo 8, Macan)** — spisak je vlasnikov izbor (2026-09-03), ne menjati
+  bez njega. Svaki primer mora stvarno da pada u tu kategoriju u [assets/js/auti.js](assets/js/auti.js);
+  provera: `node -e "global.window={};require('./assets/js/auti.js')..."`.
+  U čipovima je REDOSLED bitan — drugi po redu se krije na telefonu, pa na drugom mestu stoji
+  onaj koji sme da otpadne (Audi A2, Peugeot 307, CX-5, Tiggo 8), a ne najprepoznatljiviji. `KAT_PUN` u cenovnik.js nosi opis („kao Golf ili Astra"), koji
   mora imati smisla uz svaku karoseriju — stoji kao „opis · limuzina · crna".
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi

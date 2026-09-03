@@ -35,9 +35,9 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/cormorant-garamond-300i-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/inter-400-latin.woff2">
-<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903d">
-<link rel="stylesheet" href="/assets/css/laker.css?v=20260903d">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903d">
+<link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903e">
+<link rel="stylesheet" href="/assets/css/laker.css?v=20260903e">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260903e">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -206,10 +206,10 @@
       <span class="sz-note">Cene na celoj strani se menjaju</span>
     </div>
     <div class="tabs szpick" id="szTabs" role="tablist" aria-label="Veličina vozila">
-      <button type="button" class="tb szp on" data-sz="0" role="tab" aria-selected="true"><b>Mali</b><span class="szm"><span>Polo</span><span>Up</span></span></button>
-      <button type="button" class="tb szp" data-sz="1" role="tab" aria-selected="false"><b>Srednji</b><span class="szm"><span>Golf</span><span>Serija 1</span><span>B klasa</span></span></button>
-      <button type="button" class="tb szp" data-sz="2" role="tab" aria-selected="false"><b>Veliki</b><span class="szm"><span>Passat</span><span>Serija 3</span><span>C klasa</span></span></button>
-      <button type="button" class="tb szp" data-sz="3" role="tab" aria-selected="false"><b>Ekstra</b><span class="szm"><span>X5</span><span>Touareg</span><span>GLE</span></span></button>
+      <button type="button" class="tb szp on" data-sz="0" role="tab" aria-selected="true"><b>Mali</b><span class="szm"><span>Polo</span><span>Audi A2</span><span>Corsa</span></span></button>
+      <button type="button" class="tb szp" data-sz="1" role="tab" aria-selected="false"><b>Srednji</b><span class="szm"><span>Golf</span><span>Peugeot 307</span><span>Rapid</span></span></button>
+      <button type="button" class="tb szp" data-sz="2" role="tab" aria-selected="false"><b>Veliki</b><span class="szm"><span>Camry</span><span>CX-5</span><span>Serija 5</span></span></button>
+      <button type="button" class="tb szp" data-sz="3" role="tab" aria-selected="false"><b>Ekstra</b><span class="szm"><span>X7</span><span>Tiggo 8</span><span>Macan</span></span></button>
     </div>
   </div>
 </div>
@@ -380,7 +380,7 @@
         <div class="loy-card-glow"></div>
         <span class="loy-rec-badge">Laker Loyalty</span>
         <div class="loy-card-name">Uvek <em>sređen</em></div>
-        <div class="loy-card-sub" id="loy-veh-sub">Polo · Golf · Serija 1 · B klasa</div>
+        <div class="loy-card-sub" id="loy-veh-sub">Polo · Corsa · Golf · Rapid</div>
         <div class="loy-bill-toggle" style="margin-bottom:24px;width:fit-content">
           <button class="loy-bill-btn on" type="button" id="bill-god" data-click="selectLoyBill:god">Godišnje <span class="loy-bill-save-tag" id="bill-god-tag">−29%</span></button>
           <button class="loy-bill-btn" type="button" id="bill-mes" data-click="selectLoyBill:mes">Mesečno</button>
@@ -436,8 +436,8 @@
       <div class="prc-note">
         <p>
           <strong>Kategorije vozila</strong><br>
-          Mali — Polo, Up &nbsp;|&nbsp; Srednji — Golf, Serija 1, B klasa<br>
-          Veliki — Passat, Serija 3, C klasa &nbsp;|&nbsp; Ekstra — X5, Touareg, GLE, kombi i pikap<br><br>
+          Mali — Polo, Audi A2, Corsa &nbsp;|&nbsp; Srednji — Golf, Peugeot 307, Rapid<br>
+          Veliki — Camry, CX-5, Serija 5 &nbsp;|&nbsp; Ekstra — X7, Tiggo 8, Macan, kombi i pikap<br><br>
           Sve četiri kolone su vidljive, istaknuta je ona koju ste izabrali gore.
         </p>
       </div>
@@ -530,10 +530,10 @@
               <option value="v">Kombi / van</option>
             </select>
             <select class="sel" id="cfgVelicina" aria-label="Veličina vozila">
-              <option value="0">Mali (Polo, Up)</option>
-              <option value="1">Srednji (Golf, Serija 1, B klasa)</option>
-              <option value="2">Veliki (Passat, Serija 3, C klasa)</option>
-              <option value="3">Ekstra (X5, Touareg, GLE)</option>
+              <option value="0">Mali (Polo, Audi A2, Corsa)</option>
+              <option value="1">Srednji (Golf, Peugeot 307, Rapid)</option>
+              <option value="2">Veliki (Camry, CX-5, Serija 5)</option>
+              <option value="3">Ekstra (X7, Tiggo 8, Macan)</option>
             </select>
           </div>
         </div>
@@ -620,7 +620,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>71</b> · 2026-09-03</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>72</b> · 2026-09-03</span>
   </div>
 </footer>
 
@@ -757,10 +757,10 @@
             <p class="loy-lbl" style="margin-bottom:10px">Veličina vozila *</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" role="group" aria-label="Veličina vozila">
               <button type="button" id="lreg-sz-ms" data-click="selectLoySize:ms" class="loy-pick-btn active">
-                Mali / Srednji<span class="loy-pick-sub">Polo, Up, Golf, Serija 1, B klasa</span>
+                Mali / Srednji<span class="loy-pick-sub">Polo, Corsa, Golf, Peugeot 307, Rapid</span>
               </button>
               <button type="button" id="lreg-sz-vs" data-click="selectLoySize:vs" class="loy-pick-btn">
-                Veliki / SUV<span class="loy-pick-sub">Passat, C klasa, X5, Touareg, kombi</span>
+                Veliki / SUV<span class="loy-pick-sub">Camry, CX-5, Serija 5, X7, kombi</span>
               </button>
             </div>
             <input type="hidden" id="lreg-size" value="ms">
@@ -832,11 +832,11 @@
   </div>
 </div>
 
-<script src="/assets/js/laker-ui.js?v=20260903d" defer></script>
-<script src="/main.min.js?v=20260903d" defer></script>
-<script src="/assets/js/auti.js?v=20260903d" defer></script>
-<script src="/assets/js/cenovnik.js?v=20260903d" defer></script>
-<script src="/init.js?v=20260903d" defer></script>
+<script src="/assets/js/laker-ui.js?v=20260903e" defer></script>
+<script src="/main.min.js?v=20260903e" defer></script>
+<script src="/assets/js/auti.js?v=20260903e" defer></script>
+<script src="/assets/js/cenovnik.js?v=20260903e" defer></script>
+<script src="/init.js?v=20260903e" defer></script>
 <script src="/assets/js/mera.js?v=4" defer></script>
 </body>
 </html>
