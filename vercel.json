@@ -71,6 +71,10 @@
       "destination": "/demo-paketi.html"
     },
     {
+      "source": "/demo-telefon",
+      "destination": "/demo-telefon.html"
+    },
+    {
       "source": "/demo-cenovnik",
       "destination": "/demo-cenovnik.html"
     },

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Telefon — Cenovnik i Usluge (demo)</title>
+<meta name="description" content="Demo: kako Cenovnik i Usluge mogu da izgledaju na telefonu.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/icons/favicon.ico" sizes="32x32">
+<meta name="theme-color" content="#080808">
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<style>
+/* ── Demo je NAMERNO samostalan: ne učitava laker.css, da se vidi samo ideja
+   rasporeda za telefon. Boje i fontovi su isti kao na sajtu. ── */
+:root{
+  --gold:#FF2A2A;--gold2:#FF5C5C;
+  --black:#000000;--d1:#080808;--d2:#0E0E0E;--d3:#141414;--d4:#1C1C1C;
+  --gray:#8A8A8A;--mgray:#A0A0A0;--lgray:#C4C4C4;--white:#F4F4F4;
+  --line:rgba(255,255,255,.09);
+  --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+}
+body.light{
+  --black:#F5F4F2;--d1:#ECEAE7;--d2:#E2DFDB;--d3:#D8D4CF;--d4:#CEC9C3;
+  --gray:#6E6A66;--mgray:#4A4642;--lgray:#1C1A18;--white:#161412;
+  --line:rgba(0,0,0,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{font-family:var(--sans);background:var(--black);color:var(--white);-webkit-font-smoothing:antialiased;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:430px;margin:0 auto;min-height:100vh;background:var(--black);position:relative}
+@media(min-width:600px){body{background:#1a1a1a}.wrap{box-shadow:0 0 0 1px #333,0 30px 80px rgba(0,0,0,.6)}body.light{background:#c9c5bf}}
+
+/* ── demo traka (nije deo sajta) ── */
+.dbar{position:sticky;top:0;z-index:50;background:#1f1f1f;color:#ddd;font-size:11px;display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #333}
+.dbar .tag{background:var(--gold);color:#000;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:9px;padding:3px 7px}
+.dbar .pg{margin-left:auto;display:flex;gap:2px}
+.dbar .pg button{padding:6px 12px;background:#2c2c2c;color:#bbb;font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.dbar .pg button.on{background:var(--gold);color:#000;font-weight:700}
+.dbar .th{padding:6px 9px;background:#2c2c2c;color:#bbb;font-size:12px}
+
+/* ── glava sajta (simulacija: krije se pri skrolu nadole) ── */
+.nav{position:sticky;top:33px;z-index:40;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:var(--black);border-bottom:1px solid var(--line);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+body.hide-nav .nav{transform:translateY(-100%)}
+.nav .lg{display:flex;flex-direction:column;line-height:1}
+.nav .lg b{font-family:var(--sans);font-size:17px;letter-spacing:5px;font-weight:700}
+.nav .lg span{font-size:8px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:3px;font-weight:600}
+.nav .bg{width:38px;height:30px;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.nav .bg i{display:block;height:1.5px;background:var(--white)}
+
+/* ── zajedničko ── */
+.sec{padding:34px 18px}
+.crumb{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
+.crumb b{color:var(--white);font-weight:500}
+.k{font-size:10px;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:12px}
+.k::before{content:'';width:26px;height:1px;background:var(--gold)}
+h1,h2.sh{font-family:var(--serif);font-weight:300;line-height:1;letter-spacing:-1px;margin-top:12px}
+h1{font-size:38px}
+h2.sh{font-size:32px}
+h1 em,h2.sh em{font-style:italic;color:var(--gold)}
+.lead{font-size:14px;line-height:1.65;color:var(--mgray);font-weight:300;margin-top:12px}
+.opis{font-size:12px;line-height:1.6;color:var(--gray);margin-top:10px;padding:10px 12px;border-left:2px solid var(--gold);background:var(--d2)}
+.opis b{color:var(--white);font-weight:500}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;font-size:10.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;border:1px solid rgba(255,42,42,.5);color:var(--gold);width:100%}
+.btn.f{background:var(--gold);color:#000;border-color:var(--gold)}
+
+/* ── varijante: prekidač ── */
+.var{display:flex;gap:2px;margin:18px 0 14px;background:var(--d2);padding:3px}
+.var button{flex:1;padding:9px 6px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);font-weight:500}
+.var button.on{background:var(--d4);color:var(--white)}
+.var button b{display:block;font-size:9px;letter-spacing:0;text-transform:none;color:var(--gray);font-weight:400;margin-top:2px}
+div[data-v]{display:none}div[data-v].show{display:block}
+
+/* ══ CENOVNIK ══ */
+/* lepljivi birač — jedan red, ~48px */
+.szbar{position:sticky;top:93px;z-index:30;background:var(--black);border-bottom:1px solid rgba(255,42,42,.35);padding:8px 14px;transition:top .35s cubic-bezier(.2,.8,.2,1)}
+body.hide-nav .szbar{top:33px}
+.szbar .row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.szbar .row button{padding:10px 2px;background:var(--d3);font-size:13px;font-weight:600;letter-spacing:.2px;color:var(--lgray);border:1px solid transparent;position:relative}
+.szbar .row button.on{background:var(--gold);color:#0B0B0B}
+.szbar .row button small{display:block;font-size:9px;font-weight:400;color:var(--gray);margin-top:2px;letter-spacing:0;white-space:nowrap}
+.szbar .row button.on small{color:#0B0B0B;opacity:.7}
+.szbar .lab{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;display:flex;justify-content:space-between}
+.szbar .lab span{color:var(--gray);letter-spacing:0;text-transform:none;font-size:10px}
+/* kad je ekran skrolovan — sasvim tanak (čipovi i naslov se kriju) */
+body.scrolled .szbar .lab,body.scrolled .szbar small{display:none}
+body.scrolled .szbar .row button{padding:9px 2px}
+
+/* paket — varijanta B: kompaktna kartica */
+.pk{background:var(--d2);padding:22px 18px 20px;margin-top:2px;position:relative}
+.pk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.pk-name{font-family:var(--serif);font-size:34px;font-weight:300;line-height:.95;letter-spacing:-1px}
+.pk-name em{font-style:italic;color:var(--gold)}
+.pk-sub{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-top:6px}
+.pk-price{text-align:right;line-height:1}
+.pk-price b{font-family:var(--serif);font-size:38px;font-weight:300;color:var(--gold);letter-spacing:-1px}
+.pk-price b sup{font-size:16px;vertical-align:top;margin-right:1px;top:6px;position:relative}
+.pk-price small{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:5px}
+.pk-tag{position:absolute;top:0;left:18px;transform:translateY(-50%);background:var(--gold);color:#000;font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;padding:4px 10px}
+.pk-sizes{display:flex;gap:4px;margin-top:14px}
+.pk-sizes span{flex:1;text-align:center;font-size:10.5px;padding:6px 0;background:var(--d3);color:var(--gray);font-variant-numeric:tabular-nums}
+.pk-sizes span b{display:block;font-family:var(--serif);font-size:16px;font-weight:400;color:var(--lgray);margin-top:1px}
+.pk-sizes span.on{background:rgba(255,42,42,.14);color:var(--gold);box-shadow:inset 0 0 0 1px rgba(255,42,42,.5)}
+.pk-sizes span.on b{color:var(--gold)}
+.pk-ul{list-style:none;margin-top:14px;border-top:1px solid var(--line)}
+.pk-ul li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--lgray);line-height:1.35}
+.pk-ul li::before{content:'◆';color:var(--gold);font-size:7px;flex:none}
+.pk-ul li span{flex:1}
+.pk-ul li i{flex:none;width:22px;height:22px;border:1px solid rgba(255,42,42,.45);color:var(--gold);font-style:normal;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1}
+.pk-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.pk-dur{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);white-space:nowrap}
+.pk-foot .btn{width:auto;padding:11px 12px;font-size:9.5px;letter-spacing:2px;white-space:nowrap}
+
+/* paket — varijanta C: tabovi, jedan paket na ekranu */
+.pk-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:4px}
+.pk-tabs button{padding:12px 4px;background:var(--d2);color:var(--gray);font-family:var(--serif);font-size:22px;font-weight:300;line-height:1;border-bottom:2px solid transparent}
+.pk-tabs button small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.5px;color:var(--gray);margin-top:5px}
+.pk-tabs button.on{color:var(--white);border-bottom-color:var(--gold);background:var(--d3)}
+.pk-tabs button.on small{color:var(--gold)}
+.pk-pane{display:none}.pk-pane.on{display:block}
+.pk-hint{font-size:10.5px;color:var(--gray);text-align:center;margin-top:10px;letter-spacing:.3px}
+
+/* pojedinačne — B: red po usluzi */
+.tabs3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:16px}
+.tabs3 button{padding:11px 4px;font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;background:var(--d2);color:var(--gray);font-weight:600}
+.tabs3 button.on{background:var(--gold);color:#0B0B0B}
+.lst{list-style:none;margin-top:2px;background:var(--d2);padding:4px 16px}
+.lst li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.lst li:last-child{border-bottom:0}
+.lst .n{font-size:14px;color:var(--white);line-height:1.3}
+.lst .o{font-size:10.5px;color:var(--gray);margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:.2px}
+.lst .o b{font-weight:500;color:var(--mgray)}
+.lst .p{font-family:var(--serif);font-size:24px;font-weight:400;color:var(--gold);white-space:nowrap;letter-spacing:-.5px}
+
+/* pojedinačne — C: tabela sa 4 kolone kao na računaru */
+.tbl{width:100%;border-collapse:collapse;margin-top:2px;background:var(--d2);font-variant-numeric:tabular-nums}
+.tbl th{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);font-weight:600;padding:12px 4px 8px;text-align:center}
+.tbl th:first-child{text-align:left;padding-left:14px}
+.tbl td{padding:11px 4px;border-top:1px solid var(--line);font-size:13px;text-align:center;font-family:var(--serif);font-size:17px;color:var(--lgray)}
+.tbl td:first-child{text-align:left;padding-left:14px;font-family:var(--sans);font-size:12.5px;color:var(--white);line-height:1.3;width:46%}
+.tbl .hi{background:rgba(255,42,42,.1);color:var(--gold)}
+.tbl th.hi{color:var(--gold)}
+.tbl-note{font-size:10.5px;color:var(--gray);padding:10px 14px 12px;background:var(--d2);line-height:1.5}
+
+/* kalkulator — sažeto, samo lepljiva traka na dnu */
+.calc{background:var(--d2);padding:20px 18px 120px;margin-top:2px}
+.calc .in{background:var(--d3);padding:14px 16px;font-size:15px;color:var(--gray);margin-top:8px;border:1px solid var(--line)}
+.calc .ck{list-style:none;margin-top:14px}
+.calc .ck li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--lgray)}
+.calc .ck li i{width:20px;height:20px;border:1px solid var(--line);flex:none;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.calc .ck li.on i{background:var(--gold);border-color:var(--gold);color:#000}
+.calc .ck li.on{color:var(--white)}
+.calc .ck li b{margin-left:auto;font-weight:400;color:var(--gray);font-variant-numeric:tabular-nums}
+.calc .ck li.on b{color:var(--gold)}
+.sum{position:sticky;bottom:0;z-index:20;margin:0 -18px -120px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--black);border-top:1px solid rgba(255,42,42,.4);display:flex;align-items:center;gap:14px}
+.sum .t{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gray)}
+.sum .v{font-family:var(--serif);font-size:30px;color:var(--gold);line-height:1;letter-spacing:-1px}
+.sum .btn{flex:1;padding:13px 10px;font-size:9.5px;letter-spacing:2px}
+
+/* ══ USLUGE ══ */
+/* B: niže kartice */
+.usB{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.usB a{background:var(--d2);padding:20px 18px 16px;display:block}
+.usB .k2{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.usB h3{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1;letter-spacing:-.5px;margin-top:8px}
+.usB p{font-size:12.5px;line-height:1.55;color:var(--mgray);margin-top:8px;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.usB .pr{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.usB .pr b{font-family:var(--serif);font-size:24px;font-weight:300}
+.usB .pr b small{font-family:var(--sans);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-left:7px}
+.usB .pr span{font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+/* C: spisak */
+.usC{background:var(--d2);margin-top:4px}
+.usC a{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--line)}
+.usC a:last-child{border-bottom:0}
+.usC .k2{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.usC h3{font-family:var(--serif);font-size:23px;font-weight:300;line-height:1;margin-top:5px;letter-spacing:-.4px}
+.usC p{font-size:11.5px;color:var(--gray);margin-top:5px;line-height:1.4;font-weight:300}
+.usC .p{font-family:var(--serif);font-size:22px;font-weight:300;white-space:nowrap;text-align:right}
+.usC .p small{display:block;font-family:var(--sans);font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-top:3px}
+.usC .ar{color:var(--gold);font-size:18px}
+/* D: mreža 2×2 */
+.usD{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:4px}
+.usD a{background:var(--d2);padding:18px 14px;min-height:150px;display:flex;flex-direction:column}
+.usD a.w{grid-column:1/-1;min-height:0;flex-direction:row;align-items:center;gap:12px}
+.usD .k2{font-size:8px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600}
+.usD h3{font-family:var(--serif);font-size:22px;font-weight:300;line-height:1;margin-top:8px;letter-spacing:-.4px;flex:1}
+.usD a.w h3{flex:1;margin-top:0}
+.usD .p{font-family:var(--serif);font-size:20px;margin-top:12px;font-weight:300}
+.usD a.w .p{margin-top:0}
+.usD .p small{font-family:var(--sans);font-size:8.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray);margin-left:6px}
+.usD .ar{color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
+.foot{padding:30px 18px 50px;color:var(--gray);font-size:11px;line-height:1.7;border-top:1px solid var(--line);margin-top:30px}
+.foot b{color:var(--white);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="dbar">
+  <span class="tag">Demo</span>
+  <span>telefon</span>
+  <div class="pg">
+    <button class="on" data-page="cen">Cenovnik</button>
+    <button data-page="usl">Usluge</button>
+    <button class="th" id="th" aria-label="Tema">◐</button>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="lg"><b>LAKER</b><span>Detailing Studio</span></div>
+  <div class="bg"><i></i><i></i></div>
+</div>
+
+<!-- ═══════════════════════════════════ CENOVNIK ═══════════════════════════════ -->
+<div id="pg-cen" class="page">
+
+<div class="sec" style="padding-bottom:22px">
+  <div class="crumb">Početna &nbsp;/&nbsp; <b>Cenovnik</b></div>
+  <div class="k">Cenovnik</div>
+  <h1>Sve usluge <em>&amp; cene</em></h1>
+  <p class="lead">Cena zavisi samo od veličine vozila. Izaberite svoju i sve cene se prilagode.</p>
+  <div class="opis">Naslov u jednom redu, uvod u dva. <b>Meni se sklanja</b> kad skrolujete nadole i vraća se kad skrolujete nagore. Birač je jedan red i dok skrolujete postaje još tanji.</div>
+</div>
+
+<div class="szbar">
+  <div class="lab">Veličina vašeg vozila <span>klik menja sve cene</span></div>
+  <div class="row" id="sz">
+    <button data-k="0">Mali<small>Polo · Corsa</small></button>
+    <button data-k="1" class="on">Srednji<small>Golf · Rapid</small></button>
+    <button data-k="2">Veliki<small>Camry · Serija 5</small></button>
+    <button data-k="3">Ekstra<small>X7 · Macan</small></button>
+  </div>
+</div>
+
+<!-- PAKETI -->
+<div class="sec" style="padding-bottom:0">
+  <div class="k">Paketi</div>
+  <h2 class="sh">Tri nivoa <em>savršenstva</em></h2>
+  <div class="var" data-group="pk">
+    <button class="on" data-v="pkB">B<b>kompaktne kartice</b></button>
+    <button data-v="pkC">C<b>jedan paket na ekranu</b></button>
+  </div>
+</div>
+
+<div data-v="pkB" class="show" style="padding:0 18px">
+  <div class="opis" style="margin:0 0 12px">Sve tri kartice ostaju, ali svaka stane u <b>jedan i po ekran</b> umesto u četiri: cena je pored imena, četiri veličine u jednom redu, stavke bez podvlačenja i strelica.</div>
+  <div id="pkB-list"></div>
+</div>
+
+<div data-v="pkC" style="padding:0 18px">
+  <div class="opis" style="margin:0 0 12px">Clean / Boost / Laker su <b>tabovi</b> — vidi se jedan paket, prelazi se dodirom ili prevlačenjem. Kao tri kolone na računaru, samo jedna po jedna. Najkraća strana.</div>
+  <div class="pk-tabs" id="pk-tabs">
+    <button data-p="0" class="on">Clean<small>od 99 €</small></button>
+    <button data-p="1">Boost<small>od 249 €</small></button>
+    <button data-p="2">Laker<small>od 499 €</small></button>
+  </div>
+  <div id="pkC-list"></div>
+  <div class="pk-hint">← prevucite prstom za sledeći paket →</div>
+</div>
+
+<!-- POJEDINAČNE -->
+<div class="sec" style="padding-bottom:0">
+  <div class="k">Pojedinačne usluge</div>
+  <h2 class="sh">Cene po <em>usluzi</em></h2>
+  <div class="var" data-group="tb">
+    <button class="on" data-v="tbB">B<b>red po usluzi</b></button>
+    <button data-v="tbC">C<b>tabela kao na računaru</b></button>
+  </div>
+</div>
+
+<div data-v="tbB" class="show" style="padding:0 18px">
+  <div class="opis" style="margin:0">Ime i <b>cena za vašu veličinu</b> u jednom redu; ostale tri veličine sitno ispod imena. Sve cene se vide, a spisak je tri puta kraći nego sada.</div>
+  <div class="tabs3" id="tb3B"><button class="on" data-t="0">Eksterijer</button><button data-t="1">Enterijer</button><button data-t="2">Poliranje &amp; zaštita</button></div>
+  <div id="tbB-list"></div>
+</div>
+
+<div data-v="tbC" style="padding:0 18px">
+  <div class="opis" style="margin:0">Ista tabela kao na računaru, samo uža: ime u prvoj koloni, četiri cene desno, <b>izabrana kolona obojena</b>. Sve se vidi odjednom.</div>
+  <div class="tabs3" id="tb3C"><button class="on" data-t="0">Eksterijer</button><button data-t="1">Enterijer</button><button data-t="2">Poliranje &amp; zaštita</button></div>
+  <div id="tbC-list"></div>
+</div>
+
+<!-- SASTAVI SAM -->
+<div class="sec" style="padding-bottom:0">
+  <div class="k">Sastavi sam</div>
+  <h2 class="sh">Vaš auto, <em>vaša ponuda</em></h2>
+  <div class="opis" style="margin-top:14px">Kalkulator ostaje kakav jeste. Jedina ideja: dok štiklirate, <b>zbir i dugme stoje zalepljeni na dnu</b> ekrana, pa ne morate da skrolujete do „Vaša ponuda" da vidite koliko je. Ovo je unutar kalkulatora, nije ona donja traka koju smo obrisali.</div>
+</div>
+<div class="calc">
+  <div class="k" style="font-size:9px">1 &nbsp; Vaš auto</div>
+  <div class="in">Ukucajte marku i model — npr. golf</div>
+  <div class="k" style="font-size:9px;margin-top:18px">2 &nbsp; Usluge</div>
+  <ul class="ck" id="ck">
+    <li class="on"><i>✓</i>Detailing auta<b data-c="99,110,130,145"></b></li>
+    <li><i></i>Ručno premium pranje<b data-c="20,25,30,35"></b></li>
+    <li class="on"><i>✓</i>Dvoslojno poliranje<b data-c="140,150,170,195"></b></li>
+    <li><i></i>Keramička zaštita (1 sloj)<b data-c="140,140,205,235"></b></li>
+    <li><i></i>Nano-Glass All<b data-c="50,55,65,80"></b></li>
+    <li><i></i>Poliranje i zaštita farova<b data-c="25,25,25,25"></b></li>
+  </ul>
+  <div class="sum"><div><div class="t">Ukupno</div><div class="v" id="sumv">—</div></div><a class="btn f" href="#">Pošalji na WhatsApp →</a></div>
+</div>
+
+</div><!-- /pg-cen -->
+
+<!-- ═══════════════════════════════════ USLUGE ═══════════════════════════════ -->
+<div id="pg-usl" class="page" hidden>
+
+<div class="sec" style="padding-bottom:10px">
+  <div class="crumb">Početna &nbsp;/&nbsp; <b>Usluge</b></div>
+  <div class="k">Sve usluge</div>
+  <h1>Izaberite <em>uslugu</em></h1>
+  <div class="var" data-group="us">
+    <button class="on" data-v="usB">B<b>niže kartice</b></button>
+    <button data-v="usC">C<b>spisak</b></button>
+    <button data-v="usD">D<b>mreža</b></button>
+  </div>
+</div>
+
+<div data-v="usB" class="show" style="padding:0 18px">
+  <div class="opis" style="margin:0 0 4px">Iste kartice, samo <b>upola niže</b>: naslov manji, opis u dva reda, cena i „Detaljnije" u istom redu. Dve i po stanu na ekran, pa se vidi da je ovo izbor između pet stvari.</div>
+  <div class="usB" id="usB-list"></div>
+</div>
+<div data-v="usC" style="padding:0 18px">
+  <div class="opis" style="margin:0 0 4px">Pet <b>redova</b> kao meni u restoranu: naziv, jedna rečenica, cena desno, strelica. Svih pet usluga na jednom ekranu, bez skrolovanja.</div>
+  <div class="usC" id="usC-list"></div>
+</div>
+<div data-v="usD" style="padding:0 18px">
+  <div class="opis" style="margin:0 0 4px">Mreža <b>dve po dve</b> kao na računaru (peta preko cele širine). Najviše liči na desktop, ali nema mesta za opis — samo naziv i cena.</div>
+  <div class="usD" id="usD-list"></div>
+</div>
+
+</div><!-- /pg-usl -->
+
+<div class="foot">
+  <b>Šta je ovde samo demo:</b> podaci su prepisani sa sajta, dugmad ne vode nigde, „+" ne otvara detalje. Boje, fontovi i cene su pravi. Ako se nešto od ovoga izabere, ide u <b>mobilni CSS</b> postojećih strana — računar se ne dira.
+</div>
+
+</div><!-- /wrap -->
+<script src="/assets/js/demo-telefon.js"></script>
+</body>
+</html>
