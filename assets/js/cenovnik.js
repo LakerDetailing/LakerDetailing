@@ -418,7 +418,7 @@
       var u = USLUGE[i];
       if (u.g !== grupa) {
         grupa = u.g;
-        var g = e('li', 'g', grupa);
+        var g = e('li', 'g', grupa); g.setAttribute('role', 'presentation'); // ul je role=group, pa goli li ne sme da bude listitem
         g.style.cursor = 'default';
         g.style.borderTop = '0';
         cfgL.appendChild(g);
