@@ -362,7 +362,7 @@ function vrati() {
 /* ─────────────── ciscenje starih ─────────────── */
 /* Brise samo fajlove koje je ova skripta napravila (pocinju na "g-"), a koje vise
    niko ne koristi. Gleda se NOVI index.html plus sve ostale strane sajta —
-   zato work1/work2/logo i slicno nikad ne mogu da nestanu. */
+   zato logo-dark/logo-light i slicno nikad ne mogu da nestanu. */
 function nadjiZaBrisanje(stavke, noviIndex) {
   const zadrzi = new Set();
   stavke.forEach(s => {

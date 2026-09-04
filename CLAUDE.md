@@ -57,17 +57,18 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 | `robots.txt` | Blokira admin i api, linkuje sitemap |
 | `offline.html` | PWA offline fallback |
 | `radovi.html` | „Sajt u radovima" — spremna, prekidač UGAŠEN. Vidi sekciju **Prekidač „u radovima"** |
-| `assets/` | Slike: hero (900/1100/1600 .jpg+.webp), gallery (work1-3, path2, wheel), icons |
+| `assets/` | Slike: hero (900/1100/1600 .avif+.webp), `gallery/` (samo `g-*` iz galerije + `logo-dark/light`), icons |
+| `demo-telefon.html` + `assets/js/demo-telefon.js` | Jedina preostala demo strana (`/demo-telefon`, noindex, `no-store`) — varijante mobilnog rasporeda iz 2026-09-03. **Ostalih 9 demo strana (`demo*.html`, `laker-base.css`, `laker-demo.css`, `demo-reveal.js`, `tools-demo-build.js`, slike `work1-3`/`gallery-wheel`) je obrisano 2026-09-04** — bile su iz vremena pre renoviranja, učitavale nepostojeći `laker-usluga.css` i stari `init.js`, a generator više nije mogao da radi jer sekcija `#proc` ne postoji |
 | `supabase/*.sql` | SQL migracije (samo referenca, ne deployuju se) |
 
 ### Slike — važno
 Sve slike u HTML-u koriste `<picture>` tag:
-- Hero: AVIF (`hero-900/1100/1600.avif`) + WebP + JPG fallback; preload u head-u je AVIF
+- Hero: AVIF (`hero-900/1100/1600.avif`) + WebP; **fallback je WebP, ne JPG** — `hero-*.jpg` su u `.gitignore` i `.vercelignore` (od 2026-09-04 više nisu ni u gitu, samo na disku). Preload u head-u je AVIF
 - Galerija: WebP srcset `*-480.webp 480w` + `*.webp 900w` + `-opt.jpg` fallback; AVIF za galeriju NE koristiti — zrnaste fotke, AVIF ispada veći od WebP
-- Logo: `laker-logo.webp` + `laker-logo-opt.jpg`
+- Logo: `assets/icons/laker-logo-2.avif` + `laker-logo-2.webp` + `laker-logo-2-opt.jpg`
 - `favicon.svg` je UKLONJEN (bio je 486KB lažni SVG sa base64 PNG) — koriste se .ico/.png ikone
 
-Originalne neoptimizovane slike (work1.jpg, work2.jpg, gallery-wheel.jpeg, itd.) su u `.gitignore` — ne idu na Vercel.
+Originalne neoptimizovane slike (hero-orig.jpg, hero-*.jpg, itd.) su u `.gitignore` — ne idu na Vercel.
 
 ---
 
@@ -212,7 +213,7 @@ Sekcija `#cs` („Premium estetika") se **generiše skriptom**, ne piše se ruko
 
 **Pravila koja skripta poštuje (ne kvariti ih):**
 - **Rotacija:** ffmpeg sam primeni EXIF orijentaciju (fotke sa telefona), pa se `width`/`height` čitaju sa **gotove** slike, nikad sa originala — inače bi uspravne fotke dobile ležeći odnos
-- **Brisanje:** briše samo `g-*` fajlove kojih nema ni u novom index.html ni u ostalim `.html` stranama. `work1/work2/work3/gallery-wheel` koristi `demo-o-nama.html` — zato nikad ne nestaju
+- **Brisanje:** briše samo `g-*` fajlove kojih nema ni u novom index.html ni u ostalim `.html` stranama. `logo-dark/logo-light` koristi index.html van markera — zato nikad ne nestaju
 - **Prazan folder = stop**, ništa se ne menja. Smanjenje broja slika traži izričitu potvrdu
 - Verziju (`CACHE_VERSION` + footer) podiže sama; `git pull --rebase` ide sa `autoStash`
 
@@ -241,7 +242,7 @@ Vlasnik je odbio i poravnate redove: sa mešanim oblicima („jedna šira, jedna
 
 - `.izl-bg`, `data-mini`, `SIRINA_MUTNA` i pravljenje `-blur.webp` (2026-08-22). Stare `-blur.webp` datoteke briše samo čišćenje u `tools-galerija.js` pri prvom sledećem pokretanju
 - `podeliURedove()`, `SIRINA_TRAKE`, `CILJNA_VISINA` u `tools-galerija.js` — nema više računanja redova
-- `.cs-row`, `.cs-pair`, `.cs-card` i `--ar` u [index.html](index.html). Ista imena **ostaju** u `assets/css/laker-base.css` i na demo stranama — njih ne dirati
+- `.cs-row`, `.cs-pair`, `.cs-card` i `--ar` u [index.html](index.html) (stare demo strane i `laker-base.css` koje su ih još nosile obrisane su 2026-09-04)
 - Pravilo „najšira slika ide poslednja" (važilo je samo za parove na telefonu)
 - Redosled slika u `galerija/` sada je **slobodan** — bira samo koja se prva prikazuje
 
@@ -443,6 +444,8 @@ Cron poziv prolazi i bez ključa (zaglavlje `x-vercel-cron`) **samo** kad `CRON_
 Recenzije sa Google Mapa stižu u admin panel; vlasnik klikom bira koje se prikazuju
 u sekciji `#tst`. Izbor može da menja koliko god puta — ništa se ne briše.
 
+> ⚠️ **Sekcija `#tst` je izbačena sa početne 2026-09-02**, pa se izabrane recenzije trenutno **nigde ne prikazuju** — admin deo i baza rade, `loadReviews()` se sam gasi kad nema `#tst-dynamic`. Da se vrate na sajt, treba ponovo markup sekcije (vlasnikova odluka).
+
 | Deo | Fajl | Šta radi |
 |---|---|---|
 | Povlačenje | [api/_google.js](api/_google.js) | Dva izvora, isti oblik podataka na izlazu |
@@ -554,7 +557,7 @@ Dashboard: https://vercel.com/laker-detailing-s-projects/laker-detailing/analyti
 - Custom cursor isključen na touch uređajima (`@media (hover:none)`)
 - PWA push notifikacije rade — setup u `PWA_PUSH_SETUP.md` (lokalno, ne u repo)
 - **Baner „Dozvoli obaveštenja“ je UGAŠEN (2026-08-22, odluka vlasnika)** — posetiocu se više ne pojavljuje ništa i `Notification.requestPermission()` se ne poziva. Ugašen je uklanjanjem JEDINOG poziva `showPushBanner()` u [init.js](init.js) (blok „BANER ZA OBAVESTENJA“); markup `#pwaPushBanner`, `subscribeForPush()` i `api/push-*.js` ostaju netaknuti, pa ko je ranije uključio obaveštenja i dalje ih dobija, a paljenje je jedan red koda. Ne mešati sa banerom „Nova verzija spremna“ (`#pwaUpdateBanner`) — on ostaje uključen
-- `vercel.json` ima `unsafe-inline` u CSP — potrebno zbog inline event handlera u HTML-u
+- CSP u `vercel.json`: `script-src` je `'self'` + sha256 hash-evi (NEMA `unsafe-inline` za skripte — zato `data-click` umesto `onclick`); `'unsafe-inline'` stoji samo u `style-src`
 - Admin URL je namerno obscure (ne linkovan nigde, `noindex`)
 - Google Search Console: sajt dodat, sitemap submitan
 - IndexNow (pokriva Bing, Edge, Yahoo, DuckDuckGo i ChatGPT pretragu): ključ u fajlu `2e68d4c0350193ca6d78089e4129f608.txt` u root-u. ⚠️ **GET oblik `?url=...&key=...` šalje SAMO taj jedan URL** — za izmenu koja dira više strana koristi bulk POST, vidi sekciju **Pretraživači — posle izmene sadržaja** na kraju fajla.

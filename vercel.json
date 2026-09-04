@@ -51,44 +51,8 @@
       "destination": "/radovi.html"
     },
     {
-      "source": "/demo",
-      "destination": "/demo.html"
-    },
-    {
-      "source": "/demo-a",
-      "destination": "/demo-a.html"
-    },
-    {
-      "source": "/demo-b",
-      "destination": "/demo-b.html"
-    },
-    {
-      "source": "/demo-c",
-      "destination": "/demo-c.html"
-    },
-    {
-      "source": "/demo-paketi",
-      "destination": "/demo-paketi.html"
-    },
-    {
       "source": "/demo-telefon",
       "destination": "/demo-telefon.html"
-    },
-    {
-      "source": "/demo-cenovnik",
-      "destination": "/demo-cenovnik.html"
-    },
-    {
-      "source": "/demo-loyalty",
-      "destination": "/demo-loyalty.html"
-    },
-    {
-      "source": "/demo-o-nama",
-      "destination": "/demo-o-nama.html"
-    },
-    {
-      "source": "/demo-kontakt",
-      "destination": "/demo-kontakt.html"
     }
   ],
   "redirects": [
