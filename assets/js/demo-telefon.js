@@ -5,7 +5,7 @@ var SZ=['Mali','Srednji','Veliki','Ekstra'];
 var PK=[
  {name:'Cle<em>an</em>',sub:'Osnovna nega',c:[99,110,130,145],dur:'3 radna dana',
   li:['Ručno premium pranje eksterijera (3 faze)','Voskiranje premium voskom','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing potkrila (bez skidanja felni)','Čišćenje felni']},
- {name:'Bo<em>ost</em>',sub:'Pranje + poliranje',c:[249,260,280,295],dur:'do 5 dana',tag:'Najpopularnije',
+ {name:'Bo<em>ost</em>',sub:'Pranje + poliranje',c:[275,285,310,325],dur:'do 5 dana',tag:'Najpopularnije',
   li:['Ručno premium pranje eksterijera (3 faze)','Dvoslojno poliranje laka','Ručno karnauba voskiranje','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing potkrila (bez skidanja felni)','Poliranje i zaštita farova']},
  {name:'Lak<em>er</em>',sub:'Ultimate paket',c:[499,510,530,545],dur:'6 – 7 dana',
   li:['Ručno premium pranje eksterijera (3 faze)','Troslojno poliranje laka','Keramička zaštita Koch-Chemie (1 sloj)','Nano-Glass All — anti-kiša sva stakla','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing motornog prostora','Detailing potkrila','Poliranje i zaštita farova']}
