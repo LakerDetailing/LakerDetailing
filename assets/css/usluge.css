@@ -94,3 +94,49 @@ html:where(.js-ready) :where(.us-card){
   .us-card .pr span{font-size:0;letter-spacing:0}
   .us-card .pr span::after{content:'→';font-size:18px;color:var(--gold)}
 }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NIVOI POLIRANJA — kartice umesto tabele (2026-09-06, odluka vlasnika)
+   Tabela je govorila koliko prolaza ima nivo, ali ne i šta čovek dobija.
+   Kartica nosi jednu podebljanu rečenicu koristi, cenu i traku „koliko rešava"
+   (--w), pa se raspon 30→100% vidi okom. Traka NIJE procenat ničega merljivog —
+   samo redosled jačine zahvata; zato uz nju ne stoji broj.
+   Koriste je /poliranje-laka (#test i #nivoi).
+   ══════════════════════════════════════════════════════════════════════════ */
+.niv{display:flex;flex-direction:column;gap:2px}
+.niv-c{background:var(--d2);padding:26px 28px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;position:relative;transition:background var(--transition)}
+.niv-c:hover{background:var(--d3)}
+.niv-c .t{font-family:var(--serif);font-size:26px;font-weight:300;line-height:1.1;letter-spacing:-.3px}
+.niv-c .t em{font-style:italic;color:var(--gold)}
+.niv-c .p{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);align-self:start;text-align:right;white-space:nowrap;padding-top:8px}
+.niv-c .p b{display:block;font-family:var(--serif);font-size:24px;letter-spacing:0;text-transform:none;color:var(--white);font-weight:300;line-height:1.1;margin-top:4px}
+.niv-c .d{grid-column:1/-1;font-size:14px;line-height:1.8;color:var(--mgray);font-weight:300;max-width:58ch}
+.niv-c .d b{color:var(--white);font-weight:500}
+.niv-c .z{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:6px}
+.niv-c .z span{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);white-space:nowrap}
+.niv-c .z i{display:block;height:2px;flex:1;background:rgba(255,255,255,.08);position:relative}
+body.light .niv-c .z i{background:rgba(0,0,0,.08)}
+.niv-c .z i::after{content:"";position:absolute;left:0;top:0;bottom:0;background:var(--gold);width:var(--w)}
+/* oznaka paketa — tvrdo #0B0B0B na crvenom, ne var(--black): u svetloj temi je --black svetlo bež */
+.niv-c.top{outline:1px solid var(--gold);outline-offset:-1px}
+.niv-c.top::before,.niv-c.mid::before{position:absolute;top:0;right:28px;transform:translateY(-50%);font-size:9px;letter-spacing:3px;text-transform:uppercase;padding:5px 12px;font-weight:600}
+.niv-c.top::before{content:"Ulazi u Laker paket";background:var(--gold);color:#0B0B0B}
+.niv-c.mid::before{content:"Ulazi u Boost paket";background:var(--d4);color:var(--lgray)}
+
+/* tri provere koje klijent uradi sam, pre nego što uopšte pozove */
+.tst3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px}
+.tst3 div{background:var(--d2);padding:26px 24px}
+.tst3 .n{font-family:var(--serif);font-size:40px;color:var(--gold);line-height:1;font-weight:300;margin-bottom:14px}
+.tst3 b{display:block;font-size:14px;color:var(--white);font-weight:500;margin-bottom:8px;line-height:1.4}
+.tst3 p{font-size:13px;line-height:1.75;color:var(--mgray);font-weight:300}
+.tst3 p em{color:var(--gold);font-style:normal}
+
+@media(max-width:768px){
+  .tst3{grid-template-columns:1fr}
+  .niv-c{padding:22px 20px;grid-template-columns:1fr}
+  .niv-c .p{text-align:left;padding-top:0}
+  .niv-c .p b{display:inline;margin-left:10px;font-size:20px}
+  .niv-c .t{font-size:23px}
+  .niv-c.top::before,.niv-c.mid::before{right:20px}
+}

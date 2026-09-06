@@ -60,7 +60,7 @@ const IME_SEKCIJE = {
   pojedinacne: 'Cene po usluzi', sastavi: 'Sastavi svoju ponudu',
   // strane usluga (blokovi .usl-block[id] + kartica cene .usl-aside#cena)
   kome: 'Kome je namenjeno', kako: 'Kako radimo', 'sta-ulazi': 'Šta ulazi',
-  proizvod: 'Proizvod i trajnost', vazno: 'Važno da znate', nivoi: 'Četiri nivoa',
+  proizvod: 'Proizvod i trajnost', vazno: 'Važno da znate', nivoi: 'Četiri nivoa', test: 'Tri provere koje vidite sami',
   trajnost: 'Koliko traje zaštita', 'cena-blok': 'Cena', cena: 'Kartica sa cenom',
   druge: 'Druge usluge (dno strane)',
   '1k-nano': '1K-Nano premaz', karnauba: 'Karnauba voskiranje', 'nano-glass': 'Nano-Glass',

@@ -138,6 +138,23 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   tabela sa 4 kolone** (`#pojedinacne .tp` gazi kartice iz laker.css), a `/usluge` je **spisak**
   (naziv · kratak opis · cena · strelica). U `.sh` naslovima stoji razmak ispred `<br>` jer se na
   telefonu `br` krije (`h1.sh br,h2.sh br{display:none}`) — bez razmaka se reči zalepe. Računar netaknut.
+- **`/poliranje-laka` nema tabelu nivoa** (2026-09-06, vlasnik odobrio demo). Tabela je govorila
+  koliko prolaza ima nivo, ali ne i šta klijent dobija. Zamenile su je **kartice `.niv-c`** sa jednom
+  podebljanom rečenicom koristi, cenom i trakom „Koliko rešava" (`--w` 30/50/75/100%). Traka NIJE
+  procenat ničega merljivog, samo redosled jačine zahvata — zato uz nju **ne sme stajati broj**.
+  Dvoslojno nosi `.mid` („Ulazi u Boost paket"), troslojno `.top` (crveni okvir, „Ulazi u Laker paket") —
+  tako oko pada na skuplji nivo. Iznad je blok `#test` sa tri provere koje klijent uradi sam (sunce,
+  nokat, oksidacija) — svrha je da problem prepozna pre nego što pozove. Stil je `.niv*` i `.tst3` na
+  kraju [assets/css/usluge.css](assets/css/usluge.css). Boja teksta na crvenoj oznaci je tvrdo `#0B0B0B`,
+  ne `var(--black)` — isti razlog kao kod birača veličine.
+- **Mikroni se ne pišu na sajtu.** Vlasnik je pitao da li je „ispod 85 loše"; fabrički lak varira po
+  marki i nema zvanične granice, pa bi svaki broj prvi klijent sa manjom debljinom osporio. Na strani
+  stoji samo da se lak meri i da poliranje ne ide neograničen broj puta — granicu vlasnik drži u glavi.
+- **One Cut & Finish P6** je po zvaničnom koch-chemie.com pasta koja u jednom prolazu seče i polira
+  (seča 6 / sjaj 8 od 10), sadrži karnaubu pa ostavlja blagi zaštitni efekat, i skida hologram, sitne
+  ogrebotine i tragove šmirgle od P2000. Rok trajanja tog efekta proizvođač **ne navodi** — ne pisati ga.
+  Vlasnik je tražio da se ostali proizvodi ne imenuju, samo „Koch-Chemie"; P6 je izuzetak jer je to ime
+  samog nivoa u cenovniku.
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
