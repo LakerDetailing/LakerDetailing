@@ -8,7 +8,7 @@ var PK=[
  {name:'Bo<em>ost</em>',sub:'Pranje + poliranje',c:[275,285,310,325],dur:'do 5 dana',tag:'Najpopularnije',
   li:['Ručno premium pranje eksterijera (3 faze)','Dvoslojno poliranje laka','Ručno karnauba voskiranje','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing potkrila (bez skidanja felni)','Poliranje i zaštita farova']},
  {name:'Lak<em>er</em>',sub:'Ultimate paket',c:[499,510,530,545],dur:'6 – 7 dana',
-  li:['Ručno premium pranje eksterijera (3 faze)','Troslojno poliranje laka','Keramička zaštita Koch-Chemie (1 sloj)','Nano-Glass All — anti-kiša sva stakla','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing motornog prostora','Detailing potkrila','Poliranje i zaštita farova']}
+  li:['Ručno premium pranje eksterijera (3 faze)','Troslojno poliranje laka','Keramička zaštita Koch-Chemie (1 sloj)','Nano-Glass All — anti-kiša sva stakla','Dubinsko pranje enterijera','Impregnacija kože i plastike','Detailing motornog prostora','Detailing potkrila (bez skidanja felni)','Poliranje i zaštita farova']}
 ];
 var TB=[
  [['Ručno premium pranje u 3 faze, voskiranje',[20,25,30,35]],['Detailing motornog prostora',[30,40,45,50]],['Nano-Glass Front / Rear (anti-kiša)',[30,30,40,55]],['Nano-Glass All — sva stakla',[50,55,65,80]]],
