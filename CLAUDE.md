@@ -305,6 +305,11 @@ Gašenje: obriši taj unos i push.
 | Boost | €275 | €285 | €310 | €325 |
 | Laker | €499 | €510 | €530 | €545 |
 
+**Poliranje farova NE ulazi ni u jedan paket** (vlasnik 2026-09-15: samo kao posebna usluga). Izbačeno iz
+kartica Boost i Laker i njihovog JSON-LD opisa na [cenovnik.html](cenovnik.html), iz rečenice o Laker paketu na
+`/keramicka-zastita` i iz kutije „Ulazi u paket" na `/poliranje-farova` (kutija obrisana cela). Samostalno ostaje:
+tabela `#pojedinacne` (25 €), kalkulator, kartica na `/usluge` i sopstvena strana. Ne vraćati u pakete bez vlasnika.
+
 ---
 
 ## Loyalty sistem
