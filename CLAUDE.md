@@ -16,7 +16,7 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 |---|---|
 | `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ i Lokaciju — stil i skripte su u zasebnim fajlovima. **Sekcije Recenzije (`#tst`) i Mreže (`#soc`) izbačene 2026-09-02 na zahtev vlasnika** (Instagram/TikTok već stoje u futeru); `loadReviews()` i review modal u main.js ostaju i sami se gase kad nema `#tst-dynamic` |
 | `usluge.html` + 5 strana usluga | `/usluge` pregled → `/premium-pranje`, `/detailing-auta`, `/poliranje-laka`, `/keramicka-zastita`, `/poliranje-farova` |
-| `cenovnik.html` | `/cenovnik` — paketi, Loyalty, pojedinačne cene i kalkulator „Sastavi sam" (`#paketi #loyalty #pojedinacne #sastavi #prijava`) |
+| `cenovnik.html` | `/cenovnik` — paketi, pojedinačne cene, Loyalty i kalkulator „Sastavi sam" (`#paketi #pojedinacne #loyalty #sastavi #prijava`) |
 | `assets/css/laker.css` | **Zajednički stil svih strana** — nav, mobilni meni, dugmad, kostur sekcije, tabele, futer, PWA trake, kolačići |
 | `assets/css/pocetna.css` | samo početna | 
 | `assets/css/usluge.css` | `/usluge` + 5 strana usluga |
@@ -85,7 +85,7 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 | `/poliranje-laka` | | 4 nivoa, 100–290 € |
 | `/keramicka-zastita` | | keramika 140–235 €, uz `#1k-nano`, `#karnauba`, `#nano-glass` |
 | `/poliranje-farova` | | 25 € za sve kategorije, UV premaz do 36 meseci |
-| `/cenovnik` | `cenovnik.html` | paketi → Loyalty → pojedinačne → „Sastavi sam" |
+| `/cenovnik` | `cenovnik.html` | paketi → pojedinačne → Loyalty → „Sastavi sam" (redosled vlasnik 2026-09-21) |
 
 **`/dubinsko-ciscenje` je obrisan** — 301 na `/detailing-auta` (redirect u [vercel.json](vercel.json)).
 
@@ -175,6 +175,12 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   odluka vlasnika), pa ostaje u tabeli `#pojedinacne` — ali bez `prc-more` linka na /detailing-auta,
   uz `.tbl-note` ispod tabele koji kaže da uz paket nema doplate. U kalkulatoru je `koza` i `plastika`
   u `SADRZI` pod `detailing`, pa se posive kad se izabere „Detailing auta".
+- **Redosled na /cenovnik: paketi → pojedinačne cene → Loyalty → „Sastavi sam"** (vlasnik 2026-09-21).
+  Pozadina `var(--d1)` ide svakoj drugoj sekciji (`#pojedinacne` i `#sastavi`), da se smenjuju. Osam koraka
+  Loyalty pranja (`.loy-wash`) su namerno SITNI — vlasnik: „da se vidi da je tu, al ne ovoliko". Blok je iste
+  visine kao kartica sa cenom (`align-items:stretch`), čipovi rezultata stoje uz dno u ravni sa dugmetom.
+  Stil je `.loy-wash .steps*` u [assets/css/cenovnik.css](assets/css/cenovnik.css) — ne dirati `.steps` u
+  laker.css, njega koriste strane usluga.
 - **„Detailing potkrila" nije zasebna cena** (izbačeno 2026-09-02, odluka vlasnika) — nema ga ni
   u tabeli `#pojedinacne` ni u kalkulatoru. U opisu paketa Clean, Boost i Laker **ostaje**.
 
@@ -292,7 +298,7 @@ Gašenje: obriši taj unos i push.
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
 - **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#loc` (`#tst` i `#soc` izbačeni 2026-09-02)
-- **Sekcije na cenovniku:** `#paketi` `#loyalty` `#pojedinacne` `#sastavi`
+- **Sekcije na cenovniku:** `#paketi` `#pojedinacne` `#loyalty` `#sastavi`
 - `#proc` više ne postoji nigde (sekcija „Kako izgleda tretman" obrisana 2026-09-02); `#pkg`, `#care`, `#prc` i `#book` takođe ne postoje
 
 ---
