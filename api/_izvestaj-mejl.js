@@ -57,7 +57,9 @@ const IME_SEKCIJE = {
   lista: 'Spisak usluga',
   // cenovnik
   paketi: 'Paketi',         loyalty: 'Loyalty članstvo',
-  pojedinacne: 'Cene po usluzi', sastavi: 'Sastavi svoju ponudu',
+  pojedinacne: 'Cene po usluzi', poredjenje: 'Šta koji paket ima',
+  pick: 'Pretraga auta',
+  sastavi: 'Sastavi svoju ponudu (stari kalkulator)',
   // strane usluga (blokovi .usl-block[id] + kartica cene .usl-aside#cena)
   kome: 'Kome je namenjeno', kako: 'Kako radimo', 'sta-ulazi': 'Šta ulazi',
   proizvod: 'Proizvod i trajnost', vazno: 'Važno da znate', nivoi: 'Četiri nivoa', test: 'Tri provere koje vidite sami',

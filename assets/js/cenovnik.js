@@ -1,579 +1,180 @@
 // ══════════════════════════════════════════════════════════════════════════
-// LAKER DETAILING — CENOVNIK
-// Dve stvari: birač veličine vozila koji menja SVE cene na strani, i
-// kalkulator „Sastavi sam" koji od izabranog auta i usluga pravi WhatsApp upit.
-//
-// Spisak auta je u assets/js/auti.js (window.LAKER_AUTI).
-// Ništa se ne šalje na server — poruka se otvara u WhatsApp-u, korisnik je šalje.
+// LAKER DETAILING — CENOVNIK (nova strana, vlasnik odobrio 2026-09-22)
+// 1) pretraga auta — indeks nad window.LAKER_AUTI (assets/js/auti.js, 1322 modela)
+//    razume srpski izgovor i nadimke (pežo, kaškaj, fića, golf trojka, bmw petica),
+//    oznake motora (320d, c220) i izbacuje zapreminu, snagu, gorivo i godište;
+// 2) veličina auta (pretragom ili dugmetom) menja SVE cene na strani odjednom
+//    (data-c="mali,srednji,veliki,ekstra"), WhatsApp poruke i Loyalty cenu;
+// 3) /cenovnik#prijava otvara Loyalty modal iz main.js.
+// Ništa se ne šalje na server; izabrana veličina se pamti u localStorage.
 // ══════════════════════════════════════════════════════════════════════════
 (function () {
   'use strict';
 
-  var KAT = ['Mali', 'Srednji', 'Veliki', 'Ekstra'];
-  // Opis kategorije — ide ispod prepoznatog auta i u WhatsApp poruku.
-  // Segmenti i metri se NIGDE ne pišu (odluka vlasnika 2026-09-03): kupcu se
-  // kaže poznat auto, a pravilo po kome se razvrstava stoji u auti.js.
-  // Opis mora da ima smisla uz SVAKU karoseriju — ispod auta stoji kao
-  // „opis · limuzina · crna", pa „veliki džip" uz limuzinu ispada besmisleno.
-  var KAT_PUN = ['Mali · kao Polo ili Corsa', 'Srednji · kao Golf ili 307',
-                 'Veliki · kao Camry ili Serija 5', 'Ekstra · najveća vozila'];
+  // ══════════════════════════════════════════════════ 1) pretraga auta
+  var A = window.LAKER_AUTI || {};
 
-  // ── USLUGE — iste cene kao u tabelama iznad (vidi CLAUDE.md, sekcija cene) ──
-  var USLUGE = [
-    { g: 'Eksterijer', id: 'pranje',    n: 'Premium ručno pranje u 3 faze',        c: [20, 25, 30, 35] },
-    { g: 'Eksterijer', id: 'motor',     n: 'Detailing motornog prostora',          c: [30, 40, 45, 50] },
-    { g: 'Eksterijer', id: 'ngfr',      n: 'Nano-Glass Front / Rear',              c: [30, 30, 40, 55] },
-    { g: 'Eksterijer', id: 'ngall',     n: 'Nano-Glass All — sva stakla',          c: [50, 55, 65, 80] },
-    { g: 'Enterijer',  id: 'detailing', n: 'Detailing auta (enterijer + eksterijer)', c: [99, 110, 130, 145] },
-    { g: 'Enterijer',  id: 'koza',      n: 'Impregnacija kožnih površina',         c: [25, 40, 45, 50] },
-    { g: 'Enterijer',  id: 'plastika',  n: 'Impregnacija plastičnih površina',     c: [25, 40, 45, 50] },
-    { g: 'Poliranje i zaštita', id: 'pol1', n: 'Jednoslojno poliranje',            c: [100, 110, 135, 150] },
-    { g: 'Poliranje i zaštita', id: 'p6',   n: 'One Cut & Finish P6',              c: [110, 130, 145, 155] },
-    { g: 'Poliranje i zaštita', id: 'pol2', n: 'Dvoslojno poliranje',              c: [140, 150, 170, 195] },
-    { g: 'Poliranje i zaštita', id: 'pol3', n: 'Troslojno / višeslojno poliranje', c: [235, 250, 260, 290] },
-    { g: 'Poliranje i zaštita', id: 'keramika', n: 'Keramička zaštita (1 sloj)',   c: [140, 140, 205, 235] },
-    { g: 'Poliranje i zaštita', id: 'nano',  n: '1K-Nano premaz',                  c: [80, 105, 115, 135] },
-    { g: 'Poliranje i zaštita', id: 'vosak', n: 'Ručno karnauba voskiranje',       c: [45, 55, 60, 65] },
-    { g: 'Poliranje i zaštita', id: 'farovi', n: 'Poliranje i zaštita farova',     c: [25, 25, 25, 25] }
+  // ── dodatne reči za pretragu ──
+  // Kako ljudi zaista kucaju: srpski izgovor marke, nadimci, oznake motora.
+  var MARKA = {
+    'Volkswagen': 'vw folksvagen folcvagen folkswagen',
+    'Mercedes-Benz': 'mercedes merc mb benz',
+    'Škoda': 'skoda', 'Citroën': 'citroen sitroen', 'DS': 'citroen sitroen',
+    'Peugeot': 'pezo pezho pezot', 'Renault': 'reno', 'Hyundai': 'hjundai hundai hyndai hjundaj hundaj',
+    'Chevrolet': 'sevrolet sevi chevy', 'Toyota': 'tojota', 'Nissan': 'nisan', 'Mitsubishi': 'micubisi mitsubisi mitcubisi',
+    'Porsche': 'porse porshe', 'Jeep': 'dzip dzipi', 'Land Rover': 'lendrover landrover rendz',
+    'Kia': 'kija', 'Dacia': 'dacija', 'Zastava / Yugo': 'jugo',
+    'Fiat': 'fijat', 'Alfa Romeo': 'alfa', 'Lexus': 'leksus', 'Jaguar': 'dzaguar', 'Cupra': 'kupra',
+    'Dodge': 'dodz', 'Chrysler': 'krajsler', 'Lancia': 'lancija lanca', 'Daewoo': 'devo deo dejvu',
+    'Daihatsu': 'dajhacu dajhatsu', 'SsangYong': 'sangjong sangyong', 'Cadillac': 'kadilak', 'Hummer': 'hamer',
+    'Lamborghini': 'lamborgini', 'Ferrari': 'ferari', 'Bentley': 'bentli', 'Rolls-Royce': 'rols rolsrojs',
+    'Moskvič': 'moskvic', 'Great Wall / Haval': 'greatwall'
+  };
+  // [marka, regex na naziv modela, reči] — važi za svaki model te marke koji se poklopi
+  var RECI = [
+    ['Mazda', /^MX-5/, 'miata'],
+    ['BMW', /^Serija 1\b/, '114 116 118 120 123 125 128 130 135 m135 m140 keca'],
+    ['BMW', /^Serija 2 Coupe/, '218 220 225 228 230 m235 m240 m2'],
+    ['BMW', /^Serija 3\b/, '316 318 320 323 324 325 328 330 335 340 m3 trojka'],
+    ['BMW', /^Serija 4\b/, '418 420 425 428 430 435 440 m4'],
+    ['BMW', /^Serija 5\b/, '518 520 523 524 525 528 530 535 540 545 550 m5 petica'],
+    ['BMW', /^Serija 6\b/, '628 630 635 640 645 650 m6'],
+    ['BMW', /^Serija 7\b/, '725 728 730 732 735 740 745 750 760 sedmica'],
+    ['BMW', /^Serija 8\b/, '840 850 m8'],
+    ['Mercedes-Benz', /^A klasa/, 'a140 a150 a160 a170 a180 a190 a200 a220 a250 a35 a45'],
+    ['Mercedes-Benz', /^B klasa/, 'b150 b160 b170 b180 b200 b220 b250'],
+    ['Mercedes-Benz', /^C klasa/, 'c180 c200 c220 c230 c240 c250 c270 c280 c300 c320 c350 c400 c43 c63'],
+    ['Mercedes-Benz', /^E klasa/, 'e200 e220 e230 e240 e250 e260 e270 e280 e290 e300 e320 e350 e400 e420 e430 e450 e500 e55 e63'],
+    ['Mercedes-Benz', /^E klasa W124/, '124 200 220 230 250 260 280 300 320 sestica'],
+    ['Mercedes-Benz', /^W123/, '200d 220d 230e 240d 250 280e 300d'],
+    ['Mercedes-Benz', /^190/, '190e 190d bejbi'],
+    ['Mercedes-Benz', /^S klasa/, 's280 s300 s320 s350 s400 s420 s430 s450 s500 s550 s560 s580 s600 s63 s65'],
+    ['Mercedes-Benz', /^ML/, 'ml230 ml250 ml270 ml280 ml300 ml320 ml350 ml400 ml420 ml430 ml500 ml55 ml63'],
+    ['Mercedes-Benz', /^CLA/, 'cla180 cla200 cla220 cla250 cla35 cla45'],
+    ['Mercedes-Benz', /^CLS/, 'cls250 cls320 cls350 cls400 cls450 cls500 cls53 cls63'],
+    ['Mercedes-Benz', /^CLK/, 'clk200 clk220 clk230 clk240 clk270 clk320 clk350 clk430 clk500'],
+    ['Mercedes-Benz', /^SLK|^SLC/, 'slk200 slk230 slk250 slk280 slk350 slc200 slc300'],
+    ['Mercedes-Benz', /^GLA/, 'gla180 gla200 gla220 gla250 gla35 gla45'],
+    ['Mercedes-Benz', /^GLC/, 'glc200 glc220 glc250 glc300 glc43 glc63'],
+    ['Mercedes-Benz', /^GLE/, 'gle250 gle300 gle350 gle400 gle450 gle53 gle63'],
+    ['Mercedes-Benz', /^Vito/, '108 109 110 111 112 113 114 115 116 119 122'],
+    ['Mercedes-Benz', /^Sprinter/, '208 210 211 213 215 216 308 311 313 315 316 318 319 411 413 416 516 518 519'],
+    ['Audi', /^A3/, 's3 rs3'], ['Audi', /^A4/, 's4 rs4'], ['Audi', /^A5/, 's5 rs5'], ['Audi', /^A6/, 's6 rs6'],
+    ['Audi', /^A7/, 's7 rs7'], ['Audi', /^A8/, 's8 a8l'], ['Audi', /^Q5/, 'sq5'], ['Audi', /^Q7/, 'sq7'], ['Audi', /^Q8$/, 'sq8 rsq8'],
+    ['Audi', /^TT/, 'tts ttrs'], ['Audi', /^80/, 'b3 b4 osamdeset'],
+    ['Volkswagen', /^Golf 1$/, 'keca jedinica gti'], ['Volkswagen', /^Golf 2$/, 'dvojka gti'], ['Volkswagen', /^Golf 3$/, 'trojka gti vr6'],
+    ['Volkswagen', /^Golf 4$/, 'cetvorka gti gtd r32'], ['Volkswagen', /^Golf 5$/, 'petica gti gtd r32'], ['Volkswagen', /^Golf 6$/, 'sestica gti gtd'],
+    ['Volkswagen', /^Golf 7$/, 'sedmica gti gtd golfr'], ['Volkswagen', /^Golf 8$/, 'osmica gti gtd golfr'],
+    ['Volkswagen', /^Passat/, 'pasat'], ['Volkswagen', /^Touareg/, 'tuareg'], ['Volkswagen', /^Touran/, 'turan'],
+    ['Volkswagen', /^Sharan/, 'saran'], ['Volkswagen', /^Caddy/, 'kedi kadi'], ['Volkswagen', /^Jetta/, 'dzeta'],
+    ['Volkswagen', /^Beetle|^Buba/, 'buba kafer'], ['Volkswagen', /^Transporter|^Caravelle|^Multivan/, 'transporter kombi'],
+    ['Volkswagen', /^Tiguan/, 'tigvan'], ['Volkswagen', /^Scirocco/, 'siroko'],
+    ['Zastava / Yugo', /^750/, 'fica fico'], ['Zastava / Yugo', /^Zastava 101|^Skala/, 'stojadin stojadinka skala keca'],
+    ['Zastava / Yugo', /^1300/, 'tristac'], ['Zastava / Yugo', /^Yugo/, 'jugo'],
+    ['Lada', /^21/, 'ziguli zigula'], ['Lada', /^Niva/, 'niva 4x4'], ['Renault', /^4 /, 'katrca r4'],
+    ['Citroën', /^2CV/, 'spacek'], ['Fiat', /^126/, 'peglica'], ['Mercedes-Benz', /^W114/, 'osmica strih'],
+    ['Škoda', /^Octavia/, 'oktavija'], ['Škoda', /^Octavia [234]/, 'rs vrs'], ['Škoda', /^Fabia/, 'fabija'], ['Škoda', /^Kodiaq/, 'kodijak'],
+    ['Škoda', /^Karoq/, 'karok'], ['Škoda', /^Kamiq/, 'kamik'], ['Škoda', /^Rapid/, 'spaceback'],
+    ['Ford', /^Focus/, 'fokus st rs'], ['Ford', /^Fiesta/, 'fijesta st'], ['Ford', /^Galaxy/, 'galaksi'], ['Ford', /^Transit/, 'tranzit'],
+    ['Ford', /^Kuga/, 'kuga'], ['Ford', /^Mondeo/, 'mondeo'],
+    ['Renault', /^Clio/, 'klio rs'], ['Renault', /^Megane/, 'megan rs'], ['Renault', /^Scenic|^Grand Scenic/, 'senik megane scenic'],
+    ['Renault', /^Captur/, 'kaptur'], ['Renault', /^Kadjar/, 'kadzar'], ['Renault', /^Twingo/, 'tvingo'], ['Renault', /^Espace/, 'espas'],
+    ['Opel', /^Corsa/, 'korsa opc gsi'], ['Opel', /^Astra/, 'opc gsi'], ['Opel', /^Vectra/, 'vektra'], ['Opel', /^Insignia/, 'insignija'],
+    ['Opel', /^Kadett/, 'kadet gsi'],
+    ['Nissan', /^Qashqai/, 'kaskaj kaskai kaskaji kashkai'], ['Nissan', /^Juke/, 'dzuk'], ['Nissan', /^X-Trail/, 'xtrail iks trejl'],
+    ['Nissan', /^NV200/, 'env200'],
+    ['Hyundai', /^Tucson/, 'tuson'], ['Hyundai', /^i30/, 'i30n'], ['Kia', /^Sportage/, 'sportaz'], ['Kia', /^Picanto/, 'pikanto'],
+    ['Kia', /^Ceed|^ProCeed/, 'cee\'d proceed'],
+    ['Toyota', /^Yaris/, 'jaris gr'], ['Toyota', /^Aygo/, 'ajgo'], ['Toyota', /^Corolla/, 'korola'], ['Toyota', /^Land Cruiser/, 'lendkruzer'],
+    ['Honda', /^Civic/, 'sivik typer'], ['Honda', /^Accord/, 'akord'], ['Honda', /^Jazz/, 'dzez'],
+    ['Mitsubishi', /^Pajero/, 'padzero'], ['Mitsubishi', /^Lancer/, 'lanser evo evolution'],
+    ['Subaru', /^Impreza/, 'wrx sti'], ['Suzuki', /^Jimny/, 'dzimni'], ['Suzuki', /^Swift/, 'svift'],
+    ['Seat', /^Leon/, 'cupra fr'], ['Seat', /^Ibiza/, 'ibica fr cupra'], ['Seat', /^Altea/, 'alteja'],
+    ['Peugeot', /^20[678]$|^30[78]$/, 'gti'],
+    ['Porsche', /^Cayenne/, 'kajen'], ['Porsche', /^Macan/, 'makan'], ['Porsche', /^Cayman|^Boxster/, '718'],
+    ['Land Rover', /^Range Rover/, 'rendz'], ['Land Rover', /^Defender/, '90 110 130'], ['Land Rover', /^Discovery/, 'diskaveri'],
+    ['Land Rover', /^Range Rover Evoque/, 'evok'],
+    ['Jeep', /Cherokee/, 'ceroki'], ['Jeep', /^Wrangler/, 'rengler'],
+    ['Chevrolet', /^Lacetti/, 'laceti'], ['Chevrolet', /^Captiva/, 'kaptiva'],
+    ['Citroën', /^Xsara/, 'ksara pikaso'], ['Citroën', /Picasso/, 'pikaso'], ['Citroën', /^Xantia/, 'ksantija'],
+    ['Dacia', /^Duster/, 'daster'], ['Fiat', /^Ducato/, 'dukato'],
+    ['Mini', /./, 'cooper dzon kuper jcw'], ['Tesla', /^Model/, 'model']
   ];
+  var TIP = { h: 'hecbek hatchback', l: 'limuzina sedan', k: 'karavan', s: 'dzip suv', v: 'kombi van' };
 
-  // ── ŠTA SE NE KOMBINUJE ─────────────────────────────────────────────────
-  // U jednoj grupi sme da stoji samo JEDNA stavka. Čim je jedna izabrana,
-  // ostale u grupi posive i ne mogu da se kliknu: nema smisla naručiti i
-  // jednoslojno i dvoslojno poliranje, dva premaza preko istog laka, ni
-  // Nano-Glass na prednje i zadnje staklo pa još jednom na sva stakla.
-  // Da bi se izabrala druga stavka iz grupe, prvo se skida kvačica sa prve.
-  var GRUPE = [
-    { clanovi: ['pol1', 'p6', 'pol2', 'pol3'], zasto: 'već je izabran nivo poliranja' },
-    { clanovi: ['keramika', 'nano', 'vosak'],  zasto: 'već je izabrana zaštita laka' },
-    { clanovi: ['ngfr', 'ngall'],              zasto: 'već je izabran Nano-Glass' }
-  ];
-
-  // Veća usluga u sebi već sadrži manju — manja se gasi da se ne plati dvaput.
-  var SADRZI = [
-    // Impregnacija kože i plastike ulazi u Detailing auta (i u sva tri paketa),
-    // pa se ne može dodati još jednom — vlasnik 2026-09-03. Samostalno se i dalje
-    // naručuje, uz obično pranje, zato ostaje u USLUGE i u tabeli pojedinačnih cena.
-    { veca: 'detailing', manje: ['pranje', 'koza', 'plastika'], zasto: 'već ulazi u Detailing auta' }
-  ];
-
-  // Vraća { id: razlog } za sve usluge koje trenutno ne mogu da se izaberu.
-  function zakljucane() {
-    var mapa = {}, i, j;
-    for (var g = 0; g < GRUPE.length; g++) {
-      var izabran = '';
-      for (i = 0; i < GRUPE[g].clanovi.length; i++) {
-        if (stanje.usluge.indexOf(GRUPE[g].clanovi[i]) > -1) { izabran = GRUPE[g].clanovi[i]; break; }
-      }
-      if (!izabran) continue;
-      for (j = 0; j < GRUPE[g].clanovi.length; j++) {
-        if (GRUPE[g].clanovi[j] !== izabran) mapa[GRUPE[g].clanovi[j]] = GRUPE[g].zasto;
-      }
-    }
-    for (var v = 0; v < SADRZI.length; v++) {
-      if (stanje.usluge.indexOf(SADRZI[v].veca) === -1) continue;
-      for (i = 0; i < SADRZI[v].manje.length; i++) mapa[SADRZI[v].manje[i]] = SADRZI[v].zasto;
-    }
-    return mapa;
+  // Ime za prikaz: „Zastava / Yugo" + „Yugo 45" → „Yugo 45", + „Florida" → „Zastava Florida";
+  // „DS" + „DS 3" → „DS 3"; „Ostalo" se ne piše.
+  function prikaz(marka, model) {
+    if (marka === 'Ostalo') return model;
+    var alt = marka.split(' / ');
+    for (var i = 0; i < alt.length; i++) if (model.toLowerCase().indexOf(alt[i].toLowerCase() + ' ') === 0) return model;
+    return alt[0] + ' ' + model;
   }
+  function bez(s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'dj').replace(/ł/g, 'l'); }
+  function sabij(s) { return s.replace(/[^a-z0-9]/g, ''); }
 
-  // Dodaje uslugu i izbacuje sve što ona zaključava. Bitno za par
-  // „Detailing auta" / „Premium pranje": pranje se sme kliknuti prvo, pa
-  // tek onda detailing — tada pranje ispada da se ne plati dvaput.
-  // Kod grupa do sudara ne dolazi jer se sivi red uopšte ne klikće.
-  function dodajUslugu(id) {
-    if (stanje.usluge.indexOf(id) > -1) return;
-    stanje.usluge.push(id);
-    var zak = zakljucane();
-    for (var j = stanje.usluge.length - 2; j >= 0; j--) {
-      if (zak[stanje.usluge[j]]) stanje.usluge.splice(j, 1);
-    }
-  }
-
-  var BOJE = [
-    ['crna', '#141414'], ['bela', '#EDEDED'], ['siva', '#6E6E6E'], ['srebrna', '#B9BCC0'],
-    ['crvena', '#B01C1C'], ['plava', '#1D3F80'], ['zelena', '#1F5136'], ['braon', '#4A3223'],
-    ['bež', '#C8B491'], ['narandžasta', '#C2580E']
-  ];
-
-  // Slika auta se u kalkulatoru NE prikazuje (odluka vlasnika 2026-09-02) —
-  // ostaje samo prepoznata kategorija, tip karoserije i izabrana boja u tekstu.
-  var IME_KAROSERIJE = { h: 'hečbek', l: 'limuzina', k: 'karavan', s: 'SUV / krosover', v: 'kombi / van' };
-
-  var KLJUC = 'laker_ponuda';
-
-  var stanje = { sz: 0, marka: '', model: '', boja: 'crna', usluge: [] };
-
-  // ═══════════════════════════════════════════════ pomoćne
-  function $(id) { return document.getElementById(id); }
-  function e(tag, cls, txt) {
-    var el = document.createElement(tag);
-    if (cls) el.className = cls;
-    if (txt != null) el.textContent = txt;
-    return el;
-  }
-  function bezKvacica(s) {
-    return String(s).toLowerCase()
-      .replace(/č|ć/g, 'c').replace(/š/g, 's').replace(/ž/g, 'z').replace(/đ/g, 'dj');
-  }
-  function sacuvaj() {
-    try { localStorage.setItem(KLJUC, JSON.stringify(stanje)); } catch (x) {}
-  }
-  function ucitaj() {
-    try {
-      var p = JSON.parse(localStorage.getItem(KLJUC) || 'null');
-      if (p && typeof p === 'object') {
-        stanje.sz = Math.min(3, Math.max(0, parseInt(p.sz, 10) || 0));
-        stanje.marka = p.marka || '';
-        stanje.model = p.model || '';
-        stanje.boja = p.boja || 'crna';
-        stanje.usluge = Array.isArray(p.usluge) ? p.usluge : [];
-      }
-    } catch (x) {}
-  }
-
-  // Stanje iz localStorage-a ume da bude staro: usluga koje više nema u
-  // cenovniku ili kombinacija koja se od sada ne dozvoljava. Zadržava se
-  // prva izabrana iz svake grupe, ostalo ispada.
-  function uskladi() {
-    var poznate = {}, i;
-    for (i = 0; i < USLUGE.length; i++) poznate[USLUGE[i].id] = true;
-    var trazene = stanje.usluge;
-    stanje.usluge = [];
-    for (i = 0; i < trazene.length; i++) {
-      var id = trazene[i];
-      if (!poznate[id] || stanje.usluge.indexOf(id) > -1) continue;
-      if (zakljucane()[id]) continue;
-      dodajUslugu(id);
-    }
-  }
-
-  // ═══════════════════════════════════════════════ 1) birač veličine
-  var szTabs = $('szTabs');
-
-  function postaviVelicinu(i, odKalkulatora) {
-    stanje.sz = i;
-
-    if (szTabs) {
-      var dugmad = szTabs.querySelectorAll('.tb');
-      for (var d = 0; d < dugmad.length; d++) {
-        var on = +dugmad[d].getAttribute('data-sz') === i;
-        dugmad[d].classList.toggle('on', on);
-        dugmad[d].setAttribute('aria-selected', on ? 'true' : 'false');
-      }
-    }
-    // paketi
-    var paketi = document.querySelectorAll('.pk[data-cene]');
-    for (var p = 0; p < paketi.length; p++) {
-      var cene = paketi[p].getAttribute('data-cene').split(',');
-      var polje = paketi[p].querySelector('.pk-cena');
-      if (polje) polje.textContent = cene[i];
-      var kutije = paketi[p].querySelectorAll('.pk-sz');
-      for (var q = 0; q < kutije.length; q++) {
-        kutije[q].classList.toggle('on', +kutije[q].getAttribute('data-k') === i);
-      }
-    }
-
-    // tabovi paketa na telefonu — cena za izabranu veličinu
-    var tabCene = document.querySelectorAll('.pk-tab small[data-od]');
-    for (var t = 0; t < tabCene.length; t++) {
-      tabCene[t].textContent = tabCene[t].getAttribute('data-od').split(',')[i] + ' €';
-    }
-
-    // tabele pojedinačnih usluga
-    var celije = document.querySelectorAll('#pojedinacne [data-k]');
-    for (var c = 0; c < celije.length; c++) {
-      celije[c].classList.toggle('prc-on', +celije[c].getAttribute('data-k') === i);
-    }
-
-    // Loyalty — Mali/Srednji dele cenu, Veliki/SUV dele cenu
-    if (typeof window.selectLoyVeh === 'function') window.selectLoyVeh(i < 2 ? 'ms' : 'vs');
-
-    // kalkulator
-    if (!odKalkulatora) {
-      // ručna promena veličine briše izabrani auto samo ako mu kategorija ne odgovara
-      if (stanje.model && kategorijaModela(stanje.marka, stanje.model) !== i) {
-        stanje.marka = ''; stanje.model = '';
-        var trazi = $('cfgTrazi'); if (trazi) trazi.value = '';
-        var mk = $('cfgMarka'); if (mk) mk.value = '';
-        napuniModele('');
-      }
-    }
-    crtajUsluge();
-    crtajPonudu();
-    sacuvaj();
-  }
-
-  if (szTabs) {
-    szTabs.addEventListener('click', function (ev) {
-      var b = ev.target.closest('.tb');
-      if (b) postaviVelicinu(+b.getAttribute('data-sz'), false);
+  // Indeks: za svaki model vidljivo ime, njegove reči i sve dodatne reči po kojima se traži.
+  var IDX = [];
+  Object.keys(A).forEach(function (marka) {
+    A[marka].forEach(function (m) {
+      var ime = prikaz(marka, m[0]);
+      var dod = marka + ' ' + (MARKA[marka] || '') + ' ' + TIP[m[2]];
+      RECI.forEach(function (r) { if (r[0] === marka && r[1].test(m[0])) dod += ' ' + r[2]; });
+      var vid = bez(ime), d = bez(dod);
+      IDX.push({ ime: ime, kat: m[1], vid: vid, tok: vid.split(/[^a-z0-9#]+/), mtok: bez(m[0]).split(/[^a-z0-9#]+/),
+        dod: d, dtok: d.split(/[^a-z0-9#']+/), sab: sabij(vid + ' ' + d),
+        mar: bez(marka + ' ' + (MARKA[marka] || '')), cif: /\d/.test(m[0]) });
     });
-  }
-
-  // ═══════════════════════════════════════════════ 2) kalkulator
-  var AUTI = window.LAKER_AUTI || null;
-  var cfgL = $('cfgUsluge');
-  if (!cfgL) { ucitaj(); postaviVelicinu(stanje.sz, false); return; }
-
-  function nadjiModel(marka, model) {
-    if (!AUTI || !AUTI[marka]) return null;
-    for (var i = 0; i < AUTI[marka].length; i++) {
-      if (AUTI[marka][i][0] === model) return AUTI[marka][i];
-    }
-    return null;
-  }
-  function kategorijaModela(marka, model) {
-    var m = nadjiModel(marka, model);
-    return m ? m[1] : -1;
-  }
-
-  // ── marka / model padajući meni ──
-  var selMarka = $('cfgMarka'), selModel = $('cfgModel');
-  if (AUTI) {
-    var marke = Object.keys(AUTI);
-    for (var i = 0; i < marke.length; i++) {
-      var o = document.createElement('option');
-      o.value = marke[i]; o.textContent = marke[i];
-      selMarka.appendChild(o);
-    }
-  }
-
-  function napuniModele(marka) {
-    selModel.innerHTML = '<option value="">Model…</option>';
-    if (!marka || !AUTI || !AUTI[marka]) { selModel.disabled = true; return; }
-    selModel.disabled = false;
-    var lista = AUTI[marka];
-    for (var i = 0; i < lista.length; i++) {
-      var o = document.createElement('option');
-      o.value = lista[i][0]; o.textContent = lista[i][0];
-      selModel.appendChild(o);
-    }
-  }
-
-  selMarka.addEventListener('change', function () {
-    napuniModele(this.value);
-    stanje.marka = this.value; stanje.model = '';
-    crtajAuto(); crtajPonudu(); sacuvaj();
-  });
-  selModel.addEventListener('change', function () {
-    if (!this.value) return;
-    izaberiAuto(selMarka.value, this.value);
   });
 
-  function izaberiAuto(marka, model) {
-    var m = nadjiModel(marka, model);
-    if (!m) return;
-    stanje.marka = marka; stanje.model = model;
-    if (selMarka.value !== marka) { selMarka.value = marka; napuniModele(marka); }
-    selModel.value = model;
-    var trazi = $('cfgTrazi'); if (trazi) trazi.value = marka + ' ' + model;
-    zatvoriRezultate();
-    postaviVelicinu(m[1], true);
-    crtajAuto();
-    crtajPonudu();
-    sacuvaj();
+  // Koliko dobro jedna ukucana reč pogađa model: tačna reč u imenu 3, početak reči u imenu 2,
+  // dodatna reč (nadimak, oznaka motora) 2 ili 1, deo imena 1. „mx5", „cx 5", „320d", „c220cdi"
+  // se traže i sabijeno i bez slova na kraju. -1 = ne pogađa, model ispada.
+  function ocena(rec, t) {
+    if (t.tok.indexOf(rec) > -1) return 3;
+    for (var i = 0; i < t.tok.length; i++) if (t.tok[i].indexOf(rec) === 0) return 2;
+    if (t.dtok.indexOf(rec) > -1) return 2;
+    if (t.vid.indexOf(rec) > -1 || t.dod.indexOf(rec) > -1) return 1;
+    var s = sabij(rec);
+    if (s.length >= 3 && t.sab.indexOf(s) > -1) return 0.5;
+    var krn = /^([a-z]{0,3}\d{2,4})[a-z]{1,4}$/.exec(s);
+    if (krn && (t.dtok.indexOf(krn[1]) > -1 || t.tok.indexOf(krn[1]) > -1)) return 0.5;
+    return -1;
   }
-
-  // ── pretraga po tekstu: „golf 4" nalazi Volkswagen Golf 4 ──
-  var poljeTrazi = $('cfgTrazi'), kutijaRez = $('cfgRez'), izabranRed = -1, pogoci = [];
-
-  function zatvoriRezultate() {
-    if (!kutijaRez) return;
-    kutijaRez.classList.remove('on');
-    kutijaRez.innerHTML = '';
-    izabranRed = -1;
-    if (poljeTrazi) poljeTrazi.setAttribute('aria-expanded', 'false');
-  }
-
-  function trazi(upit) {
-    var q = bezKvacica(upit).trim();
-    if (!q || !AUTI) return [];
-    var reci = q.split(/\s+/);
+  // Vraća SVE pogotke, najbolji prvi. Pri istoj oceni ide kraće ime (Golf 4 pre Golf 4 Variant),
+  // pa prirodni redosled (Golf 1, 2, 3 … 8).
+  // Reči koje ljudi dopišu, a ne govore ništa o veličini: motor, pogon, gorivo, godište.
+  var SUVISNO = /^(cdi|tdi|tsi|tfsi|fsi|hdi|bluehdi|dci|crdi|cdti|dti|tdci|jtd|jtdm|gdi|tce|vvt|vvti|ecoboost|multijet|hybrid|hibrid|dizel|benzin|plin|gas|4matic|xdrive|quattro|4motion|awd|4x4|automatik|manuelni|karoserija|auto|godiste|god|(19[5-9]|20[0-3])\d)$/;
+  var LAKER_TRAZI = function (upit) {
+    // zapremina motora (2.0, 1,9, 1.5dci) i snaga (150ks) se izbacuju pre deljenja na reči
+    var q = bez(upit).replace(/\b\d[.,]\d[a-z]*\b/g, ' ').replace(/\b\d{2,3}\s?(ks|kw|hp)\b/g, ' ').replace(/[,.;:!?()]/g, ' ').trim();
+    if (q.length < 2) return [];
+    var sve = q.split(/\s+/), reci = sve.filter(function (r) { return !SUVISNO.test(r); });
+    if (!reci.length) reci = sve;
     var out = [];
-    for (var marka in AUTI) {
-      for (var i = 0; i < AUTI[marka].length; i++) {
-        var m = AUTI[marka][i];
-        var pun = bezKvacica(marka + ' ' + m[0]);
-        var sve = true;
-        for (var r = 0; r < reci.length; r++) {
-          if (pun.indexOf(reci[r]) === -1) { sve = false; break; }
-        }
-        if (sve) out.push([marka, m]);
-        if (out.length > 40) return out;
+    IDX.forEach(function (t) {
+      var bod = 0;
+      for (var i = 0; i < reci.length; i++) {
+        var o = ocena(reci[i], t);
+        if (o < 0) return;
+        bod += o;
+        if (t.mtok.indexOf(reci[i]) > -1) bod += 1;            // reč je baš iz naziva modela (Yugo 45 pre Zastave Poly)
+        if (i && (t.dtok.indexOf(reci[i - 1] + reci[i]) > -1 || t.tok.indexOf(reci[i - 1] + reci[i]) > -1)) bod += 3; // „c 220" → c220, „rav 4" → rav4
       }
-    }
+      // kad je ukucan i model (ne samo marka), generacije idu pre ostalih: Passat B5 pre Alltrack-a, Clio 3 pre Grandtour-a
+      if (t.cif && reci.some(function (r) { return t.mar.indexOf(r) === -1; })) bod += 0.2;
+      out.push({ ime: t.ime, kat: t.kat, bod: bod, vid: t.vid, n: t.tok.length });
+    });
+    out.sort(function (a, b) {
+      return b.bod - a.bod || a.n - b.n || a.vid.localeCompare(b.vid, 'sr', { numeric: true });
+    });
     return out;
-  }
+  };
 
-  function crtajRezultate(lista) {
-    kutijaRez.innerHTML = '';
-    if (!lista.length) {
-      var p = e('div', 'prazno', 'Nema tog modela u spisku. Izaberite tip karoserije ručno ispod.');
-      kutijaRez.appendChild(p);
-      kutijaRez.classList.add('on');
-      var rucno = $('cfgRucno'); if (rucno) rucno.hidden = false;
-      return;
-    }
-    for (var i = 0; i < lista.length; i++) {
-      (function (par) {
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.setAttribute('role', 'option');
-        b.innerHTML = '';
-        b.appendChild(document.createTextNode(par[0] + ' ' + par[1][0]));
-        var s = e('small', null, KAT[par[1][1]]);
-        b.appendChild(s);
-        b.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
-        b.addEventListener('click', function () { izaberiAuto(par[0], par[1][0]); });
-        kutijaRez.appendChild(b);
-      })(lista[i]);
-    }
-    kutijaRez.classList.add('on');
-    poljeTrazi.setAttribute('aria-expanded', 'true');
-  }
-
-  if (poljeTrazi) {
-    poljeTrazi.addEventListener('input', function () {
-      pogoci = trazi(this.value);
-      if (this.value.trim().length < 2) { zatvoriRezultate(); return; }
-      crtajRezultate(pogoci);
-    });
-    poljeTrazi.addEventListener('keydown', function (ev) {
-      var dugmad = kutijaRez.querySelectorAll('button');
-      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
-        if (!dugmad.length) return;
-        ev.preventDefault();
-        izabranRed += (ev.key === 'ArrowDown' ? 1 : -1);
-        if (izabranRed < 0) izabranRed = dugmad.length - 1;
-        if (izabranRed >= dugmad.length) izabranRed = 0;
-        for (var i = 0; i < dugmad.length; i++) dugmad[i].classList.toggle('izabran', i === izabranRed);
-        dugmad[izabranRed].scrollIntoView({ block: 'nearest' });
-      } else if (ev.key === 'Enter') {
-        if (izabranRed >= 0 && dugmad[izabranRed]) { ev.preventDefault(); dugmad[izabranRed].click(); }
-        else if (dugmad.length === 1) { ev.preventDefault(); dugmad[0].click(); }
-      } else if (ev.key === 'Escape') {
-        zatvoriRezultate();
-      }
-    });
-    poljeTrazi.addEventListener('blur', function () { setTimeout(zatvoriRezultate, 120); });
-  }
-
-  // ── ručni izbor karoserije kad modela nema u spisku ──
-  var rucnoBtn = $('cfgRucnoBtn'), rucnoPolja = $('cfgRucnoPolja');
-  if (rucnoBtn) {
-    rucnoBtn.addEventListener('click', function () {
-      rucnoPolja.hidden = !rucnoPolja.hidden;
-      if (!rucnoPolja.hidden) crtajAuto();
-    });
-  }
-  var selKaros = $('cfgKaros'), selVel = $('cfgVelicina');
-  if (selKaros) selKaros.addEventListener('change', function () { crtajAuto(); crtajPonudu(); });
-  if (selVel) selVel.addEventListener('change', function () {
-    postaviVelicinu(+this.value, true); crtajAuto(); crtajPonudu();
-  });
-
-  // ── boje ──
-  var kutijaBoja = $('cfgBoje');
-  function crtajBoje() {
-    kutijaBoja.innerHTML = '';
-    for (var i = 0; i < BOJE.length; i++) {
-      (function (b) {
-        var d = document.createElement('button');
-        d.type = 'button';
-        d.className = 'col' + (b[0] === stanje.boja ? ' on' : '');
-        d.style.background = b[1];
-        d.title = b[0];
-        d.setAttribute('aria-label', 'Boja: ' + b[0]);
-        d.addEventListener('click', function () {
-          stanje.boja = b[0];
-          crtajBoje(); crtajAuto(); crtajPonudu(); sacuvaj();
-        });
-        kutijaBoja.appendChild(d);
-      })(BOJE[i]);
-    }
-  }
-
-  // ── prikaz auta ──
-  function crtajAuto() {
-    var kutija = $('cfgAuto'), kat = $('cfgKat'), sub = $('cfgKatSub');
-    var m = nadjiModel(stanje.marka, stanje.model);
-    var karoserija, kategorija;
-
-    if (m) {
-      karoserija = m[2]; kategorija = m[1];
-    } else if (rucnoPolja && !rucnoPolja.hidden) {
-      karoserija = selKaros.value; kategorija = +selVel.value;
-    } else {
-      kutija.hidden = true;
-      return;
-    }
-
-    kutija.hidden = false;
-    kat.childNodes[0].nodeValue = KAT[kategorija];
-    sub.textContent = KAT_PUN[kategorija].split(' · ')[1] + ' · ' + IME_KAROSERIJE[karoserija] + ' · ' + stanje.boja;
-  }
-
-  // ── spisak usluga sa čekboksom ──
-  function crtajUsluge() {
-    if (!cfgL) return;
-    cfgL.innerHTML = '';
-    var zak = zakljucane();
-    var grupa = '';
-    for (var i = 0; i < USLUGE.length; i++) {
-      var u = USLUGE[i];
-      if (u.g !== grupa) {
-        grupa = u.g;
-        var g = e('div', 'g', grupa); // naslov grupe; kontejner je div role=group, ne lista
-        g.style.cursor = 'default';
-        g.style.borderTop = '0';
-        cfgL.appendChild(g);
-      }
-      (function (u) {
-        var izabrana = stanje.usluge.indexOf(u.id) > -1;
-        var razlog = izabrana ? '' : (zak[u.id] || '');
-        // div, ne li: <li role="checkbox"> Lighthouse (Agentic Browsing) prijavljuje kao
-        // neispravan ARIA — checkbox sme na div, ne na stavku liste.
-        var li = e('div', 'st' + (izabrana ? ' on' : (razlog ? ' off' : '')));
-        li.setAttribute('role', 'checkbox');
-        li.setAttribute('tabindex', razlog ? '-1' : '0');
-        li.setAttribute('aria-checked', izabrana ? 'true' : 'false');
-        if (razlog) {
-          li.setAttribute('aria-disabled', 'true');
-          li.title = 'Ne ide zajedno — ' + razlog;
-        }
-        var bx = e('span', 'bx', izabrana ? '✓' : '');
-        var im = e('span', null, u.n);
-        if (razlog) im.appendChild(e('small', 'zas', razlog));
-        var ce = e('span', 'p', u.c[stanje.sz] + ' €');
-        li.appendChild(bx); li.appendChild(im); li.appendChild(ce);
-        var prebaci = function () {
-          if (razlog) return;
-          var k = stanje.usluge.indexOf(u.id);
-          if (k > -1) stanje.usluge.splice(k, 1); else dodajUslugu(u.id);
-          crtajUsluge(); crtajPonudu(); sacuvaj();
-        };
-        li.addEventListener('click', prebaci);
-        li.addEventListener('keydown', function (ev) {
-          if (ev.key === ' ' || ev.key === 'Enter') { ev.preventDefault(); prebaci(); }
-        });
-        cfgL.appendChild(li);
-      })(u);
-    }
-  }
-
-  // ── desna kartica: zbir i WhatsApp poruka ──
-  function crtajPonudu() {
-    var sumAuto = $('cfgSumAuto'), sum = $('cfgSum'), tot = $('cfgTot'), wa = $('cfgWa');
-    if (!sum) return;
-
-    var m = nadjiModel(stanje.marka, stanje.model);
-    var imeAuta = m ? (stanje.marka + ' ' + stanje.model) :
-      (rucnoPolja && !rucnoPolja.hidden ? 'Vaše vozilo' : '');
-    if (imeAuta) {
-      sumAuto.className = 'sum-auto ima';
-      sumAuto.innerHTML = '';
-      sumAuto.appendChild(document.createTextNode(imeAuta));
-      sumAuto.appendChild(e('span', null, KAT_PUN[stanje.sz] + ' · ' + stanje.boja));
-    } else {
-      sumAuto.className = 'sum-auto';
-      sumAuto.textContent = 'Izaberite auto';
-    }
-
-    sum.innerHTML = '';
-    var zbir = 0, redovi = [];
-    for (var i = 0; i < USLUGE.length; i++) {
-      var u = USLUGE[i];
-      if (stanje.usluge.indexOf(u.id) === -1) continue;
-      var cena = u.c[stanje.sz];
-      zbir += cena;
-      redovi.push([u.n, cena]);
-      var li = document.createElement('li');
-      li.appendChild(document.createTextNode(u.n));
-      var b = document.createElement('b');
-      b.textContent = cena + ' €';
-      li.appendChild(b);
-      sum.appendChild(li);
-    }
-    if (!redovi.length) sum.appendChild(e('li', 'prazno', 'Još ništa nije izabrano'));
-    tot.textContent = zbir + ' €';
-
-    var spremno = redovi.length > 0;
-    wa.setAttribute('aria-disabled', spremno ? 'false' : 'true');
-    if (spremno) {
-      var t = 'Zdravo! Želim ponudu.\n';
-      t += 'Auto: ' + (imeAuta || 'nije izabran') + ' (' + KAT[stanje.sz] + ', ' + stanje.boja + ')\n';
-      t += 'Usluge:\n';
-      for (var r = 0; r < redovi.length; r++) t += '- ' + redovi[r][0] + ' ' + redovi[r][1] + ' €\n';
-      t += 'Ukupno: ' + zbir + ' €';
-      wa.href = 'https://wa.me/381607260302?text=' + encodeURIComponent(t);
-    } else {
-      wa.href = 'https://wa.me/381607260302';
-    }
-  }
-
-  // ═══════════════════════════════════════════════ start
-  ucitaj();
-  uskladi();
-  crtajBoje();
-  if (stanje.marka) { napuniModele(stanje.marka); selMarka.value = stanje.marka; }
-  if (stanje.marka && stanje.model && nadjiModel(stanje.marka, stanje.model)) {
-    izaberiAuto(stanje.marka, stanje.model);
-  } else {
-    postaviVelicinu(stanje.sz, false);
-    crtajAuto();
-  }
-  crtajUsluge();
-  crtajPonudu();
-
-
-  // ═══════════════════════════════════════════════ paketi na telefonu
-  // Na ≤768px je .pkg-grid horizontalni karusel (cenovnik.css), a .pk-nav tabovi
-  // Clean/Boost/Laker + brojač „Paket 1 od 3". Na računaru je blok sakriven i
-  // scrollLeft je uvek 0, pa ovaj kod tamo ništa ne menja.
-  var pkGrid = document.querySelector('.pkg-grid');
-  var pkNav = document.querySelector('.pk-nav');
-  if (pkGrid && pkNav) {
-    var pkKartice = pkGrid.querySelectorAll('.pk');
-    var pkTabovi = pkNav.querySelectorAll('.pk-tab');
-    var pkTacke = pkNav.querySelectorAll('.pk-dots i');
-    var pkBroj = pkNav.querySelector('.pk-cnt b');
-    var pkAktivan = 0;
-    function pkKorak() {
-      return pkKartice.length > 1 ? pkKartice[1].offsetLeft - pkKartice[0].offsetLeft : 1;
-    }
-    function pkOznaci(i) {
-      if (i === pkAktivan) return;
-      pkAktivan = i;
-      for (var t = 0; t < pkTabovi.length; t++) {
-        var on = t === i;
-        pkTabovi[t].classList.toggle('on', on);
-        pkTabovi[t].setAttribute('aria-selected', on ? 'true' : 'false');
-        if (pkTacke[t]) pkTacke[t].classList.toggle('on', on);
-      }
-      if (pkBroj) pkBroj.textContent = i + 1;
-    }
-    pkNav.addEventListener('click', function (e) {
-      var b = e.target.closest('.pk-tab');
-      if (!b) return;
-      var i = +b.getAttribute('data-pk');
-      pkOznaci(i);
-      try { pkGrid.scrollTo({ left: i * pkKorak(), behavior: 'smooth' }); }
-      catch (err) { pkGrid.scrollLeft = i * pkKorak(); }
-    });
-    var pkTajmer = null;
-    pkGrid.addEventListener('scroll', function () {
-      if (pkTajmer) return;
-      pkTajmer = setTimeout(function () {
-        pkTajmer = null;
-        var i = Math.round(pkGrid.scrollLeft / pkKorak());
-        pkOznaci(Math.max(0, Math.min(pkKartice.length - 1, i)));
-      }, 80);
-    }, { passive: true });
-  }
-
+  // ══════════════════════════════════════════════════ 3) prijava
   // „Prijava" sa drugih strana vodi na /cenovnik#prijava — tu se modal otvara sam.
-  // setTimeout: main.min.js se učitava paralelno, openLoyalty postoji tek posle njega.
+  // main.min.js je ranije u redosledu (defer), pa openLoyalty već postoji;
+  // setTimeout je rezerva ako se redosled ikad promeni.
   function otvoriPrijavu() {
     if (typeof window.openLoyalty === 'function') window.openLoyalty();
   }
@@ -583,4 +184,188 @@
   window.addEventListener('hashchange', function () {
     if (location.hash === '#prijava') otvoriPrijavu();
   });
+
+  // ══════════════════════════════════════════════════ 2) strana
+  // Cene stoje u markup-u kao data-c="mali,srednji,veliki,ekstra"; ovde se
+  // samo bira koja se od četiri prikazuje.
+  var WA = 'https://wa.me/381607260302';
+  var KLJUC = 'laker_ponuda';
+  var SZ = [
+    { n: 'Mali',    ex: 'Polo, Audi A2, Corsa' },
+    { n: 'Srednji', ex: 'Golf, Peugeot 307, Rapid' },
+    { n: 'Veliki',  ex: 'Camry, CX-5, Serija 5' },
+    { n: 'Ekstra',  ex: 'X7, Tiggo 8, Macan' }
+  ];
+  // Loyalty: Mali/Srednji dele cenu, Veliki/Ekstra dele cenu — isto kao LOY_TABLE u main.js
+  var LOY = { god: [299, 299, 349, 349], mes: [35, 35, 40, 40], ust: [29, 29, 27, 27] };
+  var PRIKAZ = 8;   // koliko pogodaka pretrage odjednom
+
+  var st = { sz: 0, bill: 'god' };
+  try {
+    var s = JSON.parse(localStorage.getItem(KLJUC) || 'null');
+    if (s && s.sz >= 0 && s.sz <= 3) st.sz = s.sz | 0;
+  } catch (e) {}
+  function sacuvaj() { try { localStorage.setItem(KLJUC, JSON.stringify({ sz: st.sz })); } catch (e) {} }
+
+  function $(id) { return document.getElementById(id); }
+  function $$(q) { return Array.prototype.slice.call(document.querySelectorAll(q)); }
+  function wa(t) { return WA + '?text=' + encodeURIComponent(t); }
+  function eur(n) { return String(n).replace('.', ',') + ' €'; }
+
+  var inp = $('fndIn'), rez = $('fndR'), ok = $('fndOk'), clr = $('fndX'), pick = $('szPick');
+  if (!inp || !rez || !ok || !clr || !pick) return;
+
+  function primeni() {
+    var k = st.sz, za = SZ[k].n.toLowerCase() + ' auto', pun = za + ' (' + SZ[k].ex + ')';
+    // data-n = samo broj (znak € stoji ispred kao <sup>)
+    $$('[data-c]').forEach(function (el) { var n = el.getAttribute('data-c').split(',')[k]; el.textContent = el.hasAttribute('data-n') ? n : n + ' €'; });
+    $$('[data-za]').forEach(function (el) { el.textContent = za; });
+    $$('[data-zapun]').forEach(function (el) { el.textContent = pun; });
+    $$('[data-wa]').forEach(function (el) { el.href = wa('Zdravo! Zanima me ' + el.getAttribute('data-wa') + ' za ' + pun + '.'); });
+    $$('#szPick [data-sz]').forEach(function (b) {
+      var on = +b.getAttribute('data-sz') === k;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-checked', on);
+    });
+    // main.js pamti izbor za Loyalty prijavu (activateLoyalty pretpopuni formu)
+    if (typeof window.selectLoyVeh === 'function') window.selectLoyVeh(k < 2 ? 'ms' : 'vs');
+    loyalty();
+    sacuvaj();
+  }
+
+  // ── Loyalty: Godišnje / Mesečno (godišnje je podrazumevano) ──
+  function loyalty() {
+    var k = st.sz, god = st.bill === 'god';
+    $('loySave').textContent = '−' + LOY.ust[k] + '%';
+    $('loyCena').textContent = god ? LOY.god[k] : LOY.mes[k];
+    $('loyPer').textContent = god ? 'godišnje' : 'mesečno';
+    $('loyNap').textContent = (god ? '= ' + eur((LOY.god[k] / 12).toFixed(2)) + ' mesečno · ' : 'bez ugovora · ') + 'za ' + SZ[k].n.toLowerCase() + ' auto';
+    $$('[data-bill]').forEach(function (b) {
+      var on = b.getAttribute('data-bill') === st.bill;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-checked', on);
+    });
+    if (typeof window.selectLoyBill === 'function') window.selectLoyBill(st.bill);
+  }
+  $$('[data-bill]').forEach(function (b) {
+    b.addEventListener('click', function () { st.bill = b.getAttribute('data-bill'); loyalty(); });
+  });
+
+  // ── birač veličine ──
+  pick.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-sz]');
+    if (!b) return;
+    st.sz = +b.getAttribute('data-sz');
+    // ručni izbor veličine poništava izabrani auto, da ne piše jedno a cene budu druge
+    if (!ok.hidden) { ok.hidden = true; inp.value = ''; clr.hidden = true; }
+    primeni();
+  });
+  // „Promeni" kod pojedinačnih cena vraća na pretragu
+  $$('[data-promeni]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $('pick').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function () { try { inp.focus({ preventScroll: true }); } catch (e) {} }, 450);
+    });
+  });
+
+  // ── pretraga auta: polje stoji otvoreno, rezultati se pojave dok se kuca ──
+  var nadjeni = [], akt = -1;
+  function zatvori() {
+    rez.hidden = true;
+    rez.innerHTML = '';
+    inp.setAttribute('aria-expanded', 'false');
+    inp.removeAttribute('aria-activedescendant');
+    akt = -1;
+  }
+  function oznaci(i) {
+    var opc = rez.querySelectorAll('[role=option]');
+    if (!opc.length) return;
+    akt = (i + opc.length) % opc.length;
+    for (var j = 0; j < opc.length; j++) {
+      opc[j].classList.toggle('akt', j === akt);
+      opc[j].setAttribute('aria-selected', j === akt);
+    }
+    inp.setAttribute('aria-activedescendant', opc[akt].id);
+    opc[akt].scrollIntoView({ block: 'nearest' });
+  }
+  function trazi() {
+    var q = inp.value;
+    clr.hidden = !q;
+    if (!ok.hidden) ok.hidden = true;
+    if (q.trim().length < 2) { zatvori(); nadjeni = []; return; }
+    nadjeni = LAKER_TRAZI(q);
+    rez.innerHTML = '';
+    akt = -1;
+    if (!nadjeni.length) {
+      var n = document.createElement('div');
+      n.className = 'nema';
+      n.textContent = 'Taj model ne nalazimo. Proverite kako je napisan ili izaberite veličinu ispod, po autu koji je najsličniji vašem.';
+      rez.appendChild(n);
+    }
+    nadjeni.slice(0, PRIKAZ).forEach(function (x, i) {
+      var d = document.createElement('div');
+      d.setAttribute('role', 'option');
+      d.id = 'auto-' + i;
+      d.setAttribute('data-i', i);
+      d.setAttribute('data-sz', x.kat);   // mera.js ga broji kao izbor veličine
+      d.setAttribute('aria-selected', 'false');
+      d.appendChild(document.createTextNode(x.ime));
+      var sm = document.createElement('small');
+      sm.textContent = SZ[x.kat].n;
+      d.appendChild(sm);
+      rez.appendChild(d);
+    });
+    if (nadjeni.length > PRIKAZ) {
+      var v = document.createElement('div');
+      v.className = 'vise';
+      v.textContent = 'Ima ih još ' + (nadjeni.length - PRIKAZ) + '. Dopišite model ili generaciju, npr. „golf 5“ ili „e90“.';
+      rez.appendChild(v);
+    }
+    rez.hidden = false;
+    inp.setAttribute('aria-expanded', 'true');
+  }
+  function izaberi(i) {
+    var x = nadjeni[i];
+    if (!x) return;
+    st.sz = x.kat;
+    inp.value = x.ime;
+    clr.hidden = false;
+    zatvori();
+    ok.innerHTML = '';
+    var a = document.createElement('b'); a.textContent = x.ime;
+    var k = document.createElement('b'); k.textContent = SZ[x.kat].n;
+    ok.appendChild(a);
+    ok.appendChild(document.createTextNode(' je u kategoriji '));
+    ok.appendChild(k);
+    ok.appendChild(document.createTextNode('. Sve cene ispod su za tu veličinu.'));
+    ok.hidden = false;
+    primeni();
+    if (window.matchMedia('(hover: none)').matches) inp.blur();   // na telefonu skloni tastaturu
+  }
+  inp.addEventListener('input', trazi);
+  inp.addEventListener('focus', function () { if (inp.value && ok.hidden) trazi(); });
+  inp.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (rez.hidden) trazi(); oznaci(akt + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); oznaci(akt - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); if (!rez.hidden && nadjeni.length) izaberi(akt > -1 ? akt : 0); }
+    else if (e.key === 'Escape') zatvori();
+  });
+  // mousedown, ne click: da polje ne izgubi fokus i ne zatvori spisak pre izbora
+  rez.addEventListener('mousedown', function (e) {
+    var o = e.target.closest('[role=option]');
+    if (!o) return;
+    e.preventDefault();
+    izaberi(+o.getAttribute('data-i'));
+  });
+  inp.addEventListener('blur', function () { setTimeout(zatvori, 120); });
+  clr.addEventListener('click', function () {
+    inp.value = '';
+    clr.hidden = true;
+    ok.hidden = true;
+    zatvori();
+    inp.focus();
+  });
+
+  primeni();
+
 })();

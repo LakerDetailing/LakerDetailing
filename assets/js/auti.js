@@ -1,5 +1,5 @@
 // ══════════════════════════════════════════════════════════════════════════
-// LAKER DETAILING — SPISAK AUTA ZA „SASTAVI SAM"
+// LAKER DETAILING — SPISAK AUTA ZA PRETRAGU NA CENOVNIKU
 // Format: "Marka": [ [model, kategorija, karoserija, slug slike ili null], ... ]
 //
 //   kategorija  0 Mali (A)  ·  1 Srednji (C)  ·  2 Veliki (D/E)  ·  3 Ekstra
@@ -26,7 +26,7 @@
 //
 //   Svaki kombi, putnički van i pikap je 3 bez obzira na dužinu.
 //
-// Modela u spisku: 583
+// Modela u spisku: 1322 (74 marki) — pretraga je u cenovnik.js (LAKER_TRAZI)
 // ══════════════════════════════════════════════════════════════════════════
 window.LAKER_AUTI = {
  "Alfa Romeo": [
@@ -105,6 +105,72 @@ window.LAKER_AUTI = {
   [
    "Tonale",
    2,
+   "s",
+   null
+  ],
+  [
+   "33",
+   1,
+   "h",
+   null
+  ],
+  [
+   "75",
+   2,
+   "l",
+   null
+  ],
+  [
+   "145",
+   1,
+   "h",
+   null
+  ],
+  [
+   "146",
+   1,
+   "h",
+   null
+  ],
+  [
+   "155",
+   2,
+   "l",
+   null
+  ],
+  [
+   "164",
+   2,
+   "l",
+   null
+  ],
+  [
+   "GTV",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Spider",
+   2,
+   "l",
+   null
+  ],
+  [
+   "4C",
+   1,
+   "l",
+   null
+  ],
+  [
+   "8C",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Junior",
+   1,
    "s",
    null
   ]
@@ -288,6 +354,114 @@ window.LAKER_AUTI = {
    "e-tron",
    3,
    "s",
+   null
+  ],
+  [
+   "80",
+   2,
+   "l",
+   null
+  ],
+  [
+   "80 Avant",
+   2,
+   "k",
+   null
+  ],
+  [
+   "90",
+   2,
+   "l",
+   null
+  ],
+  [
+   "100",
+   2,
+   "l",
+   null
+  ],
+  [
+   "100 Avant",
+   2,
+   "k",
+   null
+  ],
+  [
+   "200",
+   2,
+   "l",
+   null
+  ],
+  [
+   "A3 Cabriolet",
+   1,
+   "l",
+   null
+  ],
+  [
+   "A4 Allroad",
+   2,
+   "k",
+   null
+  ],
+  [
+   "A5 Cabriolet",
+   2,
+   "l",
+   null
+  ],
+  [
+   "A6 Allroad",
+   2,
+   "k",
+   null
+  ],
+  [
+   "A6 e-tron",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Q3 Sportback",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Q4 e-tron",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Q5 Sportback",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Q6 e-tron",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Q8 e-tron",
+   3,
+   "s",
+   null
+  ],
+  [
+   "e-tron GT",
+   2,
+   "l",
+   null
+  ],
+  [
+   "R8",
+   2,
+   "l",
    null
   ]
  ],
@@ -489,6 +663,210 @@ window.LAKER_AUTI = {
    3,
    "s",
    null
+  ],
+  [
+   "Serija 1 kupe / kabrio",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Serija 2 Gran Coupe",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Serija 3 E30",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 3 E30 Touring",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Serija 3 E36 Compact",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Serija 3 E46 Compact",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Serija 3 E36 Touring",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Serija 3 E92 Coupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 3 E93 Cabrio",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 3 G21 Touring",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Serija 3 GT",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Serija 4 Gran Coupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 4 kabrio",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 5 E28",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 5 E34",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 5 G60",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Serija 5 GT",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Serija 6 GT",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Serija 7 E32",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 7 E38",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 7 E65",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 7 F01",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 7 G11",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 7 G70",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Serija 8 E31",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Z3",
+   1,
+   "l",
+   null
+  ],
+  [
+   "XM",
+   3,
+   "s",
+   null
+  ],
+  [
+   "iX1",
+   2,
+   "s",
+   null
+  ],
+  [
+   "iX2",
+   2,
+   "s",
+   null
+  ],
+  [
+   "iX3",
+   3,
+   "s",
+   null
+  ],
+  [
+   "i4",
+   2,
+   "l",
+   null
+  ],
+  [
+   "i5",
+   2,
+   "l",
+   null
+  ],
+  [
+   "i7",
+   3,
+   "l",
+   null
+  ],
+  [
+   "i8",
+   2,
+   "l",
+   null
   ]
  ],
  "BYD": [
@@ -512,6 +890,36 @@ window.LAKER_AUTI = {
   ],
   [
    "Seal U",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Dolphin Surf",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Atto 2",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Han",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Sealion 7",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Tang",
    3,
    "s",
    null
@@ -595,6 +1003,90 @@ window.LAKER_AUTI = {
   [
    "Trax",
    1,
+   "s",
+   null
+  ],
+  [
+   "Matiz",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Lanos",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Nubira",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Cruze karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Tacuma",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Rezzo",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Volt",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Evanda",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Malibu",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Camaro",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Corvette",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Niva",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Tahoe",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Silverado",
+   3,
    "s",
    null
   ]
@@ -719,6 +1211,126 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "2CV (Spaček)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Visa",
+   0,
+   "h",
+   null
+  ],
+  [
+   "AX",
+   0,
+   "h",
+   null
+  ],
+  [
+   "C-Zero",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Ami",
+   0,
+   "h",
+   null
+  ],
+  [
+   "C3 Pluriel",
+   0,
+   "l",
+   null
+  ],
+  [
+   "ZX",
+   1,
+   "h",
+   null
+  ],
+  [
+   "C4 Coupe",
+   1,
+   "h",
+   null
+  ],
+  [
+   "C4 X",
+   1,
+   "l",
+   null
+  ],
+  [
+   "C4 Aircross",
+   1,
+   "s",
+   null
+  ],
+  [
+   "BX",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Xantia",
+   2,
+   "l",
+   null
+  ],
+  [
+   "XM",
+   2,
+   "l",
+   null
+  ],
+  [
+   "C5 Tourer",
+   2,
+   "k",
+   null
+  ],
+  [
+   "C5 X",
+   2,
+   "k",
+   null
+  ],
+  [
+   "C-Crosser",
+   2,
+   "s",
+   null
+  ],
+  [
+   "C8",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Evasion",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Nemo",
+   3,
+   "v",
+   null
+  ],
+  [
+   "C15",
+   3,
+   "v",
+   null
   ]
  ],
  "Cupra": [
@@ -751,6 +1363,18 @@ window.LAKER_AUTI = {
    2,
    "s",
    null
+  ],
+  [
+   "Leon Sportstourer",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Tavascan",
+   2,
+   "s",
+   null
   ]
  ],
  "DS": [
@@ -776,6 +1400,18 @@ window.LAKER_AUTI = {
    "DS 7 Crossback",
    2,
    "s",
+   null
+  ],
+  [
+   "DS 3 Crossback",
+   1,
+   "s",
+   null
+  ],
+  [
+   "DS 9",
+   2,
+   "l",
    null
   ]
  ],
@@ -843,6 +1479,36 @@ window.LAKER_AUTI = {
   [
    "Bigster",
    2,
+   "s",
+   null
+  ],
+  [
+   "1300",
+   0,
+   "l",
+   null
+  ],
+  [
+   "1310",
+   0,
+   "l",
+   null
+  ],
+  [
+   "1310 karavan",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Solenza",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Duster 3",
+   1,
    "s",
    null
   ]
@@ -972,6 +1638,174 @@ window.LAKER_AUTI = {
    "Multipla",
    1,
    "v",
+   null
+  ],
+  [
+   "126 (Peglica)",
+   0,
+   "h",
+   null
+  ],
+  [
+   "127",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Uno",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Cinquecento",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Palio",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Palio Weekend",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Albea",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Siena",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Grande Panda",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Topolino",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Barchetta",
+   0,
+   "l",
+   null
+  ],
+  [
+   "124 Spider",
+   0,
+   "l",
+   null
+  ],
+  [
+   "128",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Ritmo",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Regata",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Tempra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Brava",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Marea",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Marea Weekend",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Stilo Multiwagon",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Idea",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Coupe",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Sedici",
+   1,
+   "s",
+   null
+  ],
+  [
+   "600 (2023)",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Ulysse",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Talento",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Fullback",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Strada",
+   3,
+   "s",
    null
   ]
  ],
@@ -1125,6 +1959,180 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "Ka+",
+   0,
+   "h",
+   null
+  ],
+  [
+   "StreetKa",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Fusion",
+   0,
+   "h",
+   null
+  ],
+  [
+   "B-Max",
+   0,
+   "v",
+   null
+  ],
+  [
+   "Puma (kupe, 1997–2002)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Escort",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Escort karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Orion",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Focus limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Sierra",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Sierra karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Taunus",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Granada",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Scorpio",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Mondeo 1 i 2",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Cougar",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Probe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Mustang",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Maverick (2001–2007)",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Explorer EV",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Capri EV",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Mustang Mach-E",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Bronco",
+   3,
+   "s",
+   null
+  ],
+  [
+   "F-150",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Transit Custom",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Transit Courier",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Tourneo Custom",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Tourneo Courier",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Tourneo Connect",
+   3,
+   "v",
+   null
   ]
  ],
  "Honda": [
@@ -1186,6 +2194,114 @@ window.LAKER_AUTI = {
    "ZR-V",
    2,
    "s",
+   null
+  ],
+  [
+   "Logo",
+   0,
+   "h",
+   null
+  ],
+  [
+   "City",
+   0,
+   "l",
+   null
+  ],
+  [
+   "e (električni)",
+   0,
+   "h",
+   null
+  ],
+  [
+   "CR-Z",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Civic 6",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Civic 11",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Civic limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Civic Tourer",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Insight",
+   1,
+   "h",
+   null
+  ],
+  [
+   "FR-V",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Integra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "S2000",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Prelude",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Legend",
+   2,
+   "l",
+   null
+  ],
+  [
+   "NSX",
+   2,
+   "l",
+   null
+  ],
+  [
+   "e:Ny1",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Stream",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Shuttle",
+   3,
+   "v",
    null
   ]
  ],
@@ -1291,6 +2407,126 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "Atos",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Pony",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Inster",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Lantra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Coupe",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Veloster",
+   1,
+   "h",
+   null
+  ],
+  [
+   "i30 Fastback",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Matrix",
+   1,
+   "v",
+   null
+  ],
+  [
+   "ix20",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Genesis Coupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Ioniq 6",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Grandeur",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Galloper",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Ioniq 5",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Terracan",
+   3,
+   "s",
+   null
+  ],
+  [
+   "ix55",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Ioniq 9",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Trajet",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Staria",
+   3,
+   "v",
+   null
+  ],
+  [
+   "H350",
+   3,
+   "v",
+   null
   ]
  ],
  "Jaguar": [
@@ -1335,6 +2571,42 @@ window.LAKER_AUTI = {
    3,
    "s",
    null
+  ],
+  [
+   "X-Type karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "XF Sportbrake",
+   2,
+   "k",
+   null
+  ],
+  [
+   "XJS",
+   2,
+   "l",
+   null
+  ],
+  [
+   "XK",
+   2,
+   "l",
+   null
+  ],
+  [
+   "F-Type",
+   2,
+   "l",
+   null
+  ],
+  [
+   "I-Pace",
+   3,
+   "s",
+   null
   ]
  ],
  "Jeep": [
@@ -1371,6 +2643,36 @@ window.LAKER_AUTI = {
   [
    "Avenger",
    1,
+   "s",
+   null
+  ],
+  [
+   "Cherokee XJ (do 2001)",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Cherokee KJ / Liberty",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Patriot",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Commander",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Gladiator",
+   3,
    "s",
    null
   ]
@@ -1465,6 +2767,102 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "Pride",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Sephia",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Shuma",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Spectra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Venga",
+   1,
+   "v",
+   null
+  ],
+  [
+   "EV3",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Clarus",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Magentis",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Opirus",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Seltos",
+   2,
+   "s",
+   null
+  ],
+  [
+   "EV6",
+   3,
+   "s",
+   null
+  ],
+  [
+   "EV9",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Mohave",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Carnival",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Pregio",
+   3,
+   "v",
+   null
+  ],
+  [
+   "K2500",
+   3,
+   "v",
+   null
   ]
  ],
  "Lada": [
@@ -1502,6 +2900,72 @@ window.LAKER_AUTI = {
    "110",
    0,
    "l",
+   null
+  ],
+  [
+   "2101",
+   0,
+   "l",
+   null
+  ],
+  [
+   "2102 karavan",
+   0,
+   "k",
+   null
+  ],
+  [
+   "2103",
+   0,
+   "l",
+   null
+  ],
+  [
+   "2104 karavan",
+   0,
+   "k",
+   null
+  ],
+  [
+   "2105 (Nova)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "2106",
+   0,
+   "l",
+   null
+  ],
+  [
+   "2107 (Riva)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Kalina",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Priora",
+   0,
+   "l",
+   null
+  ],
+  [
+   "XRAY",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Largus",
+   3,
+   "k",
    null
   ]
  ],
@@ -1603,6 +3067,54 @@ window.LAKER_AUTI = {
    3,
    "s",
    null
+  ],
+  [
+   "LBX",
+   1,
+   "s",
+   null
+  ],
+  [
+   "RC",
+   2,
+   "l",
+   null
+  ],
+  [
+   "SC",
+   2,
+   "l",
+   null
+  ],
+  [
+   "LC",
+   2,
+   "l",
+   null
+  ],
+  [
+   "RZ",
+   3,
+   "s",
+   null
+  ],
+  [
+   "GX",
+   3,
+   "s",
+   null
+  ],
+  [
+   "LX",
+   3,
+   "s",
+   null
+  ],
+  [
+   "LM",
+   3,
+   "v",
+   null
   ]
  ],
  "MG": [
@@ -1634,6 +3146,36 @@ window.LAKER_AUTI = {
    "Marvel R",
    3,
    "s",
+   null
+  ],
+  [
+   "ZR",
+   0,
+   "h",
+   null
+  ],
+  [
+   "TF",
+   0,
+   "l",
+   null
+  ],
+  [
+   "MG5",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Cyberster",
+   1,
+   "l",
+   null
+  ],
+  [
+   "ZT",
+   2,
+   "l",
    null
   ]
  ],
@@ -1702,6 +3244,108 @@ window.LAKER_AUTI = {
    "MX-5",
    0,
    "l",
+   null
+  ],
+  [
+   "121",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Demio",
+   0,
+   "h",
+   null
+  ],
+  [
+   "323",
+   1,
+   "h",
+   null
+  ],
+  [
+   "323F",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Premacy",
+   1,
+   "v",
+   null
+  ],
+  [
+   "RX-7",
+   1,
+   "l",
+   null
+  ],
+  [
+   "RX-8",
+   1,
+   "l",
+   null
+  ],
+  [
+   "626",
+   2,
+   "l",
+   null
+  ],
+  [
+   "626 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Xedos 6 / 9",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Tribute",
+   2,
+   "s",
+   null
+  ],
+  [
+   "MX-30",
+   2,
+   "s",
+   null
+  ],
+  [
+   "CX-7",
+   3,
+   "s",
+   null
+  ],
+  [
+   "CX-9",
+   3,
+   "s",
+   null
+  ],
+  [
+   "CX-80",
+   3,
+   "s",
+   null
+  ],
+  [
+   "BT-50",
+   3,
+   "s",
+   null
+  ],
+  [
+   "B serija (pikap)",
+   3,
+   "s",
    null
   ]
  ],
@@ -1927,6 +3571,222 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "A klasa limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Vaneo",
+   1,
+   "v",
+   null
+  ],
+  [
+   "SLC",
+   1,
+   "l",
+   null
+  ],
+  [
+   "190 (W201)",
+   2,
+   "l",
+   null
+  ],
+  [
+   "W114 / W115 (Osmica)",
+   2,
+   "l",
+   null
+  ],
+  [
+   "W123",
+   2,
+   "l",
+   null
+  ],
+  [
+   "W123 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "E klasa W124",
+   2,
+   "l",
+   null
+  ],
+  [
+   "E klasa W124 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "E klasa W214",
+   2,
+   "l",
+   null
+  ],
+  [
+   "E klasa kupe / kabrio",
+   2,
+   "l",
+   null
+  ],
+  [
+   "CLE",
+   2,
+   "l",
+   null
+  ],
+  [
+   "SL",
+   2,
+   "l",
+   null
+  ],
+  [
+   "AMG GT",
+   2,
+   "l",
+   null
+  ],
+  [
+   "EQE",
+   2,
+   "l",
+   null
+  ],
+  [
+   "S klasa W116",
+   3,
+   "l",
+   null
+  ],
+  [
+   "S klasa W126",
+   3,
+   "l",
+   null
+  ],
+  [
+   "S klasa W140",
+   3,
+   "l",
+   null
+  ],
+  [
+   "CL",
+   3,
+   "l",
+   null
+  ],
+  [
+   "AMG GT 4 vrata",
+   3,
+   "l",
+   null
+  ],
+  [
+   "EQS",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Maybach",
+   3,
+   "l",
+   null
+  ],
+  [
+   "GLK",
+   2,
+   "s",
+   null
+  ],
+  [
+   "EQA",
+   2,
+   "s",
+   null
+  ],
+  [
+   "EQB",
+   3,
+   "s",
+   null
+  ],
+  [
+   "EQC",
+   3,
+   "s",
+   null
+  ],
+  [
+   "EQE SUV",
+   3,
+   "s",
+   null
+  ],
+  [
+   "EQS SUV",
+   3,
+   "s",
+   null
+  ],
+  [
+   "GL",
+   3,
+   "s",
+   null
+  ],
+  [
+   "GLC Coupe",
+   3,
+   "s",
+   null
+  ],
+  [
+   "GLE Coupe",
+   3,
+   "s",
+   null
+  ],
+  [
+   "X klasa",
+   3,
+   "s",
+   null
+  ],
+  [
+   "R klasa",
+   3,
+   "v",
+   null
+  ],
+  [
+   "T klasa",
+   3,
+   "v",
+   null
+  ],
+  [
+   "EQV",
+   3,
+   "v",
+   null
+  ],
+  [
+   "MB 100",
+   3,
+   "v",
+   null
   ]
  ],
  "Mini": [
@@ -1962,6 +3822,30 @@ window.LAKER_AUTI = {
   ],
   [
    "Paceman",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Mini klasični",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Cabrio",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Coupe / Roadster",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Aceman",
    1,
    "s",
    null
@@ -2014,6 +3898,66 @@ window.LAKER_AUTI = {
    "Eclipse Cross",
    2,
    "s",
+   null
+  ],
+  [
+   "i-MiEV",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Carisma",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Lancer karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Space Runner",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Pajero Pinin",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Galant",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Eclipse (kupe)",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Pajero Sport",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Space Wagon",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Grandis",
+   3,
+   "v",
    null
   ]
  ],
@@ -2086,6 +4030,132 @@ window.LAKER_AUTI = {
   ],
   [
    "NV200",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Pixo",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Cube",
+   0,
+   "v",
+   null
+  ],
+  [
+   "Sunny",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Bluebird",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Tiida",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Almera Tino",
+   1,
+   "v",
+   null
+  ],
+  [
+   "350Z",
+   1,
+   "l",
+   null
+  ],
+  [
+   "370Z",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Primera karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Maxima",
+   2,
+   "l",
+   null
+  ],
+  [
+   "GT-R",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Terrano",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Ariya",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Pathfinder",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Patrol",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Serena",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Evalia",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Kubistar",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Townstar",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Primastar",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Interstar",
    3,
    "v",
    null
@@ -2271,6 +4341,204 @@ window.LAKER_AUTI = {
    2,
    "s",
    null
+  ],
+  [
+   "Corsa A",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Corsa B",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Tigra",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Speedster",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Ampera-e",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Rocks-e",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Kadett",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Kadett karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Astra F",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Astra F karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Astra G karavan",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Astra G limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Astra H limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Astra J limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Astra L Sports Tourer",
+   1,
+   "k",
+   null
+  ],
+  [
+   "GT",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Ampera",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Ascona",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Rekord",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Vectra A",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Vectra B karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Vectra C karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Omega A",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Omega B",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Omega karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Senator",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Calibra",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Cascada",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Monterey",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Sintra",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Zafira Tourer",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Zafira Life",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Combo Life",
+   3,
+   "v",
+   null
   ]
  ],
  "Peugeot": [
@@ -2405,6 +4673,186 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "104",
+   0,
+   "h",
+   null
+  ],
+  [
+   "1007",
+   0,
+   "h",
+   null
+  ],
+  [
+   "iOn",
+   0,
+   "h",
+   null
+  ],
+  [
+   "206 SW",
+   0,
+   "k",
+   null
+  ],
+  [
+   "206 CC",
+   0,
+   "l",
+   null
+  ],
+  [
+   "207 SW",
+   0,
+   "k",
+   null
+  ],
+  [
+   "207 CC",
+   0,
+   "l",
+   null
+  ],
+  [
+   "301",
+   0,
+   "l",
+   null
+  ],
+  [
+   "305",
+   1,
+   "l",
+   null
+  ],
+  [
+   "309",
+   1,
+   "h",
+   null
+  ],
+  [
+   "307 SW",
+   1,
+   "k",
+   null
+  ],
+  [
+   "307 CC",
+   1,
+   "l",
+   null
+  ],
+  [
+   "408",
+   1,
+   "h",
+   null
+  ],
+  [
+   "RCZ",
+   1,
+   "l",
+   null
+  ],
+  [
+   "4008",
+   1,
+   "s",
+   null
+  ],
+  [
+   "404",
+   2,
+   "l",
+   null
+  ],
+  [
+   "405",
+   2,
+   "l",
+   null
+  ],
+  [
+   "405 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "406 kupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "407 SW",
+   2,
+   "k",
+   null
+  ],
+  [
+   "407 kupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "504",
+   2,
+   "l",
+   null
+  ],
+  [
+   "505",
+   2,
+   "l",
+   null
+  ],
+  [
+   "605",
+   2,
+   "l",
+   null
+  ],
+  [
+   "607",
+   2,
+   "l",
+   null
+  ],
+  [
+   "4007",
+   2,
+   "s",
+   null
+  ],
+  [
+   "806",
+   3,
+   "v",
+   null
+  ],
+  [
+   "807",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Bipper",
+   3,
+   "v",
+   null
+  ],
+  [
+   "J5",
+   3,
+   "v",
+   null
   ]
  ],
  "Porsche": [
@@ -2448,6 +4896,36 @@ window.LAKER_AUTI = {
    "Taycan",
    2,
    "l",
+   null
+  ],
+  [
+   "924",
+   1,
+   "l",
+   null
+  ],
+  [
+   "944",
+   1,
+   "l",
+   null
+  ],
+  [
+   "968",
+   1,
+   "l",
+   null
+  ],
+  [
+   "928",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Taycan Cross Turismo",
+   2,
+   "k",
    null
   ]
  ],
@@ -2619,6 +5097,180 @@ window.LAKER_AUTI = {
    2,
    "s",
    null
+  ],
+  [
+   "4 (Katrca)",
+   0,
+   "h",
+   null
+  ],
+  [
+   "5",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Super 5",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Clio 1",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Thalia / Clio Symbol",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Wind",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Twizy",
+   0,
+   "h",
+   null
+  ],
+  [
+   "9",
+   1,
+   "l",
+   null
+  ],
+  [
+   "11",
+   1,
+   "h",
+   null
+  ],
+  [
+   "12",
+   1,
+   "l",
+   null
+  ],
+  [
+   "19",
+   1,
+   "h",
+   null
+  ],
+  [
+   "19 Chamade",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Megane 1",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Megane Classic",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Megane kupe / kabrio",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Megane E-Tech",
+   1,
+   "s",
+   null
+  ],
+  [
+   "18",
+   2,
+   "l",
+   null
+  ],
+  [
+   "21",
+   2,
+   "l",
+   null
+  ],
+  [
+   "21 Nevada",
+   2,
+   "k",
+   null
+  ],
+  [
+   "25",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Laguna 1",
+   2,
+   "h",
+   null
+  ],
+  [
+   "Laguna karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Laguna kupe",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Safrane",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Latitude",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Symbioz",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Scenic E-Tech",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Rafale",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Express",
+   3,
+   "v",
+   null
   ]
  ],
  "Seat": [
@@ -2687,6 +5339,60 @@ window.LAKER_AUTI = {
    3,
    "v",
    null
+  ],
+  [
+   "Marbella",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Arosa",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Cordoba",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Cordoba Vario",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Ibiza ST",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Malaga",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Altea XL",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Exeo ST",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Inca",
+   3,
+   "v",
+   null
   ]
  ],
  "Smart": [
@@ -2706,6 +5412,18 @@ window.LAKER_AUTI = {
    "Roadster",
    0,
    "l",
+   null
+  ],
+  [
+   "#1",
+   1,
+   "s",
+   null
+  ],
+  [
+   "#3",
+   2,
+   "s",
    null
   ]
  ],
@@ -2737,6 +5455,60 @@ window.LAKER_AUTI = {
   [
    "XV",
    2,
+   "s",
+   null
+  ],
+  [
+   "Justy",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Trezia",
+   0,
+   "v",
+   null
+  ],
+  [
+   "Impreza limuzina",
+   1,
+   "l",
+   null
+  ],
+  [
+   "BRZ",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Legacy karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Levorg",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Crosstrek",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Solterra",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Tribeca",
+   3,
    "s",
    null
   ]
@@ -2801,6 +5573,72 @@ window.LAKER_AUTI = {
    1,
    "s",
    null
+  ],
+  [
+   "Wagon R",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Wagon R+",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Celerio",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Liana",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Swace",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Samurai",
+   1,
+   "s",
+   null
+  ],
+  [
+   "X-90",
+   1,
+   "s",
+   null
+  ],
+  [
+   "e Vitara",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Kizashi",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Across",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Carry",
+   3,
+   "v",
+   null
   ]
  ],
  "Tesla": [
@@ -2824,6 +5662,12 @@ window.LAKER_AUTI = {
   ],
   [
    "Model X",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Cybertruck",
    3,
    "s",
    null
@@ -2928,6 +5772,156 @@ window.LAKER_AUTI = {
   ],
   [
    "Proace",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Starlet",
+   0,
+   "h",
+   null
+  ],
+  [
+   "iQ",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Aygo X",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Paseo",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Yaris Verso",
+   0,
+   "v",
+   null
+  ],
+  [
+   "Celica",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Supra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "GT86 / GR86",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Urban Cruiser",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Carina",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Carina E karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Crown",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Mirai",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Corolla Cross",
+   2,
+   "s",
+   null
+  ],
+  [
+   "bZ4X",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Highlander",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Land Cruiser Prado",
+   3,
+   "s",
+   null
+  ],
+  [
+   "FJ Cruiser",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Tundra",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Corolla Verso",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Avensis Verso",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Picnic",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Previa",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Proace City",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Hiace",
    3,
    "v",
    null
@@ -3239,6 +6233,192 @@ window.LAKER_AUTI = {
    2,
    "s",
    null
+  ],
+  [
+   "Buba (Käfer)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Polo 86C",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Polo 6N",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Polo 6N2",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Polo Classic / limuzina",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Polo Variant",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Golf 1",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Golf 2",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Golf 3",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Golf 3 Variant",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Golf Cabrio",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Golf Sportsvan",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Bora Variant",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Corrado",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Eos",
+   1,
+   "l",
+   null
+  ],
+  [
+   "T-Roc Cabrio",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Passat B2",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Passat B3",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Passat B4",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Passat B3 / B4 Variant",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Passat B5 Variant",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Passat B9 Variant",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Passat Alltrack",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Arteon Shooting Brake",
+   2,
+   "k",
+   null
+  ],
+  [
+   "ID.7",
+   2,
+   "l",
+   null
+  ],
+  [
+   "ID.5",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Transporter T3",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Transporter T4",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Transporter T7",
+   3,
+   "v",
+   null
+  ],
+  [
+   "LT",
+   3,
+   "v",
+   null
+  ],
+  [
+   "ID. Buzz",
+   3,
+   "v",
+   null
   ]
  ],
  "Volvo": [
@@ -3319,6 +6499,126 @@ window.LAKER_AUTI = {
    3,
    "s",
    null
+  ],
+  [
+   "340",
+   1,
+   "h",
+   null
+  ],
+  [
+   "440",
+   1,
+   "h",
+   null
+  ],
+  [
+   "460",
+   1,
+   "l",
+   null
+  ],
+  [
+   "480",
+   1,
+   "h",
+   null
+  ],
+  [
+   "C30",
+   1,
+   "h",
+   null
+  ],
+  [
+   "EX30",
+   1,
+   "s",
+   null
+  ],
+  [
+   "240",
+   2,
+   "l",
+   null
+  ],
+  [
+   "240 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "740",
+   2,
+   "l",
+   null
+  ],
+  [
+   "740 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "760",
+   2,
+   "l",
+   null
+  ],
+  [
+   "850",
+   2,
+   "l",
+   null
+  ],
+  [
+   "850 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "940",
+   2,
+   "l",
+   null
+  ],
+  [
+   "940 karavan",
+   2,
+   "k",
+   null
+  ],
+  [
+   "960",
+   2,
+   "l",
+   null
+  ],
+  [
+   "S70",
+   2,
+   "l",
+   null
+  ],
+  [
+   "C70",
+   2,
+   "l",
+   null
+  ],
+  [
+   "C40",
+   2,
+   "s",
+   null
+  ],
+  [
+   "EX90",
+   3,
+   "s",
+   null
   ]
  ],
  "Zastava / Yugo": [
@@ -3362,6 +6662,48 @@ window.LAKER_AUTI = {
    "Florida",
    0,
    "h",
+   null
+  ],
+  [
+   "750 (Fića)",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Skala 55",
+   0,
+   "h",
+   null
+  ],
+  [
+   "1300 / 1500",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Yugo 60 / 65",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Yugo Tempo",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Yugo Cabrio",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Poly",
+   3,
+   "v",
    null
   ]
  ],
@@ -3515,6 +6857,60 @@ window.LAKER_AUTI = {
    3,
    "s",
    null
+  ],
+  [
+   "105 / 120 / 130",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Favorit",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Forman",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Felicia",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Felicia Combi",
+   0,
+   "k",
+   null
+  ],
+  [
+   "Octavia 1 Combi",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Octavia Scout",
+   1,
+   "k",
+   null
+  ],
+  [
+   "Superb 4",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Elroq",
+   2,
+   "s",
+   null
   ]
  ],
  "Ostalo": [
@@ -3605,6 +7001,1110 @@ window.LAKER_AUTI = {
   [
    "Daewoo Nubira",
    1,
+   "l",
+   null
+  ],
+  [
+   "MAN TGE",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Piaggio Porter",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Aixam (mikro auto)",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Ligier (mikro auto)",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Microcar (mikro auto)",
+   0,
+   "h",
+   null
+  ]
+ ],
+ "Abarth": [
+  [
+   "500 / 595 / 695",
+   0,
+   "h",
+   null
+  ],
+  [
+   "124 Spider",
+   0,
+   "l",
+   null
+  ]
+ ],
+ "Alpine": [
+  [
+   "A110",
+   1,
+   "l",
+   null
+  ],
+  [
+   "A290",
+   0,
+   "h",
+   null
+  ]
+ ],
+ "Aston Martin": [
+  [
+   "Vantage",
+   2,
+   "l",
+   null
+  ],
+  [
+   "DB9",
+   2,
+   "l",
+   null
+  ],
+  [
+   "DB11",
+   2,
+   "l",
+   null
+  ],
+  [
+   "DB12",
+   2,
+   "l",
+   null
+  ],
+  [
+   "DBS",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Rapide",
+   3,
+   "l",
+   null
+  ],
+  [
+   "DBX",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Bentley": [
+  [
+   "Continental GT",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Flying Spur",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Mulsanne",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Bentayga",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Cadillac": [
+  [
+   "ATS",
+   2,
+   "l",
+   null
+  ],
+  [
+   "CTS",
+   2,
+   "l",
+   null
+  ],
+  [
+   "XT4",
+   2,
+   "s",
+   null
+  ],
+  [
+   "XT5",
+   3,
+   "s",
+   null
+  ],
+  [
+   "SRX",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Escalade",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Lyriq",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Chrysler": [
+  [
+   "Neon",
+   1,
+   "l",
+   null
+  ],
+  [
+   "PT Cruiser",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Crossfire",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Sebring",
+   2,
+   "l",
+   null
+  ],
+  [
+   "300C",
+   3,
+   "l",
+   null
+  ],
+  [
+   "300C Touring",
+   3,
+   "k",
+   null
+  ],
+  [
+   "Voyager",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Grand Voyager",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Pacifica",
+   3,
+   "v",
+   null
+  ]
+ ],
+ "Daewoo": [
+  [
+   "Tico",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Kalos",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Nexia",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Espero",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Lacetti",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Tacuma",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Leganza",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Evanda",
+   2,
+   "l",
+   null
+  ]
+ ],
+ "Daihatsu": [
+  [
+   "Cuore",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Sirion",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Charade",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Materia",
+   0,
+   "h",
+   null
+  ],
+  [
+   "YRV",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Applause",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Feroza",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Rocky",
+   1,
+   "s",
+   null
+  ]
+ ],
+ "Dodge": [
+  [
+   "Caliber",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Avenger",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Nitro",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Journey",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Durango",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Charger",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Challenger",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Viper",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Grand Caravan",
+   3,
+   "v",
+   null
+  ],
+  [
+   "RAM 1500",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Ferrari": [
+  [
+   "California",
+   2,
+   "l",
+   null
+  ],
+  [
+   "458 Italia",
+   2,
+   "l",
+   null
+  ],
+  [
+   "488",
+   2,
+   "l",
+   null
+  ],
+  [
+   "F8 Tributo",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Roma",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Portofino",
+   2,
+   "l",
+   null
+  ],
+  [
+   "296",
+   2,
+   "l",
+   null
+  ],
+  [
+   "812",
+   2,
+   "l",
+   null
+  ],
+  [
+   "SF90",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Purosangue",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Genesis": [
+  [
+   "G70",
+   2,
+   "l",
+   null
+  ],
+  [
+   "G80",
+   2,
+   "l",
+   null
+  ],
+  [
+   "G90",
+   3,
+   "l",
+   null
+  ],
+  [
+   "GV60",
+   2,
+   "s",
+   null
+  ],
+  [
+   "GV70",
+   3,
+   "s",
+   null
+  ],
+  [
+   "GV80",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Geely": [
+  [
+   "Emgrand",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Coolray",
+   1,
+   "s",
+   null
+  ],
+  [
+   "EX5",
+   2,
+   "s",
+   null
+  ]
+ ],
+ "Great Wall / Haval": [
+  [
+   "Hover H3",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Hover H5",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Haval Jolion",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Haval H6",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Wingle",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Hummer": [
+  [
+   "H2",
+   3,
+   "s",
+   null
+  ],
+  [
+   "H3",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Infiniti": [
+  [
+   "Q30",
+   1,
+   "h",
+   null
+  ],
+  [
+   "G37",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Q50",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Q60",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Q70",
+   2,
+   "l",
+   null
+  ],
+  [
+   "QX30",
+   2,
+   "s",
+   null
+  ],
+  [
+   "EX",
+   2,
+   "s",
+   null
+  ],
+  [
+   "QX50",
+   3,
+   "s",
+   null
+  ],
+  [
+   "QX60",
+   3,
+   "s",
+   null
+  ],
+  [
+   "QX70 / FX",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Isuzu": [
+  [
+   "Trooper",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Rodeo",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Lamborghini": [
+  [
+   "Gallardo",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Huracan",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Aventador",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Revuelto",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Urus",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Lancia": [
+  [
+   "Y10",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Y / Ypsilon",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Delta",
+   1,
+   "h",
+   null
+  ],
+  [
+   "Prisma",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Dedra",
+   1,
+   "l",
+   null
+  ],
+  [
+   "Musa",
+   1,
+   "v",
+   null
+  ],
+  [
+   "Thema",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Kappa",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Lybra",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Lybra SW",
+   2,
+   "k",
+   null
+  ],
+  [
+   "Thesis",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Zeta",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Phedra",
+   3,
+   "v",
+   null
+  ],
+  [
+   "Voyager",
+   3,
+   "v",
+   null
+  ]
+ ],
+ "Leapmotor": [
+  [
+   "T03",
+   0,
+   "h",
+   null
+  ],
+  [
+   "C10",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Lynk & Co": [
+  [
+   "01",
+   2,
+   "s",
+   null
+  ]
+ ],
+ "Maserati": [
+  [
+   "Ghibli",
+   2,
+   "l",
+   null
+  ],
+  [
+   "GranTurismo",
+   2,
+   "l",
+   null
+  ],
+  [
+   "GranCabrio",
+   2,
+   "l",
+   null
+  ],
+  [
+   "MC20",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Quattroporte",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Levante",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Grecale",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "McLaren": [
+  [
+   "570S",
+   2,
+   "l",
+   null
+  ],
+  [
+   "720S",
+   2,
+   "l",
+   null
+  ],
+  [
+   "750S",
+   2,
+   "l",
+   null
+  ],
+  [
+   "Artura",
+   2,
+   "l",
+   null
+  ],
+  [
+   "GT",
+   2,
+   "l",
+   null
+  ]
+ ],
+ "Moskvič": [
+  [
+   "412",
+   0,
+   "l",
+   null
+  ],
+  [
+   "2140",
+   0,
+   "l",
+   null
+  ],
+  [
+   "Aleko (2141)",
+   0,
+   "h",
+   null
+  ]
+ ],
+ "Omoda": [
+  [
+   "5",
+   2,
+   "s",
+   null
+  ]
+ ],
+ "Jaecoo": [
+  [
+   "7",
+   2,
+   "s",
+   null
+  ]
+ ],
+ "Polestar": [
+  [
+   "2",
+   2,
+   "h",
+   null
+  ],
+  [
+   "3",
+   3,
+   "s",
+   null
+  ],
+  [
+   "4",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Rolls-Royce": [
+  [
+   "Ghost",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Phantom",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Wraith",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Spectre",
+   3,
+   "l",
+   null
+  ],
+  [
+   "Cullinan",
+   3,
+   "s",
+   null
+  ]
+ ],
+ "Rover": [
+  [
+   "100 / Metro",
+   0,
+   "h",
+   null
+  ],
+  [
+   "Streetwise",
+   0,
+   "h",
+   null
+  ],
+  [
+   "200",
+   1,
+   "h",
+   null
+  ],
+  [
+   "400",
+   1,
+   "h",
+   null
+  ],
+  [
+   "600",
+   2,
+   "l",
+   null
+  ],
+  [
+   "75",
+   2,
+   "l",
+   null
+  ],
+  [
+   "75 Tourer",
+   2,
+   "k",
+   null
+  ],
+  [
+   "800",
+   2,
+   "l",
+   null
+  ]
+ ],
+ "Saab": [
+  [
+   "900",
+   2,
+   "h",
+   null
+  ],
+  [
+   "9000",
+   2,
+   "h",
+   null
+  ],
+  [
+   "9-3 SportCombi",
+   2,
+   "k",
+   null
+  ],
+  [
+   "9-5 karavan",
+   2,
+   "k",
+   null
+  ]
+ ],
+ "SsangYong": [
+  [
+   "Tivoli",
+   1,
+   "s",
+   null
+  ],
+  [
+   "XLV",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Actyon",
+   2,
+   "s",
+   null
+  ],
+  [
+   "Kyron",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Torres",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Musso",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Actyon Sports",
+   3,
+   "s",
+   null
+  ],
+  [
+   "Rodius",
+   3,
+   "v",
+   null
+  ]
+ ],
+ "Trabant": [
+  [
+   "601",
+   0,
+   "l",
+   null
+  ]
+ ],
+ "UAZ": [
+  [
+   "469",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Hunter",
+   1,
+   "s",
+   null
+  ],
+  [
+   "Patriot",
+   3,
+   "s",
+   null
+  ],
+  [
+   "452 (Buhanka)",
+   3,
+   "v",
+   null
+  ]
+ ],
+ "Wartburg": [
+  [
+   "353",
+   0,
    "l",
    null
   ]

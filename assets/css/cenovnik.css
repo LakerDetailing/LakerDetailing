@@ -1,11 +1,16 @@
 /* ══════════════════════════════════════════════════════════════════════════
    LAKER DETAILING — /cenovnik
-   Učitava se posle laker.css. Ovde je sve što postoji samo na cenovniku:
-   lepljivi birač veličine vozila, kartice paketa, Loyalty, tabele cena sa
-   istaknutom kolonom i kalkulator „Sastavi sam".
+   Učitava se posle laker.css. Nova strana od 2026-09-22 (vlasnik odobrio demo
+   „spojena verzija"): pretraga auta i birač veličine na vrhu, paketi kao
+   stepenice (Boost i Laker pišu samo ono što se dodaje), tabela „Šta koji paket
+   ima", pojedinačne cene u četiri grupe i Loyalty na dnu. Kalkulator
+   „Sastavi sam" i karusel paketa za telefon više ne postoje.
 
-   Kartice paketa i Loyalty su preseljene sa početne (sekcije #pkg i #care)
-   i zadržavaju iste vrednosti — samo su ovde, a ne u index.html.
+   Redosled u fajlu:
+     1. slova i boja samo za cenovnik (DM Serif Display + Karla, Klasik Laker)
+     2. strana — vrednosti su iz demoa, u tonu ostatka sajta
+     3. Loyalty modal i kontrolna tabla (main.js) — preneti bez izmena
+     4. pune crvene površine — NA KRAJU, da pobede sve iznad
    ══════════════════════════════════════════════════════════════════════════ */
 
 /* ── KLASIK LAKER — slova i boja SAMO na cenovniku (vlasnik 2026-09-22) ───────
@@ -19,7 +24,9 @@
    · DM Serif ima samo rez 400 i krupniji je od Cormoranta: size-adjust:86%
      ga smanjuje svuda odjednom, umesto da se dira 40 veličina pojedinačno.
    · Cormorant/Inter iz fonts.css ostaju učitani zbog Loyalty kontrolne table
-     u main.js, koja ima tvrdo upisan font-family u inline stilu. */
+     u main.js, koja ima tvrdo upisan font-family u inline stilu.
+   · DM Serif Display se sa size-adjust:86% vidi skoro isto kao u demou u kom je
+     vlasnik birao (tamo su veličine bile ručno smanjene ~12%). */
 @font-face{font-family:'DM Serif Display';font-style:normal;font-weight:400;font-display:swap;size-adjust:86%;src:url(/assets/fonts/dm-serif-display-400-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
 @font-face{font-family:'DM Serif Display';font-style:normal;font-weight:400;font-display:swap;size-adjust:86%;src:url(/assets/fonts/dm-serif-display-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 @font-face{font-family:'DM Serif Display';font-style:italic;font-weight:400;font-display:swap;size-adjust:86%;src:url(/assets/fonts/dm-serif-display-400i-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
@@ -33,583 +40,234 @@
 }
 body.light{--gold:#C0392B;--gold2:#A93226;--gold3:#922B21}
 
-/* ── LEPLJIVI BIRAČ VELIČINE VOZILA ─────────────────────────────────────────
-   Menja SVE cene na strani odjednom. Stoji ispod fiksne navigacije, pa mu je
-   `top` visina nava; na telefonu je nav niži, pa se i ovo pomera.
 
-   Preuređen 2026-09-03 (vlasnik: „bas je sitno, ne vidi se lepo"). Ranije je
-   naslov jeo levu polovinu reda, pa su četiri dugmeta ostajala stisnuta desno
-   na 7,3–8 px sa razmaknutim VELIKIM slovima. Sada:
-     · naslov je u svom redu iznad,
-     · dugmad su mreža od četiri JEDNAKE kolone preko cele širine,
-     · tekst je normalnim slovima (bez uppercase i letter-spacinga koji su
-       trostruko širili reč i terali da se font smanjuje),
-     · u svakom dugmetu stoje TRI poznata auta u čipovima (.szm), da čovek
-       prepozna svoj bez razmišljanja o klasama; segmenti i metri se ne pišu
-       nigde na sajtu (odluka vlasnika 2026-09-03),
-     · reda sa opisom (#szHint) više nema — čipovi ga zamenjuju.
-   Kad se menja: dugme mora zadržati klasu .tb (traže je cenovnik.js i ot()). */
-.szbar{position:sticky;top:calc(68px + env(safe-area-inset-top));z-index:900;
-  background:rgba(8,8,8,.97);border-top:1px solid rgba(255,255,255,.06);
-  border-bottom:1px solid rgba(231,76,60,.22);padding:13px 0 12px}
-body.light .szbar{background:rgba(244,242,238,.97);border-top-color:rgba(0,0,0,.08);border-bottom-color:rgba(231,76,60,.28)}
-.szbar .ctn{padding:0 70px}
+/* ══════════════════════════════════════════════════════════════════════════
+   2. STRANA
+   Markup je u cenovnik.html, ponašanje u assets/js/cenovnik.js. Cene stoje
+   u data-c="mali,srednji,veliki,ekstra" i menja ih izbor veličine.
+   #pick ima scroll-margin da ga fiksni meni ne prekrije (link /cenovnik#pick
+   sa strana usluga).
+   ══════════════════════════════════════════════════════════════════════════ */
+#pick{scroll-margin-top:110px}
+button.pk-btn{width:100%;background:none;font-family:var(--sans);cursor:pointer}
+@media(hover:none){button.pk-btn{cursor:pointer}}
+@media(hover:hover){#content button,#content a,#content [role=option]{cursor:none}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.sec-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px 30px}
+.pk-napomena{font-size:13px;color:var(--gray);max-width:360px;text-align:right;font-weight:300;line-height:1.75}
+.chg{background:none;border:0;padding:0 0 1px;color:var(--gold);font:inherit;font-weight:500;border-bottom:1px dotted rgba(231,76,60,.6)}
+.chg:hover{color:var(--gold2)}
+svg.i{display:block;flex:none}
+@media(max-width:768px){h1.sh br,h2.sh br{display:none}.pk-napomena{text-align:left}}
 
-/* naslov birača — svoj red, da dugmad dobiju punu širinu */
-.sz-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px}
-.szbar .k{font-size:11px;letter-spacing:3.5px;text-transform:uppercase;color:var(--lgray);font-weight:600;white-space:nowrap}
-.sz-note{font-size:11.5px;color:var(--gray);font-weight:300;letter-spacing:.2px}
-
-/* mreža dugmadi — uvek četiri jednake kolone */
-.szbar .tabs.szpick{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:0}
-.szbar .szp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
-  padding:10px 6px 9px;background:var(--d2);border:1px solid rgba(255,255,255,.07);
-  text-transform:none;letter-spacing:0;font-size:inherit;transition:background .25s,border-color .25s,color .25s}
-body.light .szbar .szp{border-color:rgba(0,0,0,.09)}
-.szbar .szp b{font-size:15.5px;font-weight:600;letter-spacing:.2px;color:var(--white);line-height:1}
-/* Čipovi sa poznatim autima. Na telefonu se okvir čipa gubi i imena idu jedno
-   ispod drugog — sa okvirima bi lepljiva traka pojela pola ekrana. */
-.szbar .szm{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
-.szbar .szm span{font-size:10px;font-weight:400;color:var(--gray);border:1px solid rgba(255,255,255,.09);
-  padding:3px 7px;border-radius:999px;line-height:1.1;white-space:nowrap;transition:color .25s,border-color .25s}
-body.light .szbar .szm span{border-color:rgba(0,0,0,.12)}
-.szbar .szp:hover{background:var(--d3);border-color:rgba(231,76,60,.35)}
-.szbar .szp:hover b{color:var(--white)}
-/* Izabrano dugme: podloga #C0392B i tekst TVRDO beo (5,4:1 u obe teme) —
-   boja podloge i slova se postavlja u bloku „KLASIK LAKER" na dnu fajla.
-   Border je izdvojen i za svetlu temu jer
-   `body.light .szbar .szp` (0,3,1) inače pobedi `.szbar .szp.on` (0,3,0). */
-.szbar .szp.on{background:var(--gold);border-color:var(--gold)}
-body.light .szbar .szp.on{border-color:var(--gold)}
-.szbar .szp.on b{color:#fff}
-.szbar .szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
-
-.pk-napomena{font-size:13px;color:var(--gray);max-width:340px;text-align:right;font-weight:300;line-height:1.75}
-
-/* ── PAKETI ────────────────────────────────────────────────────────────────
-   Cena u .pk-p prati birač veličine; četiri cene ispod (.pk-size-grid)
-   ostaju vidljive, a izabrana se istakne. */
-.pk-sz.on{background:rgba(231,76,60,.1);outline:1px solid rgba(231,76,60,.35)}
-.pk-sz.on span{color:var(--gold)}
-body.light .pk-sz.on{background:rgba(231,76,60,.08)}
-
-/* ── LOYALTY ───────────────────────────────────────────────────────────────
-   Levo kartica sa cenom, desno osam koraka pranja.
-   Koraci su sitni (vlasnik 2026-09-21: „da se vidi da je tu, al ne ovoliko") —
-   bili su viši od kartice za ~330px. Sad je blok iste visine kao kartica
-   (stretch), čipovi rezultata stoje uz dno u ravni sa dugmetom „Aktiviraj”,
-   a unutrašnji razmaci su isti kao na kartici (52/48). .steps iz laker.css koriste i
-   strane usluga, zato je sve ovde pod .loy-wash i ne sme se dizati u laker.css. */
-.loy-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;align-items:stretch}
-.loy-wash{background:var(--d2);padding:52px 44px 48px;display:flex;flex-direction:column}
-.loy-wash .k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
-.loy-wash h3{font-family:var(--serif);font-size:24px;font-weight:300;letter-spacing:-.3px;line-height:1.1;margin-bottom:18px}
-.loy-wash h3 em{font-style:italic;color:var(--gold)}
-.loy-wash .steps li{grid-template-columns:26px 1fr;gap:12px;padding:10px 0;border-top-color:rgba(255,255,255,.06)}
-.loy-wash .steps li:last-child{border-bottom-color:rgba(255,255,255,.06)}
-body.light .loy-wash .steps li{border-top-color:rgba(0,0,0,.07)}
-body.light .loy-wash .steps li:last-child{border-bottom-color:rgba(0,0,0,.07)}
-.loy-wash .steps .n{font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:1px;line-height:17.5px;font-variant-numeric:tabular-nums}
-.loy-wash .steps b{font-size:13px;line-height:1.35;margin-bottom:1px}
-.loy-wash .steps div span{display:block;font-size:11.5px;line-height:1.5;color:var(--gray)}
-.loy-rez{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:18px}
-.loy-rez span{font-size:9.5px;letter-spacing:1.2px;color:var(--lgray);font-weight:500;padding:4px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
-body.light .loy-rez span{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
-
-/* ── TABELE POJEDINAČNIH USLUGA ────────────────────────────────────────────
-   Sve četiri kolone ostaju vidljive; izabrana je istaknuta crveno, da se vidi
-   i koliko usluga košta za druge veličine vozila. */
-td.prc-on,th.prc-on{background:rgba(231,76,60,.09)}
-th.prc-on{color:var(--gold)}
-td.prc-on.pv2{color:var(--gold)!important}
-body.light td.prc-on,body.light th.prc-on{background:rgba(231,76,60,.07)}
-/* Sitna napomena ispod tabele pojedinačnih cena — npr. da impregnacija ulazi
-   u pakete, pa se uz njih ne doplaćuje (vlasnik 2026-09-03). */
-.tbl-note{margin-top:14px;font-size:12.5px;line-height:1.6;color:var(--gray);font-weight:300}
-
-.prc-more{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:color .3s;border-bottom:1px dotted rgba(231,76,60,.45);padding-bottom:2px}
-.prc-more::after{content:'→';font-size:11px;color:var(--gold);opacity:.5;transform:translateX(-3px);transition:opacity .3s,transform .3s}
-.prc-more:hover{color:var(--gold);border-bottom-color:var(--gold)}
-.prc-more:hover::after{opacity:1;transform:translateX(0)}
-@media(hover:none){.prc-more::after{opacity:.55;transform:none}}
-
-/* ── SASTAVI SAM ───────────────────────────────────────────────────────────*/
-.cfg{display:grid;grid-template-columns:1.2fr 1fr;gap:2px;margin-top:50px;align-items:start}
-.cfg-l{background:var(--d2);padding:52px 44px;display:flex;flex-direction:column;gap:40px;min-width:0}
-.cfg-r{background:var(--d3);padding:52px 44px;position:sticky;top:170px;align-self:start;display:flex;flex-direction:column;gap:20px;min-width:0}
-.cfg h3{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:16px;display:flex;gap:12px;align-items:center}
-.cfg h3 i{font-style:normal;font-family:var(--serif);font-size:22px;color:var(--gold)}
-.cfg .pom{font-size:12px;color:var(--gray);font-weight:300;line-height:1.6;margin-top:10px}
-
-.sel,.pretraga{width:100%;background:var(--d1);border:1px solid rgba(255,255,255,.12);color:var(--white);
-  padding:15px 18px;font-size:14px;font-family:var(--sans);font-weight:300;
-  appearance:none;-webkit-appearance:none;outline:0;transition:border-color .3s}
-body.light .sel,body.light .pretraga{border-color:rgba(0,0,0,.14)}
-.sel:focus,.pretraga:focus{border-color:var(--gold)}
-.sel:disabled{opacity:.45}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-
-/* pretraga po tekstu — „golf 4" nalazi Golf 4 */
-.trazi{position:relative}
-.rez{position:absolute;left:0;right:0;top:calc(100% + 2px);z-index:40;background:var(--d1);
-  border:1px solid rgba(231,76,60,.3);max-height:280px;overflow-y:auto;display:none}
-.rez.on{display:block}
-.rez button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--lgray);
-  font-family:var(--sans);font-size:13.5px;font-weight:300;padding:12px 18px;cursor:pointer;
-  border-bottom:1px solid rgba(255,255,255,.05)}
-.rez button:hover,.rez button.izabran{background:rgba(231,76,60,.12);color:var(--white)}
-.rez button small{color:var(--gray);font-size:11px;margin-left:8px}
-.rez .prazno{padding:14px 18px;font-size:12.5px;color:var(--gray);font-weight:300}
-
-.carbox{display:block;margin-top:20px;background:var(--d1);padding:22px}
-.carbox .cat{font-family:var(--serif);font-size:30px;font-weight:300;line-height:1.05}
-.carbox .cat small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-top:8px}
-
-.cols{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-.col{width:34px;height:34px;border:2px solid transparent;cursor:pointer;transition:transform .2s;padding:0;background-clip:padding-box}
-.col.on{border-color:var(--white);transform:scale(1.12)}
-
-.svc{list-style:none;display:flex;flex-direction:column}
-.svc .st{display:grid;grid-template-columns:22px 1fr auto;gap:16px;align-items:center;padding:14px 0;
-  border-top:1px solid rgba(255,255,255,.08);cursor:pointer;font-size:14px;color:var(--lgray);font-weight:300}
-body.light .svc .st{border-top-color:rgba(0,0,0,.08)}
-.svc .st:last-child{border-bottom:1px solid rgba(255,255,255,.08)}
-body.light .svc .st:last-child{border-bottom-color:rgba(0,0,0,.08)}
-.svc .bx{width:18px;height:18px;border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;font-size:12px;color:var(--black);line-height:1}
-.svc .st.on .bx{background:var(--gold);border-color:var(--gold)}
-.svc .st.on{color:var(--white)}
-.svc .st .p{font-variant-numeric:tabular-nums;color:var(--mgray);white-space:nowrap}
-.svc .st.on .p{color:var(--gold);font-weight:500}
-.svc .g{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);padding:24px 0 8px;display:block}
-/* stavka koja se ne kombinuje sa već izabranom — posivi i ne klikće se */
-.svc .st.off{opacity:.45;cursor:not-allowed}
-.svc .st.off .bx{border-style:dashed}
-.svc .st.off .p{text-decoration:line-through}
-.svc .zas{display:block;font-size:11px;line-height:1.5;color:var(--gray);margin-top:4px;font-style:italic}
-.svc .g:first-child{padding-top:0}
-
-.sum{list-style:none;display:flex;flex-direction:column}
-.sum li{display:flex;justify-content:space-between;gap:16px;font-size:13.5px;padding:10px 0;
-  border-top:1px solid rgba(255,255,255,.08);color:var(--lgray);font-weight:300}
-body.light .sum li{border-top-color:rgba(0,0,0,.08)}
-.sum li b{font-variant-numeric:tabular-nums;font-weight:500;color:var(--white);white-space:nowrap}
-.sum li.prazno{color:var(--gray);font-style:italic}
-.tot{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-top:1px solid var(--gold);padding-top:20px}
-.tot .k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray)}
-.tot .v{font-family:var(--serif);font-size:60px;font-weight:300;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:var(--gold)}
-.cfg-r .btn-g{justify-content:center}
-.cfg-r .btn-g[aria-disabled="true"]{opacity:.4;pointer-events:none}
-.cfg-r .note{font-size:11.5px;line-height:1.7;color:var(--gray);font-weight:300}
-.sum-auto{font-family:var(--serif);font-size:28px;font-weight:300;line-height:1.15;color:var(--gray)}
-.sum-auto.ima{color:var(--white)}
-.sum-auto span{display:block;font-family:var(--sans);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-top:8px}
-
-@media(max-width:1100px){
-  .loy-grid{grid-template-columns:1fr}
-  .cfg{grid-template-columns:1fr}
-  .cfg-r{position:static}
-  .szbar .ctn{padding:0 30px}
-}
-@media(max-width:860px){
-  .szbar .szp b{font-size:14.5px}
-  .szbar .szm span{font-size:9.5px;padding:2px 6px}
-}
+/* ── BIRAČ: pretraga auta + četiri veličine ── */
+.pick{margin-top:48px}
+.pick .k{display:block;font-size:11px;letter-spacing:3.5px;text-transform:uppercase;color:var(--lgray);font-weight:600;margin-bottom:12px}
+.srch{position:relative}
+.srch input{width:100%;background:var(--d1);border:1px solid rgba(255,255,255,.12);color:var(--white);padding:19px 54px 19px 52px;font-size:15px;font-family:var(--sans);font-weight:300;appearance:none;-webkit-appearance:none;outline:0;border-radius:0;transition:border-color .3s}
+body.light .srch input{border-color:rgba(0,0,0,.14)}
+.srch input:hover{border-color:rgba(231,76,60,.35)}
+.srch input:focus{border-color:var(--gold)}
+.srch input::placeholder{color:var(--gray)}
+.srch .ico{position:absolute;left:19px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none}
+.srch .clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:44px;display:grid;place-items:center;background:none;border:0;color:var(--gray);transition:color .3s}
+.srch .clr:hover{color:var(--white)}
+.srch-r{position:absolute;left:0;right:0;top:calc(100% + 2px);z-index:40;background:var(--d1);border:1px solid rgba(231,76,60,.3);max-height:min(372px,52vh);overflow-y:auto;overscroll-behavior:contain;box-shadow:0 24px 50px rgba(0,0,0,.5)}
+body.light .srch-r{box-shadow:0 18px 40px rgba(0,0,0,.12)}
+.srch-r [role=option]{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:13px 18px;font-size:13.5px;font-weight:300;color:var(--lgray);border-bottom:1px solid rgba(255,255,255,.05)}
+body.light .srch-r [role=option]{border-bottom-color:rgba(0,0,0,.06)}
+.srch-r [role=option]:hover,.srch-r [role=option].akt{background:rgba(231,76,60,.12);color:var(--white)}
+.srch-r small{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;white-space:nowrap}
+.srch-r .vise,.srch-r .nema{padding:12px 18px 14px;font-size:12px;color:var(--gray);font-weight:300;line-height:1.6}
+.fnd-ok{margin-top:14px;font-size:13px;color:var(--lgray);font-weight:300;line-height:1.6}
+.fnd-ok b{color:var(--white);font-weight:500}
+.pick .ili{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin:26px 0 10px;font-weight:500}
+/* dugmad — iste vrednosti kao .szbar .szp na sajtu (čipovi sa tri poznata auta) */
+.szpick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.szp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:12px 6px 11px;background:var(--d2);border:1px solid rgba(255,255,255,.07);font-family:var(--sans);transition:background .25s,border-color .25s}
+body.light .szp{border-color:rgba(0,0,0,.09)}
+.szp b{font-size:15.5px;font-weight:600;letter-spacing:.2px;color:var(--white);line-height:1}
+.szm{display:flex;flex-wrap:wrap;justify-content:center;gap:4px}
+.szm span{font-size:10px;font-weight:400;color:var(--gray);border:1px solid rgba(255,255,255,.09);padding:3px 7px;border-radius:999px;line-height:1.1;white-space:nowrap}
+body.light .szm span{border-color:rgba(0,0,0,.12)}
+.szp:hover{background:var(--d3);border-color:rgba(231,76,60,.35)}
+.szp.on,body.light .szp.on{background:var(--gold);border-color:var(--gold)}
+.szp.on b{color:#fff}
+.szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
 @media(max-width:768px){
-  .pk-napomena{text-align:left;max-width:none}
-  .szbar{top:calc(64px + env(safe-area-inset-top));padding:11px 0 10px}
-  .szbar .ctn{padding:0 16px}
-  .sz-head{margin-bottom:7px;gap:8px}
-  .szbar .k{font-size:10px;letter-spacing:2.2px}
-  /* Napomena se na telefonu ne prelama u svoj red — isto piše u uvodnom
-     pasusu iznad, a lepljiva traka bi dobila ceo red više visine. */
-  .sz-note{display:none}
-  .szbar .tabs.szpick{gap:5px}
-  .szbar .szp{padding:9px 3px 8px;gap:4px}
-  .szbar .szp b{font-size:14px}
-  /* bez okvira i jedno ispod drugog — traka ostaje niska */
-  .szbar .szm{flex-direction:column;gap:1px}
-  .szbar .szm span{font-size:9.5px;padding:0;border:0;color:var(--gray)}
-  .szbar .szp.on .szm span{border:0}
-  /* Na telefonu se srednji auto krije — ostaju dva po kategoriji (Polo/Punto,
-     Golf/Juke, Passat/Tiguan, X5/kombi), pa lepljiva traka ne pojede ekran.
-     Zato redosled u HTML-u NIJE proizvoljan: drugi po redu je onaj koji sme
-     da otpadne. */
-  .szbar .szm span:nth-child(2){display:none}
-  .cfg-l,.cfg-r{padding:36px 24px}
-  .cfg{margin-top:34px}
-  .row2{grid-template-columns:1fr}
-  .carbox{padding:18px}
-  .carbox .cat{font-size:24px}
-  .tot .v{font-size:46px}
-  .loy-wash{padding:28px 20px 26px}
-  .loy-wash h3{font-size:22px;margin-bottom:14px}
-  .loy-wash .steps li{grid-template-columns:24px 1fr;gap:10px;padding:9px 0}
+  .pick{margin-top:34px}
+  .srch input{padding:17px 50px 17px 48px}
+  .srch .ico{left:17px}
+  .srch-r{max-height:min(320px,46vh)}
+  .szpick{grid-template-columns:1fr 1fr}
+  .szm{flex-direction:column;align-items:center;gap:1px}
+  .szm span{border:0;padding:0;font-size:10.5px}
 }
-@media(max-width:480px){
-  .szbar{top:calc(62px + env(safe-area-inset-top))}
-}
-@media(max-width:430px){
-  .szbar{top:calc(60px + env(safe-area-inset-top))}
-  .szbar .ctn{padding:0 12px}
-  .szbar .szp b{font-size:13px}
-  .szbar .szm span{font-size:9px}
-}
-@media(max-width:390px){
-  .szbar{top:calc(58px + env(safe-area-inset-top))}
-  /* Na najužim telefonima naslov i napomena jedno ispod drugog, da se
-     napomena ne prelama na pola reči. */
-  .sz-head{flex-direction:column;gap:2px}
-  .szbar .szp b{font-size:12.5px}
-  .szbar .szm span{font-size:8.8px}
-}
+@media(max-width:480px){.szm span:nth-child(2){display:none}}
 
-
-/* ══════════════════════════════════════════════════════════════════════════
-   PRESELJENO SA POČETNE (faza 5)
-   Sve ispod je doslovno iz <style> bloka koji je nekad stajao u index.html —
-   kartice paketa, Loyalty sekcija, tabele cenovnika i modal za prijavu.
-   Vrednosti nisu menjane; promenjeno je samo GDE stoje.
-   ══════════════════════════════════════════════════════════════════════════ */
-
-/* skrivanje pri otkrivanju sekcija — isto pravilo kao na početnoj */
-html:where(.js-ready) :where(.pk,.loy-single-card,.loy-wash){
-  opacity:0;
-  transform:translateY(24px);
-  transition:
-    opacity .8s cubic-bezier(.2,.8,.2,1),
-    transform .8s cubic-bezier(.2,.8,.2,1);
-  transition-delay:var(--reveal-delay,0ms);
-}
-@media (prefers-reduced-motion: reduce){
-  html:where(.js-ready) :where(.pk,.loy-single-card,.loy-wash){
-    opacity:1 !important;transform:none !important;transition:none !important;
-  }
-}
-
-/* ══════════════════════════════════════════════════════════════════════════
-   LAKER DETAILING — POČETNA STRANA
-   Učitava se SAMO na `/`. Zajednički deo je u laker.css i ide pre ovog fajla.
-   Izvučeno iz <style> bloka u index.html (renoviranje, faza 1), bez izmena.
-   ══════════════════════════════════════════════════════════════════════════ */
-
-/* Sekcije se skrivaju iz CSS-a, ne iz JS-a — pre je klasu `.reveal` dodavala
-   inline skripta pri dnu <body>. Specifičnost je namerno najniža moguća
-   (html:where(.js-ready) = 0,0,1) da bi ostala pravila (npr. `.faq-item`
-   tranzicija i `.proc-step:hover`) i dalje bila jača, tačno kao ranije.
-   Kašnjenje po elementu (--reveal-delay) i klasu `.in` postavlja laker-ui.js. */
-#pkg .sl,#pkg .sh,.pk,#care .sl,#care .sh,.care-card,.care-wash{
-  opacity:0;
-  transform:translateY(24px);
-  transition:
-    opacity .8s cubic-bezier(.2,.8,.2,1),
-    transform .8s cubic-bezier(.2,.8,.2,1);
-  transition-delay:var(--reveal-delay,0ms);
-}
-@media (prefers-reduced-motion: reduce){
-  #pkg .sl,#pkg .sh,.pk,#care .sl,#care .sh,.care-card,.care-wash{
-    opacity:1 !important;
-    transform:none !important;
-    transition:none !important;
-  }}
-@media(hover:none){
-  /* Reset cursor:none so touch devices (Brave, iOS, PWA) register taps correctly */
-  .pk-btn,.care-cta,.loy-tab,.loy-close,.cm-close,.lf-btn,.cs-cta-btn,.ld-logout,.cm-plan-btn,.cm-size-btn,.cs-plan,.cs-plan-hero,.cs-size-card,.loy-switch-btn{
-    cursor:pointer!important;
-    touch-action:manipulation
-  }}
-
-/* PACKAGES */
-#pkg{background:var(--black)}
-.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:64px}
-.pk{background:var(--d2);padding:52px 44px;position:relative;overflow:hidden;transition:transform .45s}
+/* ── PAKETI — stepenice; kartica je .pk sa sajta ──
+   Stepenik prave margine odozgo (grid rasteže kartice do dna reda), pa
+   trajanje i dugme stoje u istoj ravni bez obzira na dužinu spiska. */
+.stairs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;margin-top:64px;border-bottom:2px solid var(--gold)}
+.pk{background:var(--d2);padding:48px 40px 40px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform .45s}
 .pk:hover{transform:translateY(-7px)}
+.pk.st1{margin-top:96px}
+.pk.st2{margin-top:48px}
 .pk-feat{background:linear-gradient(158deg,var(--d3) 0%,#1A0404 100%);border-top:2px solid var(--gold)}
 body.light .pk-feat{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5 100%)}
 .pk-glow{position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(231,76,60,.1),transparent 70%);pointer-events:none}
-.pk-badge{display:inline-block;background:var(--gold);color:var(--black);font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;margin-bottom:32px}
-.pk-num{position:absolute;top:24px;right:28px;font-family:var(--serif);font-size:90px;font-weight:300;color:rgba(255,255,255,.03);line-height:1;letter-spacing:-5px;pointer-events:none}
-body.light .pk-num{color:rgba(0,0,0,.03)}
-.pk-name{font-family:var(--serif);font-size:48px;font-weight:300;letter-spacing:-1px;margin-bottom:6px;line-height:1}
+.pk-badge{align-self:flex-start;background:var(--gold);color:#fff;font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;margin-bottom:28px}
+.pk-name{font-family:var(--serif);font-size:48px;font-weight:300;letter-spacing:-1px;margin-bottom:8px;line-height:1}
 .pk-name em{font-style:italic;color:var(--gold)}
-.pk-sub{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:32px;font-weight:500}
-.pk-price-box{padding:22px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:28px}
+.pk-sub{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:28px;font-weight:500;line-height:1.7}
+.pk-price-box{padding:22px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:24px}
 body.light .pk-price-box{border-color:rgba(0,0,0,.06)}
 .pk-from{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
 .pk-p{font-family:var(--serif);font-size:62px;font-weight:300;color:var(--gold);letter-spacing:-3px;line-height:1}
 .pk-p sup{font-size:22px;letter-spacing:0;vertical-align:top;margin-top:14px;display:inline-block}
-.pk-note{font-size:11px;color:var(--gray);margin-top:6px;font-weight:300}
-.pk-p.loy-price-active{display:flex;flex-direction:column;align-items:flex-start;gap:8px;letter-spacing:0;line-height:1.08}
-.pk-p .loy-old-price{position:relative;display:inline-block;width:fit-content;font-family:var(--sans);font-size:19px;color:#D8D2C8;opacity:.95;font-weight:500;letter-spacing:.2px;padding:1px 8px 2px 0}
-.pk-p .loy-old-price::after{content:'';position:absolute;left:-3px;right:-5px;top:50%;height:2px;background:rgba(231,76,60,.68);transform:rotate(-13deg);transform-origin:center;box-shadow:0 0 10px rgba(231,76,60,.25)}
-.pk-p .loy-new-price{font-family:var(--serif);font-size:66px;font-weight:400;color:#F4D7A1;letter-spacing:-3px;line-height:1;text-shadow:0 0 22px rgba(231,76,60,.16)}
-.pk-p .loy-new-price sup{font-size:22px;letter-spacing:0;vertical-align:top;margin-top:14px;display:inline-block;font-weight:300}
-.pk-loy-note{display:inline-block;font-size:10px;color:#F0B3AA;letter-spacing:.7px;text-transform:uppercase;font-weight:800;margin-top:10px;line-height:1.45;background:rgba(231,76,60,.13);border:1px solid rgba(231,76,60,.32);padding:5px 9px}
-body.light .pk-p .loy-old-price{color:#4A4038}
-body.light .pk-p .loy-new-price{color:#8F281E;text-shadow:none}
-body.light .pk-loy-note{color:#8F281E;background:rgba(231,76,60,.09);border-color:rgba(231,76,60,.26)}
-.pk-ul{list-style:none;margin-bottom:36px}
+.pk-lbl{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;font-weight:500;line-height:1.7}
+.pk-lbl b{color:var(--white);font-weight:700}
+.pk-ul{list-style:none;margin-bottom:24px}
 .pk-ul li{font-size:13px;color:var(--lgray);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:13px;align-items:flex-start;font-weight:300;line-height:1.45}
 body.light .pk-ul li{border-bottom-color:rgba(0,0,0,.04)}
 .pk-ul li:last-child{border:none}
-.pk-ch{color:var(--gold);font-size:9px;flex-shrink:0;margin-top:3px}
-/* ── Expandable package items ── */
-.pk-li{display:block;padding:0;border-bottom:1px solid rgba(255,255,255,.04)}
-.pk-li:last-child{border:none}
-.pk-li-row{display:flex;align-items:center;gap:10px;padding:9px 0}
-.pk-li-txt{font-size:13px;color:var(--lgray);font-weight:300;line-height:1.45;flex:1}
-.pk-plus{background:none;border:1px solid rgba(231,76,60,.35);color:var(--gold);width:22px;height:22px;font-size:16px;line-height:1;cursor:pointer;flex-shrink:0;transition:all .25s ease;display:flex;align-items:center;justify-content:center;border-radius:4px;font-weight:300;font-family:var(--sans)}
-.pk-plus:hover{background:rgba(231,76,60,.15);border-color:var(--gold)}
-.pk-plus.open{transform:rotate(45deg);background:rgba(231,76,60,.15)}
-.pk-info{display:none;padding:0 0 12px 22px}
-.pk-info.show{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;animation:fadeInDown .22s ease}
-@keyframes fadeInDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.pk-info span{font-size:11px;color:var(--gray);font-weight:300;padding:2px 0;display:flex;align-items:center;gap:5px}
-.pk-info span::before{content:'·';color:var(--gold);flex-shrink:0}
-body.light .pk-li{border-bottom-color:rgba(0,0,0,.04)}
-/* ── Package size grid ── */
-.pk-size-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:12px}
-.pk-sz{background:rgba(255,255,255,.025);padding:8px 4px;text-align:center}
-.pk-sz span{display:block;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;font-weight:500}
-.pk-sz strong{font-family:var(--serif);font-size:19px;font-weight:300;color:var(--gold);letter-spacing:-.5px}
-body.light .pk-sz{background:rgba(0,0,0,.025)}
-/* ── New Loyalty Section ── */
-.loy-bill-wrap{display:flex;justify-content:center;margin-bottom:52px}
-.loy-bill-toggle{display:inline-flex;background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:4px;gap:4px;border-radius:12px}
-.loy-bill-btn{padding:11px 28px;border:none;background:none;color:var(--gray);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;border-radius:9px;font-family:var(--sans);display:flex;align-items:center;gap:7px}
-.loy-bill-btn.on{background:var(--gold);color:var(--black)}
-.loy-bill-btn.loading{position:relative;overflow:hidden;pointer-events:none;opacity:.7}
-.loy-bill-btn.loading::after{content:'';position:absolute;left:0;top:0;height:100%;width:0;background:rgba(231,76,60,.35);animation:loyBtnFill 2s linear forwards}
-@keyframes loyBtnFill{0%{width:0}100%{width:100%}}
-.loy-bill-save-tag{background:rgba(255,255,255,.15);color:currentColor;font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:4px}
-.loy-bill-btn.on .loy-bill-save-tag{background:rgba(0,0,0,.2)}
-.loy-cards{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:32px}
-.loy-card{background:var(--d2);padding:48px 44px;position:relative;overflow:hidden;transition:transform .4s,box-shadow .4s}
-.loy-card:hover{transform:translateY(-6px);box-shadow:0 32px 64px rgba(0,0,0,.35)}
-.loy-card-feat{background:linear-gradient(158deg,var(--d3) 0%,#1A0404 100%);border-top:2px solid var(--gold)}
-.loy-card-glow{position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(231,76,60,.12),transparent 70%);pointer-events:none}
-.loy-rec-badge{display:inline-block;background:var(--gold);color:var(--black);font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;margin-bottom:28px}
-.loy-card-name{font-family:var(--serif);font-size:38px;font-weight:300;letter-spacing:-1px;line-height:1.1;margin-bottom:6px}
-.loy-card-name em{font-style:italic;color:var(--gold)}
-.loy-card-sub{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:28px;font-weight:500}
-.loy-price-box{padding:22px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:28px;min-height:115px}
-body.light .loy-price-box{border-color:rgba(0,0,0,.06)}
-.loy-price-big{font-family:var(--serif);font-size:60px;font-weight:300;color:var(--gold);letter-spacing:-3px;line-height:1}
-.loy-price-big sup{font-size:22px;letter-spacing:0;vertical-align:top;margin-top:12px;display:inline-block}
-.loy-price-big small{font-size:15px;font-family:var(--sans);font-weight:300;letter-spacing:0;color:var(--gray)}
-.loy-price-note{font-size:11px;color:var(--gray);margin-top:6px;font-weight:300}
-.loy-save-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.5px;padding:7px 14px;margin-top:14px;border-radius:4px}
-.loy-includes{list-style:none;margin-bottom:36px}
-.loy-includes li{font-size:13px;color:var(--lgray);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:13px;align-items:flex-start;font-weight:300;line-height:1.45}
-body.light .loy-includes li{border-bottom-color:rgba(0,0,0,.04)}
-.loy-includes li:last-child{border:none}
-.loy-includes i{font-style:normal;color:var(--gold);font-size:9px;flex-shrink:0;margin-top:3px}
-.loy-join-btn{display:block;text-align:center;padding:15px;border:1px solid rgba(231,76,60,.25);color:var(--gold);font-size:10px;letter-spacing:3px;text-transform:uppercase;transition:all .35s;font-weight:600;cursor:pointer;background:none;width:100%;font-family:var(--sans)}
-.loy-join-btn:hover,.loy-card-feat .loy-join-btn{background:var(--gold);color:var(--black);border-color:var(--gold)}
-body.light .loy-card{background:var(--d2)}
-body.light .loy-card-feat{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5 100%)}
-@media(max-width:700px){.loy-cards{grid-template-columns:1fr}}
+.pk-ul li small{display:block;font-size:11px;color:var(--gray);margin-top:2px}
+.pk-ch{color:var(--gold);font-size:9px;flex-shrink:0;margin-top:3px;width:11px;text-align:center}
+.pk-ch.zn{font-size:13px;font-weight:700;margin-top:0;line-height:1.45}
+.pk-dur{font-size:10.5px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin:auto 0 24px;padding-top:6px;font-weight:300}
+.pk-btn{display:block;text-align:center;padding:15px;border:1px solid rgba(231,76,60,.25);color:var(--gold);font-size:10px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all .35s;font-weight:600}
+.pk-btn:hover,.pk-feat .pk-btn{background:var(--gold);color:#fff;border-color:var(--gold)}
+@media(max-width:900px){
+  .stairs{grid-template-columns:1fr;border-bottom:0}
+  .pk.st1,.pk.st2{margin-top:0}
+}
+@media(max-width:768px){
+  .stairs{margin-top:34px}
+  .pk{padding:34px 22px 24px}
+  .pk:hover{transform:none}
+  .pk-p{font-size:54px}
+}
 
-/* ── Loyalty: jedan paket + dva toggle-a ── */
-.loy-controls{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-bottom:44px}
-.loy-toggle-group{display:flex;flex-direction:column;align-items:center;gap:9px}
-.loy-toggle-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);font-weight:600}
-.loy-bill-toggle{display:flex;background:#111;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:3px;gap:3px}
-.loy-bill-btn{flex:1;padding:11px 22px;background:transparent;border:none;color:#888;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:8px;transition:all .2s;white-space:nowrap;font-family:var(--sans)}
-.loy-bill-btn:hover{color:var(--lgray);background:rgba(255,255,255,.04)}
-.loy-bill-btn.on{background:var(--gold);color:#0E0C0C}
-.loy-bill-save-tag{display:inline-block;background:rgba(231,76,60,.2);color:var(--gold);font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:999px;margin-left:6px;vertical-align:middle}
-.loy-bill-btn.on .loy-bill-save-tag{background:rgba(0,0,0,.2);color:#0E0C0C}
-.loy-single{display:flex;justify-content:center;margin-bottom:32px}
-.loy-single-card{background:linear-gradient(158deg,var(--d3) 0%,#1A0404 100%);border-top:2px solid var(--gold);padding:52px 52px 48px;position:relative;overflow:hidden;width:100%;max-width:540px;transition:transform .4s,box-shadow .4s}
-.loy-single-card:hover{transform:translateY(-4px);box-shadow:0 28px 60px rgba(0,0,0,.35)}
-body.light .loy-single-card{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5 100%)}
-.loy-card-glow{position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(231,76,60,.18),transparent 70%);pointer-events:none}
-.loy-rec-badge{display:inline-block;background:var(--gold);color:var(--black);font-size:8px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;margin-bottom:24px}
-.loy-card-name{font-family:var(--serif);font-size:40px;font-weight:300;letter-spacing:-1px;line-height:1;margin-bottom:6px;color:var(--white)}
-.loy-card-name em{font-style:italic;color:var(--gold)}
-.loy-card-sub{font-size:11px;color:var(--gray);font-weight:300;margin-bottom:28px;letter-spacing:.3px}
-.loy-price-box{margin-bottom:28px}
-.loy-price-big{font-family:var(--serif);font-size:78px;font-weight:300;color:var(--gold);letter-spacing:-3px;line-height:1}
-.loy-price-big sup{font-size:22px;vertical-align:top;margin-top:14px;display:inline-block;font-weight:300;letter-spacing:0}
-.loy-price-big small{font-size:16px;color:var(--mgray);letter-spacing:0;font-family:var(--sans);font-weight:300}
-.loy-price-note{font-size:12px;color:var(--mgray);margin-top:6px;font-weight:300}
-.loy-save-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.25);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 13px;border-radius:999px;margin-top:10px}
-.loy-includes{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:10px}
-.loy-includes li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--lgray);font-weight:300;line-height:1.55}
-.loy-includes li i{font-style:normal;color:var(--gold);font-weight:800;margin-top:1px;flex-shrink:0}
-.loy-join-btn{display:block;width:100%;background:var(--gold);color:var(--black);padding:16px;border:none;font-size:10.5px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-family:var(--sans)}
-.loy-join-btn:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 16px 40px rgba(231,76,60,.25)}
-.loy-includes li.loy-step-exp{display:block;padding:0;gap:0}
-.loy-includes li.loy-step-exp .pk-li-row{padding:9px 0;gap:10px}
-.loy-includes li.loy-step-exp .pk-li-txt{color:var(--lgray);font-size:13px;font-weight:300;line-height:1.55}
-@media(max-width:600px){.loy-single-card{padding:36px 24px 36px}.loy-price-big{font-size:60px}.loy-controls{gap:18px}.loy-bill-btn{padding:10px 14px;font-size:10px}}
-.pk-dur{font-size:10.5px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:28px;font-weight:300}
-.pk-btn{display:block;text-align:center;padding:15px;border:1px solid rgba(231,76,60,.25);color:var(--gold);font-size:10px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all .35s;font-weight:600;cursor:none}
-.pk-btn:hover,.pk-feat .pk-btn{background:var(--gold);color:var(--black);border-color:var(--gold)}
+/* ── POREĐENJE — tabela u stilu tabela sa sajta ── */
+.cmp-w{margin-top:56px;background:var(--d2)}
+.cmp{table-layout:fixed}
+.cmp col.l{width:40%}
+.cmp thead th{padding:26px 16px 20px;vertical-align:bottom;white-space:normal}
+.cmp thead th b{display:block;font-family:var(--serif);font-size:32px;font-weight:300;letter-spacing:-.5px;color:var(--white);text-transform:none;line-height:1}
+.cmp thead th b em{font-style:italic;color:var(--gold)}
+.cmp thead th span{display:block;margin-top:9px}
+.cmp td{padding:16px 26px;vertical-align:middle}
+.cmp td:not(:first-child){white-space:normal;padding:16px 12px}
+.cmp .prc-on{background:rgba(231,76,60,.09)}
+body.light .cmp .prc-on{background:rgba(231,76,60,.07)}
+.cmp .ok{color:var(--gold);display:inline-block;vertical-align:middle}
+.cmp .no{color:var(--gray);opacity:.5;font-weight:300}
+.cmp tbody tr:last-child td{border-bottom:0}
+@media(max-width:768px){
+  .cmp-w{margin-top:34px}
+  .cmp col.l{width:34%}
+  .cmp thead th{padding:18px 4px 14px;letter-spacing:1.5px}
+  .cmp thead th b{font-size:23px}
+  .cmp td{padding:13px 12px;font-size:12.5px}
+  .cmp td:not(:first-child){padding:13px 4px;font-size:12px}
+}
 
+/* ── POJEDINAČNO ── */
+.svc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin-top:56px}
+.grp{background:var(--d2);padding:30px 26px 16px}
+.grp h3{display:flex;gap:10px;align-items:center;font-size:9.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:700;padding-bottom:14px;border-bottom:1px solid rgba(231,76,60,.18)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;color:var(--lgray);font-weight:300;line-height:1.4}
+body.light .row{border-bottom-color:rgba(0,0,0,.05)}
+.row:last-child{border-bottom:0}
+.row b{font-weight:500;color:var(--gold);white-space:nowrap}
+.tbl-note{margin-top:18px;font-size:12.5px;line-height:1.6;color:var(--gray);font-weight:300}
+@media(max-width:1020px){.svc{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.svc{grid-template-columns:1fr;margin-top:34px}.grp{padding:24px 20px 10px}.row{font-size:13.5px}}
 
-/* LAKER LOYALTY MEMBERSHIP */
-#care{background:var(--d1)}
-.care-top{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;flex-wrap:wrap;margin-bottom:64px}
-.care-note{font-size:13.5px;color:#A8A6A2;max-width:400px;line-height:1.85;font-weight:300;text-align:right}
-.care-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+/* ── LOYALTY — na dnu, tih: ista --d2 podloga kao ostale kartice, bez sjaja ── */
+.loy{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:2px}
+.loy-l,.loy-r{background:var(--d2);padding:48px 44px}
+.loy-name{font-family:var(--serif);font-size:38px;font-weight:300;letter-spacing:-1px;line-height:1.05}
+.loy-name em{font-style:italic;color:var(--gold)}
+.loy-l>p{font-size:13px;color:var(--lgray);font-weight:300;line-height:1.75;margin-top:12px;max-width:40ch}
+/* prekidač — iste vrednosti kao .loy-bill-toggle na sajtu */
+.bill{display:inline-flex;margin-top:26px;background:var(--d3);border:1px solid rgba(255,255,255,.07);padding:4px;gap:4px;border-radius:12px}
+body.light .bill{border-color:rgba(0,0,0,.08)}
+.bill button{padding:11px 24px;border:0;background:none;color:var(--gray);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:9px;font-family:var(--sans);display:flex;align-items:center;justify-content:center;gap:7px;transition:all .3s;white-space:nowrap}
+.bill button:hover{color:var(--lgray)}
+.bill button.on{background:var(--gold);color:#fff}
+.bill .save{background:rgba(255,255,255,.15);font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:4px}
+.bill button.on .save{background:rgba(0,0,0,.2)}
+.loy-pr{margin:22px 0 24px;padding:18px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06)}
+body.light .loy-pr{border-color:rgba(0,0,0,.06)}
+.loy-p{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold);letter-spacing:-2px;line-height:1}
+.loy-p sup{font-size:20px;letter-spacing:0;vertical-align:top;margin-top:10px;display:inline-block}
+.loy-p small{font-family:var(--sans);font-size:13px;font-weight:300;color:var(--gray);letter-spacing:.3px;margin-left:8px}
+.loy-nap{font-size:11px;color:var(--gray);margin-top:8px;font-weight:300}
+.loy-l .pk-btn{max-width:280px}
+.loy-r .k{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gray);margin-bottom:8px}
+.loy-r h3{font-family:var(--serif);font-size:24px;font-weight:300;letter-spacing:-.3px;line-height:1.1;margin-bottom:18px}
+.loy-r h3 em{font-style:italic;color:var(--gold)}
+.loy-st{list-style:none;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,auto);grid-auto-flow:column;column-gap:28px;counter-reset:k}
+.loy-st li{display:grid;grid-template-columns:24px 1fr;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:13px;color:var(--lgray);font-weight:300;line-height:1.45}
+body.light .loy-st li{border-top-color:rgba(0,0,0,.07)}
+.loy-st li::before{counter-increment:k;content:counter(k,decimal-leading-zero);font-size:10.5px;font-weight:600;letter-spacing:1px;color:var(--gold);font-variant-numeric:tabular-nums;line-height:19px}
+@media(max-width:900px){.loy{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .loy-l,.loy-r{padding:34px 22px}
+  .loy-name{font-size:34px}
+  .bill{display:flex}
+  .bill button{flex:1;padding:11px 10px}
+  .loy-l .pk-btn{max-width:none}
+  .loy-st{column-gap:14px}
+  .loy-st li{grid-template-columns:20px 1fr;gap:8px;font-size:12.5px}
+}
+@media(max-width:360px){.loy-st{grid-template-columns:1fr;grid-template-rows:none;grid-auto-flow:row}}
 
-/* CARD BASE */
-.care-card{background:var(--d2);padding:60px 52px 52px;position:relative;overflow:hidden;transition:transform .5s,box-shadow .5s;display:flex;flex-direction:column}
-.care-card:hover{transform:translateY(-8px);box-shadow:0 40px 80px rgba(0,0,0,.4)}
-.care-card.black{background:#0A0808;border-top:1px solid var(--gold)}
-body.light .care-card{background:var(--d2)}
-body.light .care-card.black{background:#1E0707}
+/* DM Serif je gušći od Cormoranta — negativni razmak između slova se smanjuje,
+   inače se cifre u ceni slepe (vrednosti iz odobrenog demoa) */
+.sh{letter-spacing:-.4px;line-height:1.02}
+.pk-name,.loy-name{letter-spacing:-.2px}
+.pk-p{letter-spacing:-1px}
+.pk-p sup{font-size:20px;margin-top:10px}
+.cmp thead th b,.loy-r h3{letter-spacing:0}
+.loy-p{letter-spacing:-.6px}
 
-/* GLOW */
-.care-glow{position:absolute;top:-100px;right:-100px;width:380px;height:380px;background:radial-gradient(circle,rgba(231,76,60,.1),transparent 65%);pointer-events:none;animation:glowpulse 5s ease-in-out infinite}
-.care-glow2{position:absolute;bottom:-80px;left:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(231,76,60,.05),transparent 70%);pointer-events:none}
-@keyframes glowpulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-
-/* BADGE */
-.care-badge{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:var(--black);font-size:8.5px;font-weight:800;letter-spacing:3.5px;text-transform:uppercase;padding:7px 18px;margin-bottom:40px;width:fit-content}
-.care-badge::before{content:'★';font-size:7px}
-
-/* TIER LABEL */
-.care-tier{font-size:8.5px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;opacity:.8}
-
-/* NAME */
-.care-name{font-family:var(--serif);font-size:clamp(52px,5vw,72px);font-weight:300;letter-spacing:-2px;line-height:.9;margin-bottom:32px}
-.care-name em{font-style:italic;color:var(--gold)}
-
-/* DIVIDER */
-.care-divider{width:100%;height:1px;background:linear-gradient(to right,rgba(231,76,60,.4),rgba(231,76,60,.05));margin-bottom:36px}
-
-/* PRICE BLOCK */
-.care-pricing{margin-bottom:36px}
-.care-price-main{display:flex;align-items:flex-end;gap:10px;margin-bottom:16px}
-.care-price-amount{font-family:var(--serif);font-size:80px;font-weight:300;color:var(--gold);letter-spacing:-4px;line-height:1}
-.care-price-amount sup{font-size:24px;letter-spacing:0;vertical-align:top;margin-top:16px;display:inline-block;font-weight:300}
-.care-price-period{display:flex;flex-direction:column;padding-bottom:12px}
-.care-price-period span:first-child{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#888;font-weight:500}
-.care-price-period span:last-child{font-size:11px;color:#999;font-weight:300;margin-top:2px}
-
-/* ANNUAL ROW */
-.care-annual-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(231,76,60,.04);border:1px solid rgba(231,76,60,.12)}
-body.light .care-annual-row{background:rgba(231,76,60,.03)}
-.care-annual-left{display:flex;flex-direction:column;gap:2px}
-.care-annual-label{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:500}
-.care-annual-price{font-family:var(--serif);font-size:22px;font-weight:300;color:#C2C0BC;letter-spacing:-0.5px}
-.care-annual-price sup{font-size:11px;vertical-align:top;margin-top:4px;display:inline-block}
-.care-annual-save{font-size:9px;letter-spacing:1.5px;font-weight:700;color:var(--gold);background:rgba(231,76,60,.1);padding:4px 10px;text-transform:uppercase}
-
-/* LIST */
-.care-list{list-style:none;margin-bottom:auto;padding-bottom:40px}
-.care-list li{font-size:13.5px;color:#C2C0BC;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:14px;align-items:flex-start;font-weight:300;line-height:1.55}
-body.light .care-list li{border-bottom-color:rgba(0,0,0,.05);color:#555}
-.care-list li:last-child{border:none}
-.care-list i{font-style:normal;color:var(--gold);font-size:8px;flex-shrink:0;margin-top:6px}
-
-/* CTA */
-.care-cta{display:block;text-align:center;padding:17px;font-size:10px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;text-decoration:none;transition:all .35s;cursor:none;margin-top:auto}
-.care-cta-outline{border:1px solid rgba(231,76,60,.35);color:var(--gold)}
-.care-cta-outline:hover{background:var(--gold);color:var(--black);border-color:var(--gold);transform:translateY(-2px)}
-.care-cta-solid{background:var(--gold);color:var(--black)}
-.care-cta-solid:hover{background:var(--gold2);box-shadow:0 16px 48px rgba(231,76,60,.3);transform:translateY(-2px)}
-.care-wash{margin-top:26px;background:var(--d2);padding:42px 40px;border-left:2px solid var(--gold)}
-.care-wash-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px}
-.care-wash-head h3{font-family:var(--serif);font-size:38px;font-weight:300;line-height:1.05;letter-spacing:-.8px}
-.care-wash-head h3 em{font-style:italic;color:var(--gold)}
-.care-wash-head p{font-size:13px;color:#A8A6A2;font-weight:300;line-height:1.75;max-width:420px}
-.care-steps{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.care-step{background:var(--d3);padding:16px 18px;display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
-.care-step span{font-family:var(--serif);font-size:26px;line-height:1;color:rgba(231,76,60,.35)}
-.care-step h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
-.care-step p{font-size:12.5px;color:#B8B6B2;line-height:1.65;font-weight:300}
-.care-step p strong{color:#D8D6D2;font-weight:500}
-.care-results{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,.06)}
-body.light .care-results{border-top-color:rgba(0,0,0,.07)}
-.care-results span{font-size:10.5px;letter-spacing:1.5px;color:#C2C0BC;font-weight:500;padding:6px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
-body.light .care-results span{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
-
-/* PRICING */
-#prc{background:var(--d1)}
-.prc-top{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:end;margin-bottom:56px}
-.prc-note{background:var(--d2);padding:32px 36px;border-left:2px solid var(--gold)}
-.prc-note p{font-size:13px;color:var(--lgray);line-height:1.9;font-weight:300}
-.prc-note strong{color:var(--white);font-weight:600}
-.pv2{color:var(--gold)!important;font-family:var(--serif);font-size:17px!important;font-weight:300!important}
-.pv2-loy{display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:7px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.18);padding:4px 7px}
-.pv2-loy-old{position:relative;display:inline-block;font-size:12px;font-family:var(--sans);color:#D4CEC4;opacity:.92;font-weight:500;padding:0 4px}
-.pv2-loy-old::after{content:'';position:absolute;left:-2px;right:-2px;top:50%;height:1.5px;background:rgba(231,76,60,.66);transform:rotate(-14deg);transform-origin:center}
-.pv2-loy-new{font-size:19px;font-family:var(--serif);font-weight:500;color:#F4D7A1}
-.pv2-loy-badge{font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 7px;border:1px solid rgba(240,179,170,.32);background:rgba(231,76,60,.22);color:#F0B3AA}
-body.light .pv2-loy{background:rgba(231,76,60,.07);border-color:rgba(231,76,60,.18)}
-body.light .pv2-loy-old{color:#4A4038}
-body.light .pv2-loy-new{color:#8F281E}
-body.light .pv2-loy-badge{background:rgba(231,76,60,.1);color:#8F281E;border-color:rgba(231,76,60,.25)}
-.lf-btn,.loy-tab,.care-cta,.pk-btn{
+/* ══════════════════════════════════════════════════════════════════════════
+   3. LOYALTY MODAL I KONTROLNA TABLA (main.js)
+   Prvi deo je izvučen iz starog bloka „preseljeno sa početne" — samo pravila
+   koja modal koristi; ostatak (od „LOYALTY MODAL OVERLAY" nadole) je prenet
+   bez izmena. Klase .pk-*, .loy-card*, .care-* stare strane su obrisane.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media(hover:none){
+  /* Reset cursor:none so touch devices (Brave, iOS, PWA) register taps correctly */
+  .care-cta,.loy-tab,.loy-close,.cm-close,.lf-btn,.cs-cta-btn,.ld-logout,.cm-plan-btn,.cm-size-btn,.cs-plan,.cs-plan-hero,.cs-size-card,.loy-switch-btn{
+    cursor:pointer!important;
+    touch-action:manipulation
+  }}
+.lf-btn,.loy-tab,.care-cta{
   border-radius:3px;
 }
-.care-card,.loy-modal,#care-modal-box,.loy-req-card,.loy-cust-card{
+.loy-modal,#care-modal-box{
   box-shadow:0 24px 70px rgba(0,0,0,.22);
   border-color:rgba(255,255,255,.05);
-}
-.care-card,.loy-req-card,.loy-cust-card{
-  transition:transform .35s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease;
-}
-.care-card:hover,.loy-req-card:hover,.loy-cust-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 32px 80px rgba(0,0,0,.32);
 }
 .loy-overlay,.care-modal-overlay,#care-modal-overlay{
   backdrop-filter:blur(16px) saturate(1.05);
 }
-body.bg-freeze .care-glow{animation-play-state:paused}
-.loy-tab,.pk-btn,.care-cta,.lf-btn{
+.loy-tab,.care-cta,.lf-btn{
   transition:transform .25s ease, background .25s ease, border-color .25s ease, color .25s ease, box-shadow .25s ease;
 }
-.lf-btn:hover,.pk-btn:hover,.care-cta:hover{
+.lf-btn:hover,.care-cta:hover{
   transform:translateY(-2px);
 }
 .loy-tab.on{
   box-shadow:inset 0 0 0 1px rgba(0,0,0,.08), 0 12px 28px rgba(231,76,60,.18);
 }
-.care-name{
-  text-wrap:balance;
-}
-
-/* RESPONSIVE */
-@media(max-width:1100px){
-  .prc-top{grid-template-columns:1fr;gap:50px}
-  .pkg-grid{grid-template-columns:1fr;gap:2px}
-  .care-grid{grid-template-columns:1fr;gap:2px}
-  .care-card.black{transform:none}
-  .care-card.black:hover{transform:translateY(-8px)}
-  .care-note{text-align:left}}
 @media(max-width:768px){
-  .prc-top{gap:28px}
-  .care-card{padding:34px 20px}
-  .care-wash{padding:26px 18px}
-  .care-wash-head h3{font-size:26px}
-  .care-steps{grid-template-columns:1fr}
   .loy-switch{grid-template-columns:1fr}
   .loy-switch-btn{min-height:82px}
-  .loy-chip-row{gap:6px}
-  .pkg-grid{margin-top:42px}
-  .pk{padding:40px 24px}
-  .pk-num{font-size:72px;top:18px;right:20px}
-  .pk-name{font-size:40px}
-  .tp .pv2{font-size:15px!important}}
-@media(max-width:480px){
-  .prc-top{gap:24px}
-  .pkg-grid{margin-top:34px}
-  .pk{padding:36px 20px}
-  .pk-num{font-size:64px}
-  .pk-name{font-size:36px}
-  .tp .pv2{font-size:13.5px!important}}
-@media(max-width:390px){
-  .pkg-grid{margin-top:30px}
-  .pk{padding:30px 16px}
-  .pk-name{font-size:32px}
-  .pk-num{font-size:56px;right:16px;top:14px}
-  .care-card{padding:30px 18px}
-  .care-wash{padding:24px 16px}}
+  .loy-chip-row{gap:6px}}
 @media (max-width:768px){
   .lfg input,.cm-plan-btn,.cm-size-btn,.loy-tab{font-size:16px}
   .loy-overlay{padding:12px}
@@ -1122,108 +780,19 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 #forgot-submit-btn:hover{background:#C0392B!important;color:#fff!important}
 
 /* ══════════════════════════════════════════════════════════════════════════
-   TELEFON (≤768px) — izbor vlasnika 2026-09-03 (demo /demo-telefon, varijanta C):
-   paketi su tabovi + karusel sa prevlačenjem (ivica sledeće kartice viri da se
-   vidi da ih ima tri), kartica je kompaktna (cena pored imena, veličine u jednom
-   redu), a pojedinačne usluge su prava tabela sa 4 kolone kao na računaru,
-   ne kartice po usluzi. Računar se ne dira.
-   ══════════════════════════════════════════════════════════════════════════ */
-.pk-nav{display:none}
-@media(max-width:768px){
-  /* naslovi sekcija u jedan red — na 375px staju u ~38px */
-  h1.sh br,h2.sh br{display:none}
-
-  /* ── tabovi + brojač ── */
-  .pk-nav{display:block;margin-top:26px}
-  .pk-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
-  .pk-tab{padding:12px 4px 10px;background:var(--d2);color:var(--gray);font-family:var(--serif);font-size:22px;font-weight:300;line-height:1;border:0;border-bottom:2px solid transparent;cursor:pointer;transition:background .25s,color .25s,border-color .25s;-webkit-tap-highlight-color:transparent}
-  .pk-tab small{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.3px;color:var(--gray);margin-top:6px;font-variant-numeric:tabular-nums}
-  .pk-tab.on{color:var(--white);background:var(--d3);border-bottom-color:var(--gold)}
-  .pk-tab.on small{color:var(--gold)}
-  .pk-pos{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:10.5px;color:var(--gray);letter-spacing:.3px}
-  .pk-pos b{color:var(--white);font-weight:500}
-  .pk-dots{display:inline-flex;gap:5px}
-  .pk-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);transition:background .25s,transform .25s}
-  body.light .pk-dots i{background:rgba(0,0,0,.18)}
-  .pk-dots i.on{background:var(--gold);transform:scale(1.25)}
-
-  /* ── karusel: jedna kartica na ekranu, sledeća viri ~10% ── */
-  .pkg-grid{display:flex;grid-template-columns:none;gap:8px;margin-top:10px!important;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none;padding:8px 0 4px;touch-action:pan-x pan-y}
-  .pkg-grid::-webkit-scrollbar{display:none}
-  .pkg-grid .pk{flex:0 0 88%;scroll-snap-align:start;scroll-snap-stop:always;padding:24px 18px 20px;transform:none}
-  .pkg-grid .pk:last-child{margin-right:12%}
-  .pk:hover{transform:none}
-
-  /* ── kompaktna kartica: cena pored imena, veličine u jednom redu, stavke zbijene ── */
-  /* minmax(0,1fr): bez toga dugačka stavka u listi razvuče mrežu šire od kartice
-     (overflow:hidden je onda seče sa desne strane — viđeno 2026-09-03) */
-  .pk{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;align-items:start;
-      grid-template-areas:"badge badge" "name price" "sub price" "sizes sizes" "ul ul" "dur dur" "btn btn"}
-  .pk-glow{position:absolute}               /* ostaje van mreže */
-  .pk-num{display:none}                     /* ukrasni „01" bi se preklopio sa cenom */
-  .pk-ul,.pk-size-grid,.pk-li-txt{min-width:0}
-  .pk-badge{grid-area:badge;margin-bottom:14px;justify-self:start}
-  .pk-name{grid-area:name;font-size:34px;margin-bottom:0}
-  .pk-sub{grid-area:sub;margin-bottom:0;margin-top:6px}
-  .pk-price-box{display:contents}           /* deca (.pk-from/.pk-p/.pk-size-grid) ulaze u mrežu */
-  .pk-from{display:none}
-  .pk-p{grid-area:price;font-size:38px;letter-spacing:-1px;text-align:right;align-self:start}
-  .pk-p sup{font-size:15px;margin-top:6px}
-  .pk-p.loy-price-active{align-items:flex-end}
-  .pk-p .loy-new-price{font-size:40px;letter-spacing:-1px}
-  .pk-p .loy-new-price sup{font-size:15px;margin-top:6px}
-  .pk-p .loy-old-price{font-size:15px}
-  .pk-size-grid{grid-area:sizes;margin-top:14px;gap:4px}
-  .pk-sz{padding:6px 2px}
-  .pk-sz span{font-size:9px;letter-spacing:.5px;text-transform:none;margin-bottom:1px}
-  .pk-sz strong{font-size:16px}
-  .pk-ul{grid-area:ul;margin:14px 0 0;border-top:1px solid rgba(255,255,255,.08)}
-  body.light .pk-ul{border-top-color:rgba(0,0,0,.08)}
-  .pk-li-row{padding:8px 0;gap:9px}
-  .pk-li-txt{font-size:13.5px;line-height:1.35}
-  .pk-ch{font-size:7px;margin-top:0}
-  .pk-info{padding:0 0 10px 18px}
-  /* dugme preko cele širine — u desnoj koloni bi širilo kolonu cene i gnječilo ime paketa */
-  .pk-dur{grid-area:dur;margin:14px 0 0;font-size:10px}
-  .pk-btn{grid-area:btn;margin-top:10px;padding:12px;font-size:9.5px;letter-spacing:2.5px}
-  .pk-feat{border-top-width:2px}
-
-  /* ── pojedinačne usluge: prava tabela sa 4 kolone (gazi kartice iz laker.css) ── */
-  #pojedinacne .prc-note p br{display:none}
-  #pojedinacne .tp thead{display:table-header-group}
-  #pojedinacne .tp table{display:table;width:100%;min-width:0;table-layout:fixed}
-  #pojedinacne .tp tbody{display:table-row-group}
-  #pojedinacne .tp tr{display:table-row;padding:0;border:0}
-  #pojedinacne .tp td,#pojedinacne .tp th{display:table-cell;padding:11px 3px;text-align:center;vertical-align:middle;border:0;border-top:1px solid rgba(255,255,255,.06);background:none;border-radius:0}
-  body.light #pojedinacne .tp td{border-top-color:rgba(0,0,0,.07)}
-  #pojedinacne .tp th{font-size:8.5px;letter-spacing:1.2px;padding:12px 3px 9px;border-top:0;white-space:normal}
-  #pojedinacne .tp th:first-child,#pojedinacne .tp td:first-child{text-align:left;padding-left:14px;width:44%}
-  #pojedinacne .tp td:first-child{font-size:12.5px;font-weight:400;line-height:1.3;color:var(--white)}
-  #pojedinacne .tp td:not(:first-child)::before{display:none}
-  #pojedinacne .tp td.pv2{font-size:17px!important;white-space:nowrap}
-  #pojedinacne .tp td.prc-on,#pojedinacne .tp th.prc-on{background:rgba(231,76,60,.09)}
-  body.light #pojedinacne .tp td.prc-on,body.light #pojedinacne .tp th.prc-on{background:rgba(231,76,60,.07)}
-  #pojedinacne .tbl-note{padding:0 14px}
-}
-@media(max-width:400px){
-  .pk-tab{font-size:20px}
-  .pk-cnt{font-size:10px}
-  #pojedinacne .tp td.pv2{font-size:15px!important}
-  #pojedinacne .tp td:first-child{font-size:12px;padding-left:10px}
-}
-
-/* ── KLASIK LAKER — PUNE CRVENE POVRŠINE ────────────────────────────────────
+   4. KLASIK LAKER — PUNE CRVENE POVRŠINE
    Stoji NA KRAJU fajla da pobedi pravila iznad (i ona iz laker.css) pri istoj
    specifičnosti. Podloga #C0392B, slova bela; hover ide na svetliju #E74C3C.
-   Nova dugmad sa crvenom podlogom na cenovniku — dodaj ih u ovaj spisak. */
-.btn-g,.tb.on,.szbar .szp.on,body.light .szbar .szp.on,.svc .st.on .bx,.pk-badge,
-.loy-bill-btn.on,.loy-rec-badge,.loy-join-btn,.loy-card-feat .loy-join-btn,
-.pk-btn:hover,.pk-feat .pk-btn,.care-badge,.care-cta-outline:hover,.care-cta-solid,.loy-badge,
+   Novo dugme sa crvenom podlogom na cenovniku — dodaj ga u ovaj spisak.
+   ══════════════════════════════════════════════════════════════════════════ */
+.btn-g,.tb.on,.szp.on,body.light .szp.on,.pk-badge,.pk-btn:hover,.pk-feat .pk-btn,.bill button.on,
 .loy-tab.on,.lf-btn,.cs-plan-save-badge,.cm-plan-btn .cm-check,.cm-submit-btn,
 .pwa-modal-btn.primary,.pwa-update-btn.primary{background:#C0392B;border-color:#C0392B;color:#fff}
-.btn-g:hover,.loy-join-btn:hover,.loy-card-feat .loy-join-btn:hover,.pk-feat .pk-btn:hover,.care-cta-solid:hover,.lf-btn:hover,
-.cm-submit-btn:hover:not(:disabled){background:#E74C3C;border-color:#E74C3C;color:#fff;box-shadow:0 16px 40px rgba(192,57,43,.3)}
+.btn-g:hover,.pk-feat .pk-btn:hover,.lf-btn:hover,.cm-submit-btn:hover:not(:disabled){background:#E74C3C;border-color:#E74C3C;color:#fff;box-shadow:0 16px 40px rgba(192,57,43,.3)}
 .nm .nb:hover,#mobileOverlay .nb:hover,.nb-loy:hover{background:#C0392B!important;border-color:#C0392B!important;color:#fff!important}
+.szp.on b{color:#fff}
+.szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
+.bill button.on .save{color:#fff}
 
 /* ostaci #FF2A2A iz laker.css koji se vide na cenovniku */
 #cur-r{border-color:rgba(231,76,60,.35)}
@@ -1237,14 +806,3 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 tbody tr:hover td{background:rgba(231,76,60,.025)}
 .pwa-offline{background:rgba(192,57,43,.95)}
 .loy-google-btn-overlay{color:#fff}
-.loy-bill-btn.on .loy-bill-save-tag{background:rgba(0,0,0,.25);color:#fff}
-.svc .st.on .bx{color:#fff}
-
-/* DM Serif je gušći od Cormoranta — negativni razmak između slova se smanjuje,
-   inače se cifre u ceni slepe */
-.sh{letter-spacing:-.4px;line-height:1}
-.pk-num{letter-spacing:-2px}
-.pk-name,.loy-card-name,.cs-size-card span,.cm-plan-btn .cm-pb-price,.cm-sz-price,.tot .v{letter-spacing:-.2px}
-.pk-p,.pk-p .loy-new-price,.loy-price-big,.cs-plan-price{letter-spacing:-1px}
-.care-name{letter-spacing:-.6px}
-.care-price-amount{letter-spacing:-1.2px}

@@ -144,15 +144,16 @@
       else if (href.indexOf('maps.') > -1 || href.indexOf('goo.gl/maps') > -1 ||
                href.indexOf('maps.app') > -1)      ime = 'mapa';
       else if (STRANE.test(href)) {
-        // Interni link: „ka:/cenovnik", „ka:/cenovnik#sastavi", „ka:/" (početna)
+        // Interni link: „ka:/cenovnik", „ka:/cenovnik#pick", „ka:/" (početna)
         var cilj = href.split('?')[0].slice(0, 40);
         if (cilj !== zajedno.p) ime = 'ka:' + cilj;
       }
     }
 
-    // Birač veličine vozila na cenovniku — koju kategoriju najviše biraju.
+    // Veličina auta na cenovniku — koju kategoriju najviše biraju: dugme
+    // (#szPick) ili auto izabran pretragom (#fndR, data-sz je njegova kategorija).
     if (!ime) {
-      var sz = t.closest('.szbar .tb[data-sz]');
+      var sz = t.closest('#szPick [data-sz], #fndR [data-sz]');
       if (sz) ime = 'velicina:' + (VELICINE[Number(sz.getAttribute('data-sz'))] || sz.getAttribute('data-sz'));
     }
 

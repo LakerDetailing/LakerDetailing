@@ -16,14 +16,14 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 |---|---|
 | `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ i Lokaciju — stil i skripte su u zasebnim fajlovima. **Sekcije Recenzije (`#tst`) i Mreže (`#soc`) izbačene 2026-09-02 na zahtev vlasnika** (Instagram/TikTok već stoje u futeru); `loadReviews()` i review modal u main.js ostaju i sami se gase kad nema `#tst-dynamic` |
 | `usluge.html` + 5 strana usluga | `/usluge` pregled → `/premium-pranje`, `/detailing-auta`, `/poliranje-laka`, `/keramicka-zastita`, `/poliranje-farova` |
-| `cenovnik.html` | `/cenovnik` — paketi, pojedinačne cene, Loyalty i kalkulator „Sastavi sam" (`#paketi #pojedinacne #loyalty #sastavi #prijava`) |
+| `cenovnik.html` | `/cenovnik` — pretraga auta, paketi, poređenje, pojedinačne cene, Loyalty (`#pick #paketi #poredjenje #pojedinacne #loyalty #prijava`). Nova strana od 2026-09-22 |
 | `assets/css/laker.css` | **Zajednički stil svih strana** — nav, mobilni meni, dugmad, kostur sekcije, tabele, futer, PWA trake, kolačići |
 | `assets/css/pocetna.css` | samo početna | 
 | `assets/css/usluge.css` | `/usluge` + 5 strana usluga |
-| `assets/css/cenovnik.css` | `/cenovnik`, uključujući preseljene pakete, Loyalty i modal za prijavu |
+| `assets/css/cenovnik.css` | `/cenovnik` — sopstvena slova i crvena, strana, Loyalty modal i kontrolna tabla |
 | `assets/js/laker-ui.js` | **Zajedničko ponašanje svih strana** — kursor, tema, nav, mobilni meni, tabovi, FAQ, otkrivanje sekcija, `data-click` |
-| `assets/js/cenovnik.js` | birač veličine vozila + kalkulator „Sastavi sam". Spisak usluga je `div.svc[role=group] > div.st[role=checkbox]`, **ne `ul/li`** — `<li role="checkbox">` Lighthouse prijavljuje kao neispravan ARIA (2026-09-03) |
-| `assets/js/auti.js` | spisak marki i modela (41 marka, 583 modela) za kalkulator |
+| `assets/js/cenovnik.js` | pretraga auta (`LAKER_TRAZI`, nadimci u `MARKA`/`RECI`), izbor veličine koji menja sve `data-c` cene, Loyalty Godišnje/Mesečno i otvaranje prijave na `#prijava` |
+| `assets/js/auti.js` | spisak marki i modela (74 marke, 1322 modela) za pretragu na cenovniku |
 | `main.js` | Izvorni JS — Supabase recenzije, galerija i kompletni Loyalty sistem (IIFE). **Ne učitava se direktno** |
 | `main.min.js` | Minifikovana verzija koju sajt učitava. Posle izmene main.js regeneriši: `npx terser main.js --compress --mangle -o main.min.js` + bump `?v=` u index.html |
 | `init.min.js`, `assets/js/laker-ui.min.js`, `assets/js/auti.min.js`, `assets/js/cenovnik.min.js` | **Od 2026-09-03 strane učitavaju SAMO `.min.js`** (PageSpeed: 10 KB uštede). Izvor se menja u `.js`, pa **obavezno** `npm run build:js` (regeneriše svih 5 minifikovanih) + bump `?v=`. Zaboravljen build = sajt vrti stari kod iako je izvor izmenjen |
@@ -85,7 +85,7 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 | `/poliranje-laka` | | 4 nivoa, 100–290 € |
 | `/keramicka-zastita` | | keramika 140–235 €, uz `#1k-nano`, `#karnauba`, `#nano-glass` |
 | `/poliranje-farova` | | 25 € za sve kategorije, UV premaz do 36 meseci |
-| `/cenovnik` | `cenovnik.html` | paketi → pojedinačne → Loyalty → „Sastavi sam" (redosled vlasnik 2026-09-21) |
+| `/cenovnik` | `cenovnik.html` | pretraga auta → paketi (stepenice) → „Šta koji paket ima" → pojedinačne → Loyalty (vlasnik 2026-09-22) |
 
 **`/dubinsko-ciscenje` je obrisan** — 301 na `/detailing-auta` (redirect u [vercel.json](vercel.json)).
 
@@ -100,44 +100,35 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Nove strane nemaju inline `<script>`** osim tri: JSON-LD, prekidač teme i `js-ready`.
   Poslednja dva moraju da rade PRE iscrtavanja (inače treperi svetla tema), pa ostaju inline i
   imaju svoj CSP hash. Posle svake izmene: `node tools-csp-hashes.js` → `vercel.json`.
-- **Cene stoje na dva mesta** i moraju da se poklapaju: u tabelama `cenovnik.html` i u nizu
-  `USLUGE` u [assets/js/cenovnik.js](assets/js/cenovnik.js). Kartice sa cenom na stranama usluga
-  su treće mesto.
-- **Birač veličine vozila** (`.szbar` na cenovniku) menja sve odjednom: pakete, Loyalty
-  (Mali/Srednji → 35 €/299 €, Veliki/SUV → 40 €/349 €), istaknutu kolonu u tabelama i kalkulator.
-  Izbor auta u kalkulatoru sam postavlja tu veličinu.
-- **Izgled birača preuređen 2026-09-03** (vlasnik: „baš je sitno, ne vidi se lepo"). Naslov je u
-  svom redu, dugmad su mreža od četiri jednake kolone preko cele širine, tekst je normalnim slovima
-  (bez `text-transform:uppercase` i `letter-spacing`, koji su reč širili trostruko i terali font na
-  7,3–8 px). **Doradjeno istog dana: u dugmetu su tri poznata auta u čipovima (`.szm`), a red
-  `#szHint` je obrisan** — segmenti i metri se NE pišu nigde na sajtu (vlasnik: „ne mogu da mešam
-  C klasu, to niko ne razume"). Na telefonu (`≤768px`) čipovi gube okvir i idu jedan ispod drugog,
-  a na `≤480px` se **drugi po redu krije** (`nth-child(2)`), pa ostaju parovi Polo/Corsa,
-  Golf/Rapid, Camry/Serija 5, X7/Macan — zato redosled u HTML-u nije proizvoljan. Pravila su `.szbar .szp*` u
-  [assets/css/cenovnik.css](assets/css/cenovnik.css). **Dugme mora zadržati klasu `.tb`** — po njoj
-  ga traže `cenovnik.js` i `ot()`; `.szp` je samo za izgled. Tekstovi u `HINT` moraju stati u JEDAN
-  red na 320 px (~52 znaka), inače lepljiva traka poskoči pri promeni veličine. Boja teksta na
-  izabranom dugmetu je tvrdo `#0B0B0B`, ne `var(--black)` — u svetloj temi je `--black` svetlo bež,
-  pa bi na crvenom ispao na 3,3:1 kontrasta.
-- **Primeri auta stoje na 6 mesta i moraju biti IDENTIČNI**: čipovi u biraču, napomena ispod
-  tabela (`.prc-note`), `#cfgVelicina` u kalkulatoru, Loyalty kartica (`#loy-veh-sub` u
-  [main.js](main.js) i `.loy-pick-sub`) i spisak cena na svih 5 strana usluga. Tekst je:
+- **/cenovnik je NOVA strana od 2026-09-22** (vlasnik odobrio demo „spojena verzija" + slova i boju iz
+  poređenja). Redosled: **pretraga auta i birač veličine** (`#pick`) → **paketi kao stepenice**
+  (`#paketi`, Boost i Laker pišu samo „Sve iz X paketa, plus:" i ono što se dodaje — okvir koji ponovo
+  nabraja sadržaj prethodnog paketa vlasnik je ODBIO, „ružno i nepregledno") → **„Šta koji paket ima"**
+  (`#poredjenje`, tabela sa kvačicama) → **pojedinačne cene** u četiri grupe (`#pojedinacne`) →
+  **Loyalty** tiho na dnu (`#loyalty`, prekidač Godišnje/Mesečno, 8 koraka sitno). Kalkulator
+  „Sastavi sam", karusel paketa za telefon i tabovi pojedinačnih cena su **obrisani**; dugmad
+  „Sastavi svoju ponudu" na 5 strana usluga sada su „Cena za vaš auto →" na `/cenovnik#pick`.
+- **Cene stoje na JEDNOM mestu na cenovniku**: `data-c="mali,srednji,veliki,ekstra"` u
+  [cenovnik.html](cenovnik.html) (paketi, tabela poređenja, pojedinačne). JS ih samo bira. Kartice sa
+  cenom na stranama usluga i JSON-LD su drugo i treće mesto — moraju da se poklapaju.
+- **Veličina auta** (dugme u `#szPick` ili auto izabran pretragom) menja sve odjednom: sve `data-c`,
+  „za mali auto" (`data-za`), napomenu kod pojedinačnih (`data-zapun`), WhatsApp poruke (`data-wa`) i
+  Loyalty (Mali/Srednji → 35 €/299 €, Veliki/Ekstra → 40 €/349 €). Poziva i `selectLoyVeh`/`selectLoyBill`
+  iz main.js, pa Loyalty modal dobije isti izbor. Pamti se u `localStorage['laker_ponuda']` (`{sz}`).
+- **Pretraga auta** je u [assets/js/cenovnik.js](assets/js/cenovnik.js) (`LAKER_TRAZI`), nad
+  [assets/js/auti.js](assets/js/auti.js) — **1322 modela, 74 marke** (dopunjeno 2026-09-22; vlasnik:
+  „hoću da SVAKI auto sa Balkana postoji", našao da „miata" ne radi). Razume srpski izgovor i nadimke
+  (pežo, reno, kaškaj, fića, stojadin, golf trojka, bmw petica), oznake motora (320d, c220, e220 cdi) i
+  izbacuje zapreminu, snagu, gorivo i godište. Nadimci su u `MARKA` i `RECI` u cenovnik.js — nov nadimak
+  ide tamo, ne u auti.js. Novi model u auti.js ide po pravilu iz njegovog zaglavlja.
+- **Primeri auta stoje na 5 mesta i moraju biti IDENTIČNI**: čipovi u `#szPick`, `SZ` u cenovnik.js
+  (ide u napomenu i WhatsApp poruku), Loyalty u main.js (`#loy-veh-sub` i `.loy-pick-sub`) i spisak cena
+  na svih 5 strana usluga. Tekst je:
   **Mali (Polo, Audi A2, Corsa) · Srednji (Golf, Peugeot 307, Rapid) · Veliki (Camry, CX-5,
   Serija 5) · Ekstra (X7, Tiggo 8, Macan)** — spisak je vlasnikov izbor (2026-09-03), ne menjati
-  bez njega. Svaki primer mora stvarno da pada u tu kategoriju u [assets/js/auti.js](assets/js/auti.js);
-  provera: `node -e "global.window={};require('./assets/js/auti.js')..."`.
-  U čipovima je REDOSLED bitan — drugi po redu se krije na telefonu, pa na drugom mestu stoji
-  onaj koji sme da otpadne (Audi A2, Peugeot 307, CX-5, Tiggo 8), a ne najprepoznatljiviji. `KAT_PUN` u cenovnik.js nosi opis („kao Golf ili Astra"), koji
-  mora imati smisla uz svaku karoseriju — stoji kao „opis · limuzina · crna".
-- **Telefon (≤768px) na /cenovnik i /usluge — izbor vlasnika 2026-09-03** (demo `/demo-telefon`,
-  varijanta C svuda): paketi su **tabovi Clean/Boost/Laker + horizontalni karusel** sa brojačem
-  „Paket 1 od 3" i ivicom sledeće kartice koja viri (vlasnik: „da ljudima ne promakne da ima tri");
-  markup `.pk-nav` u cenovnik.html, karusel i cene u tabovima u cenovnik.js, CSS na kraju
-  cenovnik.css. Kartica `.pk` je tamo CSS grid sa `minmax(0,1fr)` (bez toga dugačka stavka razvuče
-  mrežu preko ivice), `.pk-num` sakriven, dugme preko cele širine. **Pojedinačne usluge su prava
-  tabela sa 4 kolone** (`#pojedinacne .tp` gazi kartice iz laker.css), a `/usluge` je **spisak**
-  (naziv · kratak opis · cena · strelica). U `.sh` naslovima stoji razmak ispred `<br>` jer se na
-  telefonu `br` krije (`h1.sh br,h2.sh br{display:none}`) — bez razmaka se reči zalepe. Računar netaknut.
+  bez njega. Svaki primer mora stvarno da pada u tu kategoriju u [assets/js/auti.js](assets/js/auti.js).
+  U čipovima je REDOSLED bitan — na telefonu se vide dva od tri, pa na drugom mestu stoji
+  onaj koji sme da otpadne (Audi A2, Peugeot 307, CX-5, Tiggo 8), a ne najprepoznatljiviji.
 - **`/poliranje-laka` nema tabelu nivoa** (2026-09-06, vlasnik odobrio demo). Tabela je govorila
   koliko prolaza ima nivo, ali ne i šta klijent dobija. Zamenile su je **kartice `.niv-c`** sa jednom
   podebljanom rečenicom koristi, cenom i trakom „Koliko rešava" (`--w` 30/50/75/100%). Traka NIJE
@@ -160,27 +151,15 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
 - **`[hidden]{display:none!important}` stoji u laker.css.** Bez toga `.row2{display:grid}` i `.carbox{display:grid}` gaze
   `hidden` atribut, pa se u kalkulatoru videla prazna kutija auta i ručni izbor karoserije.
-- **`ot()` skida `.on` samo u istoj grupi tabova** — i birač veličine koristi `.tb`, pa bi globalni reset ugasio izabranu veličinu.
-- **Dugme „Prijava" na samom cenovniku je `#prijava`** — modal se otvara i na `hashchange`, ne samo pri učitavanju (cenovnik.js).
-- **Kalkulator ne dozvoljava besmislene kombinacije** (2026-09-02). `GRUPE` i `SADRZI` u
-  [assets/js/cenovnik.js](assets/js/cenovnik.js): od četiri nivoa poliranja sme jedan, od tri
-  zaštite laka (keramika / 1K-Nano / karnauba) sme jedna, od dva Nano-Glass-a sme jedan, a
-  „Detailing auta" gasi „Premium pranje" jer ga već sadrži. Sivi red se ne klikće; `dodajUslugu()`
-  izbacuje manju uslugu kad se izabere veća, a `uskladi()` čisti staro stanje iz localStorage-a.
-  Nova usluga koja se sa nečim ne slaže — dodaj je u `GRUPE`, ne piši novu granu koda.
+- **`ot()` skida `.on` samo u istoj grupi tabova** — važi za tabove na drugim stranama (na cenovniku ih više nema).
+- **Dugme „Prijava" na samom cenovniku je `#prijava`** — modal se otvara i na `hashchange`, ne samo pri učitavanju
+  (cenovnik.js). Dugme „Prijavi se →" u `#loyalty` je `data-click="activateLoyalty"` (main.js pretpopuni formu).
 - **Impregnacija kože i plastike ULAZI u sva tri paketa i u „Detailing auta"** (vlasnik 2026-09-03:
   „spada u clean paket, nemoj da navodiš onako da se doplaćuje"). Stoji kao stavka u Clean, Boost i
   Laker paketu i u „Šta ulazi" na [detailing-auta.html](detailing-auta.html); blok „Impregnacija —
   naplaćuje se posebno" je obrisan sa te strane. **Samostalno se i dalje naručuje** (25/40/45/50 €,
-  odluka vlasnika), pa ostaje u tabeli `#pojedinacne` — ali bez `prc-more` linka na /detailing-auta,
-  uz `.tbl-note` ispod tabele koji kaže da uz paket nema doplate. U kalkulatoru je `koza` i `plastika`
-  u `SADRZI` pod `detailing`, pa se posive kad se izabere „Detailing auta".
-- **Redosled na /cenovnik: paketi → pojedinačne cene → Loyalty → „Sastavi sam"** (vlasnik 2026-09-21).
-  Pozadina `var(--d1)` ide svakoj drugoj sekciji (`#pojedinacne` i `#sastavi`), da se smenjuju. Osam koraka
-  Loyalty pranja (`.loy-wash`) su namerno SITNI — vlasnik: „da se vidi da je tu, al ne ovoliko". Blok je iste
-  visine kao kartica sa cenom (`align-items:stretch`), čipovi rezultata stoje uz dno u ravni sa dugmetom.
-  Stil je `.loy-wash .steps*` u [assets/css/cenovnik.css](assets/css/cenovnik.css) — ne dirati `.steps` u
-  laker.css, njega koriste strane usluga.
+  odluka vlasnika), pa ostaje među pojedinačnim cenama (`#pojedinacne`). Napomenu ispod
+  pojedinačnih cena o impregnaciji vlasnik je izbacio 2026-09-22.
 - **Cenovnik ima SVOJA slova i SVOJU crvenu** (vlasnik 2026-09-22, izabrao u poređenju 8 fontova × 8 nijansi):
   **DM Serif Display** (naslovi, cene) + **Karla** (tekst), crvena **Klasik Laker #C0392B / #E74C3C**. Važi SAMO za
   `/cenovnik` — ostalih 7 strana i dalje imaju Cormorant + Inter i #FF2A2A. Sve je u [assets/css/cenovnik.css](assets/css/cenovnik.css):
@@ -312,7 +291,7 @@ Gašenje: obriši taj unos i push.
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
 - **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#loc` (`#tst` i `#soc` izbačeni 2026-09-02)
-- **Sekcije na cenovniku:** `#paketi` `#pojedinacne` `#loyalty` `#sastavi`
+- **Sekcije na cenovniku:** `#pick` `#paketi` `#poredjenje` `#pojedinacne` `#loyalty` (`#sastavi` obrisan 2026-09-22)
 - `#proc` više ne postoji nigde (sekcija „Kako izgleda tretman" obrisana 2026-09-02); `#pkg`, `#care`, `#prc` i `#book` takođe ne postoje
 
 ---
@@ -328,7 +307,7 @@ Gašenje: obriši taj unos i push.
 **Poliranje farova NE ulazi ni u jedan paket** (vlasnik 2026-09-15: samo kao posebna usluga). Izbačeno iz
 kartica Boost i Laker i njihovog JSON-LD opisa na [cenovnik.html](cenovnik.html), iz rečenice o Laker paketu na
 `/keramicka-zastita` i iz kutije „Ulazi u paket" na `/poliranje-farova` (kutija obrisana cela). Samostalno ostaje:
-tabela `#pojedinacne` (25 €), kalkulator, kartica na `/usluge` i sopstvena strana. Ne vraćati u pakete bez vlasnika.
+pojedinačne cene `#pojedinacne` (25 €), kartica na `/usluge` i sopstvena strana. Ne vraćati u pakete bez vlasnika.
 
 ---
 
@@ -432,7 +411,7 @@ Vlasnik dobija **svakog ponedeljka oko 12h** mejl sa svim brojkama sa sajta. Mer
 
 | Deo | Fajl | Šta radi |
 |---|---|---|
-| Sakupljanje | `assets/js/mera.js` | Učitan na SVIH 9 strana (`?v=7`). **Ne čitati `innerWidth`/`scrollHeight` pri startu** — skripta ide pre prvog paint-a, pa to tera layout cele strane (PageSpeed forced reflow ~1 s, 2026-09-03); širina se čita pri slanju, dubina posle paint-a. **Odgovor sa `/api/mera` se MORA pročitati (`r.text()`), pa makar i baciti** — nepročitano telo Chrome drži kao otvoren tok, DevTools nikad ne javi „završeno", pa su Lighthouse i PageSpeed na svih 8 strana čekali 45 s i prijavljivali „strana se učitava presporo" sa nepotpunim rezultatom (nađeno i popravljeno 2026-09-03). `keepalive` samo na završnom paketu. Šalje `pregled`, `klik`, `sekcija`, `kraj` na `/api/mera`. Od 2026-09-03 beleži i interne prelaze (`klik` naziv `ka:/cenovnik#sastavi`), izbor veličine na cenovniku (`velicina:veliki`), `paket-detalji`, a kao „sekcije" meri i `.usl-block[id]` / `.usl-aside#cena` na stranama usluga |
+| Sakupljanje | `assets/js/mera.js` | Učitan na SVIH 9 strana (`?v=8`). **Ne čitati `innerWidth`/`scrollHeight` pri startu** — skripta ide pre prvog paint-a, pa to tera layout cele strane (PageSpeed forced reflow ~1 s, 2026-09-03); širina se čita pri slanju, dubina posle paint-a. **Odgovor sa `/api/mera` se MORA pročitati (`r.text()`), pa makar i baciti** — nepročitano telo Chrome drži kao otvoren tok, DevTools nikad ne javi „završeno", pa su Lighthouse i PageSpeed na svih 8 strana čekali 45 s i prijavljivali „strana se učitava presporo" sa nepotpunim rezultatom (nađeno i popravljeno 2026-09-03). `keepalive` samo na završnom paketu. Šalje `pregled`, `klik`, `sekcija`, `kraj` na `/api/mera`. Od 2026-09-03 beleži i interne prelaze (`klik` naziv `ka:/cenovnik#sastavi`), izbor veličine na cenovniku (`velicina:veliki`), `paket-detalji`, a kao „sekcije" meri i `.usl-block[id]` / `.usl-aside#cena` na stranama usluga |
 | Prijem | [api/mera.js](api/mera.js) | Filtrira robote, izvodi anonimni otisak, upisuje u `stat_dogadjaji` |
 | Računanje | SQL `stat_izvestaj(od, do)` **v2** + `stat_nedelje(kraj, koliko)` | Sve agregacije u bazi, `security invoker`, `execute` samo za `service_role`. v2 (migracija `stat_izvestaj_v2_po_stranama`, 2026-09-03) vraća i: `strane` (ljudi, otvaranja, vreme, dubina, ulazi, izlazi, kontakt_ljudi po strani), `ulazi`, `prelazi` (sa→na), `kanali` **po PRVOM otvaranju** (interni link više ne pravi „direktno"), `izvori`, `brauzeri`, `zemlje`, `sekcije` po strani sa `od_ukupno`, `kontakti_po_strani`, `ostali_klikovi`, `vreme_posete` (zbir kroz sve strane), `strana_po_poseti`, `vise_strana`, `vratili_se` |
 | Mejl | [api/izvestaj.js](api/izvestaj.js) | Sastavi HTML i pošalje preko Brevo na detailinglaker@gmail.com |
@@ -667,9 +646,9 @@ Lexus LS; E klasa, A6, Serija 5, Insignia, Superb i Passat su ispod 5 m i OSTAJU
 izričito odbio da ih diže). Time je 104 modela promenilo
 kategoriju — pre toga je SVAKI SUV bio Ekstra, pa su Juke i GLS plaćali isto. Pravilo stoji i u zaglavlju
 [assets/js/auti.js](assets/js/auti.js). **Oznake kategorija na svih 6 strana prate to pravilo** („Ekstra (veliki SUV, kombi)",
-ne više „Ekstra (SUV / Van)") — ako se pravilo menja, menjaju se i one, i `KAT_PUN`/`HINT` u cenovnik.js.
+ne više „Ekstra (SUV / Van)") — ako se pravilo menja, menjaju se i one, i `SZ` u cenovnik.js.
 
-**Slike auta u kalkulatoru — NEMA IH** (odluka vlasnika 2026-09-02). Kutija `.carbox` posle izbora modela
+**Slike auta — NEMA IH** (odluka vlasnika 2026-09-02; kalkulator je obrisan 2026-09-22, opis ispod je istorija). Kutija `.carbox` posle izbora modela
 prikazuje samo prepoznatu kategoriju i ispod nje „segment · tip karoserije · boja"; `#cfgSlika`, `SILUETE` i
 `bojaHex()` su obrisani, `.carbox` više nije dvokolonski grid. Izbor boje **ostaje** (ulazi u WhatsApp upit).
 Četvrto polje u [assets/js/auti.js](assets/js/auti.js) (slug slike) stoji rezervisano i svuda je `null` —
