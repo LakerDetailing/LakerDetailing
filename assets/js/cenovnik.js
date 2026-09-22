@@ -215,6 +215,16 @@
   var inp = $('fndIn'), rez = $('fndR'), ok = $('fndOk'), clr = $('fndX'), pick = $('szPick');
   if (!inp || !rez || !ok || !clr || !pick) return;
 
+  // Chrome je u ovo polje sam upisivao ime posetioca iz svojih sačuvanih podataka
+  // (vlasniku „Laki") — autocomplete="off" Chrome ignoriše. Nepoznata vrednost
+  // autocomplete-a u HTML-u to gasi; ovo je rezerva ako ga ipak popuni.
+  function bezAutofill() {
+    try { if (inp.matches(':-webkit-autofill') || inp.matches(':autofill')) { inp.value = ''; clr.hidden = true; } } catch (e) {}
+  }
+  bezAutofill();
+  setTimeout(bezAutofill, 400);
+  setTimeout(bezAutofill, 1500);
+
   function primeni() {
     var k = st.sz, za = SZ[k].n.toLowerCase() + ' auto', pun = za + ' (' + SZ[k].ex + ')';
     // data-n = samo broj (znak € stoji ispred kao <sup>)

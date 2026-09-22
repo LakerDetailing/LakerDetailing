@@ -37,7 +37,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/karla-latin.woff2">
 <link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903k">
 <link rel="stylesheet" href="/assets/css/laker.css?v=20260903k">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260922b">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260922c">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -211,7 +211,7 @@
     <label class="k" for="fndIn">Koji auto vozite?</label>
     <div class="srch">
       <svg class="i ico" width="19" height="19" aria-hidden="true"><use href="#i-search"/></svg>
-      <input id="fndIn" type="text" inputmode="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false"
+      <input id="fndIn" name="laker-auto-model" type="text" inputmode="search" enterkeyhint="search" autocomplete="laker-auto-model" autocapitalize="off" autocorrect="off" spellcheck="false" data-form-type="other"
              placeholder="Ukucajte marku i model, npr. Golf 4, Astra, X5" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="fndR">
       <button type="button" class="clr" id="fndX" aria-label="Obriši" hidden><svg class="i" width="17" height="17" aria-hidden="true"><use href="#i-x"/></svg></button>
       <div class="srch-r" id="fndR" role="listbox" aria-label="Pronađeni auti" hidden></div>
@@ -454,7 +454,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>91</b> · 2026-09-22</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>92</b> · 2026-09-22</span>
   </div>
 </footer>
 
@@ -669,7 +669,7 @@
 <script src="/assets/js/laker-ui.min.js?v=20260903k" defer></script>
 <script src="/main.min.js?v=20260903k" defer></script>
 <script src="/assets/js/auti.min.js?v=20260922b" defer></script>
-<script src="/assets/js/cenovnik.min.js?v=20260922b" defer></script>
+<script src="/assets/js/cenovnik.min.js?v=20260922c" defer></script>
 <script src="/init.min.js?v=20260903k" defer></script>
 <script src="/assets/js/mera.js?v=8" defer></script>
 </body>
