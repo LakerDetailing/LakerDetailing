@@ -181,6 +181,20 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   visine kao kartica sa cenom (`align-items:stretch`), čipovi rezultata stoje uz dno u ravni sa dugmetom.
   Stil je `.loy-wash .steps*` u [assets/css/cenovnik.css](assets/css/cenovnik.css) — ne dirati `.steps` u
   laker.css, njega koriste strane usluga.
+- **Cenovnik ima SVOJA slova i SVOJU crvenu** (vlasnik 2026-09-22, izabrao u poređenju 8 fontova × 8 nijansi):
+  **DM Serif Display** (naslovi, cene) + **Karla** (tekst), crvena **Klasik Laker #C0392B / #E74C3C**. Važi SAMO za
+  `/cenovnik` — ostalih 7 strana i dalje imaju Cormorant + Inter i #FF2A2A. Sve je u [assets/css/cenovnik.css](assets/css/cenovnik.css):
+  `@font-face` + `:root` na vrhu, blok „PUNE CRVENE POVRŠINE" na dnu. Fontovi su self-hostovani u `assets/fonts/`
+  (`dm-serif-display-400[i]-latin[-ext].woff2`, `karla-latin[-ext].woff2`). Pravila koja se ne smeju pokvariti:
+  · **tekst i linije #E74C3C, pune podloge #C0392B sa BELIM slovima** — tamna slova na #C0392B imaju 3,6:1, a
+    #C0392B kao sitan tekst na crnom 3,9:1. Novo crveno dugme na cenovniku → dodaj ga u taj blok. (Ovim je na
+    cenovniku ukinuto staro pravilo „tvrdo #0B0B0B na crvenom" — na ostalim stranama ono i dalje važi.)
+  · u svetloj temi `--gold` je #C0392B (#E74C3C na bež pada na 3,4:1);
+  · DM Serif ima samo rez 400 i krupniji je od Cormoranta — smanjen je `size-adjust:86%` u `@font-face`, ne
+    pojedinačnim veličinama; negativni `letter-spacing` je ublažen na dnu fajla;
+  · **nema `rgba(255,42,42,…)` ni `#FF2A2A` u cenovnik.css** — zamenjeno sa `rgba(231,76,60,…)`/`#E74C3C`;
+  · `fonts.css` (Cormorant/Inter) se i dalje učitava jer Loyalty kontrolna tabla u [main.js](main.js) ima tvrdo
+    upisan `font-family:'Cormorant Garamond'` u inline stilu.
 - **„Detailing potkrila" nije zasebna cena** (izbačeno 2026-09-02, odluka vlasnika) — nema ga ni
   u tabeli `#pojedinacne` ni u kalkulatoru. U opisu paketa Clean, Boost i Laker **ostaje**.
 
