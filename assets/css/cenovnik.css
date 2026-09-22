@@ -147,6 +147,15 @@ body.light .pk-ul li{border-bottom-color:rgba(0,0,0,.04)}
   .pk:hover{transform:none}
   .pk-p{font-size:54px}
 }
+/* Računar: stavke u paketima krupnije (vlasnik 2026-09-22: „da bude lepše na oko").
+   Telefon (≤768px) namerno ostaje na 13/11 px — tamo mu je bilo dobro. */
+@media(min-width:769px){
+  .pk-lbl{font-size:10.5px}
+  .pk-ul li{font-size:15px;padding:11px 0;gap:14px}
+  .pk-ul li small{font-size:12.5px;margin-top:3px}
+  .pk-ch{font-size:10px;margin-top:5px}
+  .pk-ch.zn{font-size:15px;margin-top:0}
+}
 
 /* ── POREĐENJE — tabela u stilu tabela sa sajta ── */
 .cmp-w{margin-top:56px;background:var(--d2)}
