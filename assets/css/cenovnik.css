@@ -827,4 +827,18 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
      prikazuje — strana se završava Loyalty programom i koracima (vlasnik 2026-09-23).
      Na ostalim stranama i na računaru futer ostaje. */
   body>footer{display:none}
+
+  /* Boost kolona na telefonu izgleda isto kao Clean i Laker — bez crvene podloge, okvira i
+     natpisa „Najpopularnije" (vlasnik 2026-09-23). Na računaru ostaje istaknuta. */
+  .ka .f,.ka .ka-h.f,.ka .ka-b.f{background:var(--d2);box-shadow:none;border-top:0}
+  .pk-badge{display:none}
+  .ka-h{padding-top:14px}
+
+  /* Birač veličine na telefonu manji i skladniji (vlasnik 2026-09-23): niže kartice,
+     primeri auta u jednom redu umesto jedan ispod drugog. */
+  .szpick{gap:5px}
+  .szp{padding:9px 6px 8px;gap:4px}
+  .szp b{font-size:14px}
+  .szm{flex-direction:row;gap:7px}
+  .szm span{font-size:10.5px}
 }

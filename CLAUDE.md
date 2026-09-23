@@ -116,7 +116,10 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   (`.kr-t`, a puno `.kr-d` na računaru), rokovi se na telefonu ne pišu, a **red sa dugmadima „Zakaži" se na telefonu ne
   prikazuje** (vlasnik 2026-09-23: „ružno stoji") — tabela se završava redom Trajanje. **Na cenovniku se na
   telefonu ne prikazuje ni futer** (`body>footer`): strana se završava Loyalty programom i koracima; na ostalim
-  stranama i na računaru futer ostaje (pa i „verzija N" — proverava se na početnoj). Blok „PAKETI NA TELEFONU" je na samom kraju [assets/css/cenovnik.css](assets/css/cenovnik.css).
+  stranama i na računaru futer ostaje (pa i „verzija N" — proverava se na početnoj). Isto važi za **`/usluge` na
+  telefonu** (`body.str-usluge>footer` u usluge.css; klasa je samo u usluge.html, 5 strana usluga zadržava futer).
+  **Na telefonu je Boost kolona ista kao ostale dve** (bez crvene podloge, okvira i „Najpopularnije"), a **birač
+  veličine je niži** — primeri auta u jednom redu (vlasnik 2026-09-23). Na računaru Boost ostaje istaknut. Blok „PAKETI NA TELEFONU" je na samom kraju [assets/css/cenovnik.css](assets/css/cenovnik.css).
   Računar NE dirati (vlasnik: „na kompu je ok"). Stepenice,
   `.pk` kartica i tabela `.cmp` su obrisane. **Keramika se u paketu piše „Keramička zaštita" + „preko 36
   meseci po deklaraciji proizvođača", BEZ „1 sloj"** i bez fusnote ispod (vlasnik 2026-09-23).
