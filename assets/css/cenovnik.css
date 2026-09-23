@@ -93,7 +93,7 @@ body.light .szm span{border-color:rgba(0,0,0,.12)}
 .szp:hover{background:var(--d3);border-color:rgba(231,76,60,.35)}
 .szp.on,body.light .szp.on{background:var(--gold);border-color:var(--gold)}
 .szp.on b{color:#fff}
-.szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
+.szp.on .szm span{color:#fff;border-color:rgba(255,255,255,.3)}
 @media(max-width:768px){
   .pick{margin-top:34px}
   .srch input{padding:17px 50px 17px 48px}
@@ -783,7 +783,7 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 .btn-g:hover,.ka-b.f .pk-btn:hover,.lf-btn:hover,.cm-submit-btn:hover:not(:disabled){background:#E74C3C;border-color:#E74C3C;color:#fff;box-shadow:0 16px 40px rgba(192,57,43,.3)}
 .nm .nb:hover,#mobileOverlay .nb:hover,.nb-loy:hover{background:#C0392B!important;border-color:#C0392B!important;color:#fff!important}
 .szp.on b{color:#fff}
-.szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
+.szp.on .szm span{color:#fff;border-color:rgba(255,255,255,.3)}
 .bill button.on .save{color:#fff}
 
 /* ostaci #FF2A2A iz laker.css koji se vide na cenovniku */
