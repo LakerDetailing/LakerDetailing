@@ -37,7 +37,7 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="/assets/fonts/karla-latin.woff2">
 <link rel="stylesheet" href="/assets/fonts/fonts.css?v=20260903k">
 <link rel="stylesheet" href="/assets/css/laker.css?v=20260903k">
-<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260922d">
+<link rel="stylesheet" href="/assets/css/cenovnik.css?v=20260923a">
 <style>
   .skip-link{position:absolute;left:-9999px;top:0;z-index:100000;background:#C0392B;color:#fff;
     padding:12px 18px;border-radius:0 0 10px 0;font-size:13px;font-weight:700;text-decoration:none}
@@ -227,102 +227,50 @@
   </div>
 </div></div>
 
-<!-- ══ PAKETI — stepenice ══ -->
+<!-- ══ PAKETI — kartice su tabela (2026-09-23): vrh kolone je paket sa cenom, ispod stavke red po red.
+     Zamenjuje stepenice + tabelu „Šta koji paket ima", koje su iste stavke pisale dvaput ══ -->
 <section id="paketi">
   <div class="ctn">
     <div class="sec-top">
       <div>
         <div class="sl">Paketi</div>
-        <h2 class="sh">Svaki sledeći ima <br><em>sve iz prethodnog</em></h2>
+        <h2 class="sh">Tri paketa, <br><em>jedan pogled</em></h2>
       </div>
-      <p class="pk-napomena">Zato kod Boost i Laker paketa piše samo ono što se dodaje.</p>
+      <p class="pk-napomena">Svaki sledeći ima sve iz prethodnog i nešto više. Red po red se vidi šta se dodaje.</p>
     </div>
-
-    <div class="stairs">
-      <article class="pk st1">
-        <div class="pk-name">Cle<em>an</em></div>
-        <div class="pk-sub">Auto čist spolja i iznutra</div>
-        <div class="pk-price-box">
+    <div class="ka" role="table" aria-label="Paketi i šta ulazi u njih">
+      <div class="ka-r" role="row">
+        <div class="ka-0" role="columnheader"><span class="sr">Usluga</span></div>
+        <div class="ka-h" role="columnheader">
+          <div class="pk-name">Cle<em>an</em></div>
+          <div class="pk-sub">Auto čist spolja i iznutra</div>
           <div class="pk-from">za <span data-za>mali auto</span></div>
           <div class="pk-p"><sup>€</sup><span data-c="99,110,130,145" data-n>99</span></div>
         </div>
-        <div class="pk-lbl">Šta se radi</div>
-        <ul class="pk-ul">
-          <li><span class="pk-ch">◆</span><span>Ručno premium pranje (3 faze)</span></li>
-          <li><span class="pk-ch">◆</span><span>Voskiranje premium voskom<small>sjaj i zaštita 4–6 nedelja</small></span></li>
-          <li><span class="pk-ch">◆</span><span>Dubinsko pranje enterijera<small>sedišta, patosnice, plafon, plastike</small></span></li>
-          <li><span class="pk-ch">◆</span><span>Impregnacija kože i plastike</span></li>
-          <li><span class="pk-ch">◆</span><span>Potkrila i felne<small>bez skidanja felni</small></span></li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;3 radna dana</div>
-        <a class="pk-btn" data-wa="paket Clean" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Clean →</a>
-      </article>
-
-      <article class="pk pk-feat st2">
-        <div class="pk-glow"></div>
-        <span class="pk-badge">Najpopularnije</span>
-        <div class="pk-name">Boo<em>st</em></div>
-        <div class="pk-sub">Čist auto i lak koji ponovo sija</div>
-        <div class="pk-price-box">
+        <div class="ka-h f" role="columnheader">
+          <span class="pk-badge">Najpopularnije</span>
+          <div class="pk-name">Boo<em>st</em></div>
+          <div class="pk-sub">Čist auto i lak koji ponovo sija</div>
           <div class="pk-from">za <span data-za>mali auto</span></div>
           <div class="pk-p"><sup>€</sup><span data-c="275,285,310,325" data-n>275</span></div>
         </div>
-        <div class="pk-lbl">Sve iz <b>Clean</b> paketa, plus</div>
-        <ul class="pk-ul">
-          <li><span class="pk-ch zn">+</span><span>Dvoslojno poliranje laka</span></li>
-          <li><span class="pk-ch zn">+</span><span>Ručno karnauba voskiranje<small>dubok sjaj, do 3 meseca</small></span></li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;do 5 dana</div>
-        <a class="pk-btn" data-wa="paket Boost" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Boost →</a>
-      </article>
-
-      <article class="pk">
-        <div class="pk-name">Lak<em>er</em></div>
-        <div class="pk-sub">Najjače poliranje i keramička zaštita</div>
-        <div class="pk-price-box">
+        <div class="ka-h" role="columnheader">
+          <div class="pk-name">Lak<em>er</em></div>
+          <div class="pk-sub">Najjače poliranje i keramička zaštita</div>
           <div class="pk-from">za <span data-za>mali auto</span></div>
           <div class="pk-p"><sup>€</sup><span data-c="499,510,530,545" data-n>499</span></div>
         </div>
-        <div class="pk-lbl">Sve iz <b>Boost</b> paketa, plus</div>
-        <ul class="pk-ul">
-          <li><span class="pk-ch zn">↑</span><span>Troslojno poliranje<small>umesto dvoslojnog</small></span></li>
-          <li><span class="pk-ch zn">↑</span><span>Keramička zaštita, 1&nbsp;sloj<small>umesto karnaube, preko 36 meseci po deklaraciji proizvođača</small></span></li>
-          <li><span class="pk-ch zn">+</span><span>Nano-Glass na svim staklima<small>do 1 godine ili 20.000 km</small></span></li>
-          <li><span class="pk-ch zn">+</span><span>Detailing motornog prostora</span></li>
-        </ul>
-        <div class="pk-dur">⏱ &nbsp;6 – 7 dana</div>
-        <a class="pk-btn" data-wa="paket Laker" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Laker →</a>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ══ POREĐENJE ══ -->
-<section id="poredjenje" style="background:var(--d1)">
-  <div class="ctn">
-    <div class="sl">Poređenje</div>
-    <h2 class="sh">Šta koji paket <br><em>ima</em></h2>
-    <div class="cmp-w tbl-wrap">
-      <table class="cmp">
-        <colgroup><col class="l"><col><col><col></colgroup>
-        <thead><tr>
-          <th scope="col"><span class="sr">Usluga</span></th>
-          <th scope="col"><b>Cle<em>an</em></b><span data-c="99,110,130,145">99 €</span></th>
-          <th scope="col" class="prc-on"><b>Boo<em>st</em></b><span data-c="275,285,310,325">275 €</span></th>
-          <th scope="col"><b>Lak<em>er</em></b><span data-c="499,510,530,545">499 €</span></th>
-        </tr></thead>
-        <tbody>
-          <tr><td>Ručno premium pranje (3 faze)</td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td class="prc-on"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Dubinsko pranje enterijera</td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td class="prc-on"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Impregnacija kože i plastike</td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td class="prc-on"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Potkrila i felne (bez skidanja felni)</td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td class="prc-on"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Zaštita laka</td><td>Premium vosak</td><td class="prc-on">Karnauba, ručno</td><td>Keramika, 1&nbsp;sloj</td></tr>
-          <tr><td>Poliranje laka</td><td><span class="no" aria-label="ne">—</span></td><td class="prc-on">Dvoslojno</td><td>Troslojno</td></tr>
-          <tr><td>Nano-Glass na svim staklima</td><td><span class="no" aria-label="ne">—</span></td><td class="prc-on"><span class="no" aria-label="ne">—</span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Motorni prostor</td><td><span class="no" aria-label="ne">—</span></td><td class="prc-on"><span class="no" aria-label="ne">—</span></td><td><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></td></tr>
-          <tr><td>Trajanje</td><td>3 radna dana</td><td class="prc-on">do 5 dana</td><td>6–7 dana</td></tr>
-        </tbody>
-      </table>
+      </div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Ručno premium pranje<small>3 faze</small></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c f" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Dubinsko pranje enterijera<small>sedišta, patosnice, plafon, plastike</small></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c f" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Impregnacija kože i plastike</div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c f" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Potkrila i felne<small>bez skidanja felni</small></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c f" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Zaštita laka</div><div class="ka-c" role="cell">Premium vosak<small>4–6 nedelja</small></div><div class="ka-c f" role="cell">Karnauba, ručno<small>do 3 meseca</small></div><div class="ka-c" role="cell">Keramička zaštita<small>preko 36 meseci po deklaraciji proizvođača</small></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Poliranje laka</div><div class="ka-c" role="cell"><span class="no" aria-label="ne">—</span></div><div class="ka-c f" role="cell">Dvoslojno</div><div class="ka-c" role="cell">Troslojno</div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Nano-Glass na svim staklima<small>do 1 godine ili 20.000 km</small></div><div class="ka-c" role="cell"><span class="no" aria-label="ne">—</span></div><div class="ka-c f" role="cell"><span class="no" aria-label="ne">—</span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l" role="rowheader">Detailing motornog prostora</div><div class="ka-c" role="cell"><span class="no" aria-label="ne">—</span></div><div class="ka-c f" role="cell"><span class="no" aria-label="ne">—</span></div><div class="ka-c" role="cell"><span class="ok" role="img" aria-label="da"><svg class="i" width="18" height="18"><use href="#i-check"/></svg></span></div></div>
+        <div class="ka-r" role="row"><div class="ka-l ka-d" role="rowheader">Trajanje</div><div class="ka-c ka-d" role="cell">⏱ 3 radna dana</div><div class="ka-c ka-d f" role="cell">⏱ do 5 dana</div><div class="ka-c ka-d" role="cell">⏱ 6–7 dana</div></div>
+        <div class="ka-r" role="row"><div class="ka-0" role="cell"></div><div class="ka-b" role="cell"><a class="pk-btn" data-wa="paket Clean" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Clean →</a></div><div class="ka-b f" role="cell"><a class="pk-btn" data-wa="paket Boost" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Boost →</a></div><div class="ka-b" role="cell"><a class="pk-btn" data-wa="paket Laker" href="https://wa.me/381607260302" target="_blank" rel="noopener">Zakaži Laker →</a></div></div>
     </div>
   </div>
 </section>
@@ -454,7 +402,7 @@
   <div class="fb">
     <span class="fb-c">© 2025–2026 <span>Laker Detailing Studio</span> · Čačak · Sva prava zadržana</span>
     <span class="fb-c" style="font-size:11px;font-style:italic">Do poslednjeg detalja.</span>
-    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>93</b> · 2026-09-22</span>
+    <span class="fb-v" id="siteVersion" title="Verzija sajta — raste sa svakim updejtom">verzija <b>94</b> · 2026-09-23</span>
   </div>
 </footer>
 

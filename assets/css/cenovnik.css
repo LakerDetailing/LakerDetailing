@@ -105,80 +105,63 @@ body.light .szm span{border-color:rgba(0,0,0,.12)}
 }
 @media(max-width:480px){.szm span:nth-child(2){display:none}}
 
-/* ── PAKETI — stepenice; kartica je .pk sa sajta ──
-   Stepenik prave margine odozgo (grid rasteže kartice do dna reda), pa
-   trajanje i dugme stoje u istoj ravni bez obzira na dužinu spiska. */
-.stairs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;margin-top:64px;border-bottom:2px solid var(--gold)}
-.pk{background:var(--d2);padding:48px 40px 40px;position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform .45s}
-.pk:hover{transform:translateY(-7px)}
-.pk.st1{margin-top:96px}
-.pk.st2{margin-top:48px}
-.pk-feat{background:linear-gradient(158deg,var(--d3) 0%,#1A0404 100%);border-top:2px solid var(--gold)}
-body.light .pk-feat{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5 100%)}
-.pk-glow{position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(231,76,60,.1),transparent 70%);pointer-events:none}
-.pk-badge{align-self:flex-start;background:var(--gold);color:#fff;font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;margin-bottom:28px}
-.pk-name{font-family:var(--serif);font-size:48px;font-weight:300;letter-spacing:-1px;margin-bottom:8px;line-height:1}
+/* ── PAKETI — kartice su tabela (vlasnik 2026-09-23, demo „A") ──
+   Ranije su bile dve stvari jedna ispod druge: stepenice sa karticama paketa i
+   tabela „Šta koji paket ima" sa istim stavkama još jednom. Sada je to JEDNA
+   mreža: vrh kolone je kartica paketa (ime, podnaslov, cena), ispod su stavke
+   red po red, dole trajanje i dugme. Boost kolona nosi crveni okvir i podlogu.
+   .ka-r ima display:contents — red postoji samo za čitač ekrana (role=row),
+   ćelije su direktno u mreži. Na telefonu naziv stavke ide preko cele širine,
+   a ispod njega tri ćelije. */
+.ka{display:grid;grid-template-columns:minmax(0,1.25fr) repeat(3,minmax(0,1fr));column-gap:2px;margin-top:56px}
+.ka-r{display:contents}
+.ka-h,.ka-l,.ka-c,.ka-b{background:var(--d2)}
+.ka .f{background:rgba(231,76,60,.075)}
+body.light .ka .f{background:rgba(192,57,43,.07)}
+.ka-0{background:transparent}
+.ka-h{padding:34px 26px 26px;display:flex;flex-direction:column;position:relative;font-weight:400;text-align:left}
+.ka-h.f{background:linear-gradient(158deg,var(--d3) 0%,#1A0404 100%);border-top:2px solid var(--gold)}
+body.light .ka-h.f{background:linear-gradient(158deg,var(--d3) 0%,#eee8d5 100%)}
+.ka .f{box-shadow:inset 1px 0 0 rgba(231,76,60,.35),inset -1px 0 0 rgba(231,76,60,.35)}
+.ka-b.f{box-shadow:inset 1px 0 0 rgba(231,76,60,.35),inset -1px 0 0 rgba(231,76,60,.35),inset 0 -2px 0 var(--gold)}
+.pk-badge{position:absolute;top:0;left:26px;transform:translateY(-100%);background:var(--gold);color:#fff;font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;padding:5px 12px;white-space:nowrap}
+.pk-name{font-family:var(--serif);font-size:40px;font-weight:300;letter-spacing:-1px;margin-bottom:6px;line-height:1;color:var(--white)}
 .pk-name em{font-style:italic;color:var(--gold)}
-.pk-sub{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:28px;font-weight:500;line-height:1.7}
-.pk-price-box{padding:22px 0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:24px}
-body.light .pk-price-box{border-color:rgba(0,0,0,.06)}
-.pk-from{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px}
-.pk-p{font-family:var(--serif);font-size:62px;font-weight:300;color:var(--gold);letter-spacing:-3px;line-height:1}
+.pk-sub{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:18px;min-height:3.4em;font-weight:500;line-height:1.7}
+.pk-from{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin:auto 0 4px}
+.pk-p{font-family:var(--serif);font-size:52px;font-weight:300;color:var(--gold);letter-spacing:-3px;line-height:1}
 .pk-p sup{font-size:22px;letter-spacing:0;vertical-align:top;margin-top:14px;display:inline-block}
-.pk-lbl{font-size:9.5px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:4px;font-weight:500;line-height:1.7}
-.pk-lbl b{color:var(--white);font-weight:700}
-.pk-ul{list-style:none;margin-bottom:24px}
-.pk-ul li{font-size:13px;color:var(--lgray);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;gap:13px;align-items:flex-start;font-weight:300;line-height:1.45}
-body.light .pk-ul li{border-bottom-color:rgba(0,0,0,.04)}
-.pk-ul li:last-child{border:none}
-.pk-ul li small{display:block;font-size:11px;color:var(--gray);margin-top:2px}
-.pk-ch{color:var(--gold);font-size:9px;flex-shrink:0;margin-top:3px;width:11px;text-align:center}
-.pk-ch.zn{font-size:13px;font-weight:700;margin-top:0;line-height:1.45}
-.pk-dur{font-size:10.5px;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin:auto 0 24px;padding-top:6px;font-weight:300}
+.ka-l,.ka-c{padding:15px 26px;border-top:1px solid rgba(255,255,255,.05);font-size:14px;line-height:1.45}
+body.light .ka-l,body.light .ka-c{border-top-color:rgba(0,0,0,.06)}
+.ka-l{color:var(--lgray);font-weight:300}
+.ka-l small,.ka-c small{display:block;font-size:11.5px;color:var(--gray);margin-top:2px;font-weight:300}
+.ka-c{text-align:center;color:var(--white);font-weight:500}
+.ka-c .ok{color:var(--gold);display:inline-block;vertical-align:middle}
+.ka-c .no{color:var(--gray);opacity:.5;font-weight:300}
+.ka-d,.ka-c.ka-d{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);font-weight:400}
+.ka-b{padding:6px 18px 26px}
 .pk-btn{display:block;text-align:center;padding:15px;border:1px solid rgba(231,76,60,.25);color:var(--gold);font-size:10px;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all .35s;font-weight:600}
-.pk-btn:hover,.pk-feat .pk-btn{background:var(--gold);color:#fff;border-color:var(--gold)}
-@media(max-width:900px){
-  .stairs{grid-template-columns:1fr;border-bottom:0}
-  .pk.st1,.pk.st2{margin-top:0}
-}
+.pk-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.ka-b .pk-btn{padding:14px 8px}
+@media(min-width:769px){.ka-l{font-size:15px}}
 @media(max-width:768px){
-  .stairs{margin-top:34px}
-  .pk{padding:34px 22px 24px}
-  .pk:hover{transform:none}
-  .pk-p{font-size:54px}
-}
-/* Računar: stavke u paketima krupnije (vlasnik 2026-09-22: „da bude lepše na oko").
-   Telefon (≤768px) namerno ostaje na 13/11 px — tamo mu je bilo dobro. */
-@media(min-width:769px){
-  .pk-lbl{font-size:10.5px}
-  .pk-ul li{font-size:15px;padding:11px 0;gap:14px}
-  .pk-ul li small{font-size:12.5px;margin-top:3px}
-  .pk-ch{font-size:10px;margin-top:5px}
-  .pk-ch.zn{font-size:15px;margin-top:0}
-}
-
-/* ── POREĐENJE — tabela u stilu tabela sa sajta ── */
-.cmp-w{margin-top:56px;background:var(--d2)}
-.cmp{table-layout:fixed}
-.cmp col.l{width:40%}
-.cmp thead th{padding:26px 16px 20px;vertical-align:bottom;white-space:normal}
-.cmp thead th b{display:block;font-family:var(--serif);font-size:32px;font-weight:300;letter-spacing:-.5px;color:var(--white);text-transform:none;line-height:1}
-.cmp thead th b em{font-style:italic;color:var(--gold)}
-.cmp thead th span{display:block;margin-top:9px}
-.cmp td{padding:16px 26px;vertical-align:middle}
-.cmp td:not(:first-child){white-space:normal;padding:16px 12px}
-.cmp .prc-on{background:rgba(231,76,60,.09)}
-body.light .cmp .prc-on{background:rgba(231,76,60,.07)}
-.cmp .ok{color:var(--gold);display:inline-block;vertical-align:middle}
-.cmp .no{color:var(--gray);opacity:.5;font-weight:300}
-.cmp tbody tr:last-child td{border-bottom:0}
-@media(max-width:768px){
-  .cmp-w{margin-top:34px}
-  .cmp col.l{width:34%}
-  .cmp thead th{padding:18px 4px 14px;letter-spacing:1.5px}
-  .cmp thead th b{font-size:23px}
-  .cmp td{padding:13px 12px;font-size:12.5px}
-  .cmp td:not(:first-child){padding:13px 4px;font-size:12px}
+  .ka{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:40px}
+  .ka-0{display:none}
+  .ka-l{grid-column:1/-1;padding:14px 4px 6px;background:transparent;border-top:1px solid rgba(255,255,255,.07);font-size:13.5px;text-align:center}
+  body.light .ka-l{border-top-color:rgba(0,0,0,.08)}
+  .ka-l small{display:inline;margin-left:6px}
+  .ka-c{padding:4px 4px 14px;border-top:0;font-size:12.5px;background:transparent}
+  .ka-c small{font-size:10.5px}
+  .ka-h{padding:26px 8px 18px;text-align:center;align-items:center}
+  .pk-badge{left:50%;transform:translate(-50%,-100%);font-size:7.5px;letter-spacing:1.5px;padding:4px 8px}
+  .pk-name{font-size:25px}
+  .pk-sub{font-size:8px;letter-spacing:1.2px;min-height:4.4em;margin-bottom:10px}
+  .pk-from{font-size:8px;letter-spacing:1px}
+  .pk-p{font-size:32px}
+  .ka-h .pk-p sup{font-size:13px;margin-top:5px}
+  .ka-b{padding:8px 4px 16px}
+  .ka-b .pk-btn{padding:12px 2px;font-size:9px;letter-spacing:1.5px}
+  .ka-d,.ka-c.ka-d{font-size:9.5px;letter-spacing:.6px}
 }
 
 /* ── POJEDINAČNO ── */
@@ -239,7 +222,7 @@ body.light .loy-st li{border-top-color:rgba(0,0,0,.07)}
 .pk-name,.loy-name{letter-spacing:-.2px}
 .pk-p{letter-spacing:-1px}
 .pk-p sup{font-size:20px;margin-top:10px}
-.cmp thead th b,.loy-r h3{letter-spacing:0}
+.loy-r h3{letter-spacing:0}
 .loy-p{letter-spacing:-.6px}
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -794,10 +777,10 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
    specifičnosti. Podloga #C0392B, slova bela; hover ide na svetliju #E74C3C.
    Novo dugme sa crvenom podlogom na cenovniku — dodaj ga u ovaj spisak.
    ══════════════════════════════════════════════════════════════════════════ */
-.btn-g,.tb.on,.szp.on,body.light .szp.on,.pk-badge,.pk-btn:hover,.pk-feat .pk-btn,.bill button.on,
+.btn-g,.tb.on,.szp.on,body.light .szp.on,.pk-badge,.pk-btn:hover,.ka-b.f .pk-btn,.bill button.on,
 .loy-tab.on,.lf-btn,.cs-plan-save-badge,.cm-plan-btn .cm-check,.cm-submit-btn,
 .pwa-modal-btn.primary,.pwa-update-btn.primary{background:#C0392B;border-color:#C0392B;color:#fff}
-.btn-g:hover,.pk-feat .pk-btn:hover,.lf-btn:hover,.cm-submit-btn:hover:not(:disabled){background:#E74C3C;border-color:#E74C3C;color:#fff;box-shadow:0 16px 40px rgba(192,57,43,.3)}
+.btn-g:hover,.ka-b.f .pk-btn:hover,.lf-btn:hover,.cm-submit-btn:hover:not(:disabled){background:#E74C3C;border-color:#E74C3C;color:#fff;box-shadow:0 16px 40px rgba(192,57,43,.3)}
 .nm .nb:hover,#mobileOverlay .nb:hover,.nb-loy:hover{background:#C0392B!important;border-color:#C0392B!important;color:#fff!important}
 .szp.on b{color:#fff}
 .szp.on .szm span{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}

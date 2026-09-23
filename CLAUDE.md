@@ -16,7 +16,7 @@ Auto detailing studio u Čačku. Vanilla HTML/JS sajt hostovan na Vercel, backen
 |---|---|
 | `index.html` | Početna strana. Od renoviranja 2026-09-02 sadrži samo hero, traku, O nama, Galeriju, FAQ i Lokaciju — stil i skripte su u zasebnim fajlovima. **Sekcije Recenzije (`#tst`) i Mreže (`#soc`) izbačene 2026-09-02 na zahtev vlasnika** (Instagram/TikTok već stoje u futeru); `loadReviews()` i review modal u main.js ostaju i sami se gase kad nema `#tst-dynamic` |
 | `usluge.html` + 5 strana usluga | `/usluge` pregled → `/premium-pranje`, `/detailing-auta`, `/poliranje-laka`, `/keramicka-zastita`, `/poliranje-farova` |
-| `cenovnik.html` | `/cenovnik` — pretraga auta, paketi, poređenje, pojedinačne cene, Loyalty (`#pick #paketi #poredjenje #pojedinacne #loyalty #prijava`). Nova strana od 2026-09-22 |
+| `cenovnik.html` | `/cenovnik` — pretraga auta, paketi (kartice + poređenje u jednoj mreži), pojedinačne cene, Loyalty (`#pick #paketi #pojedinacne #loyalty #prijava`). Nova strana od 2026-09-22 |
 | `assets/css/laker.css` | **Zajednički stil svih strana** — nav, mobilni meni, dugmad, kostur sekcije, tabele, futer, PWA trake, kolačići |
 | `assets/css/pocetna.css` | samo početna | 
 | `assets/css/usluge.css` | `/usluge` + 5 strana usluga |
@@ -85,7 +85,7 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 | `/poliranje-laka` | | 4 nivoa, 100–290 € |
 | `/keramicka-zastita` | | keramika 140–235 €, uz `#1k-nano`, `#karnauba`, `#nano-glass` |
 | `/poliranje-farova` | | 25 € za sve kategorije, UV premaz do 36 meseci |
-| `/cenovnik` | `cenovnik.html` | pretraga auta → paketi (stepenice) → „Šta koji paket ima" → pojedinačne → Loyalty (vlasnik 2026-09-22) |
+| `/cenovnik` | `cenovnik.html` | pretraga auta → paketi („kartice su tabela", 2026-09-23) → pojedinačne → Loyalty (vlasnik 2026-09-22) |
 
 **`/dubinsko-ciscenje` je obrisan** — 301 na `/detailing-auta` (redirect u [vercel.json](vercel.json)).
 
@@ -101,15 +101,20 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   Poslednja dva moraju da rade PRE iscrtavanja (inače treperi svetla tema), pa ostaju inline i
   imaju svoj CSP hash. Posle svake izmene: `node tools-csp-hashes.js` → `vercel.json`.
 - **/cenovnik je NOVA strana od 2026-09-22** (vlasnik odobrio demo „spojena verzija" + slova i boju iz
-  poređenja). Redosled: **pretraga auta i birač veličine** (`#pick`) → **paketi kao stepenice**
-  (`#paketi`, Boost i Laker pišu samo „Sve iz X paketa, plus:" i ono što se dodaje — okvir koji ponovo
-  nabraja sadržaj prethodnog paketa vlasnik je ODBIO, „ružno i nepregledno") → **„Šta koji paket ima"**
-  (`#poredjenje`, tabela sa kvačicama) → **pojedinačne cene** u četiri grupe (`#pojedinacne`) →
+  poređenja). Redosled: **pretraga auta i birač veličine** (`#pick`) → **paketi**
+  (`#paketi`) → **pojedinačne cene** u četiri grupe (`#pojedinacne`) →
   **Loyalty** tiho na dnu (`#loyalty`, prekidač Godišnje/Mesečno, 8 koraka sitno). Kalkulator
   „Sastavi sam", karusel paketa za telefon i tabovi pojedinačnih cena su **obrisani**; dugmad
   „Sastavi svoju ponudu" na 5 strana usluga sada su „Cena za vaš auto →" na `/cenovnik#pick`.
+- **Paketi = „kartice su tabela"** (vlasnik 2026-09-23, izabrao demo „A"; do tada su stepenice i tabela
+  „Šta koji paket ima" ispod njih pisale iste stavke dvaput). Jedna mreža `.ka` u `#paketi`: vrh kolone je
+  kartica paketa (ime, podnaslov, cena), ispod su stavke red po red sa kvačicama, dole trajanje i „Zakaži".
+  Boost kolona (`.f`) nosi crveni okvir, podlogu i „Najpopularnije". `.ka-r` ima `display:contents` i
+  služi samo za `role="row"`; na telefonu naziv stavke ide preko cele širine, ispod tri ćelije. Stepenice,
+  `.pk` kartica i tabela `.cmp` su obrisane. **Keramika se u paketu piše „Keramička zaštita" + „preko 36
+  meseci po deklaraciji proizvođača", BEZ „1 sloj"** i bez fusnote ispod (vlasnik 2026-09-23).
 - **Cene stoje na JEDNOM mestu na cenovniku**: `data-c="mali,srednji,veliki,ekstra"` u
-  [cenovnik.html](cenovnik.html) (paketi, tabela poređenja, pojedinačne). JS ih samo bira. Kartice sa
+  [cenovnik.html](cenovnik.html) (paketi, pojedinačne). JS ih samo bira. Kartice sa
   cenom na stranama usluga i JSON-LD su drugo i treće mesto — moraju da se poklapaju.
 - **Veličina auta** (dugme u `#szPick` ili auto izabran pretragom) menja sve odjednom: sve `data-c`,
   „za mali auto" (`data-za`), napomenu kod pojedinačnih (`data-zapun`), WhatsApp poruke (`data-wa`) i
@@ -291,7 +296,7 @@ Gašenje: obriši taj unos i push.
 - **Primary boja:** `#C0392B` | **Hover:** `#E74C3C` | **Bg:** `#080808`
 - **Naslovi:** Cormorant Garamond | **Tekst:** Inter
 - **Sekcije na početnoj:** `#hero` `#phi` `#cs` `#faq` `#loc` (`#tst` i `#soc` izbačeni 2026-09-02)
-- **Sekcije na cenovniku:** `#pick` `#paketi` `#poredjenje` `#pojedinacne` `#loyalty` (`#sastavi` obrisan 2026-09-22)
+- **Sekcije na cenovniku:** `#pick` `#paketi` `#pojedinacne` `#loyalty` (`#sastavi` obrisan 2026-09-22, `#poredjenje` spojen u `#paketi` 2026-09-23)
 - `#proc` više ne postoji nigde (sekcija „Kako izgleda tretman" obrisana 2026-09-02); `#pkg`, `#care`, `#prc` i `#book` takođe ne postoje
 
 ---
