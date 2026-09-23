@@ -151,6 +151,11 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   ogrebotine i tragove šmirgle od P2000. Rok trajanja tog efekta proizvođač **ne navodi** — ne pisati ga.
   Vlasnik je tražio da se ostali proizvodi ne imenuju, samo „Koch-Chemie"; P6 je izuzetak jer je to ime
   samog nivoa u cenovniku.
+- **Najmanja slova na telefonu (vlasnik 2026-09-23):** na kraju `laker.css`, `pocetna.css`, `usluge.css` i
+  `cenovnik.css` stoji blok „NAJMANJA SLOVA NA TELEFONU“ (`max-width:768px`) — ništa ispod 10 px, dugmad i putanja
+  11 px (ranije su na ≤390 px dugmad bila 8 px, podnaslov logoa 7,3 px). Jedini izuzeci su podnaslov logoa (9 px) i
+  značka „Najpopularnije“ (9,5 px), jer moraju da stanu uz logo odnosno u usku kolonu. Novo pravilo koje smanjuje
+  slova na telefonu ide IZNAD tog bloka, inače ga blok pregazi. Računar nije diran.
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi
   (birač veličine `.szbar`, kartica cene `.usl-aside`, `.cfg-r`, `.faq-sticky`). Nađeno i popravljeno 2026-09-02.
