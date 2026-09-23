@@ -707,3 +707,18 @@ body.light .tbl td{border-top-color:rgba(0,0,0,.08)}
   .uvuceno{padding-left:14px;padding-right:14px}
   .ph{padding-left:14px;padding-right:14px}
 }
+
+/* ── NAJMANJA SLOVA NA TELEFONU (2026-09-23, vlasnik) ──
+   Pravila iznad su na uskim ekranima spuštala dugmad na 8 px, a podnaslov logoa na 7,3 px.
+   Ovaj blok je donja granica: ništa ispod 10 px, dugmad i putanja 11 px. Stoji na kraju
+   fajla da bi pobedio iste selektore iz @media blokova iznad. Računar nije diran. */
+@media(max-width:768px){
+  .nl-s{font-size:9px;letter-spacing:2px}
+  .btn-g,.btn-o{font-size:11px;letter-spacing:1.8px}
+  .btn-s{font-size:11px}
+  .sl{font-size:10.5px}
+  .crumbs{font-size:11px}
+  .ft-sub{font-size:10.5px}
+  .ft-col .ft-col-title{font-size:10.5px}
+  .pwa-modal-kicker{font-size:10px}
+}

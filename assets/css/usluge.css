@@ -140,3 +140,10 @@ body.light .niv-c .z i{background:rgba(0,0,0,.08)}
   .niv-c .t{font-size:23px}
   .niv-c.top::before,.niv-c.mid::before{right:20px}
 }
+
+/* ── NAJMANJA SLOVA NA TELEFONU (2026-09-23) — isto pravilo kao na kraju laker.css ── */
+@media(max-width:768px){
+  .us-card .k{font-size:10px;letter-spacing:2px}
+  .us-card .pr b small{font-size:10.5px;letter-spacing:1px}
+  .usl-aside .big small{font-size:10.5px}
+}

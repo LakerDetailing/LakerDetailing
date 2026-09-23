@@ -798,3 +798,20 @@ body.light .cs-tag{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 tbody tr:hover td{background:rgba(231,76,60,.025)}
 .pwa-offline{background:rgba(192,57,43,.95)}
 .loy-google-btn-overlay{color:#fff}
+
+/* ── NAJMANJA SLOVA NA TELEFONU (2026-09-23) — isto pravilo kao na kraju laker.css.
+   Kolone paketa su na telefonu uske (~110 px), pa uz veća slova ide i manji razmak
+   između slova; tekst sme da pređe u dva reda. ── */
+@media(max-width:768px){
+  .pk-badge{font-size:9.5px;letter-spacing:.6px;padding:4px 7px}
+  .pk-sub{font-size:10px;letter-spacing:.4px;line-height:1.45}
+  .pk-from{font-size:10px;letter-spacing:.4px}
+  .ka-b .pk-btn{font-size:10.5px;letter-spacing:.6px;line-height:1.35}
+  .ka-d,.ka-c.ka-d{font-size:10.5px;letter-spacing:.3px}
+  .grp h3{font-size:10.5px}
+  .bill .save{font-size:10px}
+  .loy-chip,.loy-chip b{font-size:10px}
+  .loy-pick-sub,.loy-pick-price,.loy-pick-price-dim{font-size:10.5px}
+  .pick .ili{font-size:10.5px}
+  .loy-mtitle,.loy-google-header-text,.loy-forgot-title,.loy-secondary-btn,.loy-or-divider span{font-size:10px}
+}
