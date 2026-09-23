@@ -833,17 +833,26 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
   .ka .f,.ka .ka-h.f,.ka .ka-b.f{background:var(--d2);box-shadow:none;border-top:0}
   .pk-badge{display:none}
 
-  /* Okvir tabele (vlasnik 2026-09-23, izabrao demo „A" iz demo-paketi-okvir): tanak okvir oko
-     cele tabele, linije između kolona, krupnije ime (20 px) i cena (28 px). */
-  .ka{border:1px solid rgba(255,255,255,.18)}
-  .ka .ka-r>*{border-left:1px solid rgba(255,255,255,.08)}
-  .ka .ka-r>*:first-child{border-left:0}
-  body.light .ka{border-color:rgba(0,0,0,.16)}
-  body.light .ka .ka-r>*{border-left-color:rgba(0,0,0,.08)}
-  body.light .ka .ka-r>*:first-child{border-left:0}
-  .ka .ka-h{padding:16px 2px 12px}
-  .ka .pk-name{font-size:20px}
-  .ka .pk-p{font-size:28px;margin-top:8px}
+  /* „Moderno, bez linija" (vlasnik 2026-09-23, izabrao B iz demo-paketi-okvir2; zamenilo okvir
+     tabele iz v100): bez okvira i linija, zaglavlje je zaobljena traka, ime paketa sitno velikim
+     slovima, cena 32 px sa „za mali auto" ispod, kvačice u crvenim krugovima, redovi
+     naizmenično malo svetliji umesto linija. */
+  .ka{border:0;background:transparent}
+  .ka .ka-r>*{border-left:0;border-top:0;background:transparent}
+  .ka .ka-r:first-child>*{background:var(--d3);border-bottom:0}
+  .ka .ka-r:first-child>*:first-child{border-radius:12px 0 0 12px}
+  .ka .ka-r:first-child>*:last-child{border-radius:0 12px 12px 0}
+  .ka .ka-h{padding:14px 2px 12px}
+  .ka .pk-name{font-family:var(--sans);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--white)}
+  .ka .pk-name em{font-style:normal;color:inherit}
+  .ka .pk-p{font-size:32px;margin-top:6px;order:1}
+  .ka .pk-from{order:2;display:block;margin:5px 0 0;font-size:10px;letter-spacing:.3px;text-transform:none;color:var(--gray)}
+  .ka .ka-r:nth-child(odd):not(:first-child)>*{background:rgba(255,255,255,.03)}
+  body.light .ka .ka-r:nth-child(odd):not(:first-child)>*{background:rgba(0,0,0,.035)}
+  .ka .ka-r:nth-child(2)>*{margin-top:8px}
+  .ka .ka-l,.ka .ka-c{padding-top:14px;padding-bottom:14px}
+  .ka .ka-c .ok{width:26px;height:26px;border-radius:50%;background:rgba(231,76,60,.15);display:inline-flex;align-items:center;justify-content:center}
+  .ka .ka-c .ok svg{width:15px;height:15px}
 
   /* Birač veličine na telefonu manji i skladniji (vlasnik 2026-09-23): niže kartice,
      primeri auta u jednom redu umesto jedan ispod drugog. */
