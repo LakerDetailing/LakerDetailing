@@ -832,7 +832,18 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
      natpisa „Najpopularnije" (vlasnik 2026-09-23). Na računaru ostaje istaknuta. */
   .ka .f,.ka .ka-h.f,.ka .ka-b.f{background:var(--d2);box-shadow:none;border-top:0}
   .pk-badge{display:none}
-  .ka-h{padding-top:14px}
+
+  /* Okvir tabele (vlasnik 2026-09-23, izabrao demo „A" iz demo-paketi-okvir): tanak okvir oko
+     cele tabele, linije između kolona, krupnije ime (20 px) i cena (28 px). */
+  .ka{border:1px solid rgba(255,255,255,.18)}
+  .ka .ka-r>*{border-left:1px solid rgba(255,255,255,.08)}
+  .ka .ka-r>*:first-child{border-left:0}
+  body.light .ka{border-color:rgba(0,0,0,.16)}
+  body.light .ka .ka-r>*{border-left-color:rgba(0,0,0,.08)}
+  body.light .ka .ka-r>*:first-child{border-left:0}
+  .ka .ka-h{padding:16px 2px 12px}
+  .ka .pk-name{font-size:20px}
+  .ka .pk-p{font-size:28px;margin-top:8px}
 
   /* Birač veličine na telefonu manji i skladniji (vlasnik 2026-09-23): niže kartice,
      primeri auta u jednom redu umesto jedan ispod drugog. */
