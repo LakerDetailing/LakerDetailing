@@ -144,7 +144,7 @@ body.light .ka-l,body.light .ka-c{border-top-color:rgba(0,0,0,.06)}
 .pk-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
 .ka-b .pk-btn{padding:14px 8px}
 @media(min-width:769px){.ka-l{font-size:15px}}
-.kr-t,.ka-nap{display:none}
+.kr-t{display:none}
 }
 
 /* ── POJEDINAČNO ── */
@@ -797,8 +797,8 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
    Isto kao na računaru: nazivi stavki levo, tri kolone desno. Red sa imenima i cenama
    paketa (.ka-r:first-child) se lepi ispod #nav (68 px) dok se skroluje kroz stavke.
    Podnaslov i „za mali auto" se na telefonu ne vide (veličina se bira odmah iznad).
-   U redu „Zaštita laka" stoji kratko ime (.kr-t), a rokovi idu u .ka-nap ispod tabele.
-   Dugmad „Zakaži" su tri reda preko cele širine. Blok je na kraju fajla da pobedi
+   U redu „Zaštita laka" stoji kratko ime (.kr-t), rokovi se na telefonu ne pišu.
+   Blok je na kraju fajla da pobedi
    „PUNE CRVENE POVRŠINE" (.pk-badge je ovde crven tekst, ne crvena pločica).
    Računar nije diran. */
 @media(max-width:768px){
@@ -819,10 +819,12 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
   .ka-c small,.kr-d{display:none}
   .kr-t{display:inline}
   .ka-d,.ka-c.ka-d{font-size:11.5px;letter-spacing:0;text-transform:none}
-  .ka-r:last-child .ka-0{display:none}
-  .ka-b,.ka .ka-b.f{grid-column:1/-1;padding:0 12px 8px;background:var(--d2);box-shadow:none}
-  .ka-r:last-child>.ka-b:nth-child(2){padding-top:16px}
-  .ka-r:last-child>.ka-b:last-child{padding-bottom:18px}
-  .ka-b .pk-btn{padding:15px 10px;font-size:12px;letter-spacing:2px}
-  .ka-nap{display:block;font-size:11.5px;color:var(--gray);text-align:center;line-height:1.5;margin:10px 0 0}
+  /* dugmad „Zakaži" se na telefonu NE prikazuju (vlasnik 2026-09-23: „nema razloga, ružno
+     stoji"); tabela se završava redom Trajanje. Napomena o rokovima zaštite je obrisana. */
+  .ka-r:last-child{display:none}
+
+  /* futer (opis, navigacija, usluge, kontakt, verzija) se na cenovniku na telefonu ne
+     prikazuje — strana se završava Loyalty programom i koracima (vlasnik 2026-09-23).
+     Na ostalim stranama i na računaru futer ostaje. */
+  body>footer{display:none}
 }
