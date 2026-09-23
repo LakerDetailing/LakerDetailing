@@ -110,7 +110,12 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
   „Šta koji paket ima" ispod njih pisale iste stavke dvaput). Jedna mreža `.ka` u `#paketi`: vrh kolone je
   kartica paketa (ime, podnaslov, cena), ispod su stavke red po red sa kvačicama, dole trajanje i „Zakaži".
   Boost kolona (`.f`) nosi crveni okvir, podlogu i „Najpopularnije". `.ka-r` ima `display:contents` i
-  služi samo za `role="row"`; na telefonu naziv stavke ide preko cele širine, ispod tri ćelije. Stepenice,
+  služi samo za `role="row"`. **Na telefonu je „C — prava tabela"** (vlasnik 2026-09-23, izabrao iz demoa
+  `demo-paketi-telefon`): isti raspored kao na računaru (nazivi levo, tri kolone), red sa imenima i cenama se
+  lepi ispod `#nav` (`top:68px`), podnaslov i „za mali auto" se ne vide, u „Zaštita laka" stoji kratko ime
+  (`.kr-t`, a puno `.kr-d` na računaru), rokovi idu u `.ka-nap` ispod tabele, dugmad „Zakaži" su tri reda preko
+  cele širine. Blok „PAKETI NA TELEFONU" je na samom kraju [assets/css/cenovnik.css](assets/css/cenovnik.css).
+  Računar NE dirati (vlasnik: „na kompu je ok"). Stepenice,
   `.pk` kartica i tabela `.cmp` su obrisane. **Keramika se u paketu piše „Keramička zaštita" + „preko 36
   meseci po deklaraciji proizvođača", BEZ „1 sloj"** i bez fusnote ispod (vlasnik 2026-09-23).
 - **Cene stoje na JEDNOM mestu na cenovniku**: `data-c="mali,srednji,veliki,ekstra"` u
@@ -154,7 +159,7 @@ Sajt više nije jedna ogromna strana. Osam ruta, zajednički stil i skripta:
 - **Najmanja slova na telefonu (vlasnik 2026-09-23):** na kraju `laker.css`, `pocetna.css`, `usluge.css` i
   `cenovnik.css` stoji blok „NAJMANJA SLOVA NA TELEFONU“ (`max-width:768px`) — ništa ispod 10 px, dugmad i putanja
   11 px (ranije su na ≤390 px dugmad bila 8 px, podnaslov logoa 7,3 px). Jedini izuzeci su podnaslov logoa (9 px) i
-  značka „Najpopularnije“ (9,5 px), jer moraju da stanu uz logo odnosno u usku kolonu. Novo pravilo koje smanjuje
+  natpis „Najpopularnije“ iznad Boost kolone (9 px crveno), jer moraju da stanu uz logo odnosno u usku kolonu. Novo pravilo koje smanjuje
   slova na telefonu ide IZNAD tog bloka, inače ga blok pregazi. Računar nije diran.
 - **`.todo` oznake i njihov CSS su obrisani 2026-09-02** — otvorena pitanja vlasniku idu u razgovor, ne na sajt.
 - **`body{overflow-x:clip}`, nikad `hidden`.** `hidden` od body-ja pravi scroll kontejner i `position:sticky` prestaje da radi

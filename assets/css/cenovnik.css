@@ -144,24 +144,7 @@ body.light .ka-l,body.light .ka-c{border-top-color:rgba(0,0,0,.06)}
 .pk-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
 .ka-b .pk-btn{padding:14px 8px}
 @media(min-width:769px){.ka-l{font-size:15px}}
-@media(max-width:768px){
-  .ka{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:40px}
-  .ka-0{display:none}
-  .ka-l{grid-column:1/-1;padding:14px 4px 6px;background:transparent;border-top:1px solid rgba(255,255,255,.07);font-size:13.5px;text-align:center}
-  body.light .ka-l{border-top-color:rgba(0,0,0,.08)}
-  .ka-l small{display:inline;margin-left:6px}
-  .ka-c{padding:4px 4px 14px;border-top:0;font-size:12.5px;background:transparent}
-  .ka-c small{font-size:10.5px}
-  .ka-h{padding:26px 8px 18px;text-align:center;align-items:center}
-  .pk-badge{left:50%;transform:translate(-50%,-100%);font-size:7.5px;letter-spacing:1.5px;padding:4px 8px}
-  .pk-name{font-size:25px}
-  .pk-sub{font-size:8px;letter-spacing:1.2px;min-height:4.4em;margin-bottom:10px}
-  .pk-from{font-size:8px;letter-spacing:1px}
-  .pk-p{font-size:32px}
-  .ka-h .pk-p sup{font-size:13px;margin-top:5px}
-  .ka-b{padding:8px 4px 16px}
-  .ka-b .pk-btn{padding:12px 2px;font-size:9px;letter-spacing:1.5px}
-  .ka-d,.ka-c.ka-d{font-size:9.5px;letter-spacing:.6px}
+.kr-t,.ka-nap{display:none}
 }
 
 /* ── POJEDINAČNO ── */
@@ -800,18 +783,46 @@ tbody tr:hover td{background:rgba(231,76,60,.025)}
 .loy-google-btn-overlay{color:#fff}
 
 /* ── NAJMANJA SLOVA NA TELEFONU (2026-09-23) — isto pravilo kao na kraju laker.css.
-   Kolone paketa su na telefonu uske (~110 px), pa uz veća slova ide i manji razmak
-   između slova; tekst sme da pređe u dva reda. ── */
+   Mreža paketa ima svoj blok ispod („PAKETI NA TELEFONU"). ── */
 @media(max-width:768px){
-  .pk-badge{font-size:9.5px;letter-spacing:.6px;padding:4px 7px}
-  .pk-sub{font-size:10px;letter-spacing:.4px;line-height:1.45}
-  .pk-from{font-size:10px;letter-spacing:.4px}
-  .ka-b .pk-btn{font-size:10.5px;letter-spacing:.6px;line-height:1.35}
-  .ka-d,.ka-c.ka-d{font-size:10.5px;letter-spacing:.3px}
   .grp h3{font-size:10.5px}
   .bill .save{font-size:10px}
   .loy-chip,.loy-chip b{font-size:10px}
   .loy-pick-sub,.loy-pick-price,.loy-pick-price-dim{font-size:10.5px}
   .pick .ili{font-size:10.5px}
   .loy-mtitle,.loy-google-header-text,.loy-forgot-title,.loy-secondary-btn,.loy-or-divider span{font-size:10px}
+}
+
+/* ── PAKETI NA TELEFONU = „C — prava tabela" (vlasnik izabrao 2026-09-23) ──
+   Isto kao na računaru: nazivi stavki levo, tri kolone desno. Red sa imenima i cenama
+   paketa (.ka-r:first-child) se lepi ispod #nav (68 px) dok se skroluje kroz stavke.
+   Podnaslov i „za mali auto" se na telefonu ne vide (veličina se bira odmah iznad).
+   U redu „Zaštita laka" stoji kratko ime (.kr-t), a rokovi idu u .ka-nap ispod tabele.
+   Dugmad „Zakaži" su tri reda preko cele širine. Blok je na kraju fajla da pobedi
+   „PUNE CRVENE POVRŠINE" (.pk-badge je ovde crven tekst, ne crvena pločica).
+   Računar nije diran. */
+@media(max-width:768px){
+  .ka{grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(0,1fr));column-gap:0;margin-top:34px;background:var(--d2)}
+  .ka-r:first-child>*{position:sticky;top:68px;z-index:5;border-bottom:1px solid rgba(231,76,60,.35)}
+  .ka-r:first-child>.f{z-index:6}
+  .ka-0{display:block;background:var(--d2)}
+  .ka-h{padding:24px 2px 10px;align-items:center;justify-content:flex-end;text-align:center}
+  .pk-sub,.pk-from{display:none}
+  .pk-name{font-size:19px;margin:0;letter-spacing:0}
+  .pk-p{font-size:22px;margin-top:6px;letter-spacing:-.5px}
+  .ka-h .pk-p sup{font-size:10px;margin-top:3px}
+  .pk-badge{top:6px;left:-12px;right:-12px;transform:none;background:transparent;color:#E74C3C;font-size:9px;letter-spacing:.3px;padding:0;text-align:center}
+  body.light .pk-badge{background:transparent;color:#C0392B}
+  .ka-l{padding:12px 4px 12px 10px;font-size:13px;display:flex;flex-direction:column;justify-content:center}
+  .ka-l small{font-size:11px}
+  .ka-c{padding:12px 4px;font-size:12.5px;display:flex;align-items:center;justify-content:center;line-height:1.3}
+  .ka-c small,.kr-d{display:none}
+  .kr-t{display:inline}
+  .ka-d,.ka-c.ka-d{font-size:11.5px;letter-spacing:0;text-transform:none}
+  .ka-r:last-child .ka-0{display:none}
+  .ka-b,.ka .ka-b.f{grid-column:1/-1;padding:0 12px 8px;background:var(--d2);box-shadow:none}
+  .ka-r:last-child>.ka-b:nth-child(2){padding-top:16px}
+  .ka-r:last-child>.ka-b:last-child{padding-bottom:18px}
+  .ka-b .pk-btn{padding:15px 10px;font-size:12px;letter-spacing:2px}
+  .ka-nap{display:block;font-size:11.5px;color:var(--gray);text-align:center;line-height:1.5;margin:10px 0 0}
 }
