@@ -572,7 +572,10 @@ window.openLoyalty = function(){
 window.closeLoyalty = function(){
   // Blokira zatvaranje samo dok je recovery token aktivan (korisnik unosi novu lozinku)
   if (window._recoveryToken) return;
-  $('loyOverlay').style.display = 'none';
+  // Prozor postoji samo na /cenovnik — na početnoj Escape stigne ovde bez njega
+  const ov = $('loyOverlay');
+  if (!ov) return;
+  ov.style.display = 'none';
   document.body.style.overflowY  = '';
 };
 document.addEventListener('keydown', e => {
